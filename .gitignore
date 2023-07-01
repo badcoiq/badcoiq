@@ -1,0 +1,8 @@
+
+build/badcoiq/.vs
+build/badcoiq/x64
+build/badcoiq/Debug
+build/badcoiq/Release
+*.idb
+*.pdb
+*.lib
