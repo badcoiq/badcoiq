@@ -27,16 +27,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#ifndef __BQ_LOG_H__
+#define __BQ_LOG_H__
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/common/bqLog.h"
-#include "badcoiq/string/bqString.h"
-#include "badcoiq/system/bqStacktracer.h"
-#include "badcoiq/common/bqAssert.h"
-#include "badcoiq/system/bqDLL.h"
+// Класс для вывода текстового сообщения
+// Можно установить коллбэки
+class bqLog
+{
+public:
+	static void Print(const char* s, ...);
+	static void Print(const wchar_t* s, ...);
+
+	static void PrintInfo(const char* s, ...);
+	static void PrintInfo(const wchar_t* s, ...);
+
+	static void PrintWarning(const char* s, ...);
+	static void PrintWarning(const wchar_t* s, ...);
+
+	static void PrintError(const char* s, ...);
+	static void PrintError(const wchar_t* s, ...);
+
+	static void SetCallbackA(void(*)(const char*));
+	static void SetCallbackW(void(*)(const wchar_t*));
+};
+
 
 #endif
 

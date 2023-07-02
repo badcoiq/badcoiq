@@ -61,7 +61,7 @@ void bqOnAssert_default(const char* message, const char* file, uint32_t line, ui
     else
     {
         //printf("%s %s %i\n", message, file, line);
-       //bqlLog::PrintError("%s %s %i\n", message, file, line);
+       bqLog::PrintError("%s %s %i\n", message, file, line);
 #ifdef BQ_PLATFORM_WINDOWS
         DebugBreak();
 #endif

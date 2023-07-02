@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp" />
     <ClCompile Include="..\..\src\badcoiq\common\bqAssert.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\common\bqLog.cpp" />
     <ClCompile Include="..\..\src\badcoiq\common\bqMemory.cpp" />
     <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp" />
     <ClCompile Include="..\..\src\badcoiq\system\bqDLL.cpp" />

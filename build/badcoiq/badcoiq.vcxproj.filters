@@ -42,5 +42,8 @@
     <ClCompile Include="..\..\src\badcoiq\system\bqStacktracer.cpp">
       <Filter>Source Files\system</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\common\bqLog.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
