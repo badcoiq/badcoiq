@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_DLL_H__
 #define __BQ_DLL_H__
 
-// надо завести свои имена для хэндла и функции
+// надо завести свои имена для хэндла и указателя на функцию
 typedef void* bqDLLHandle;   // HMODULE в Windows
 typedef void* bqDLLFunction;
 

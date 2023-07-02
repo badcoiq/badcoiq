@@ -27,13 +27,42 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#ifndef __BQ_ASSERT_H__
+#define __BQ_ASSERT_H__
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/common/bqAssert.h"
-#include "badcoiq/system/bqDLL.h"
+// Скрою в неймспейсах функцию onAssert
+namespace bq
+{
+    namespace internal
+    {
+        enum flag_onAssert
+        {
+            // использовать системное окно которое показывается как при использовании assert()
+            flag_onAssert_useDefaultSystemWindow = 0x1,
+
+            // использовать stack tracer
+            flag_onAssert_useStackTrace = 0x2,
+        };
+
+        // макрсы BQ_ASSERT... будут вызывать эту функцию
+        void BQ_CDECL OnAssert(const char* message, const char* file, uint32_t line, uint32_t flags = 0);
+
+        // установить свою функцию
+        void BQ_CDECL SetOnAssert(void(*)(const char* message, const char* file, uint32_t line, uint32_t flags));
+    }
+}
+
+#ifdef BQ_DEBUG
+#define BQ_ASSERT(expression) if((expression) == 0){bq::internal::OnAssert(#expression, BQ_FILE, BQ_LINE, 0);}
+#define BQ_ASSERT_ST(expression) if((expression) == 0){bq::internal::OnAssert(#expression, BQ_FILE, BQ_LINE, bq::internal::flag_onAssert_useDefaultSystemWindow | bq::internal::flag_onAssert_useStackTrace);}
+#else
+#define BQ_ASSERT(expression) ((void)0)
+#define BQ_ASSERT_ST(expression) ((void)0)
+#endif
+
+extern "C"
+{
+}
 
 #endif
 

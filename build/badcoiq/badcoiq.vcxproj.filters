@@ -16,12 +16,21 @@
     <Filter Include="Source Files\common">
       <UniqueIdentifier>{b40ddfe6-f6e7-4097-aa9a-1ac5488bc33a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\system">
+      <UniqueIdentifier>{15a5a845-fde6-494e-b737-9dd170b2a715}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\common\bqMemory.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\system\bqDLL.cpp">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\common\bqAssert.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
