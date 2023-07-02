@@ -26,12 +26,48 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#include "badcoiq.h"
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-
+#ifdef BQ_PLATFORM_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+static HANDLE g_processHeap = GetProcessHeap();
 #endif
 
+void* bqMemory::malloc(size_t size)
+{
+#ifdef BQ_PLATFORM_WINDOWS
+	return HeapAlloc(g_processHeap, 0, size);
+#else
+	return ::malloc(size);
+#endif
+}
+
+void* bqMemory::calloc(size_t size)
+{
+#ifdef BQ_PLATFORM_WINDOWS
+	return HeapAlloc(g_processHeap, HEAP_ZERO_MEMORY, size);
+#else
+	return ::calloc(1, size);
+#endif
+}
+
+void bqMemory::free(void* ptr)
+{
+#ifdef BQ_PLATFORM_WINDOWS
+	HeapFree(g_processHeap, 0, ptr);
+#else
+	::free(ptr);
+#endif
+}
+
+void* bqMemory::realloc(void* ptr, size_t size)
+{
+#ifdef BQ_PLATFORM_WINDOWS
+	return HeapReAlloc(g_processHeap, HEAP_ZERO_MEMORY, ptr, size);
+#else
+	return ::realloc(ptr, size);
+#endif
+}
+
+	
