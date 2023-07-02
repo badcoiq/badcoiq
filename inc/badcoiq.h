@@ -30,5 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_BADCOIQ_H__
 #define __BQ_BADCOIQ_H__
 
+#include "badcoiq/common/bqDefines.h"
+
 #endif
 
