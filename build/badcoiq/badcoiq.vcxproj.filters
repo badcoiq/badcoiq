@@ -39,5 +39,8 @@
     <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp">
       <Filter>Source Files\string</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\system\bqStacktracer.cpp">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

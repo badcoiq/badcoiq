@@ -40,22 +40,22 @@ void bqOnAssert_default(const char* message, const char* file, uint32_t line, ui
 #ifdef BQ_DEBUG
     if ((flags & bq::internal::flag_onAssert_useStackTrace) == bq::internal::flag_onAssert_useStackTrace)
     {
-        //bqStackTracer::Print();
+        bqStackTracer::Print();
     }
 
     if ((flags & bq::internal::flag_onAssert_useDefaultSystemWindow) == bq::internal::flag_onAssert_useDefaultSystemWindow)
     {
-        //bqString str_msg(message);
-        //bqString str_file(file);
+        bqString str_msg(message);
+        bqString str_file(file);
 
-        //bqStringW str1;
-        //str_msg.to_utf16(str1);
+        bqStringW str1;
+        str_msg.to_utf16(str1);
 
-        //bqStringW str2;
-        //str_file.to_utf16(str2);
+        bqStringW str2;
+        str_file.to_utf16(str2);
 
 #ifdef BQ_PLATFORM_WINDOWS
-        //_wassert((const wchar_t*)str1.m_data, (const wchar_t*)str2.m_data, line);
+        _wassert((const wchar_t*)str1.data(), (const wchar_t*)str2.data(), line);
 #endif
     }
     else
