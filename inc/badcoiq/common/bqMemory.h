@@ -48,7 +48,7 @@ _type* bqCreate(Args&&... args)
 {
 	_type* ptr = (_type*)bqMemory::malloc(sizeof(_type));
 	if (ptr)
-		::new(ptr) _type(std::forward<Args>(args)...);
+		::new(ptr) _type(std::forward<Args>(args)...); // вызов конструктора
 	return ptr;
 }
 
@@ -56,7 +56,7 @@ template<typename _type>
 void bqDestroy(_type* ptr)
 {
 	assert(ptr);
-	ptr->~_type();
+	ptr->~_type(); // вызов деструктора
 	bqMemory::free(ptr);
 }
 // Для шаблонных функций force inline не нужен, так как они все получаются встраиваемыми.

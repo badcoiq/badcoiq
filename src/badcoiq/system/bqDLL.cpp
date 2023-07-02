@@ -26,13 +26,41 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#include "badcoiq.h"
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/system/bqDLL.h"
-
+#ifdef BQ_PLATFORM_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #endif
+
+bqDLLHandle bqDLL::load(const char* libraryName)
+{
+	BQ_ASSERT_ST(libraryName);
+#ifdef BQ_PLATFORM_WINDOWS
+	return (bqDLLHandle)LoadLibraryA(libraryName);
+#else
+#error Для Windows
+#endif
+}
+
+void bqDLL::free(bqDLLHandle library)
+{
+	BQ_ASSERT_ST(library);
+#ifdef BQ_PLATFORM_WINDOWS
+	FreeLibrary((HMODULE)library);
+#else
+#error Для Windows
+#endif
+}
+
+bqDLLFunction bqDLL::get_proc(bqDLLHandle library, const char* functionName)
+{
+	BQ_ASSERT_ST(library);
+	BQ_ASSERT_ST(functionName);
+#ifdef BQ_PLATFORM_WINDOWS
+	return (bqDLLFunction)GetProcAddress((HMODULE)library, functionName);
+#else
+#error Для Windows
+#endif
+}
 

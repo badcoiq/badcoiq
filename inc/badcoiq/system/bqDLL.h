@@ -27,12 +27,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#ifndef __BQ_DLL_H__
+#define __BQ_DLL_H__
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/system/bqDLL.h"
+// надо завести свои имена для хэндла и функции
+typedef void* bqDLLHandle;   // HMODULE в Windows
+typedef void* bqDLLFunction;
+
+// Подобно bqMemory, это класс со статическими методами.
+class bqDLL
+{
+public:
+
+	// Загрузить динамическую библиотеку
+	// Вернётся указатель если загрузилось.
+	// При завершении работы надо вызвать free и передать bqDLLHandle
+	static bqDLLHandle load(const char* libraryName);
+
+	// Выгрузить библиотеку
+	static void free(bqDLLHandle library);
+
+	// Получить функцию из библиотеки
+	// Вернёт NULL если была какая-то ошибка.
+	static bqDLLFunction get_proc(bqDLLHandle library, const char* functionName);
+};
 
 #endif
 
