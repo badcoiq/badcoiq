@@ -35,18 +35,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqLog
 {
 public:
+
+	// Просто что-то написать. Используется сишная функция vsnprintf
 	static void Print(const char* s, ...);
 	static void Print(const wchar_t* s, ...);
 
+	// Тоже что Print, только сначала напишет "Info"
 	static void PrintInfo(const char* s, ...);
 	static void PrintInfo(const wchar_t* s, ...);
 
+	// Тоже что Print, только сначала напишет "Warning"
 	static void PrintWarning(const char* s, ...);
 	static void PrintWarning(const wchar_t* s, ...);
 
+	// Тоже что Print, только сначала напишет "Error"
 	static void PrintError(const char* s, ...);
 	static void PrintError(const wchar_t* s, ...);
 
+	// Установить свой коллбэк
+	// Если послать 0 то будет установлен дефолтный коллбэк
 	static void SetCallbackA(void(*)(const char*));
 	static void SetCallbackW(void(*)(const wchar_t*));
 };

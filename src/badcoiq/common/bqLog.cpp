@@ -61,8 +61,8 @@ public:
 void bqLogImpl::vprintf(const char* s, va_list vl)
 {
 	char buffer[0xFFFF];
-	vsnprintf_s(buffer, 0xFFFF, s, vl);
-	m_cba(buffer);
+	vsnprintf_s(buffer, 0xFFFF, s, vl);  // заполняем буфер
+	m_cba(buffer); // вызываем коллбэк
 }
 
 void bqLogImpl::vwprintf(const wchar_t* s, va_list vl)
@@ -77,8 +77,8 @@ static bqLogImpl g_log;
 void bqLog::Print(const char* s, ...)
 {
 	va_list vl;
-	va_start(vl, s);
-	g_log.vprintf(s, vl);
+	va_start(vl, s); 
+	g_log.vprintf(s, vl); // получаем аргументы и посылаем в g_log
 	va_end(vl);
 }
 
@@ -145,6 +145,7 @@ void bqLog::PrintError(const wchar_t* s, ...)
 	va_end(vl);
 }
 
+// устанавливаем коллбэк, пользовательский или дефолтный
 void bqLog::SetCallbackA(void(*cb)(const char*))
 {
 	if (cb)
