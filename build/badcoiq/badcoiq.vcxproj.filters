@@ -19,6 +19,9 @@
     <Filter Include="Source Files\system">
       <UniqueIdentifier>{15a5a845-fde6-494e-b737-9dd170b2a715}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\string">
+      <UniqueIdentifier>{ddf493d6-789c-4f12-9bbd-574c6cd86ebc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -32,6 +35,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\common\bqAssert.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp">
+      <Filter>Source Files\string</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

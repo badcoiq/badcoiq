@@ -44,7 +44,7 @@ namespace bq
             flag_onAssert_useStackTrace = 0x2,
         };
 
-        // макрсы BQ_ASSERT... будут вызывать эту функцию
+        // макросы BQ_ASSERT... будут вызывать эту функцию
         void BQ_CDECL OnAssert(const char* message, const char* file, uint32_t line, uint32_t flags = 0);
 
         // установить свою функцию
@@ -60,9 +60,6 @@ namespace bq
 #define BQ_ASSERT_ST(expression) ((void)0)
 #endif
 
-extern "C"
-{
-}
 
 #endif
 

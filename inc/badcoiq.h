@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/common/bqDefines.h"
 #include "badcoiq/common/bqMemory.h"
+#include "badcoiq/string/bqString.h"
 #include "badcoiq/common/bqAssert.h"
 #include "badcoiq/system/bqDLL.h"
 
