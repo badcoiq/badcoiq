@@ -26,19 +26,71 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#include "badcoiq.h"
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/common/bqLog.h"
-#include "badcoiq/common/bqForward.h"
-#include "badcoiq/string/bqString.h"
-#include "badcoiq/system/bqStacktracer.h"
-#include "badcoiq/common/bqAssert.h"
-#include "badcoiq/system/bqDLL.h"
-#include "badcoiq/framework/bqFramework.h"
+class bqFrameworkImpl
+{
+public:
+	bqFrameworkImpl() {}
+	~bqFrameworkImpl() {}
 
-#endif
+	float m_deltaTime = 0.f;
+	bqFrameworkCallback* m_frameworkCallback = 0;
 
+	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
+};
+bqFrameworkImpl* g_framework = 0;
+
+class bqFrameworkDestroyer
+{
+public:
+	bqFrameworkDestroyer() {}
+	~bqFrameworkDestroyer() 
+	{
+		if (g_framework)
+			bqFramework::Stop();
+	}
+};
+// При закрытии программы этот объект будет уничтожен - будет вызван деструктор
+//   в котором будет вызван bqFramework::Stop();
+bqFrameworkDestroyer g_frameworkDestroyer;
+
+// Выделяю память
+void bqFramework::Start(bqFrameworkCallback* cb)
+{
+	BQ_ASSERT_ST(cb);
+	BQ_ASSERT_ST(!g_framework);
+	if (!g_framework)
+	{
+		g_framework = new bqFrameworkImpl();
+	}
+}
+
+// Освобождаю
+void bqFramework::Stop()
+{
+	BQ_ASSERT_ST(g_framework);
+	if (g_framework)
+	{
+		delete g_framework;
+		g_framework = 0;
+	}
+}
+
+void bqFramework::Update()
+{
+	BQ_ASSERT_ST(g_framework);
+}
+
+float* bqFramework::GetDeltaTime()
+{
+	BQ_ASSERT_ST(g_framework);
+	return &g_framework->m_deltaTime;
+}
+
+bqWindow* bqFramework::SummonWindow(bqWindowCallback* cb)
+{
+	BQ_ASSERT_ST(g_framework);
+	BQ_ASSERT_ST(cb);
+	return 0;
+}

@@ -27,18 +27,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#ifndef __BQ_FRAMEWORK_H__
+#define __BQ_FRAMEWORK_H__
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/common/bqLog.h"
-#include "badcoiq/common/bqForward.h"
-#include "badcoiq/string/bqString.h"
-#include "badcoiq/system/bqStacktracer.h"
-#include "badcoiq/common/bqAssert.h"
-#include "badcoiq/system/bqDLL.h"
-#include "badcoiq/framework/bqFramework.h"
+// Предполагаю что фреймворк должен посылать какие-то сообщения.
+// Я это ещё не реализовал
+class bqFrameworkCallback
+{
+public:
+	bqFrameworkCallback() {}
+	virtual ~bqFrameworkCallback() {}
+
+	virtual void OnMessage() = 0;
+};
+
+// API для фреймворка.
+class bqFramework
+{
+public:
+	// Когда нам нужно запустить ДВИЖЁК, вызываем Start
+	// Он выделит память для внутреннего класса
+	static void Start(bqFrameworkCallback*);
+
+	// для завершения работы, он освободит ту память
+	static void Stop();
+
+	// Например, он вычислит DeltaTime, обновит состояния ввода, GUI, окна.
+	static void Update();
+
+	static float* GetDeltaTime();
+
+	static bqWindow* SummonWindow(bqWindowCallback*);
+};
 
 #endif
 

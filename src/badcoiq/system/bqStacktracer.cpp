@@ -80,7 +80,8 @@ bqStackTracerImpl::~bqStackTracerImpl()
 {
 	m_lockInitialized = false;
 	DeleteCriticalSection(&m_lock);
-	m_SymCleanup(GetCurrentProcess());
+	if(m_SymCleanup)
+		m_SymCleanup(GetCurrentProcess());
 	if (m_DbgHelpDll) 
 		FreeLibrary(m_DbgHelpDll);
 	if (m_Kernel32Dll)

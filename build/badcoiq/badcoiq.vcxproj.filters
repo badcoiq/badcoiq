@@ -22,6 +22,9 @@
     <Filter Include="Source Files\string">
       <UniqueIdentifier>{ddf493d6-789c-4f12-9bbd-574c6cd86ebc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\framework">
+      <UniqueIdentifier>{4b371869-fe8b-4a4b-8bb2-be9dc24e993f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -44,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\common\bqLog.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\framework\bqFramework.cpp">
+      <Filter>Source Files\framework</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
