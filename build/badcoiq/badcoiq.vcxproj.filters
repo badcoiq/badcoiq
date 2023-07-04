@@ -51,5 +51,8 @@
     <ClCompile Include="..\..\src\badcoiq\framework\bqFramework.cpp">
       <Filter>Source Files\framework</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\system\bqWindow.cpp">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

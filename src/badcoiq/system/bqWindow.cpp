@@ -26,20 +26,53 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#include "badcoiq.h"
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/common/bqLog.h"
-#include "badcoiq/common/bqForward.h"
-#include "badcoiq/string/bqString.h"
-#include "badcoiq/system/bqStacktracer.h"
-#include "badcoiq/common/bqAssert.h"
-#include "badcoiq/system/bqDLL.h"
-#include "badcoiq/common/bqBasicTypes.h"
-#include "badcoiq/framework/bqFramework.h"
+#include "badcoiq/system/bqWindow.h"
+#include "badcoiq/system/bqWindowWin32.h"
 
+#ifdef BQ_PLATFORM_WINDOWS
 #endif
+
+
+bqWindow::bqWindow(bqWindowCallback* cb)
+{
+}
+
+bqWindow::~bqWindow()
+{
+}
+
+void bqWindow::SetTitle(const char*)
+{
+}
+
+void bqWindow::SetVisible(bool v)
+{
+}
+
+
+void bqWindow::Maximize()
+{
+}
+
+void bqWindow::Minimize()
+{
+}
+
+void bqWindow::Restore()
+{
+}
+
+void bqWindow::SetBorderless(bool)
+{
+}
+
+void bqWindow::SetNoResize(bool)
+{
+}
+
+void bqWindow::SetNoMinimize(bool)
+{
+}
 

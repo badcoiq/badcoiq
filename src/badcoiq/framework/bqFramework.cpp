@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#include "badcoiq/system/bqWindow.h"
 
 class bqFrameworkImpl
 {

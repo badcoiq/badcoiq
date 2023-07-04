@@ -27,19 +27,43 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#ifndef __BQ_BASICTYPES_H__
+#define __BQ_BASICTYPES_H__
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/common/bqLog.h"
-#include "badcoiq/common/bqForward.h"
-#include "badcoiq/string/bqString.h"
-#include "badcoiq/system/bqStacktracer.h"
-#include "badcoiq/common/bqAssert.h"
-#include "badcoiq/system/bqDLL.h"
-#include "badcoiq/common/bqBasicTypes.h"
-#include "badcoiq/framework/bqFramework.h"
+template<typename T>
+class bqPoint_t
+{
+public:
+	bqPoint_t() {}
+	bqPoint_t(T X, T Y) : x(X), y(Y) {}
+
+	T x = 0;
+	T y = 0;
+};
+
+using bqPoint = bqPoint_t<int32_t>;
+using bqPointf = bqPoint_t<float>;
+
+template<typename T>
+class bqRect_t
+{
+public:
+	bqRect_t() {}
+	bqRect_t(T Left, T Top, T Right, T Bottom) :
+		left(Left),
+		top(Top),
+		right(Right),
+		bottom(Bottom)
+	{}
+
+	T left = 0;
+	T top = 0;
+	T right = 0;
+	T bottom = 0;
+};
+
+using bqRect = bqRect_t<int32_t>;
+using bqRectf = bqRect_t<float>;
 
 #endif
 

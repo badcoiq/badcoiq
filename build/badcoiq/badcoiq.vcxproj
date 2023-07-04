@@ -177,6 +177,7 @@
     <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp" />
     <ClCompile Include="..\..\src\badcoiq\system\bqDLL.cpp" />
     <ClCompile Include="..\..\src\badcoiq\system\bqStacktracer.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\system\bqWindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

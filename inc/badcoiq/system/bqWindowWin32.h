@@ -27,19 +27,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#ifndef __BQ_WINDOWWIN32_H__
+#define __BQ_WINDOWWIN32_H__
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/common/bqLog.h"
-#include "badcoiq/common/bqForward.h"
-#include "badcoiq/string/bqString.h"
-#include "badcoiq/system/bqStacktracer.h"
-#include "badcoiq/common/bqAssert.h"
-#include "badcoiq/system/bqDLL.h"
-#include "badcoiq/common/bqBasicTypes.h"
-#include "badcoiq/framework/bqFramework.h"
+
+#ifdef BQ_PLATFORM_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
+struct bqWindowWin32
+{
+	wchar_t m_className[20];
+	HWND m_hWnd = 0;
+	HRAWINPUT m_rawInputData[0xff];
+	LONG m_style = 0;
+	LONG m_stylePreFullscreen = 0;
+	WINDOWPLACEMENT m_wndPlcmnt;
+};
+#else
+#error Для Windows
+#endif
 
 #endif
 
