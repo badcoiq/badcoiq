@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 #include "badcoiq/system/bqWindow.h"
+#include "badcoiq/system/bqWindowWin32.h"
 
 class bqFrameworkImpl
 {
@@ -37,6 +38,7 @@ public:
 
 	float m_deltaTime = 0.f;
 	bqFrameworkCallback* m_frameworkCallback = 0;
+
 
 	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
 };
@@ -81,6 +83,17 @@ void bqFramework::Stop()
 void bqFramework::Update()
 {
 	BQ_ASSERT_ST(g_framework);
+
+#ifdef BQ_PLATFORM_WINDOWS
+	// без этого окно не будет реагировать
+	MSG msg;
+	while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+	{
+		GetMessage(&msg, NULL, 0, 0);
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+#endif
 }
 
 float* bqFramework::GetDeltaTime()
@@ -93,5 +106,5 @@ bqWindow* bqFramework::SummonWindow(bqWindowCallback* cb)
 {
 	BQ_ASSERT_ST(g_framework);
 	BQ_ASSERT_ST(cb);
-	return 0;
+	return new bqWindow(cb);
 }

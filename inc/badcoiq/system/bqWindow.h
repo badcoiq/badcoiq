@@ -75,12 +75,18 @@ struct bqWindowCommonData
 
 	// минимальный размер окна
 	bqPoint m_sizeMinimum;
+	
+	// текущий размер окна (клиентской области)
+	bqPoint m_sizeCurrent;
 
 	// окно видимо или нет
 	bool m_isVisible = false;
 
 	// данные специфичные для ОС
 	void* m_implementation = 0;
+
+	// Работает ли полноэкранный режим без рамки
+	bool m_isFullscreen = false;
 };
 
 // Окно
@@ -88,6 +94,7 @@ class bqWindow
 {
 	bqWindowCommonData m_data;
 public:
+	BQ_PLACEMENT_ALLOCATOR(bqWindow);
 	bqWindow(bqWindowCallback* cb);
 	~bqWindow();
 
@@ -127,6 +134,12 @@ public:
 
 	// Получить данные
 	bqWindowCommonData* GetData() { return &m_data; }
+
+	// Установить позицию и размер
+	void SetPositionAndSize(int x, int y, int sx, int sy);
+
+	void ToFullscreenMode();
+	void ToWindowMode();
 };
 
 
