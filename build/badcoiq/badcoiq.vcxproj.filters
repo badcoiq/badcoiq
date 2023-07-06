@@ -25,6 +25,9 @@
     <Filter Include="Source Files\framework">
       <UniqueIdentifier>{4b371869-fe8b-4a4b-8bb2-be9dc24e993f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\math">
+      <UniqueIdentifier>{d432f9e1-0fb4-4a8c-bd04-a435a433f816}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -53,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\system\bqWindow.cpp">
       <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\math\bqMath.cpp">
+      <Filter>Source Files\math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

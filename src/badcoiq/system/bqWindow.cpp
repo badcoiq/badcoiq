@@ -29,6 +29,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq.h"
 
 #include "badcoiq/system/bqWindow.h"
+#include "badcoiq/math/bqMath.h"
+#include "badcoiq/input/bqInput.h"
 
 #ifdef BQ_PLATFORM_WINDOWS
 #include "badcoiq/system/bqWindowWin32.h"
