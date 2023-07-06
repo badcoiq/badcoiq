@@ -94,6 +94,12 @@ void bqFramework::Update()
 		DispatchMessage(&msg);
 	}
 #endif
+
+	static clock_t then = 0;
+	clock_t now = clock();
+
+	g_framework->m_deltaTime = (float)(now - then) / CLOCKS_PER_SEC;
+	then = now;
 }
 
 float* bqFramework::GetDeltaTime()

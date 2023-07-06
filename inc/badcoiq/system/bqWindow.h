@@ -90,7 +90,7 @@ struct bqWindowCommonData
 };
 
 // Окно
-class bqWindow
+class bqWindow : public bqUserData
 {
 	bqWindowCommonData m_data;
 public:
