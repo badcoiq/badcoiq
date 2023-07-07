@@ -33,5 +33,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqWindow;
 class bqWindowCallback;
 
+template<typename T>
+class bqVec2_t;
+template<typename T>
+class bqVec3_t;
+template<typename T>
+class bqVec4_t;
+template<typename T>
+class bqMatrix4_t;
+
+using bqVec2  = bqVec2_t<bqReal>;
+using bqVec2f = bqVec2_t<float>;
+using bqVec2i = bqVec2_t<int32_t>;
+using bqVec3  = bqVec3_t<bqReal>;
+using bqVec3f = bqVec3_t<float>;
+using bqVec3i = bqVec3_t<int32_t>;
+using bqVec4  = bqVec4_t<bqReal>;
+using bqVec4f = bqVec4_t<float>;
+using bqVec4i = bqVec4_t<int32_t>;
+using bqMat4  = bqMatrix4_t<bqReal>;
+
 #endif
 

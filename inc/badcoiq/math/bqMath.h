@@ -44,6 +44,9 @@ const double PIHalf = 3.14159265358979323846 * 0.5;
 const double PIPI = 6.283185307179586476925286766559;
 
 // Сюда будут добавляться #include вектр, матрица, кватернион
+#include "badcoiq/math/bqVector.h"
+#include "badcoiq/math/bqQuaternion.h"
+#include "badcoiq/math/bqMatrix.h"
 
 class bqMath
 {
@@ -87,23 +90,92 @@ public:
 	static float Tan(float);
 	static double Tan(double);
 
+	static void Cross(const bqVec3& v1, const bqVec3& v2, bqVec3& r);
+	static void Cross(const bqVec3f& v1, const bqVec3f& v2, bqVec3f& r);
+	static void Cross(const bqVec4& v1, const bqVec4& v2, bqVec4& r);
+	static void Cross(const bqVec4f& v1, const bqVec4f& v2, bqVec4f& r);
+	static void Cross(const bqVec3& v1, const bqVec4& v2, bqVec3& r);
+	static void Cross(const bqVec3f& v1, const bqVec4f& v2, bqVec3f& r);
+
+	static bqReal Distance(const bqVec3& v1, const bqVec3& v2);
+	static bqReal Distance(const bqVec4& v1, const bqVec4& v2);
+	static bqReal Distance(const bqVec3& v1, const bqVec4& v2);
+	static float Distance(const bqVec3f& v1, const bqVec3f& v2);
+	static float Distance(const bqVec4f& v1, const bqVec4f& v2);
+	static float Distance(const bqVec3f& v1, const bqVec4f& v2);
+
+	static bqReal Dot(const bqVec3& v1, const bqVec3& v2);
+	static bqReal Dot(const bqVec4& v1, const bqVec4& v2);
+	static bqReal Dot(const bqVec3& v1, const bqVec4& v2);
+	static float Dot(const bqVec3f& v1, const bqVec3f& v2);
+	static float Dot(const bqVec4f& v1, const bqVec4f& v2);
+	static float Dot(const bqVec3f& v1, const bqVec4f& v2);
+	static float Dot(const bqQuaternion& v1, const bqQuaternion& v2);
+
+	static bqReal Length(const bqVec3& v);
+	static bqReal Length(const bqVec4& v);
+	static float Length(const bqVec3f& v);
+	static float Length(const bqVec4f& v);
+	static float Length(const bqQuaternion& v);
+
 	// wikipedia:
 	// Imprecise method, which does not guarantee v = v1 when t = 1, due to floating-point arithmetic error.
-	// This method is monotonic. This form may be used when the hardware has a native fused multiply-add instruction.
+	// This method is monotonic. This form may be used when the hardware has a native fused Multiply-add instruction.
 	// 
 	// типа, Lerp1 не гарантирует что x станет равным y (...Lerp2 тоже)
 	//  ... имеет 1 умножение. Lerp2 имеет 2 умножения.
 	static float Lerp1(float x, float y, float t);
 	static double Lerp1(double x, double y, double t);
+	static void Lerp1(const bqVec3& x, const bqVec3& y, bqReal t, bqVec3& r);
+	static void Lerp1(const bqVec3& x, const bqVec4& y, bqReal t, bqVec3& r);
+	static void Lerp1(const bqVec4& x, const bqVec4& y, bqReal t, bqVec4& r);
+	static void Lerp1(const bqVec3f& x, const bqVec3f& y, float t, bqVec3f& r);
+	static void Lerp1(const bqVec3f& x, const bqVec4f& y, float t, bqVec3f& r);
+	static void Lerp1(const bqVec4f& x, const bqVec4f& y, float t, bqVec4f& r);
+	static void Lerp1(const bqQuaternion& x, const bqQuaternion& y, float t, bqQuaternion& r);
 
 	// wikipedia:
 	// Precise method, which guarantees v = v1 when t = 1. This method is monotonic only when v0 * v1 < 0.
 	// Lerping between same values might not produce the same value
 	static float Lerp2(float x, float y, float t);
 	static double Lerp2(double x, double y, double t);
+	static void Lerp2(const bqVec3& x, const bqVec3& y, bqReal t, bqVec3& r);
+	static void Lerp2(const bqVec3& x, const bqVec4& y, bqReal t, bqVec3& r);
+	static void Lerp2(const bqVec4& x, const bqVec4& y, bqReal t, bqVec4& r);
+	static void Lerp2(const bqVec3f& x, const bqVec3f& y, float t, bqVec3f& r);
+	static void Lerp2(const bqVec3f& x, const bqVec4f& y, float t, bqVec3f& r);
+	static void Lerp2(const bqVec4f& x, const bqVec4f& y, float t, bqVec4f& r);
+	static void Lerp2(const bqQuaternion& x, const bqQuaternion& y, float t, bqQuaternion& r);
 
 	// Находится ли точка в прямоугольной области
 	static bool PointInRect(const bqPoint&, const bqRect&);
+	static bool PointInRect(const bqPoint&, const bqVec4f&);
+	static bool PointInRect(const bqVec2f&, const bqVec4f&);
+
+	static void Normalize(bqVec3& v);
+	static void Normalize(bqVec3f& v);
+	static void Normalize(bqVec4& v);
+	static void Normalize(bqVec4f& v);
+	static void Normalize(bqQuaternion& v);
+
+	static void SetRotation(bqQuaternion&, float x, float y, float z);
+	static void SetRotation(bqQuaternion&, const bqVec3& axis, const bqReal& _angle);
+	static void SetRotation(bqQuaternion&, const bqVec3f& axis, const float& _angle);
+	static void SetRotation(bqQuaternion&, const bqVec4& axis, const bqReal& _angle);
+	static void SetRotation(bqQuaternion&, const bqVec4f& axis, const float& _angle);
+	static void SetRotation(bqMat4&, const bqQuaternion&);
+	// from irrlicht or assimp?
+	static void Slerp(bqQuaternion& q1, bqQuaternion& q2, float time, float threshold, bqQuaternion& r);
+
+	static void Mul(const bqMat4&, const bqMat4&, bqMat4&);
+	static void Mul(const bqMat4&, const bqVec3&, bqVec3&);
+	static void Mul(const bqMat4&, const bqVec4&, bqVec4&);
+	static void Mul(const bqMat4&, const bqVec3f&, bqVec3f&);
+	static void Mul(const bqQuaternion&, const bqQuaternion&, bqQuaternion&);
+
+	static void Transpose(bqMat4&);
+
+	static void Invert(bqMat4&);
 };
 
 

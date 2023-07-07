@@ -9,7 +9,7 @@
  * ====================================================
  */
 
-// Modified for migui 
+// Modified for Badcoiq 
 
 #pragma once
 #ifndef __MATH_PRIV__

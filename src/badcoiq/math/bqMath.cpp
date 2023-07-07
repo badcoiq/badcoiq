@@ -372,3 +372,573 @@ bool bqMath::PointInRect(const bqPoint& p, const bqRect& r)
 	return false;
 }
 
+void bqMath::Cross(const bqVec3& v1, const bqVec3& v2, bqVec3& r)
+{
+	r.x = (v1.y * v2.z) - (v1.z * v2.y);
+	r.y = (v1.z * v2.x) - (v1.x * v2.z);
+	r.z = (v1.x * v2.y) - (v1.y * v2.x);
+}
+
+void bqMath::Cross(const bqVec3f& v1, const bqVec3f& v2, bqVec3f& r)
+{
+	r.x = (v1.y * v2.z) - (v1.z * v2.y);
+	r.y = (v1.z * v2.x) - (v1.x * v2.z);
+	r.z = (v1.x * v2.y) - (v1.y * v2.x);
+}
+
+void bqMath::Cross(const bqVec4& v1, const bqVec4& v2, bqVec4& r)
+{
+	r.x = (v1.y * v2.z) - (v1.z * v2.y);
+	r.y = (v1.z * v2.x) - (v1.x * v2.z);
+	r.z = (v1.x * v2.y) - (v1.y * v2.x);
+}
+
+void bqMath::Cross(const bqVec4f& v1, const bqVec4f& v2, bqVec4f& r)
+{
+	r.x = (v1.y * v2.z) - (v1.z * v2.y);
+	r.y = (v1.z * v2.x) - (v1.x * v2.z);
+	r.z = (v1.x * v2.y) - (v1.y * v2.x);
+}
+
+void bqMath::Cross(const bqVec3& v1, const bqVec4& v2, bqVec3& r)
+{
+	r.x = (v1.y * v2.z) - (v1.z * v2.y);
+	r.y = (v1.z * v2.x) - (v1.x * v2.z);
+	r.z = (v1.x * v2.y) - (v1.y * v2.x);
+}
+
+void bqMath::Cross(const bqVec3f& v1, const bqVec4f& v2, bqVec3f& r)
+{
+	r.x = (v1.y * v2.z) - (v1.z * v2.y);
+	r.y = (v1.z * v2.x) - (v1.x * v2.z);
+	r.z = (v1.x * v2.y) - (v1.y * v2.x);
+}
+
+bqReal bqMath::Distance(const bqVec3& v1, const bqVec3& v2)
+{
+	bqReal xx = v2.x - v1.x;
+	bqReal yy = v2.y - v1.y;
+	bqReal zz = v2.z - v1.z;
+
+	return sqrt((xx * xx) + (yy * yy) + (zz * zz));
+}
+
+bqReal bqMath::Distance(const bqVec4& v1, const bqVec4& v2)
+{
+	bqReal xx = v2.x - v1.x;
+	bqReal yy = v2.y - v1.y;
+	bqReal zz = v2.z - v1.z;
+
+	return sqrt((xx * xx) + (yy * yy) + (zz * zz));
+}
+
+bqReal bqMath::Distance(const bqVec3& v1, const bqVec4& v2)
+{
+	bqReal xx = v2.x - v1.x;
+	bqReal yy = v2.y - v1.y;
+	bqReal zz = v2.z - v1.z;
+
+	return sqrt((xx * xx) + (yy * yy) + (zz * zz));
+}
+
+float bqMath::Distance(const bqVec3f& v1, const bqVec3f& v2)
+{
+	float xx = v2.x - v1.x;
+	float yy = v2.y - v1.y;
+	float zz = v2.z - v1.z;
+
+	return sqrtf((xx * xx) + (yy * yy) + (zz * zz));
+}
+
+float bqMath::Distance(const bqVec4f& v1, const bqVec4f& v2)
+{
+	float xx = v2.x - v1.x;
+	float yy = v2.y - v1.y;
+	float zz = v2.z - v1.z;
+
+	return sqrtf((xx * xx) + (yy * yy) + (zz * zz));
+}
+
+float bqMath::Distance(const bqVec3f& v1, const bqVec4f& v2)
+{
+	float xx = v2.x - v1.x;
+	float yy = v2.y - v1.y;
+	float zz = v2.z - v1.z;
+
+	return sqrtf((xx * xx) + (yy * yy) + (zz * zz));
+}
+
+bqReal bqMath::Dot(const bqVec3& v1, const bqVec3& v2)
+{
+	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+}
+
+bqReal bqMath::Dot(const bqVec4& v1, const bqVec4& v2)
+{
+	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+}
+
+bqReal bqMath::Dot(const bqVec3& v1, const bqVec4& v2)
+{
+	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+}
+
+float bqMath::Dot(const bqVec3f& v1, const bqVec3f& v2)
+{
+	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+}
+
+float bqMath::Dot(const bqVec4f& v1, const bqVec4f& v2)
+{
+	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+}
+
+float bqMath::Dot(const bqVec3f& v1, const bqVec4f& v2)
+{
+	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+}
+
+float bqMath::Dot(const bqQuaternion& v1, const bqQuaternion& v2)
+{
+	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+}
+
+bqReal bqMath::Length(const bqVec3& v)
+{
+	return sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
+}
+
+bqReal bqMath::Length(const bqVec4& v)
+{
+	return sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z) + (v.w * v.w));
+}
+
+float bqMath::Length(const bqVec3f& v)
+{
+	return sqrtf((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
+}
+
+float bqMath::Length(const bqVec4f& v)
+{
+	return sqrtf((v.x * v.x) + (v.y * v.y) + (v.z * v.z) + (v.w * v.w));
+}
+
+float bqMath::Length(const bqQuaternion& v)
+{
+	return sqrtf((v.x * v.x) + (v.y * v.y) + (v.z * v.z) + (v.w * v.w));
+}
+
+
+void bqMath::Lerp1(const bqVec3& x, const bqVec3& y, double t, bqVec3& r)
+{
+	r.x = x.x + t * (y.x - x.x);
+	r.y = x.y + t * (y.y - x.y);
+	r.z = x.z + t * (y.z - x.z);
+}
+
+void bqMath::Lerp1(const bqVec3& x, const bqVec4& y, double t, bqVec3& r)
+{
+	r.x = x.x + t * (y.x - x.x);
+	r.y = x.y + t * (y.y - x.y);
+	r.z = x.z + t * (y.z - x.z);
+}
+
+void bqMath::Lerp1(const bqVec4& x, const bqVec4& y, double t, bqVec4& r)
+{
+	r.x = x.x + t * (y.x - x.x);
+	r.y = x.y + t * (y.y - x.y);
+	r.z = x.z + t * (y.z - x.z);
+	r.w = x.w + t * (y.w - x.w);
+}
+
+void bqMath::Lerp1(const bqVec3f& x, const bqVec3f& y, float t, bqVec3f& r)
+{
+	r.x = x.x + t * (y.x - x.x);
+	r.y = x.y + t * (y.y - x.y);
+	r.z = x.z + t * (y.z - x.z);
+}
+
+void bqMath::Lerp1(const bqVec3f& x, const bqVec4f& y, float t, bqVec3f& r)
+{
+	r.x = x.x + t * (y.x - x.x);
+	r.y = x.y + t * (y.y - x.y);
+	r.z = x.z + t * (y.z - x.z);
+}
+
+void bqMath::Lerp1(const bqVec4f& x, const bqVec4f& y, float t, bqVec4f& r)
+{
+	r.x = x.x + t * (y.x - x.x);
+	r.y = x.y + t * (y.y - x.y);
+	r.z = x.z + t * (y.z - x.z);
+	r.w = x.w + t * (y.w - x.w);
+}
+
+void bqMath::Lerp1(const bqQuaternion& x, const bqQuaternion& y, float t, bqQuaternion& r)
+{
+	r.x = x.x + t * (y.x - x.x);
+	r.y = x.y + t * (y.y - x.y);
+	r.z = x.z + t * (y.z - x.z);
+	r.w = x.w + t * (y.w - x.w);
+}
+
+void bqMath::Lerp2(const bqVec3& x, const bqVec3& y, double t, bqVec3& r)
+{
+	r.x = (1.0 - t) * x.x + t * y.x;
+	r.y = (1.0 - t) * x.y + t * y.y;
+	r.z = (1.0 - t) * x.z + t * y.z;
+}
+
+void bqMath::Lerp2(const bqVec3& x, const bqVec4& y, double t, bqVec3& r)
+{
+	r.x = (1.0 - t) * x.x + t * y.x;
+	r.y = (1.0 - t) * x.y + t * y.y;
+	r.z = (1.0 - t) * x.z + t * y.z;
+}
+
+void bqMath::Lerp2(const bqVec4& x, const bqVec4& y, double t, bqVec4& r)
+{
+	r.x = (1.0 - t) * x.x + t * y.x;
+	r.y = (1.0 - t) * x.y + t * y.y;
+	r.z = (1.0 - t) * x.z + t * y.z;
+	r.w = (1.0 - t) * x.w + t * y.w;
+}
+
+void bqMath::Lerp2(const bqVec3f& x, const bqVec3f& y, float t, bqVec3f& r)
+{
+	r.x = (1.0f - t) * x.x + t * y.x;
+	r.y = (1.0f - t) * x.y + t * y.y;
+	r.z = (1.0f - t) * x.z + t * y.z;
+}
+
+void bqMath::Lerp2(const bqVec3f& x, const bqVec4f& y, float t, bqVec3f& r)
+{
+	r.x = (1.0f - t) * x.x + t * y.x;
+	r.y = (1.0f - t) * x.y + t * y.y;
+	r.z = (1.0f - t) * x.z + t * y.z;
+}
+
+void bqMath::Lerp2(const bqVec4f& x, const bqVec4f& y, float t, bqVec4f& r)
+{
+	r.x = (1.0f - t) * x.x + t * y.x;
+	r.y = (1.0f - t) * x.y + t * y.y;
+	r.z = (1.0f - t) * x.z + t * y.z;
+	r.w = (1.0f - t) * x.w + t * y.w;
+}
+
+void bqMath::Lerp2(const bqQuaternion& x, const bqQuaternion& y, float t, bqQuaternion& r)
+{
+	r.x = (1.0f - t) * x.x + t * y.x;
+	r.y = (1.0f - t) * x.y + t * y.y;
+	r.z = (1.0f - t) * x.z + t * y.z;
+	r.w = (1.0f - t) * x.w + t * y.w;
+}
+
+void bqMath::Normalize(bqVec3& v)
+{
+	double len = sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
+	if (len > 0)
+		len = 1.0f / len;
+	v.x *= len;
+	v.y *= len;
+	v.z *= len;
+}
+
+void bqMath::Normalize(bqVec3f& v)
+{
+	float len = sqrtf((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
+	if (len > 0)
+		len = 1.0f / len;
+	v.x *= len;
+	v.y *= len;
+	v.z *= len;
+}
+
+void bqMath::Normalize(bqVec4& v)
+{
+	double len = sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z) + (v.w * v.w));
+	if (len > 0)
+		len = 1.0f / len;
+	v.x *= len;
+	v.y *= len;
+	v.z *= len;
+	v.w *= len;
+}
+
+void bqMath::Normalize(bqVec4f& v)
+{
+	float len = sqrtf((v.x * v.x) + (v.y * v.y) + (v.z * v.z) + (v.w * v.w));
+	if (len > 0)
+		len = 1.0f / len;
+	v.x *= len;
+	v.y *= len;
+	v.z *= len;
+	v.w *= len;
+}
+
+void bqMath::Normalize(bqQuaternion& v)
+{
+	float len = sqrtf((v.x * v.x) + (v.y * v.y) + (v.z * v.z) + (v.w * v.w));
+	if (len > 0)
+		len = 1.0f / len;
+	v.x *= len;
+	v.y *= len;
+	v.z *= len;
+	v.w *= len;
+}
+
+bool bqMath::PointInRect(const bqPoint& p, const bqVec4f& r)
+{
+	if ((p.x >= r.x) && (p.x <= r.z) && (p.y >= r.y) && (p.y <= r.w))
+		return true;
+	return false;
+}
+
+bool bqMath::PointInRect(const bqVec2f& p, const bqVec4f& r)
+{
+	if ((p.x >= r.x) && (p.x <= r.z) && (p.y >= r.y) && (p.y <= r.w))
+		return true;
+	return false;
+}
+
+void bqMath::SetRotation(bqQuaternion& q, float x, float y, float z)
+{
+	x *= 0.5f;
+	y *= 0.5f;
+	z *= 0.5f;
+	float c1 = ::cosf(x);
+	float c2 = ::cosf(y);
+	float c3 = ::cosf(z);
+	float s1 = ::sinf(x);
+	float s2 = ::sinf(y);
+	float s3 = ::sinf(z);
+	q.w = (c1 * c2 * c3) + (s1 * s2 * s3);
+	q.x = (s1 * c2 * c3) - (c1 * s2 * s3);
+	q.y = (c1 * s2 * c3) + (s1 * c2 * s3);
+	q.z = (c1 * c2 * s3) - (s1 * s2 * c3);
+}
+
+void bqMath::SetRotation(bqQuaternion& q, const bqVec3& axis, const bqReal& _angle)
+{
+	bqReal d = (bqReal)Length(axis);
+	bqReal s = std::sin(_angle * 0.5f) / d;
+	q.x = (float)(axis.x * s);
+	q.y = (float)(axis.y * s);
+	q.z = (float)(axis.z * s);
+	q.w = (float)std::cos(_angle * 0.5);
+}
+
+void bqMath::SetRotation(bqQuaternion& q, const bqVec3f& axis, const float& _angle)
+{
+	float d = Length(axis);
+	float s = std::sin(_angle * 0.5f) / d;
+	q.x = axis.x * s;
+	q.y = axis.y * s;
+	q.z = axis.z * s;
+	q.w = std::cos(_angle * 0.5f);
+}
+
+void bqMath::SetRotation(bqQuaternion& q, const bqVec4& axis, const bqReal& _angle)
+{
+	bqReal d = (bqReal)Length(axis);
+	bqReal s = std::sin(_angle * 0.5f) / d;
+	q.x = (float)(axis.x * s);
+	q.y = (float)(axis.y * s);
+	q.z = (float)(axis.z * s);
+	q.w = (float)std::cos(_angle * 0.5f);
+}
+
+void bqMath::SetRotation(bqQuaternion& q, const bqVec4f& axis, const float& _angle)
+{
+	float d = Length(axis);
+	float s = std::sin(_angle * 0.5f) / d;
+	q.x = axis.x * s;
+	q.y = axis.y * s;
+	q.z = axis.z * s;
+	q.w = std::cos(_angle * 0.5f);
+}
+
+void bqMath::SetRotation(bqMat4& m, const bqQuaternion& q)
+{
+	bqReal d = Length(q);
+	bqReal s = 2.0f / d;
+	bqReal xs = q.x * s, ys = q.y * s, zs = q.z * s;
+	bqReal wx = q.w * xs, wy = q.w * ys, wz = q.w * zs;
+	bqReal xx = q.x * xs, xy = q.x * ys, xz = q.x * zs;
+	bqReal yy = q.y * ys, yz = q.y * zs, zz = q.z * zs;
+	m.Set(
+		1.0f - (yy + zz), xy - wz, xz + wy,
+		xy + wz, 1.0f - (xx + zz), yz - wx,
+		xz - wy, yz + wx, 1.0f - (xx + yy));
+}
+
+// irrlicht или assimp?
+void bqMath::Slerp(bqQuaternion& q1, bqQuaternion& q2, float time, float threshold, bqQuaternion& r)
+{
+	float angle = Dot(q1, q2);
+	// make sure we use the short rotation
+	if (angle < 0.0f)
+	{
+		q1 = q1 * -1.0f;
+		angle *= -1.0f;
+	}
+
+	if (angle <= (1 - threshold)) // spherical interpolation
+	{
+		const float theta = ::acosf(angle);
+		const float invsintheta = 1.f / (::sinf(theta));
+		const float scale = ::sinf(theta * (1.0f - time)) * invsintheta;
+		const float invscale = ::sinf(theta * time) * invsintheta;
+		r = (q1 * scale) + (q2 * invscale);
+	}
+	else // linear interploation
+		Lerp1(q1, q2, time, r);
+}
+
+void bqMath::Mul(const bqMat4& m1, const bqMat4& m2, bqMat4& r)
+{
+	r.m_data[0].x = m1.m_data[0].x * m2.m_data[0].x + m1.m_data[1].x * m2.m_data[0].y + m1.m_data[2].x * m2.m_data[0].z + m1.m_data[3].x * m2.m_data[0].w;
+	r.m_data[0].y = m1.m_data[0].y * m2.m_data[0].x + m1.m_data[1].y * m2.m_data[0].y + m1.m_data[2].y * m2.m_data[0].z + m1.m_data[3].y * m2.m_data[0].w;
+	r.m_data[0].z = m1.m_data[0].z * m2.m_data[0].x + m1.m_data[1].z * m2.m_data[0].y + m1.m_data[2].z * m2.m_data[0].z + m1.m_data[3].z * m2.m_data[0].w;
+	r.m_data[0].w = m1.m_data[0].w * m2.m_data[0].x + m1.m_data[1].w * m2.m_data[0].y + m1.m_data[2].w * m2.m_data[0].z + m1.m_data[3].w * m2.m_data[0].w;
+
+	r.m_data[1].x = m1.m_data[0].x * m2.m_data[1].x + m1.m_data[1].x * m2.m_data[1].y + m1.m_data[2].x * m2.m_data[1].z + m1.m_data[3].x * m2.m_data[1].w;
+	r.m_data[1].y = m1.m_data[0].y * m2.m_data[1].x + m1.m_data[1].y * m2.m_data[1].y + m1.m_data[2].y * m2.m_data[1].z + m1.m_data[3].y * m2.m_data[1].w;
+	r.m_data[1].z = m1.m_data[0].z * m2.m_data[1].x + m1.m_data[1].z * m2.m_data[1].y + m1.m_data[2].z * m2.m_data[1].z + m1.m_data[3].z * m2.m_data[1].w;
+	r.m_data[1].w = m1.m_data[0].w * m2.m_data[1].x + m1.m_data[1].w * m2.m_data[1].y + m1.m_data[2].w * m2.m_data[1].z + m1.m_data[3].w * m2.m_data[1].w;
+
+	r.m_data[2].x = m1.m_data[0].x * m2.m_data[2].x + m1.m_data[1].x * m2.m_data[2].y + m1.m_data[2].x * m2.m_data[2].z + m1.m_data[3].x * m2.m_data[2].w;
+	r.m_data[2].y = m1.m_data[0].y * m2.m_data[2].x + m1.m_data[1].y * m2.m_data[2].y + m1.m_data[2].y * m2.m_data[2].z + m1.m_data[3].y * m2.m_data[2].w;
+	r.m_data[2].z = m1.m_data[0].z * m2.m_data[2].x + m1.m_data[1].z * m2.m_data[2].y + m1.m_data[2].z * m2.m_data[2].z + m1.m_data[3].z * m2.m_data[2].w;
+	r.m_data[2].w = m1.m_data[0].w * m2.m_data[2].x + m1.m_data[1].w * m2.m_data[2].y + m1.m_data[2].w * m2.m_data[2].z + m1.m_data[3].w * m2.m_data[2].w;
+
+	r.m_data[3].x = m1.m_data[0].x * m2.m_data[3].x + m1.m_data[1].x * m2.m_data[3].y + m1.m_data[2].x * m2.m_data[3].z + m1.m_data[3].x * m2.m_data[3].w;
+	r.m_data[3].y = m1.m_data[0].y * m2.m_data[3].x + m1.m_data[1].y * m2.m_data[3].y + m1.m_data[2].y * m2.m_data[3].z + m1.m_data[3].y * m2.m_data[3].w;
+	r.m_data[3].z = m1.m_data[0].z * m2.m_data[3].x + m1.m_data[1].z * m2.m_data[3].y + m1.m_data[2].z * m2.m_data[3].z + m1.m_data[3].z * m2.m_data[3].w;
+	r.m_data[3].w = m1.m_data[0].w * m2.m_data[3].x + m1.m_data[1].w * m2.m_data[3].y + m1.m_data[2].w * m2.m_data[3].z + m1.m_data[3].w * m2.m_data[3].w;
+}
+
+void bqMath::Mul(const bqMat4& m, const bqVec3& v, bqVec3& r)
+{
+	r.x = v.x * m.m_data[0].x + v.y * m.m_data[1].x + v.z * m.m_data[2].x;
+	r.y = v.x * m.m_data[0].y + v.y * m.m_data[1].y + v.z * m.m_data[2].y;
+	r.z = v.x * m.m_data[0].z + v.y * m.m_data[1].z + v.z * m.m_data[2].z;
+}
+
+void bqMath::Mul(const bqMat4& m, const bqVec3f& v, bqVec3f& r)
+{
+	r.x = v.x * (float)m.m_data[0].x + v.y * (float)m.m_data[1].x + v.z * (float)m.m_data[2].x;
+	r.y = v.x * (float)m.m_data[0].y + v.y * (float)m.m_data[1].y + v.z * (float)m.m_data[2].y;
+	r.z = v.x * (float)m.m_data[0].z + v.y * (float)m.m_data[1].z + v.z * (float)m.m_data[2].z;
+}
+
+void bqMath::Mul(const bqMat4& m, const bqVec4& v, bqVec4& r)
+{
+	r.x = v.x * m.m_data[0].x + v.y * m.m_data[1].x + v.z * m.m_data[2].x + v.w * m.m_data[3].x;
+	r.y = v.x * m.m_data[0].y + v.y * m.m_data[1].y + v.z * m.m_data[2].y + v.w * m.m_data[3].y;
+	r.z = v.x * m.m_data[0].z + v.y * m.m_data[1].z + v.z * m.m_data[2].z + v.w * m.m_data[3].z;
+	r.w = v.x * m.m_data[0].w + v.y * m.m_data[1].w + v.z * m.m_data[2].w + v.w * m.m_data[3].w;
+}
+
+void bqMath::Mul(const bqQuaternion& q1, const bqQuaternion& q2, bqQuaternion& r)
+{
+	r.x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y;
+	r.x = q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z;
+	r.x = q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x;
+	r.x = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
+}
+
+void bqMath::Transpose(bqMat4& m)
+{
+	bqMat4 tmp;
+	tmp[0u].x = m.m_data[0u].x;
+	tmp[0u].y = m.m_data[1u].x;
+	tmp[0u].z = m.m_data[2u].x;
+	tmp[0u].w = m.m_data[3u].x;
+
+	tmp[1u].x = m.m_data[0u].y;
+	tmp[1u].y = m.m_data[1u].y;
+	tmp[1u].z = m.m_data[2u].y;
+	tmp[1u].w = m.m_data[3u].y;
+
+	tmp[2u].x = m.m_data[0u].z;
+	tmp[2u].y = m.m_data[1u].z;
+	tmp[2u].z = m.m_data[2u].z;
+	tmp[2u].w = m.m_data[3u].z;
+
+	m.m_data[0u] = tmp[0u];
+	m.m_data[1u] = tmp[1u];
+	m.m_data[2u] = tmp[2u];
+	m.m_data[3u] = tmp[3u];
+}
+
+//https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/matrix-inverse
+void bqMath::Invert(bqMat4& m)
+{
+	bqMat4 mat;
+	auto ptr = m.Data();
+	for (unsigned column = 0; column < 4; ++column)
+	{
+		// Swap row in case our pivot point is not working
+		auto column_data = m.m_data[column].Data();
+		if (column_data[column] == 0)
+		{
+			unsigned big = column;
+			for (unsigned row = 0; row < 4; ++row)
+			{
+				auto row_data = m.m_data[row].Data();
+				auto big_data = m.m_data[big].Data();
+				if (fabs(row_data[column]) > fabs(big_data[column]))
+					big = row;
+			}
+			// Print this is a singular matrix, return identity ?
+			if (big == column)
+				fprintf(stderr, "Singular matrix\n");
+			// Swap rows                               
+			else for (unsigned j = 0; j < 4; ++j)
+			{
+				auto big_data = m.m_data[big].Data();
+				std::swap(column_data[j], big_data[j]);
+
+				auto other_column_data = mat.m_data[column].Data();
+				auto other_big_data = mat.m_data[big].Data();
+				std::swap(other_column_data[j], other_big_data[j]);
+			}
+		}
+
+		// Set each row in the column to 0  
+		for (unsigned row = 0; row < 4; ++row)
+		{
+			if (row != column)
+			{
+				auto row_data = m.m_data[row].Data();
+				bqReal coeff = row_data[column] / column_data[column];
+				if (coeff != 0)
+				{
+					for (unsigned j = 0; j < 4; ++j)
+					{
+						row_data[j] -= coeff * column_data[j];
+
+						auto other_row_data = mat.m_data[row].Data();
+						auto other_column_data = mat.m_data[column].Data();
+						other_row_data[j] -= coeff * other_column_data[j];
+					}
+					// Set the element to 0 for safety
+					row_data[column] = 0;
+				}
+			}
+		}
+	}
+
+	// Set each element of the diagonal to 1
+	for (unsigned row = 0; row < 4; ++row)
+	{
+		for (unsigned column = 0; column < 4; ++column)
+		{
+			auto other_row_data = mat.m_data[row].Data();
+			auto row_data = m.m_data[row].Data();
+			other_row_data[column] /= row_data[row];
+		}
+	}
+	m = mat;
+}
+
