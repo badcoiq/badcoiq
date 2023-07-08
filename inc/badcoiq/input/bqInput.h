@@ -31,6 +31,60 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_INPUT_H__
 
 
+struct bqInputData
+{
+	// Позиция курсора
+	bqPointf m_mousePosition;
+
+	// старая позиция курсора. для вычисления m_mouseMoveDelta
+	bqPointf m_mousePositionOld;
+
+	// На сколько переместился курсор
+	bqPointf m_mouseMoveDelta;
+
+	// На сколько покрутили колесо мыши
+	float   m_mouseWheelDelta = 0.f;
+
+	enum {
+		MBFL_LMBDOWN = 0x1,
+		MBFL_LMBUP = 0x2,
+		MBFL_RMBDOWN = 0x4,
+		MBFL_RMBUP = 0x8,
+		MBFL_MMBDOWN = 0x10,
+		MBFL_MMBUP = 0x20,
+		MBFL_X1MBDOWN = 0x40,
+		MBFL_X1MBUP = 0x80,
+		MBFL_X2MBDOWN = 0x100,
+		MBFL_X2MBUP = 0x200,
+
+		MBFL_LMBHOLD = 0x400,
+		MBFL_RMBHOLD = 0x800,
+		MBFL_MMBHOLD = 0x1000,
+		MBFL_X1MBHOLD = 0x2000,
+		MBFL_X2MBHOLD = 0x4000,
+	};
+	uint32_t m_mouseButtonFlags = 0;
+
+	char32_t m_character = 0;
+
+	uint64_t m_keyFlagsHit[2] = { 0,0 };
+	uint64_t m_keyFlagsHold[2] = { 0,0 };
+	uint64_t m_keyFlagsRelease[2] = { 0,0 };
+
+	/*keyboardModifier == KBMOD_SHIFT*/
+	enum {
+		KBMOD_clear = 0,
+		KBMOD_CTRL,
+		KBMOD_SHIFT,
+		KBMOD_ALT,
+		KBMOD_CTRLSHIFT,
+		KBMOD_CTRLALT,
+		KBMOD_SHIFTALT,
+		KBMOD_CTRLSHIFTALT,
+	};
+
+	uint8_t m_keyboardModifier = 0; /*KBMOD...*/
+};
 
 #endif
 
