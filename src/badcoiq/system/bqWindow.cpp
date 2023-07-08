@@ -538,6 +538,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (pW)
             pW->GetData()->m_cb->OnClose(pW);
         return 0;
+    // Получение вводимого символа
+    case WM_CHAR:
+    {
+        bqInputData* id = bqInput::GetData();
+        id->m_character = wParam;
+    }break;
     case WM_SYSCOMMAND:
         if ((wParam & 0xFFF0) == SC_SCREENSAVE ||
             (wParam & 0xFFF0) == SC_MONITORPOWER ||
