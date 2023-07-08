@@ -30,18 +30,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/system/bqWindowWin32.h"
 
-class bqFrameworkImpl
-{
-public:
-	bqFrameworkImpl() {}
-	~bqFrameworkImpl() {}
+#include "bqFrameworkImpl.h"
 
-	float m_deltaTime = 0.f;
-	bqFrameworkCallback* m_frameworkCallback = 0;
+void bqInputUpdatePre();
+void bqInputUpdatePost();
 
-
-	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
-};
 bqFrameworkImpl* g_framework = 0;
 
 class bqFrameworkDestroyer
@@ -66,6 +59,15 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 	if (!g_framework)
 	{
 		g_framework = new bqFrameworkImpl();
+
+#ifdef BQ_PLATFORM_WINDOWS
+		RAWINPUTDEVICE device;
+		device.usUsagePage = 0x01;
+		device.usUsage = 0x02;
+		device.dwFlags = 0;
+		device.hwndTarget = 0;
+		RegisterRawInputDevices(&device, 1, sizeof device);
+#endif
 	}
 }
 
@@ -84,6 +86,8 @@ void bqFramework::Update()
 {
 	BQ_ASSERT_ST(g_framework);
 
+	bqInputUpdatePre();
+
 #ifdef BQ_PLATFORM_WINDOWS
 	// без этого окно не будет реагировать
 	MSG msg;
@@ -94,6 +98,8 @@ void bqFramework::Update()
 		DispatchMessage(&msg);
 	}
 #endif
+
+	bqInputUpdatePost();
 
 	static clock_t then = 0;
 	clock_t now = clock();

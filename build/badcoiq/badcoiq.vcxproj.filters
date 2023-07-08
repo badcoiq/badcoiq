@@ -28,6 +28,9 @@
     <Filter Include="Source Files\math">
       <UniqueIdentifier>{d432f9e1-0fb4-4a8c-bd04-a435a433f816}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\input">
+      <UniqueIdentifier>{8e1c5d30-86be-4a67-8999-a14e299a1c78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -59,6 +62,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\math\bqMath.cpp">
       <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\input\bqInput.cpp">
+      <Filter>Source Files\input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
