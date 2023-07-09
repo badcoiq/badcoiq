@@ -31,6 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_GS_H__
 
 #include "badcoiq/string/bqString.h"
+#include "badcoiq/common/bqColor.h"
+#include "badcoiq/gs/bqShader.h"
 
 // Графическая система
 class bqGS
@@ -71,6 +73,14 @@ public:
 	virtual void EndDraw() = 0;
 	// Вызвать после EndDraw
 	virtual void SwapBuffers() = 0;
+
+	// Нарисовать линию в 3D.
+	// Обязательно нужно указать на ViewProjection матрицу
+	virtual void DrawLine3D(const bqVec4& p1, const bqVec4& p2, const bqColor& c) = 0;
+
+	// Установить текущий шейдер.
+	// Если bqShaderType::User то необходимо указать индекс шейдера
+	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) = 0;
 };
 
 #endif

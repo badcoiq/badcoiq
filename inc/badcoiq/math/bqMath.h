@@ -176,6 +176,18 @@ public:
 	static void Transpose(bqMat4&);
 
 	static void Invert(bqMat4&);
+
+	// View матрица
+	static void LookAtLH(bqMat4&, const bqVec4& eye, const bqVec4& center, const bqVec4& up);
+	static void LookAtRH(bqMat4&, const bqVec4& eye, const bqVec4& center, const bqVec4& up);
+
+	// Projection матрица
+	static void PerspectiveLH(bqMat4&, bqReal FOV, bqReal aspect, bqReal Near, bqReal Far);
+	static void PerspectiveRH(bqMat4&, bqReal FOV, bqReal aspect, bqReal Near, bqReal Far);
+	static void OrthoLH(bqMat4&, float width, float height, float near, float far);
+	static void OrthoRH(bqMat4&, float width, float height, float near, float far);
+	static void OrthoOfCenterLH(bqMat4&, float left, float right, float top, float bottom, float near, float far);
+	static void OrthoOfCenterRH(bqMat4&, float left, float right, float top, float bottom, float near, float far);
 };
 
 

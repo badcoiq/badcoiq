@@ -32,6 +32,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/common/bqUID.h"
 
+enum class bqMatrixType : uint32_t
+{
+	// Это матрица описывающая трансформацию объекта
+	World,
+
+	// Эти матрицы вычисляются в классе камеры
+	View,           // так называемая видовая. Матрица вращения которая крутит мир вокруг зрителя.
+	Projection,     // проекционная. в ней настраиваются FOV. Может быть без перспективы вообще (ортогоналная проекция)
+	ViewProjection, // Для 3D линии. View * Projection
+	ViewInvert,     // Инвертированная View
+
+	WorldViewProjection, // Как ViewProjection только ещё учитывается World. Для 3D объектов.
+
+	_count
+};
+
 // Предполагаю что фреймворк должен посылать какие-то сообщения.
 // Я это ещё не реализовал
 class bqFrameworkCallback
@@ -77,6 +93,12 @@ public:
 
 	// Сравнить UID
 	static bool CompareUIDs(const bqUID&, const bqUID&);
+
+	// Получить указатель на матрицу
+	static bqMat4* GetMatrix(bqMatrixType);
+
+	// Установить указатель на матрицу.
+	static void SetMatrix(bqMatrixType, bqMat4*);
 };
 
 #endif

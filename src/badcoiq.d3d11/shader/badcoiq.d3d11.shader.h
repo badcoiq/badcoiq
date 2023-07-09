@@ -25,36 +25,36 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#ifndef _BQ_D3D11SHADER_H_
+#define _BQ_D3D11SHADER_H_
 
-class bqWindow;
-class bqWindowCallback;
+class bqGSD3D11ShaderBase
+{
+public:
+	bqGSD3D11ShaderBase() :
+		m_vShader(0),
+		m_pShader(0),
+		m_gShader(0),
+		m_vLayout(0)
+	{}
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
+	virtual ~bqGSD3D11ShaderBase()
+	{
+		if (m_vLayout) m_vLayout->Release();
+		if (m_gShader) m_gShader->Release();
+		if (m_vShader) m_vShader->Release();
+		if (m_pShader) m_pShader->Release();
+	}
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+	ID3D11VertexShader* m_vShader = 0;
+	ID3D11PixelShader* m_pShader = 0;
+	ID3D11GeometryShader* m_gShader = 0;
+	ID3D11InputLayout* m_vLayout = 0;
 
-class bqGS;
-class bqMaterial;
+	bqShaderType m_type = bqShaderType::User;
+
+	virtual void SetConstants(bqMaterial* material) = 0;
+};
 
 #endif
-

@@ -38,6 +38,7 @@ class bqFrameworkImpl
 public:
 	bqFrameworkImpl() {}
 	~bqFrameworkImpl() {}
+	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
 
 	float m_deltaTime = 0.f;
 	bqFrameworkCallback* m_frameworkCallback = 0;
@@ -46,7 +47,9 @@ public:
 
 	std::vector<bqGS*> m_gss;
 
-	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
+	bqMat4* m_matrixPtrs[(uint32_t)bqMatrixType::_count];
+
+	void OnDestroy();
 };
 
 

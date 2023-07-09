@@ -942,3 +942,150 @@ void bqMath::Invert(bqMat4& m)
 	m = mat;
 }
 
+void bqMath::LookAtLH(bqMat4& m, const bqVec4& eye, const bqVec4& center, const bqVec4& up)
+{
+	bqVec4 f(center - eye);
+	Normalize(f);
+
+	bqVec4 s;
+	Cross(f, up, s);
+	Normalize(s);
+
+	bqVec4 u;
+	Cross(s, f, u);
+
+	m.m_data[0].x = s.x;
+	m.m_data[1].x = s.y;
+	m.m_data[2].x = s.z;
+	m.m_data[0].y = u.x;
+	m.m_data[1].y = u.y;
+	m.m_data[2].y = u.z;
+	m.m_data[0].z = f.x;
+	m.m_data[1].z = f.y;
+	m.m_data[2].z = f.z;
+	m.m_data[3].x = -Dot(s, eye);
+	m.m_data[3].y = -Dot(u, eye);
+	m.m_data[3].z = -Dot(f, eye);
+}
+
+void bqMath::LookAtRH(bqMat4& m, const bqVec4& eye, const bqVec4& center, const bqVec4& up)
+{
+	bqVec4 f(center - eye);
+	Normalize(f);
+
+	bqVec4 s;
+	Cross(f, up, s);
+	Normalize(s);
+
+	bqVec4 u;
+	Cross(s, f, u);
+
+	m.m_data[0].x = s.x;
+	m.m_data[1].x = s.y;
+	m.m_data[2].x = s.z;
+	m.m_data[0].y = u.x;
+	m.m_data[1].y = u.y;
+	m.m_data[2].y = u.z;
+	m.m_data[0].z = -f.x;
+	m.m_data[1].z = -f.y;
+	m.m_data[2].z = -f.z;
+	m.m_data[3].x = -Dot(s, eye);
+	m.m_data[3].y = -Dot(u, eye);
+	m.m_data[3].z = Dot(f, eye);
+}
+
+void bqMath::PerspectiveLH(bqMat4& m, bqReal FOV, bqReal aspect, bqReal Near, bqReal Far)
+{
+	BQ_ASSERT_ST(FOV != 0.f);
+	BQ_ASSERT_ST(aspect != 0.f);
+
+	bqReal S = ::sin(0.5 * FOV);
+	bqReal C = ::cos(0.5 * FOV);
+	bqReal H = C / S;
+	bqReal W = H / aspect;
+	m.m_data[0] = bqVec4(W, 0., 0., 0.);
+	m.m_data[1] = bqVec4(0., H, 0., 0.);
+	m.m_data[2] = bqVec4(0., 0., Far / (Far - Near), 1.);
+	m.m_data[3] = bqVec4(0., 0., -m.m_data[2].z * Near, 0.);
+}
+
+void bqMath::PerspectiveRH(bqMat4& m, bqReal FOV, bqReal aspect, bqReal Near, bqReal Far)
+{
+	BQ_ASSERT_ST(FOV != 0.f);
+	BQ_ASSERT_ST(aspect != 0.f);
+
+	bqReal S = ::sin(0.5 * FOV);
+	bqReal C = ::cos(0.5 * FOV);
+	bqReal H = C / S;
+	bqReal W = H / aspect;
+	m.m_data[0] = bqVec4(W, 0., 0., 0.);
+	m.m_data[1] = bqVec4(0., H, 0., 0.);
+	m.m_data[2] = bqVec4(0., 0., Far / (Near - Far), -1.);
+	m.m_data[3] = bqVec4(0., 0., m.m_data[2].z * Near, 0.);
+}
+
+void bqMath::OrthoLH(bqMat4& out, float width, float height, float near, float far)
+{
+	BQ_ASSERT_ST(width != 0.f);
+	BQ_ASSERT_ST(height != 0.f);
+	BQ_ASSERT_ST(near != 0.f);
+	BQ_ASSERT_ST(far != 0.f);
+
+	float fRange = 1.0f / (far - near);
+	out.m_data[0u].Set(2.f / width, 0.f, 0.f, 0.f);
+	out.m_data[1u].Set(0.f, 2.f / height, 0.f, 0.f);
+	out.m_data[2u].Set(0.f, 0.f, fRange, 0.f);
+	out.m_data[3u].Set(0.f, 0.f, -fRange * near, 1.f);
+}
+
+void bqMath::OrthoRH(bqMat4& out, float width, float height, float near, float far)
+{
+	BQ_ASSERT_ST(width != 0.f);
+	BQ_ASSERT_ST(height != 0.f);
+	BQ_ASSERT_ST(near != 0.f);
+	BQ_ASSERT_ST(far != 0.f);
+
+	out.m_data[0u].Set(2.f / width, 0.f, 0.f, 0.f);
+	out.m_data[1u].Set(0.f, 2.f / height, 0.f, 0.f);
+	out.m_data[2u].Set(0.f, 0.f, 1.f / (near - far), 0.f);
+	out.m_data[3u].Set(0.f, 0.f, out[2u].z * near, 1.f);
+}
+
+// based on XNA math library
+void bqMath::OrthoOfCenterLH(bqMat4& out, float left, float right, float top, float bottom, float near, float far)
+{
+	float    ReciprocalWidth;
+	float    ReciprocalHeight;
+
+	ReciprocalWidth = 1.0f / (right - left);
+	ReciprocalHeight = 1.0f / (top - bottom);
+
+	out.m_data[0].Set(ReciprocalWidth + ReciprocalWidth, 0.0f, 0.0f, 0.0f);
+	out.m_data[1].Set(0.0f, ReciprocalHeight + ReciprocalHeight, 0.0f, 0.0f);
+	out.m_data[2].Set(0.0f, 0.0f, 1.0f / (far - near), 0.0f);
+	out.m_data[3].Set(
+		-(left + right) * ReciprocalWidth,
+		-(top + bottom) * ReciprocalHeight,
+		-out.m_data[2].z * near,
+		1.0f);
+}
+
+// based on XNA math library
+void bqMath::OrthoOfCenterRH(bqMat4& out, float left, float right, float top, float bottom, float near, float far)
+{
+	float    ReciprocalWidth;
+	float    ReciprocalHeight;
+
+	ReciprocalWidth = 1.0f / (right - left);
+	ReciprocalHeight = 1.0f / (top - bottom);
+
+	out.m_data[0].Set(ReciprocalWidth + ReciprocalWidth, 0.0f, 0.0f, 0.0f);
+	out.m_data[1].Set(0.0f, ReciprocalHeight + ReciprocalHeight, 0.0f, 0.0f);
+	out.m_data[2].Set(0.0f, 0.0f, 1.0f / (near - far), 0.0f);
+	out.m_data[3].Set(
+		-(left + right) * ReciprocalWidth,
+		-(top + bottom) * ReciprocalHeight,
+		out.m_data[2].z * near,
+		1.0f);
+}
+

@@ -31,13 +31,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <d3d11.h>
 
+#include "badcoiq/geometry/bqMesh.h"
 #include "badcoiq/gs/bqGS.h"
+#include "badcoiq/gs/bqShader.h"
 #include "badcoiq/math/bqMath.h"
+#include "badcoiq/common/bqColor.h"
+
+#include "shader/badcoiq.d3d11.shader.h"
+#include "shader/badcoiq.d3d11.shader.Line3D.h"
 
 #define BQD3DSAFE_RELEASE(x) if(x){x->Release();x=0;}
+#define BQSAFE_DESTROY2(x) if(x){bqDestroy(x);x=0;}
 
 class bqGSD3D11 : public bqGS
 {
+	friend class bqD3D11ShaderLine3D;
+
+	bqD3D11ShaderLine3D* m_shaderLine3D = 0;
+
 	bqWindow* m_activeWindow = 0;
 	bqPoint* m_windowCurrentSize = 0;
 
@@ -80,6 +91,30 @@ public:
 	virtual void ClearAll() final;
 	virtual void EndDraw() final;
 	virtual void SwapBuffers() final;
+	
+	virtual void DrawLine3D(const bqVec4& p1, const bqVec4& p2, const bqColor& c) final;
+	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) final;
+
+
+	bool CreateShaders(
+		const char* vertexTarget,
+		const char* pixelTarget,
+		const char* vertexShader,
+		const char* pixelShader,
+		const char* vertexEntryPoint,
+		const char* pixelEntryPoint,
+		bqMeshVertexType vertexType,
+		ID3D11VertexShader** vs,
+		ID3D11PixelShader** ps,
+		ID3D11InputLayout** il);
+	bool CreateConstantBuffer(uint32_t byteSize, ID3D11Buffer**);
+	bool CreateGeometryShaders(const char* target,
+		const char* shaderText,
+		const char* entryPoint,
+		ID3D11GeometryShader** gs);
+
+	void SetActiveShader(bqGSD3D11ShaderBase* shader);
+	bool CreateShaders();
 };
 
 #endif

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="shader">
+      <UniqueIdentifier>{9c9d79fc-3d90-4944-9060-ad7ce31894f0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\badcoiq.d3d11\shader\badcoiq.d3d11.shader.Line3D.cpp">
+      <Filter>shader</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

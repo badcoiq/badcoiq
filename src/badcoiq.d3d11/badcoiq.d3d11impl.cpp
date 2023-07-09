@@ -325,11 +325,19 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 
 	m_d3d11DevCon->OMSetDepthStencilState(m_depthStencilStateEnabled, 0);
 
+	if (!CreateShaders())
+	{
+		bqLog::PrintError("Failed to create Direct3D 11 shaders\n");
+		return false;
+	}
+
 	return true;
 }
 
 void bqGSD3D11::Shutdown()
 {
+	BQSAFE_DESTROY2(m_shaderLine3D);
+
 	BQD3DSAFE_RELEASE(m_blendStateAlphaDisabled);
 	BQD3DSAFE_RELEASE(m_blendStateAlphaEnabled);
 	BQD3DSAFE_RELEASE(m_RasterizerWireframe);
@@ -414,3 +422,292 @@ void bqGSD3D11::SwapBuffers()
 	m_SwapChain->Present(m_vsync, 0);
 }
 
+bool bqGSD3D11::CreateShaders(
+	const char* vertexTarget,
+	const char* pixelTarget,
+	const char* vertexShader,
+	const char* pixelShader,
+	const char* vertexEntryPoint,
+	const char* pixelEntryPoint,
+	bqMeshVertexType vertexType,
+	ID3D11VertexShader** vs,
+	ID3D11PixelShader** ps,
+	ID3D11InputLayout** il)
+{
+	ID3D10Blob* m_VsBlob = nullptr;
+	ID3D10Blob* m_PsBlob = nullptr;
+	ID3D10Blob* m_errorBlob = nullptr;
+
+	HRESULT hr = D3DCompile(
+		vertexShader,
+		strlen(vertexShader),
+		0, 0, 0,
+		vertexEntryPoint,
+		vertexTarget,
+		0,
+		0,
+		&m_VsBlob,
+		&m_errorBlob
+	);
+
+	if (FAILED(hr))
+	{
+		char* message = (char*)m_errorBlob->GetBufferPointer();
+		bqLog::PrintError("Vertex shader compile error: %s\n", message);
+		return false;
+	}
+
+	hr = D3DCompile(
+		pixelShader,
+		strlen(pixelShader),
+		0, 0, 0,
+		pixelEntryPoint,
+		pixelTarget,
+		0,
+		0,
+		&m_PsBlob,
+		&m_errorBlob
+	);
+
+	if (FAILED(hr))
+	{
+		char* message = (char*)m_errorBlob->GetBufferPointer();
+		bqLog::PrintError("Pixel shader compile error: %s\n", message);
+		return false;
+	}
+
+	hr = m_d3d11Device->CreateVertexShader(
+		m_VsBlob->GetBufferPointer(),
+		m_VsBlob->GetBufferSize(),
+		0,
+		vs);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Can't create vertex shader. Error code [%u]\n", hr);
+		return false;
+	}
+
+	hr = m_d3d11Device->CreatePixelShader(
+		m_PsBlob->GetBufferPointer(),
+		m_PsBlob->GetBufferSize(),
+		0,
+		ps);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Can't create pixel shader. Error code [%u]\n", hr);
+		return false;
+	}
+
+	if (vertexType != bqMeshVertexType::Null)
+	{
+		D3D11_INPUT_ELEMENT_DESC vertexLayout[8];
+		uint32_t vertexLayoutSize = 0;
+		/*
+		LPCSTR SemanticName;
+		UINT SemanticIndex;
+		DXGI_FORMAT Format;
+		UINT InputSlot;
+		UINT AlignedByteOffset;
+		D3D11_INPUT_CLASSIFICATION InputSlotClass;
+		UINT InstanceDataStepRate;
+		*/
+
+		int ind = 0;
+		switch (vertexType)
+		{
+		case bqMeshVertexType::Triangle:
+			ind = 0;
+			vertexLayout[ind].SemanticName = "POSITION";
+			vertexLayout[ind].SemanticIndex = 0;
+			vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+			vertexLayout[ind].InputSlot = 0;
+			vertexLayout[ind].AlignedByteOffset = 0;
+			vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+			vertexLayout[ind].InstanceDataStepRate = 0;
+
+			ind++;
+			vertexLayout[ind].SemanticName = "TEXCOORD";
+			vertexLayout[ind].SemanticIndex = 0;
+			vertexLayout[ind].Format = DXGI_FORMAT_R32G32_FLOAT;
+			vertexLayout[ind].InputSlot = 0;
+			vertexLayout[ind].AlignedByteOffset = 12;
+			vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+			vertexLayout[ind].InstanceDataStepRate = 0;
+
+			ind++;
+			vertexLayout[ind].SemanticName = "NORMAL";
+			vertexLayout[ind].SemanticIndex = 0;
+			vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+			vertexLayout[ind].InputSlot = 0;
+			vertexLayout[ind].AlignedByteOffset = 20;
+			vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+			vertexLayout[ind].InstanceDataStepRate = 0;
+
+			ind++;
+			vertexLayout[ind].SemanticName = "BINORMAL";
+			vertexLayout[ind].SemanticIndex = 0;
+			vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+			vertexLayout[ind].InputSlot = 0;
+			vertexLayout[ind].AlignedByteOffset = 32;
+			vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+			vertexLayout[ind].InstanceDataStepRate = 0;
+
+			ind++;
+			vertexLayout[ind].SemanticName = "TANGENT";
+			vertexLayout[ind].SemanticIndex = 0;
+			vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+			vertexLayout[ind].InputSlot = 0;
+			vertexLayout[ind].AlignedByteOffset = 44;
+			vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+			vertexLayout[ind].InstanceDataStepRate = 0;
+
+			ind++;
+			vertexLayout[ind].SemanticName = "COLOR";
+			vertexLayout[ind].SemanticIndex = 0;
+			vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			vertexLayout[ind].InputSlot = 0;
+			vertexLayout[ind].AlignedByteOffset = 56;
+			vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+			vertexLayout[ind].InstanceDataStepRate = 0;
+
+			ind++;
+			vertexLayout[ind].SemanticName = "BONES";
+			vertexLayout[ind].SemanticIndex = 0;
+			vertexLayout[ind].Format = DXGI_FORMAT_R8G8B8A8_UINT;
+			vertexLayout[ind].InputSlot = 0;
+			vertexLayout[ind].AlignedByteOffset = 72;
+			vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+			vertexLayout[ind].InstanceDataStepRate = 0;
+
+			ind++;
+			vertexLayout[ind].SemanticName = "WEIGHTS";
+			vertexLayout[ind].SemanticIndex = 0;
+			vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			vertexLayout[ind].InputSlot = 0;
+			vertexLayout[ind].AlignedByteOffset = 76;
+			vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+			vertexLayout[ind].InstanceDataStepRate = 0;
+
+			break;
+		}
+		vertexLayoutSize = ind + 1;
+
+		hr = m_d3d11Device->CreateInputLayout(
+			vertexLayout,
+			vertexLayoutSize,
+			m_VsBlob->GetBufferPointer(),
+			m_VsBlob->GetBufferSize(),
+			il);
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Can't create input layout. Error code [%u]\n", hr);
+			return false;
+		}
+	}
+
+
+	if (m_VsBlob)    m_VsBlob->Release();
+	if (m_PsBlob)    m_PsBlob->Release();
+	if (m_errorBlob) m_errorBlob->Release();
+
+	return true;
+}
+
+bool bqGSD3D11::CreateConstantBuffer(uint32_t byteSize, ID3D11Buffer** cb)
+{
+	D3D11_BUFFER_DESC mbd;
+	memset(&mbd, 0, sizeof(mbd));
+	mbd.Usage = D3D11_USAGE_DYNAMIC;
+	mbd.ByteWidth = byteSize;
+	mbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	mbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	mbd.MiscFlags = 0;
+	mbd.StructureByteStride = 0;
+
+	HRESULT hr = m_d3d11Device->CreateBuffer(&mbd, 0, cb);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Can't create constant buffer. Error code [%u]\n", hr);
+		return false;
+	}
+	return true;
+}
+
+bool bqGSD3D11::CreateGeometryShaders(const char* target,
+	const char* shaderText,
+	const char* entryPoint,
+	ID3D11GeometryShader** gs)
+{
+	ID3D10Blob* m_GsBlob = nullptr;
+	ID3D10Blob* m_errorBlob = nullptr;
+	HRESULT hr = D3DCompile(
+		shaderText,
+		strlen(shaderText),
+		0, 0, 0,
+		entryPoint,
+		target,
+		0,
+		0,
+		&m_GsBlob,
+		&m_errorBlob
+	);
+	if (FAILED(hr))
+	{
+		char* message = (char*)m_errorBlob->GetBufferPointer();
+		bqLog::PrintError("Geometry shader compile error: %s\n", message);
+		return false;
+	}
+
+	hr = m_d3d11Device->CreateGeometryShader(
+		m_GsBlob->GetBufferPointer(),
+		m_GsBlob->GetBufferSize(),
+		0,
+		gs);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Can't create geometry shader. Error code [%u]\n", hr);
+		return false;
+	}
+
+	return true;
+}
+
+void bqGSD3D11::SetActiveShader(bqGSD3D11ShaderBase* shader)
+{
+	m_d3d11DevCon->IASetInputLayout(shader->m_vLayout);
+	m_d3d11DevCon->VSSetShader(shader->m_vShader, 0, 0);
+	m_d3d11DevCon->GSSetShader(shader->m_gShader, 0, 0);
+	m_d3d11DevCon->PSSetShader(shader->m_pShader, 0, 0);
+}
+
+bool bqGSD3D11::CreateShaders()
+{
+	m_shaderLine3D = bqCreate<bqD3D11ShaderLine3D>(this);
+	if (!m_shaderLine3D->Init())
+		return false;
+
+	return true;
+}
+
+void bqGSD3D11::DrawLine3D(const bqVec4& p1, const bqVec4& p2, const bqColor& c)
+{
+	m_shaderLine3D->SetData(p1, p2, c, *bqFramework::GetMatrix(bqMatrixType::ViewProjection));
+	m_shaderLine3D->SetConstants(0); // возможно лишнее
+	m_d3d11DevCon->Draw(2, 0);
+}
+
+void bqGSD3D11::SetShader(bqShaderType t, uint32_t userShaderIndex)
+{
+	switch (t)
+	{
+	case bqShaderType::Line3D:
+		SetActiveShader(m_shaderLine3D);
+		m_d3d11DevCon->IASetInputLayout(NULL);
+		m_d3d11DevCon->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+		break;
+	case bqShaderType::User:
+		break;
+	default:
+		break;
+	}
+}

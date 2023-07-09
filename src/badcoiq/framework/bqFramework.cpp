@@ -88,8 +88,22 @@ void bqFramework::Stop()
 	BQ_ASSERT_ST(g_framework);
 	if (g_framework)
 	{
+		g_framework->OnDestroy();
 		delete g_framework;
 		g_framework = 0;
+	}
+}
+
+void bqFrameworkImpl::OnDestroy()
+{
+	if (g_framework->m_gss.size())
+	{
+		for (auto o : g_framework->m_gss)
+		{
+			o->Shutdown();
+			bqDestroy(o);
+		}
+		g_framework->m_gss.clear();
 	}
 }
 
@@ -198,3 +212,14 @@ bool bqFramework::CompareUIDs(const bqUID& id1, const bqUID& id2)
 	}
 	return true;
 }
+
+bqMat4* bqFramework::GetMatrix(bqMatrixType t)
+{
+	return g_framework->m_matrixPtrs[(uint32_t)t];
+}
+
+void bqFramework::SetMatrix(bqMatrixType t, bqMat4* m)
+{
+	g_framework->m_matrixPtrs[(uint32_t)t] = m;
+}
+

@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#include "badcoiq/common/bqColor.h"
+
 #include "badcoiq.d3d11impl.h"
 
 extern "C"

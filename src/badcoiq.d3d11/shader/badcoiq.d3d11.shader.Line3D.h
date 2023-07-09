@@ -27,34 +27,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#ifndef _BQ_D3D11_SHADER_LINE3D_H__
+#define _BQ_D3D11_SHADER_LINE3D_H__
 
-class bqWindow;
-class bqWindowCallback;
+class bqGSD3D11;
+class bqD3D11ShaderLine3D : public bqGSD3D11ShaderBase
+{
+public:
+	bqD3D11ShaderLine3D(bqGSD3D11* gs);
+	virtual ~bqD3D11ShaderLine3D();
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
+	bqGSD3D11* m_gs = 0;
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+	ID3D11Buffer*		m_cb = 0;
 
-class bqGS;
-class bqMaterial;
+	struct cb
+	{
+		bqMat4 VP;
+		bqVec4  P1;
+		bqVec4  P2;
+		bqColor  Color;
+	}m_cbData;
+	virtual void SetConstants(bqMaterial* material);
+
+	void SetData(const bqVec4& p1, const bqVec4& p2, const bqColor& color, const bqMat4& projMat);
+
+	bool Init();
+};
 
 #endif
-
