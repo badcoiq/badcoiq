@@ -57,7 +57,9 @@ class bqGSD3D11 : public bqGS
 	ID3D11BlendState* m_blendStateAlphaDisabled = 0;
 	
 	bqVec4f m_clearColor;
-	bool m_vsync = true;
+	
+	// bool m_vsync = true; // можно же сделать по другому.
+	UINT m_vsync = 1;       // m_SwapChain->Present(m_vsync, 0);
 
 public:
 	bqGSD3D11();

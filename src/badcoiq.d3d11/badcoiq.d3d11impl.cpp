@@ -411,6 +411,6 @@ void bqGSD3D11::EndDraw()
 
 void bqGSD3D11::SwapBuffers()
 {
-	m_vsync ? m_SwapChain->Present(1, 0) : m_SwapChain->Present(0, 0);
+	m_SwapChain->Present(m_vsync, 0);
 }
 
