@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/math/bqMath.h"
 #include "badcoiq/input/bqInput.h"
 
+#include "badcoiq/gs/bqGS.h"
+
 #ifdef BQ_PLATFORM_WINDOWS
 #include "badcoiq/system/bqWindowWin32.h"
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);

@@ -29,8 +29,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq.h"
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/system/bqWindowWin32.h"
+#include "badcoiq/gs/bqGS.h"
 
 #include "bqFrameworkImpl.h"
+
+extern "C"
+{
+	bqGS* BQ_CDECL bqGSD3D11_create();
+}
+BQ_LINK_LIBRARY("badcoiq.d3d11");
 
 void bqInputUpdatePre();
 void bqInputUpdatePost();
@@ -68,6 +75,10 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		device.hwndTarget = 0;
 		RegisterRawInputDevices(&device, 1, sizeof device);
 #endif
+
+		g_framework->m_gss.push_back(bqGSD3D11_create());
+		//g_framework->m_gss.push_back(bqGSD3D12_create());
+		//g_framework->m_gss.push_back(bqGSVulkan_create());
 	}
 }
 
@@ -119,4 +130,71 @@ bqWindow* bqFramework::SummonWindow(bqWindowCallback* cb)
 	BQ_ASSERT_ST(g_framework);
 	BQ_ASSERT_ST(cb);
 	return new bqWindow(cb);
+}
+
+// =========== GS
+uint32_t bqFramework::GetGSNum()
+{
+	return (uint32_t)g_framework->m_gss.size();
+}
+
+bqString bqFramework::GetGSName(uint32_t i)
+{
+	BQ_ASSERT_ST(i < g_framework->m_gss.size());
+	return g_framework->m_gss[i]->GetName();
+}
+
+bqUID bqFramework::GetGSUID(uint32_t i)
+{
+	BQ_ASSERT_ST(i < g_framework->m_gss.size());
+	return g_framework->m_gss[i]->GetUID();
+}
+
+bqGS* bqFramework::SummonGS(bqUID id)
+{
+	for (auto o : g_framework->m_gss)
+	{
+		if (CompareUIDs(o->GetUID(), id))
+			return o;
+	}
+	return 0;
+}
+
+bqGS* bqFramework::SummonGS(const char* _name)
+{
+	bqString name(_name);
+	for (auto o : g_framework->m_gss)
+	{
+		bqString o_name = o->GetName();
+		if (name == o_name)
+			return o;
+	}
+	return 0;
+}
+
+bqGS* bqFramework::SummonGS(bqUID id, const char* _name)
+{
+	bqString name(_name);
+	for (auto o : g_framework->m_gss)
+	{
+		if (CompareUIDs(o->GetUID(), id))
+		{
+			bqString o_name = o->GetName();
+			if (name == o_name)
+				return o;
+		}
+	}
+	return 0;
+}
+
+bool bqFramework::CompareUIDs(const bqUID& id1, const bqUID& id2)
+{
+	const uint8_t* b1 = (const uint8_t*)&id1.d1;
+	const uint8_t* b2 = (const uint8_t*)&id2.d1;
+	for (int i = 0; i < 16; ++i)
+	{
+		if (b1[i] != b2[i])
+			return false;
+	}
+	return true;
 }

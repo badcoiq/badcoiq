@@ -6,3 +6,6 @@ build/badcoiq/Release
 *.idb
 *.pdb
 *.lib
+build/badcoiq.d3d11/Debug
+build/badcoiq.d3d11/Release
+

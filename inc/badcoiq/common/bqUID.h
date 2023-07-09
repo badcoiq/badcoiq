@@ -27,27 +27,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_FRAMEWORKIMPL_H__
-#define __BQ_FRAMEWORKIMPL_H__
+#ifndef __BQ_UID_H__
+#define __BQ_UID_H__
 
-#include "badcoiq/input/bqInput.h"
-#include <vector>
-
-class bqFrameworkImpl
+// Уникальный ID
+// Как GUID от Microsoft
+struct bqUID
 {
-public:
-	bqFrameworkImpl() {}
-	~bqFrameworkImpl() {}
-
-	float m_deltaTime = 0.f;
-	bqFrameworkCallback* m_frameworkCallback = 0;
-
-	bqInputData m_input;
-
-	std::vector<bqGS*> m_gss;
-
-	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
+	uint32_t d1;
+	uint16_t d2;
+	uint16_t d3;
+	uint16_t d4;
+	uint8_t  d5[6];
 };
+
+#define bqDEFINE_UID(name, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10) \
+        const bqUID name \
+                = { d1, d2, d3, d4, d5,  d6,  d7,  d8,  d9,  d10 }
 
 
 #endif
+

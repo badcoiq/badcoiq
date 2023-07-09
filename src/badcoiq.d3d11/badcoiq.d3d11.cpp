@@ -26,28 +26,15 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_FRAMEWORKIMPL_H__
-#define __BQ_FRAMEWORKIMPL_H__
+#include "badcoiq.h"
 
-#include "badcoiq/input/bqInput.h"
-#include <vector>
+#include "badcoiq.d3d11impl.h"
 
-class bqFrameworkImpl
+extern "C"
 {
-public:
-	bqFrameworkImpl() {}
-	~bqFrameworkImpl() {}
-
-	float m_deltaTime = 0.f;
-	bqFrameworkCallback* m_frameworkCallback = 0;
-
-	bqInputData m_input;
-
-	std::vector<bqGS*> m_gss;
-
-	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
-};
-
-
-#endif
+	bqGS* BQ_CDECL bqGSD3D11_create()
+	{
+		bqGSD3D11* gs = bqCreate<bqGSD3D11>();
+		return gs;
+	}
+}

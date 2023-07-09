@@ -132,6 +132,8 @@ public:
 	// Получить размер рамки
 	bqPoint* GetBorderSize() { return &m_data.m_borderSize; }
 
+	bqPoint* GetCurrentSize() { return &m_data.m_sizeCurrent; }
+
 	// Получить данные
 	bqWindowCommonData* GetData() { return &m_data; }
 

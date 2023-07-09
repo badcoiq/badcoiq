@@ -53,5 +53,7 @@ using bqVec4f = bqVec4_t<float>;
 using bqVec4i = bqVec4_t<int32_t>;
 using bqMat4  = bqMatrix4_t<bqReal>;
 
+class bqGS;
+
 #endif
 

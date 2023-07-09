@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_FRAMEWORK_H__
 #define __BQ_FRAMEWORK_H__
 
+#include "badcoiq/common/bqUID.h"
+
 // Предполагаю что фреймворк должен посылать какие-то сообщения.
 // Я это ещё не реализовал
 class bqFrameworkCallback
@@ -57,7 +59,24 @@ public:
 
 	static float* GetDeltaTime();
 
+	// Создать окно
 	static bqWindow* SummonWindow(bqWindowCallback*);
+
+	// Получить количество реализаций графических систем
+	static uint32_t GetGSNum();
+	// Получить имя реализации графической стсиемы. Надо указать индекс.
+	static bqString GetGSName(uint32_t);
+	// Получить ID реализации графической системы по индексу
+	static bqUID GetGSUID(uint32_t);
+	// Получить графическую систему указав ID
+	static bqGS* SummonGS(bqUID);
+	// Получить графическую систему указав имя
+	static bqGS* SummonGS(const char*);
+	// Получить графическую систему указав имя и ID
+	static bqGS* SummonGS(bqUID, const char*);
+
+	// Сравнить UID
+	static bool CompareUIDs(const bqUID&, const bqUID&);
 };
 
 #endif
