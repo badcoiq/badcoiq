@@ -692,7 +692,7 @@ bool bqGSD3D11::CreateShaders()
 void bqGSD3D11::DrawLine3D(const bqVec4& p1, const bqVec4& p2, const bqColor& c)
 {
 	m_shaderLine3D->SetData(p1, p2, c, *bqFramework::GetMatrix(bqMatrixType::ViewProjection));
-	m_shaderLine3D->SetConstants(0); // возможно лишнее
+	m_shaderLine3D->SetConstants(0); // возможно лишнее. Не не лишнее. Там работа с константным буфером.
 	m_d3d11DevCon->Draw(2, 0);
 }
 
