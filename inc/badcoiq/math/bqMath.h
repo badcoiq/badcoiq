@@ -48,6 +48,9 @@ const double PIPI = 6.283185307179586476925286766559;
 #include "badcoiq/math/bqQuaternion.h"
 #include "badcoiq/math/bqMatrix.h"
 
+const bqVec4 bqVec4fFltMax = bqVec4(DBL_MAX);
+const bqVec4 bqVec4fFltMaxNeg = bqVec4(-DBL_MAX);
+
 class bqMath
 {
 public:

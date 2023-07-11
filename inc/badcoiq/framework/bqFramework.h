@@ -32,6 +32,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/common/bqUID.h"
 
+template<class T>
+const T& bqMax(const T& a, const T& b)
+{
+	return (a < b) ? b : a;
+}
+template<class T>
+const T& bqMin(const T& a, const T& b)
+{
+	return (b < a) ? b : a;
+}
+
 enum class bqMatrixType : uint32_t
 {
 	// Это матрица описывающая трансформацию объекта
