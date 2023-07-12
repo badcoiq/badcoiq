@@ -40,6 +40,8 @@ public:
 
 	bqVec4 m_origin;
 	bqVec4 m_end;
+
+	// Так-же полезно иметь дополнительные данные
 	bqVec4 m_direction;
 	bqVec4 m_invDir;
 
