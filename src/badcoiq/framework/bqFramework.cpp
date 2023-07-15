@@ -61,8 +61,8 @@ bqFrameworkDestroyer g_frameworkDestroyer;
 // Выделяю память
 void bqFramework::Start(bqFrameworkCallback* cb)
 {
-	BQ_ASSERT_ST(cb);
-	BQ_ASSERT_ST(!g_framework);
+	BQ_ASSERT_STC(cb, "You need to create callback class for bqFramework");
+	BQ_ASSERT_STC(!g_framework, "You can call bqFramework::Start only once");
 	if (!g_framework)
 	{
 		g_framework = new bqFrameworkImpl();
@@ -85,7 +85,7 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 // Освобождаю
 void bqFramework::Stop()
 {
-	BQ_ASSERT_ST(g_framework);
+	BQ_ASSERT_STC(g_framework, "You can call bqFramework::Stop only after calling bqFramework::Start. Or the problem is in something else.");
 	if (g_framework)
 	{
 		g_framework->OnDestroy();
@@ -109,7 +109,7 @@ void bqFrameworkImpl::OnDestroy()
 
 void bqFramework::Update()
 {
-	BQ_ASSERT_ST(g_framework);
+	BQ_ASSERT_STC(g_framework, "This method must be called only after framework initialization (bqFramework::Start)");
 
 	bqInputUpdatePre();
 
@@ -135,14 +135,14 @@ void bqFramework::Update()
 
 float* bqFramework::GetDeltaTime()
 {
-	BQ_ASSERT_ST(g_framework);
+	BQ_ASSERT_STC(g_framework, "This method must be called only after framework initialization (bqFramework::Start)");
 	return &g_framework->m_deltaTime;
 }
 
 bqWindow* bqFramework::SummonWindow(bqWindowCallback* cb)
 {
-	BQ_ASSERT_ST(g_framework);
-	BQ_ASSERT_ST(cb);
+	BQ_ASSERT_STC(g_framework, "This method must be called only after framework initialization (bqFramework::Start)");
+	BQ_ASSERT_STC(cb, "You need to create callback class for window");
 	return new bqWindow(cb);
 }
 
@@ -154,13 +154,13 @@ uint32_t bqFramework::GetGSNum()
 
 bqString bqFramework::GetGSName(uint32_t i)
 {
-	BQ_ASSERT_ST(i < g_framework->m_gss.size());
+	BQ_ASSERT_STC(i < g_framework->m_gss.size(), "Bad index");
 	return g_framework->m_gss[i]->GetName();
 }
 
 bqUID bqFramework::GetGSUID(uint32_t i)
 {
-	BQ_ASSERT_ST(i < g_framework->m_gss.size());
+	BQ_ASSERT_STC(i < g_framework->m_gss.size(), "Bad index");
 	return g_framework->m_gss[i]->GetUID();
 }
 

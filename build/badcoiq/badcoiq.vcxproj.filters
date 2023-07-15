@@ -72,5 +72,14 @@
     <ClCompile Include="..\..\src\badcoiq\geometry\bqAABB.cpp">
       <Filter>Source Files\geometry</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\geometry\bqRay.cpp">
+      <Filter>Source Files\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\geometry\bqMesh.cpp">
+      <Filter>Source Files\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\geometry\bqMeshCreator.cpp">
+      <Filter>Source Files\geometry</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

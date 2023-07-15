@@ -27,72 +27,49 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_MESH_H__
-#define __BQ_MESH_H__
+#ifndef __BQ_MESHCREATOR_H__
+#define __BQ_MESHCREATOR_H__
 
-#include "badcoiq/geometry/bqAABB.h"
+#include "badcoiq/geometry/bqMesh.h"
+#include "badcoiq/containers/bqArray.h"
 
-// Тип вершины
-enum class bqMeshVertexType : uint32_t
-{
-	Null, // 0
-	Triangle
+struct bqMeshCreatorPolygonVertex {
+	bqVertexTriangleSkinned m_baseData;
 };
 
-// Тип индекса
-enum class bqMeshIndexType : uint32_t
+struct bqMeshPolygonCreatorData
 {
-	u16,
-	u32
+	bqMeshCreatorPolygonVertex m_curr;
+	bqArray<bqMeshCreatorPolygonVertex> m_array;
 };
 
-struct bqVertexTriangle
+class bqMeshPolygonCreator
 {
-	bqVec3f Position;
-	bqVec2f UV;
-	bqVec3f Normal;
-	bqVec3f Binormal;
-	bqVec3f Tangent;
-	bqVec4f Color;
-};
-
-struct bqVertexTriangleSkinned
-{
-	bqVertexTriangle BaseData;
-	bqVec4_t<uint8_t> BoneInds;
-	bqVec4f Weights;
-};
-
-struct bqMeshInfo
-{
-	bqMeshVertexType m_vertexType = bqMeshVertexType::Triangle;
-	bqMeshIndexType m_indexType = bqMeshIndexType::u32;
-	uint32_t m_vCount = 0;
-	uint32_t m_iCount = 0;
-	uint32_t m_stride = 0;
-	bool m_skinned = false;
-	bqAabb m_aabb;
-};
-
-class bqMesh
-{
-	uint8_t* m_vertices = nullptr;
-	uint8_t* m_indices = nullptr;
-
-	bqMeshInfo m_info;
+	bqMeshPolygonCreatorData m_data;
 public:
-	bqMesh();
-	~bqMesh();
+	bqMeshPolygonCreator();
+	~bqMeshPolygonCreator();
 
-	const bqMeshInfo& GetInfo() const { return m_info; }
-	const uint8_t* GetVBuffer() const { return m_vertices; }
-	const uint8_t* GetIBuffer() const { return m_indices; }
+	// set vertex data using this
+	void SetPosition(const bqVec3f&);
+	void SetNormal(const bqVec3f&);
+	void SetBinormal(const bqVec3f&);
+	void SetTangent(const bqVec3f&);
+	void SetColor(const bqVec4f&);
+	void SetUV(const bqVec2f&);
+	void SetBoneInds(const bqVec4_t<uint8_t>&);
+	void SetBoneWeights(const bqVec4f&);
+	// or this
+	void SetVertex(const bqVertexTriangle&);
+	// then call this
 
-	void Allocate(uint32_t triangles);
-	void Free();
+	void AddVertex();
+	void Mul(const bqMat4&);
+	uint32_t Size();
 
-	void GenerateNormals(bool smooth);
-	void GenerateTangents();
+	void Clear();
+
+	bqArray<bqMeshCreatorPolygonVertex>* GetArray() { return &m_data.m_array; }
 };
 
 #endif

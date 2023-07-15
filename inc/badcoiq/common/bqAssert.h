@@ -55,9 +55,11 @@ namespace bq
 #ifdef BQ_DEBUG
 #define BQ_ASSERT(expression) if((expression) == 0){bq::internal::OnAssert(#expression, BQ_FILE, BQ_LINE, 0);}
 #define BQ_ASSERT_ST(expression) if((expression) == 0){bq::internal::OnAssert(#expression, BQ_FILE, BQ_LINE, bq::internal::flag_onAssert_useDefaultSystemWindow | bq::internal::flag_onAssert_useStackTrace);}
+#define BQ_ASSERT_STC(e,comment) if((e) == 0){bq::internal::OnAssert(#e " [" comment "]", BQ_FILE, BQ_LINE, bq::internal::flag_onAssert_useDefaultSystemWindow | bq::internal::flag_onAssert_useStackTrace);}
 #else
 #define BQ_ASSERT(expression) ((void)0)
 #define BQ_ASSERT_ST(expression) ((void)0)
+#define BQ_ASSERT_STC(expression) ((void)0)
 #endif
 
 

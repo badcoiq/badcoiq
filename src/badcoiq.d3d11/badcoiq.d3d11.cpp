@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.d3d11impl.h"
 
-#include "badcoiq/geometry/bqAABB.h"
+#include "badcoiq/geometry/bqMesh.h"
 
 extern "C"
 {
