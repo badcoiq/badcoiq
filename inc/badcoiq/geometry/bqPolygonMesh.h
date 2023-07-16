@@ -27,46 +27,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_MESHCREATOR_H__
-#define __BQ_MESHCREATOR_H__
+#ifndef __BQ_POLYGONMESH_H__
+#define __BQ_POLYGONMESH_H__
 
-#include "badcoiq/geometry/bqPolygonMesh.h"
+#include "badcoiq/geometry/bqMesh.h"
 
-struct bqMeshCreatorPolygonVertex 
+#include "badcoiq/containers/bqList.h"
+#include "badcoiq/containers/bqArray.h"
+
+// Вершина хранит данные типа координаты
+// Полигон состоит из вершин.
+class bqPolygonMeshVertex
 {
-	bqVertexTriangleSkinned m_baseData;
-};
-
-struct bqMeshPolygonCreatorData
-{
-	bqMeshCreatorPolygonVertex m_curr;
-};
-
-class bqMeshPolygonCreator
-{
-	bqMeshPolygonCreatorData m_data;
 public:
-	bqMeshPolygonCreator();
-	~bqMeshPolygonCreator();
+	bqPolygonMeshVertex() {}
+	~bqPolygonMeshVertex() {}
 
-	// set vertex data using this
-	void SetPosition(const bqVec3f&);
-	void SetNormal(const bqVec3f&);
-	void SetBinormal(const bqVec3f&);
-	void SetTangent(const bqVec3f&);
-	void SetColor(const bqVec4f&);
-	void SetUV(const bqVec2f&);
-	void SetBoneInds(const bqVec4_t<uint8_t>&);
-	void SetBoneWeights(const bqVec4f&);
-	// or this
-	void SetVertex(const bqVertexTriangle&);
-	// then call this
+	bqVertexTriangleSkinned m_data;
+};
 
-	void AddVertex();
-	void Mul(const bqMat4&);
-	uint32_t Size();
+class bqPolygonMeshControlPoint
+{
+public:
+	bqPolygonMeshControlPoint() {}
+	~bqPolygonMeshControlPoint() {}
 
-	void Clear();
+
 };
 
 #endif
