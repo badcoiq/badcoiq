@@ -32,19 +32,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/geometry/bqPolygonMesh.h"
 
-struct bqMeshCreatorPolygonVertex 
-{
-	bqVertexTriangleSkinned m_baseData;
-};
-
-struct bqMeshPolygonCreatorData
-{
-	bqMeshCreatorPolygonVertex m_curr;
-};
+//struct bqMeshCreatorPolygonVertex 
+//{
+//	bqVertexTriangleSkinned m_baseData;
+//};
+//
+//struct bqMeshPolygonCreatorData
+//{
+//	bqMeshCreatorPolygonVertex m_curr;
+//};
 
 class bqMeshPolygonCreator
 {
-	bqMeshPolygonCreatorData m_data;
+	//bqMeshPolygonCreatorData m_data;
 public:
 	bqMeshPolygonCreator();
 	~bqMeshPolygonCreator();

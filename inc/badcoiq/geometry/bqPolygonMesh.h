@@ -33,10 +33,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/geometry/bqMesh.h"
 
 #include "badcoiq/containers/bqList.h"
-#include "badcoiq/containers/bqArray.h"
 
-// Вершина хранит данные типа координаты
-// Полигон состоит из вершин.
+// Вершина хранит данные (напр. координаты)
+// Полигон состоит из вершин
 class bqPolygonMeshVertex
 {
 public:
@@ -44,15 +43,63 @@ public:
 	~bqPolygonMeshVertex() {}
 
 	bqVertexTriangleSkinned m_data;
+
+	// может понадобиться знать какому полигону принадлежит вершина
+	bqPolygonMeshPolygon* m_polygon = 0;
 };
 
+
+// Управляющая точка. Хранит указатели на вершины
 class bqPolygonMeshControlPoint
 {
 public:
 	bqPolygonMeshControlPoint() {}
 	~bqPolygonMeshControlPoint() {}
 
+	bqList<bqPolygonMeshVertex*> m_vertices;
+};
 
+// Хранит список вершин
+class bqPolygonMeshPolygon
+{
+public:
+	bqPolygonMeshPolygon() {}
+	~bqPolygonMeshPolygon() { Clear(); }
+
+	// Удалить все вершины
+	void Clear();
+
+	// Вершины из которых состоит полигон
+	bqList<bqPolygonMeshVertex*> m_vertices;
+	
+	// Например, если захотим выделить полигон, то по сути, нужно выделить все
+	//  управляющие точки в которых есть указатели на вершины данного полигона
+	bqList<bqPolygonMeshControlPoint*> m_controlPoints;
+};
+
+// Возможно для ребра достаточно хранить указатели на управляющие точки
+class bqPolygonMeshEdge
+{
+public:
+	bqPolygonMeshEdge() {}
+	~bqPolygonMeshEdge() {}
+
+	bqPolygonMeshControlPoint* m_a = 0;
+	bqPolygonMeshControlPoint* m_b = 0;
+};
+
+// Хранит все полигоны, управляющие точки и рёбра
+// Когда уничтожается, так-же должен уничтожить все полигоны, УТ и рёбра.
+class bqPolygonMesh
+{
+public:
+	bqPolygonMesh();
+	~bqPolygonMesh();
+	BQ_PLACEMENT_ALLOCATOR(bqPolygonMesh);
+
+	bqList<bqPolygonMeshControlPoint*> m_controlPoints;
+	bqList<bqPolygonMeshPolygon*> m_polygons;
+	bqList<bqPolygonMeshEdge*> m_edges;
 };
 
 #endif
