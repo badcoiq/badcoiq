@@ -72,6 +72,9 @@ public:
 	// Удалить все вершины
 	void Clear();
 
+	bqVec3f GetFaceNormal();
+	void CalculateNormal();
+
 	// Вершины из которых состоит полигон
 	bqList<bqPolygonMeshVertex*> m_vertices;
 	
@@ -101,9 +104,10 @@ public:
 	~bqPolygonMesh();
 	BQ_PLACEMENT_ALLOCATOR(bqPolygonMesh);
 
-	void AddPolygon(bqMeshPolygonCreator*);
+	void AddPolygon(bqMeshPolygonCreator*, bool weld);
 
 	bqMesh* SummonMesh();
+	void GenerateNormals(bool smooth = true);
 
 	bqList<bqPolygonMeshControlPoint*> m_controlPoints;
 	bqList<bqPolygonMeshPolygon*> m_polygons;
