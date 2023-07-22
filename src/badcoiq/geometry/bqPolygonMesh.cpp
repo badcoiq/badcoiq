@@ -26,41 +26,29 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_MESHCREATOR_H__
-#define __BQ_MESHCREATOR_H__
+#include "badcoiq.h"
 
 #include "badcoiq/geometry/bqPolygonMesh.h"
 
-class bqMeshPolygonCreator
+void bqPolygonMeshPolygon::Clear()
 {
-	bqVertexTriangleSkinned m_vertexData;
-	bqPolygonMeshPolygon* m_polygon = 0;
-	void _createPolygon();
-	uint32_t m_size = 0;
-public:
-	bqMeshPolygonCreator();
-	~bqMeshPolygonCreator();
+	if (m_vertices.m_head)
+	{
+		auto curr = m_vertices.m_head;
+		auto last = m_vertices.m_head->m_left;
+		while (true)
+		{
+			auto next = curr->m_right;
 
-	// set vertex data using this
-	void SetPosition(const bqVec3f&);
-	void SetNormal(const bqVec3f&);
-	void SetBinormal(const bqVec3f&);
-	void SetTangent(const bqVec3f&);
-	void SetColor(const bqVec4f&);
-	void SetUV(const bqVec2f&);
-	void SetBoneInds(const bqVec4_t<uint8_t>&);
-	void SetBoneWeights(const bqVec4f&);
-	// or this
-	void SetVertex(const bqVertexTriangle&);
-	// then call this
+			delete curr;
 
-	void AddVertex();
-	uint32_t Size();
+			if (curr == last)
+				break;
 
-	void Clear();
-	bqPolygonMeshPolygon* DropPolygon();
-};
+			curr = next;
+		}
 
-#endif
-
+		m_vertices.clear();
+		m_controlPoints.clear();
+	}
+}

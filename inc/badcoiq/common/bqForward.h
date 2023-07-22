@@ -56,6 +56,7 @@ using bqMat4  = bqMatrix4_t<bqReal>;
 class bqGS;
 class bqMaterial;
 class bqPolygonMeshPolygon;
+class bqMeshPolygonCreator;
 
 #endif
 

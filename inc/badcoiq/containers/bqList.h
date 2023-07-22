@@ -376,6 +376,31 @@ public:
 		bqMemory::free(object);
 	}
 
+	class Iterator{
+		bqList<_type>* m_list = 0;
+		bqListNode<_type>* m_node = 0;
+	public:
+		Iterator(bqList<_type>* _l, bqListNode<_type>* n) :m_list(_l),m_node(n){}
+		~Iterator() {}
+		Iterator& operator++(){
+			if(m_node == m_list->m_head->m_left)
+			{
+				m_node = 0;
+				return *this;
+			}
+
+			m_node = m_node->m_right;
+			return (*this);
+		}
+		bool operator ==(const Iterator& other) const {	return m_node == other.m_node;}
+		bool operator !=(const Iterator& other) const {	return m_node != other.m_node;}
+		const _type& operator*() {	return m_node->m_data;}
+		_type* operator->() {	return &m_node->m_data;}
+	};
+
+	Iterator begin() {return Iterator(this, m_head);}
+	Iterator end() {return Iterator(this, 0);}
+
 	bqListNode<_type>* m_head;
 };
 

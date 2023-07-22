@@ -41,6 +41,7 @@ class bqPolygonMeshVertex
 public:
 	bqPolygonMeshVertex() {}
 	~bqPolygonMeshVertex() {}
+	BQ_PLACEMENT_ALLOCATOR(bqPolygonMeshVertex);
 
 	bqVertexTriangleSkinned m_data;
 
@@ -55,6 +56,7 @@ class bqPolygonMeshControlPoint
 public:
 	bqPolygonMeshControlPoint() {}
 	~bqPolygonMeshControlPoint() {}
+	BQ_PLACEMENT_ALLOCATOR(bqPolygonMeshControlPoint);
 
 	bqList<bqPolygonMeshVertex*> m_vertices;
 };
@@ -65,6 +67,7 @@ class bqPolygonMeshPolygon
 public:
 	bqPolygonMeshPolygon() {}
 	~bqPolygonMeshPolygon() { Clear(); }
+	BQ_PLACEMENT_ALLOCATOR(bqPolygonMeshPolygon);
 
 	// Удалить все вершины
 	void Clear();
@@ -83,6 +86,7 @@ class bqPolygonMeshEdge
 public:
 	bqPolygonMeshEdge() {}
 	~bqPolygonMeshEdge() {}
+	BQ_PLACEMENT_ALLOCATOR(bqPolygonMeshEdge);
 
 	bqPolygonMeshControlPoint* m_a = 0;
 	bqPolygonMeshControlPoint* m_b = 0;
@@ -96,6 +100,10 @@ public:
 	bqPolygonMesh();
 	~bqPolygonMesh();
 	BQ_PLACEMENT_ALLOCATOR(bqPolygonMesh);
+
+	void AddPolygon(bqMeshPolygonCreator*);
+
+	bqMesh* SummonMesh();
 
 	bqList<bqPolygonMeshControlPoint*> m_controlPoints;
 	bqList<bqPolygonMeshPolygon*> m_polygons;

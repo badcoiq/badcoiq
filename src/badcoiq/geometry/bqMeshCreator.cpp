@@ -36,80 +36,93 @@ bqMeshPolygonCreator::bqMeshPolygonCreator()
 
 bqMeshPolygonCreator::~bqMeshPolygonCreator()
 {
+	Clear();
 }
 
 void bqMeshPolygonCreator::SetPosition(const bqVec3f& v)
 {
-	m_data.m_curr.m_baseData.BaseData.Position = v;
+	m_vertexData.BaseData.Position = v;
 }
 
 void bqMeshPolygonCreator::SetNormal(const bqVec3f& v)
 {
-	m_data.m_curr.m_baseData.BaseData.Normal = v;
+	m_vertexData.BaseData.Normal = v;
 }
 
 void bqMeshPolygonCreator::SetBinormal(const bqVec3f& v)
 {
-	m_data.m_curr.m_baseData.BaseData.Binormal = v;
+	m_vertexData.BaseData.Binormal = v;
 }
 
 void bqMeshPolygonCreator::SetTangent(const bqVec3f& v)
 {
-	m_data.m_curr.m_baseData.BaseData.Tangent = v;
+	m_vertexData.BaseData.Tangent = v;
 }
 
 void bqMeshPolygonCreator::SetColor(const bqVec4f& v)
 {
-	m_data.m_curr.m_baseData.BaseData.Color = v;
+	m_vertexData.BaseData.Color = v;
 }
 
 void bqMeshPolygonCreator::SetUV(const bqVec2f& v)
 {
-	m_data.m_curr.m_baseData.BaseData.UV = v;
+	m_vertexData.BaseData.UV = v;
 }
 
 void bqMeshPolygonCreator::SetBoneInds(const bqVec4_t<uint8_t>& v)
 {
-	m_data.m_curr.m_baseData.BoneInds = v;
+	m_vertexData.BoneInds = v;
 }
 
 void bqMeshPolygonCreator::SetBoneWeights(const bqVec4f& v)
 {
-	m_data.m_curr.m_baseData.Weights = v;
+	m_vertexData.Weights = v;
 }
 
 void bqMeshPolygonCreator::SetVertex(const bqVertexTriangle& v)
 {
-	m_data.m_curr.m_baseData.BaseData = v;
+	m_vertexData.BaseData = v;
 }
 
 void bqMeshPolygonCreator::AddVertex()
 {
-	m_data.m_array.push_back(m_data.m_curr);
-}
+	_createPolygon();
 
-void bqMeshPolygonCreator::Mul(const bqMat4& m)
-{
-	for (size_t i = 0; i < m_data.m_array.m_size; ++i)
-	{
-		auto p = m_data.m_array.m_data[i].m_baseData.BaseData.Position;
-		bqMath::Mul(m, p, m_data.m_array.m_data[i].m_baseData.BaseData.Position);
-		m_data.m_array.m_data[i].m_baseData.BaseData.Position.x += (float)m.m_data[3].x;
-		m_data.m_array.m_data[i].m_baseData.BaseData.Position.y += (float)m.m_data[3].y;
-		m_data.m_array.m_data[i].m_baseData.BaseData.Position.z += (float)m.m_data[3].z;
+	bqPolygonMeshVertex* newVertex = new bqPolygonMeshVertex;
+	newVertex->m_data = m_vertexData;
 
-		// возможно здесь ещё нужно перемножать нормали
-	}
+	// сохраняем указатель на полигон
+	newVertex->m_polygon = m_polygon;
+
+	m_polygon->m_vertices.push_back(newVertex);
+	++m_size;
 }
 
 uint32_t bqMeshPolygonCreator::Size()
 {
-	return m_data.m_array.size();
+	return m_size;
 }
 
+void bqMeshPolygonCreator::_createPolygon()
+{
+	if (!m_polygon)
+		m_polygon = new bqPolygonMeshPolygon;
+}
 
 void bqMeshPolygonCreator::Clear()
 {
-	m_data.m_array.clear();
+	if (m_polygon)
+		delete m_polygon;
+
+	DropPolygon();
 }
 
+bqPolygonMeshPolygon* bqMeshPolygonCreator::DropPolygon()
+{
+	bqPolygonMeshPolygon* p = m_polygon;
+
+	m_polygon = 0;
+	m_size = 0;
+
+	return p;
+}

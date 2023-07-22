@@ -177,6 +177,7 @@
     <ClCompile Include="..\..\src\badcoiq\geometry\bqAABB.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqMesh.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqMeshCreator.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\geometry\bqPolygonMesh.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqRay.cpp" />
     <ClCompile Include="..\..\src\badcoiq\input\bqInput.cpp" />
     <ClCompile Include="..\..\src\badcoiq\math\bqMath.cpp" />
