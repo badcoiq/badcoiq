@@ -173,26 +173,33 @@ void bqMesh::GenerateNormals(bool smooth)
 {
 }
 
-void bqMesh::Allocate(uint32_t triangles)
+void bqMesh::Allocate(uint32_t numV, uint32_t numI)
 {
-	BQ_ASSERT_STC(triangles, "value must be > 0");
+	BQ_ASSERT_ST(numV > 2);
+	BQ_ASSERT_ST(numI > 2);
 	Free();
 
-	m_info.m_iCount = triangles * 3;
-	m_info.m_vCount = triangles * 3;
+	m_info.m_iCount = numI;
+	m_info.m_vCount = numV;
 	m_info.m_stride = sizeof(bqVertexTriangle);
 	m_info.m_vertexType = bqMeshVertexType::Triangle;
-	m_info.m_indexType = bqMeshIndexType::u16;
+	m_info.m_indexType = bqMeshIndexType::u32;
 
-	if (m_info.m_vCount > 0xffff)
-		m_info.m_indexType = bqMeshIndexType::u32;
+	if (m_info.m_vCount < 0xffff)
+		m_info.m_indexType = bqMeshIndexType::u16;
 
 	m_vertices = (uint8_t*)bqMemory::malloc(m_info.m_vCount * m_info.m_stride);
 
-	if(m_info.m_indexType == bqMeshIndexType::u32)
+	if (m_info.m_indexType == bqMeshIndexType::u32)
 		m_indices = (uint8_t*)bqMemory::calloc(m_info.m_iCount * sizeof(uint32_t));
 	else
 		m_indices = (uint8_t*)bqMemory::calloc(m_info.m_iCount * sizeof(uint16_t));
+}
+
+void bqMesh::Allocate(uint32_t triangles)
+{
+	BQ_ASSERT_STC(triangles, "value must be > 0");
+	Allocate(triangles * 3, triangles * 3);
 }
 
 void bqMesh::Free()

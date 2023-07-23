@@ -44,6 +44,8 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqPolygonMeshVertex);
 
 	bqVertexTriangleSkinned m_data;
+	
+	bqPolygonMeshControlPoint* m_controlPoint = 0;
 
 	// может понадобиться знать какому полигону принадлежит вершина
 	bqPolygonMeshPolygon* m_polygon = 0;
@@ -75,12 +77,11 @@ public:
 	bqVec3f GetFaceNormal();
 	void CalculateNormal();
 
+	bool IsVisible();
+	uint32_t GetVerticesNumber();
+
 	// Вершины из которых состоит полигон
 	bqList<bqPolygonMeshVertex*> m_vertices;
-	
-	// Например, если захотим выделить полигон, то по сути, нужно выделить все
-	//  управляющие точки в которых есть указатели на вершины данного полигона
-	bqList<bqPolygonMeshControlPoint*> m_controlPoints;
 };
 
 // Возможно для ребра достаточно хранить указатели на управляющие точки
@@ -106,8 +107,18 @@ public:
 
 	void AddPolygon(bqMeshPolygonCreator*, bool weld);
 
+	// Удалить невидимые полигоны и те в которых менее 3х вершин
+	void DeleteBadPolygons();
+
+	// Удалить управляющие точки, которые больше не имеют вершин для управления
+	//  возможно в будущем появятся другие причины для удаления
+	void DeleteBadControlPoints();
+
 	bqMesh* SummonMesh();
 	void GenerateNormals(bool smooth = true);
+
+	// Удалить полигон. bqListNode должен принадлежать списку m_polygons.
+	void DeletePolygon(bqListNode<bqPolygonMeshPolygon*>*);
 
 	bqList<bqPolygonMeshControlPoint*> m_controlPoints;
 	bqList<bqPolygonMeshPolygon*> m_polygons;

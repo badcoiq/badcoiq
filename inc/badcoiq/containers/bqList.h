@@ -33,11 +33,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 template<typename _type>
 struct bqListNode
 {
-	bqListNode() :m_left(0), m_right(0) {}
+	bqListNode() {}
 	~bqListNode() {}
-	_type m_data;
-	bqListNode* m_left;
-	bqListNode* m_right;
+	_type m_data = 0;
+	bqListNode* m_left = 0;
+	bqListNode* m_right = 0;
 };
 
 // circular double linked list

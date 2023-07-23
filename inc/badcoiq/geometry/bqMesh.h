@@ -83,12 +83,14 @@ class bqMesh
 public:
 	bqMesh();
 	~bqMesh();
+	BQ_PLACEMENT_ALLOCATOR(bqMesh);
 
 	const bqMeshInfo& GetInfo() const { return m_info; }
-	const uint8_t* GetVBuffer() const { return m_vertices; }
-	const uint8_t* GetIBuffer() const { return m_indices; }
+	uint8_t* GetVBuffer() const { return m_vertices; }
+	uint8_t* GetIBuffer() const { return m_indices; }
 
 	void Allocate(uint32_t triangles);
+	void Allocate(uint32_t numV, uint32_t numI);
 	void Free();
 
 	void GenerateNormals(bool smooth);

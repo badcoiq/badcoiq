@@ -57,6 +57,7 @@ class bqGS;
 class bqMaterial;
 class bqPolygonMeshPolygon;
 class bqMeshPolygonCreator;
+class bqPolygonMeshControlPoint;
 
 #endif
 

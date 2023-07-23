@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 
+// надо удалить вершины, и очистить список
 void bqPolygonMeshPolygon::Clear()
 {
 	if (m_vertices.m_head)
@@ -45,7 +46,7 @@ void bqPolygonMeshPolygon::Clear()
 		{
 			auto next = curr->m_right;
 
-			delete curr;
+			delete curr->m_data;
 
 			if (curr == last)
 				break;
@@ -54,7 +55,6 @@ void bqPolygonMeshPolygon::Clear()
 		}
 
 		m_vertices.clear();
-		m_controlPoints.clear();
 	}
 }
 
@@ -114,18 +114,17 @@ void bqPolygonMesh::AddPolygon(bqMeshPolygonCreator* pc, bool weld)
 				if (!cp)
 				{
 					cp = new bqPolygonMeshControlPoint;
+
+					// сохранить управляющую точку
+					m_controlPoints.push_back(cp);
 				}
 
 				if (cp)
 				{
 					cp->m_vertices.push_back(v);
 
-					// надо сунуть управляющую вершину в полигон
-					// не надо дублировать. если её нет то добавить
-					if (!newPolygon->m_controlPoints.find(cp))
-					{
-						newPolygon->m_controlPoints.push_back(cp);
-					}
+					// сохранить указатель на управляющую точку
+					v->m_controlPoint = cp;
 				}
 			}
 		}
@@ -221,17 +220,197 @@ void bqPolygonMeshPolygon::CalculateNormal()
 	}
 }
 
+uint32_t bqPolygonMeshPolygon::GetVerticesNumber()
+{
+	uint32_t numV = 0;
+	for (auto v : m_vertices)
+	{
+		++numV;
+	}
+	return numV;
+}
+
+
 bqMesh* bqPolygonMesh::SummonMesh()
 {
 	bqMesh* m = 0;
 
+	// хорошо бы сделать проверку и удалить невидимые полигоны
+	DeleteBadPolygons();
+
 	if (m_polygons.m_head)
 	{
+		// Надо найти количество вершин и индексов
+		uint32_t numV = 0;
+		uint32_t numI = 0;
+
 		for (auto o : m_polygons)
 		{
-			o.
+			uint32_t vn = o->GetVerticesNumber();
+			BQ_ASSERT_ST(vn > 2);
+			if (vn > 2)
+			{
+				numV += vn;
+
+				// индексы описывают треугольники
+				// поэтому : количество треугольников * 3
+				// количество треугольников это например если 3 вершины, то 1 треугольник
+				//                                            4          то 2 треугольника
+				//                соответственно, для нахождения количества треугольников
+				//                надо взять количество вершин и вычесть 2			                               
+				numI += (vn - 2) * 3;
+			}
+		}
+
+		// создание и настройка bqMesh
+		m = new bqMesh;
+		m->Allocate(numV, numI);
+
+		bqVertexTriangle* vertex = (bqVertexTriangle*)m->GetVBuffer();
+		uint32_t* ind32 = 0;
+		uint16_t* ind16 = 0;
+		switch (m->GetInfo().m_indexType)
+		{
+		case bqMeshIndexType::u16:
+			ind16 = (uint16_t*)m->GetIBuffer();
+			break;
+		case bqMeshIndexType::u32:
+			ind32 = (uint32_t*)m->GetIBuffer();
+			break;
+		}
+
+		// заполнение буферов
+		for (auto o : m_polygons)
+		{
+			if (o->GetVerticesNumber() > 2)
+			{
+
+			}
 		}
 	}
 
 	return m;
+}
+
+bool bqPolygonMeshPolygon::IsVisible()
+{
+	auto vertex_1 = m_vertices.m_head;
+	auto vertex_3 = vertex_1->m_right;
+	auto vertex_2 = vertex_3->m_right;
+	while (true)
+	{
+		auto a = vertex_2->m_data->m_data.BaseData.Position - vertex_1->m_data->m_data.BaseData.Position;
+		auto b = vertex_3->m_data->m_data.BaseData.Position - vertex_1->m_data->m_data.BaseData.Position;
+
+		bqVec3f n;
+		a.Cross(b, n);
+
+		float area = 0.5f * sqrt(n.Dot());
+
+		if (area > 0.001)
+			return true;
+
+
+		vertex_2 = vertex_2->m_right;
+		vertex_3 = vertex_3->m_right;
+		if (vertex_3 == vertex_1)
+			break;
+	}
+	return false;
+}
+
+void bqPolygonMesh::DeleteBadPolygons()
+{
+	if (m_polygons.m_head)
+	{
+		// Удалять лучше имея bqListNode, так как надо будет изъять эту ноду из списка,
+		// её ещё надо найти. bqListNode позволит избежать поиск.
+		std::vector<bqListNode<bqPolygonMeshPolygon*>*> forDelete;
+
+		// проход по списку, нодами
+		auto curr = m_polygons.m_head;
+		auto last = curr->m_left;
+		while(true)
+		{
+			if (!curr->m_data->IsVisible() || (curr->m_data->GetVerticesNumber() < 3))
+				forDelete.push_back(curr);
+
+			if (curr == last)
+				break;
+
+			curr = curr->m_right;
+		}
+
+		for (auto o : forDelete)
+		{
+			DeletePolygon(o);
+		}
+	}
+}
+
+void bqPolygonMesh::DeletePolygon(bqListNode<bqPolygonMeshPolygon*>* P)
+{
+	BQ_ASSERT_ST(P);
+
+	// просто и быстро удаление из списка
+	P->m_left->m_right = P->m_right;
+	P->m_right->m_left = P->m_left;
+
+	// Если этот полигон был первым, то надо поменять m_polygons.m_head
+	if (P == m_polygons.m_head)
+		m_polygons.m_head = m_polygons.m_head->m_right;
+
+	// Если всё ещё оно, то это последний полигон
+	if (P == m_polygons.m_head)
+	{
+		m_polygons.m_head = 0;
+		// m_polygons.clear(); // не надо
+
+		// скорее всего в данном случае, проще удалить всё оставшееся
+		// так как полигонов больше нет.
+		// DELETEALL();
+		// RETURN;
+	}
+
+	// так как удаляются вершины, надо удалить указатели на них которые находятся
+	// в управляющих точках. 
+	for (auto v : P->m_data->m_vertices)
+	{
+		v->m_controlPoint->m_vertices.erase_first(v);
+	}
+	//  Если, после удаления указателя, больше не остаётся
+	//  указателей, то такая управляющая точка больше не нужна.
+	DeleteBadControlPoints();
+
+	// так-же надо будет позаботится о рёбрах. но это будет потом, так как они пока не нужны
+
+	// вершины удалятся в деструкторе полигона
+	delete P->m_data; // delete bqPolygonMeshPolygon
+	delete P; // delete bqListNode
+}
+
+void bqPolygonMesh::DeleteBadControlPoints()
+{
+	std::vector<bqListNode<bqPolygonMeshControlPoint*>*> forDelete;
+
+	auto curr = m_controlPoints.m_head;
+	if (curr)
+	{
+		auto last = curr->m_left;
+		while (true)
+		{
+			if (!curr->m_data->m_vertices.m_head)
+				forDelete.push_back(curr);
+
+			if (curr == last)
+				break;
+			curr = curr->m_right;
+		}
+	}
+
+	for (auto cp : forDelete)
+	{
+		delete cp->m_data;
+		m_controlPoints.erase_by_node(cp);
+	}
 }
