@@ -123,6 +123,8 @@ public:
 	bqList<bqPolygonMeshControlPoint*> m_controlPoints;
 	bqList<bqPolygonMeshPolygon*> m_polygons;
 	bqList<bqPolygonMeshEdge*> m_edges;
+
+	bqAabb m_aabb;
 };
 
 #endif

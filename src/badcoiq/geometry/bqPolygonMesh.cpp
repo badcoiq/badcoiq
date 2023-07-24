@@ -122,6 +122,8 @@ void bqPolygonMesh::AddPolygon(bqMeshPolygonCreator* pc, bool weld)
 				if (cp)
 				{
 					cp->m_vertices.push_back(v);
+					
+					m_aabb.Add(v->m_data.BaseData.Position);
 
 					// сохранить указатель на управляющую точку
 					v->m_controlPoint = cp;
@@ -267,24 +269,48 @@ bqMesh* bqPolygonMesh::SummonMesh()
 		m->Allocate(numV, numI);
 
 		bqVertexTriangle* vertex = (bqVertexTriangle*)m->GetVBuffer();
-		uint32_t* ind32 = 0;
-		uint16_t* ind16 = 0;
-		switch (m->GetInfo().m_indexType)
-		{
-		case bqMeshIndexType::u16:
-			ind16 = (uint16_t*)m->GetIBuffer();
-			break;
-		case bqMeshIndexType::u32:
-			ind32 = (uint32_t*)m->GetIBuffer();
-			break;
-		}
+		uint32_t* ind32 = (uint32_t*)m->GetIBuffer();
+		uint16_t* ind16 = (uint16_t*)m->GetIBuffer();
+
+		uint32_t index = 0; // то самое значение которое пойдёт в ind16\ind32
 
 		// заполнение буферов
 		for (auto o : m_polygons)
 		{
-			if (o->GetVerticesNumber() > 2)
+			auto vn = o->GetVerticesNumber();
+			if (vn > 2)
 			{
+				// надо просто передать данные
+				for (auto v : o->m_vertices)
+				{
+					*vertex = v->m_data.BaseData;
+					++vertex;
+				}
 
+				// теперь индексы
+				uint32_t baseIndex = index; // основная вершина. например полигон из 5ти вершин
+				                            // 3 треугольника. основная вершина это первый индекс
+				                            // 0 1 2
+				                            // 0 2 3
+				                            // 0 3 4
+				for (uint32_t i = 0; i < vn; ++i)
+				{
+					switch (m->GetInfo().m_indexType)
+					{
+					case bqMeshIndexType::u16:
+						*ind16 = baseIndex; ++ind16;
+						*ind16 = index + 1; ++ind16;
+						*ind16 = index + 2; ++ind16;
+						break;
+					case bqMeshIndexType::u32:
+						*ind32 = baseIndex; ++ind32;
+						*ind32 = index + 1; ++ind32;
+						*ind32 = index + 2; ++ind32;
+						break;
+					}
+
+					++index;
+				}
 			}
 		}
 	}
