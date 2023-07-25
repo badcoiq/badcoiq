@@ -81,6 +81,8 @@ public:
 	// Установить текущий шейдер.
 	// Если bqShaderType::User то необходимо указать индекс шейдера
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) = 0;
+
+	virtual bqGPUMesh* SummonMesh(bqMesh* m) = 0;
 };
 
 #endif

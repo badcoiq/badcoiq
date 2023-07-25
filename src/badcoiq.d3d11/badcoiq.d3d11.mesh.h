@@ -25,40 +25,26 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#ifndef _BQ_D3D11MESH_H_
+#define _BQ_D3D11MESH_H_
 
-class bqWindow;
-class bqWindowCallback;
+#include <d3d11.h>
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
+#include "badcoiq/gs/bqGPUMesh.h"
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+class bqGSD3D11Mesh : public bqGPUMesh
+{
+public:
+	bqGSD3D11Mesh();
+	virtual ~bqGSD3D11Mesh();
+	BQ_PLACEMENT_ALLOCATOR(bqGSD3D11Mesh);
 
-class bqGS;
-class bqMaterial;
-class bqPolygonMeshPolygon;
-class bqMeshPolygonCreator;
-class bqPolygonMeshControlPoint;
-class bqGPUMesh;
+	//	ID3D11Buffer* m_lockedResource = 0;
+	ID3D11Buffer* m_vBuffer = 0;
+	ID3D11Buffer* m_iBuffer = 0;
+
+	DXGI_FORMAT m_indexType = DXGI_FORMAT_R16_UINT;
+};
 
 #endif
-

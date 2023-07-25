@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "shader/badcoiq.d3d11.shader.h"
 #include "shader/badcoiq.d3d11.shader.Line3D.h"
+#include "badcoiq.d3d11.mesh.h"
 
 #define BQD3DSAFE_RELEASE(x) if(x){x->Release();x=0;}
 #define BQSAFE_DESTROY2(x) if(x){bqDestroy(x);x=0;}
@@ -95,6 +96,7 @@ public:
 	virtual void DrawLine3D(const bqVec4& p1, const bqVec4& p2, const bqColor& c) final;
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) final;
 
+	virtual bqGPUMesh* SummonMesh(bqMesh* m) final;
 
 	bool CreateShaders(
 		const char* vertexTarget,

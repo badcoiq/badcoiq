@@ -33,6 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/system/bqWindowWin32.h"
 
+#include "badcoiq.d3d11.mesh.h"
+
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
@@ -710,4 +712,68 @@ void bqGSD3D11::SetShader(bqShaderType t, uint32_t userShaderIndex)
 	default:
 		break;
 	}
+}
+
+// Надо создать два буфера. Вершинный и индексный.
+// Так-же перед созданием надо дать DirectX'у знать что за буферы создаём.
+bqGPUMesh* bqGSD3D11::SummonMesh(bqMesh* m)
+{
+	BQ_ASSERT_ST(m);
+	BQ_ASSERT_ST(m->GetVBuffer());
+	BQ_ASSERT_ST(m->GetIBuffer());
+	BQ_ASSERT_ST(m->GetInfo().m_iCount);
+	BQ_ASSERT_ST(m->GetInfo().m_vCount);
+
+	bqGSD3D11Mesh* newMesh = new bqGSD3D11Mesh;
+	newMesh->m_meshInfo = m->GetInfo();
+
+	D3D11_BUFFER_DESC vbd;
+	D3D11_BUFFER_DESC ibd;
+	memset(&vbd, 0, sizeof(vbd));
+	memset(&ibd, 0, sizeof(ibd));
+
+	vbd.Usage = D3D11_USAGE_DEFAULT;
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
+
+	ibd.Usage = D3D11_USAGE_DEFAULT;
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA vData;
+	D3D11_SUBRESOURCE_DATA iData;
+	memset(&vData, 0, sizeof(vData));
+	memset(&iData, 0, sizeof(iData));
+
+	vbd.ByteWidth = newMesh->m_meshInfo.m_stride * newMesh->m_meshInfo.m_vCount;
+	vData.pSysMem = &m->GetVBuffer()[0];
+
+	auto hr = m_d3d11Device->CreateBuffer(&vbd, &vData, &newMesh->m_vBuffer);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Can't create Direct3D 11 vertex buffer [%u]\n", hr);
+	}
+	else
+	{
+		uint32_t index_sizeof = sizeof(uint16_t);
+		newMesh->m_indexType = DXGI_FORMAT_R16_UINT;
+		if (newMesh->m_meshInfo.m_indexType == bqMeshIndexType::u32)
+		{
+			newMesh->m_indexType = DXGI_FORMAT_R32_UINT;
+			index_sizeof = sizeof(uint32_t);
+		}
+		ibd.ByteWidth = index_sizeof * newMesh->m_meshInfo.m_iCount;
+		iData.pSysMem = &m->GetIBuffer()[0];
+
+		hr = m_d3d11Device->CreateBuffer(&ibd, &iData, &newMesh->m_iBuffer);
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Can't create Direct3D 11 index buffer [%u]\n", hr);
+		}
+		else
+		{
+			return newMesh;
+		}
+	}
+	if (newMesh)
+		delete newMesh; // в данном месте работает только в случае ошибки
+	return 0;
 }
