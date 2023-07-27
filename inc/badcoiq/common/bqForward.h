@@ -59,6 +59,8 @@ class bqPolygonMeshPolygon;
 class bqMeshPolygonCreator;
 class bqPolygonMeshControlPoint;
 class bqGPUMesh;
+class bqMesh;
+class bqTexture;
 
 #endif
 

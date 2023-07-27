@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/system/bqWindowWin32.h"
+#include "badcoiq/gs/bqMaterial.h"
 
 #include "badcoiq.d3d11.mesh.h"
 
@@ -339,6 +340,7 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 void bqGSD3D11::Shutdown()
 {
 	BQSAFE_DESTROY2(m_shaderLine3D);
+	BQSAFE_DESTROY2(m_shaderStandart);
 
 	BQD3DSAFE_RELEASE(m_blendStateAlphaDisabled);
 	BQD3DSAFE_RELEASE(m_blendStateAlphaEnabled);
@@ -688,6 +690,10 @@ bool bqGSD3D11::CreateShaders()
 	if (!m_shaderLine3D->Init())
 		return false;
 
+	m_shaderStandart = bqCreate<bqD3D11ShaderStandart>(this);
+	if (!m_shaderStandart->Init())
+		return false;
+
 	return true;
 }
 
@@ -706,6 +712,11 @@ void bqGSD3D11::SetShader(bqShaderType t, uint32_t userShaderIndex)
 		SetActiveShader(m_shaderLine3D);
 		m_d3d11DevCon->IASetInputLayout(NULL);
 		m_d3d11DevCon->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+		break;
+	case bqShaderType::Standart:
+		SetActiveShader(m_shaderStandart);
+		m_d3d11DevCon->IASetInputLayout(m_shaderStandart->m_vLayout);
+		m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		break;
 	case bqShaderType::User:
 		break;
@@ -777,3 +788,71 @@ bqGPUMesh* bqGSD3D11::SummonMesh(bqMesh* m)
 		delete newMesh; // в данном месте работает только в случае ошибки
 	return 0;
 }
+
+void bqGSD3D11::SetMesh(bqGPUMesh* m)
+{
+	m_currMesh = (bqGSD3D11Mesh*)m;
+}
+
+void bqGSD3D11::SetMaterial(bqMaterial* m)
+{
+	m_currMaterial = m;
+}
+
+void bqGSD3D11::Draw()
+{
+	BQ_ASSERT_ST(m_currMesh);
+	BQ_ASSERT_ST(m_currMaterial);
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::WorldViewProjection));
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::World));
+
+	if (m_currMaterial->m_wireframe)
+	{
+		if (m_currMaterial->m_cullBackFace)
+			m_d3d11DevCon->RSSetState(m_RasterizerWireframe);
+		else
+			m_d3d11DevCon->RSSetState(m_RasterizerWireframeNoBackFaceCulling);
+	}
+	else
+	{
+		if (m_currMaterial->m_cullBackFace)
+			m_d3d11DevCon->RSSetState(m_RasterizerSolid);
+		else
+			m_d3d11DevCon->RSSetState(m_RasterizerSolidNoBackFaceCulling);
+	}
+
+	switch (m_currMesh->m_meshInfo.m_vertexType)
+	{
+	case bqMeshVertexType::Triangle:
+	{
+		switch (m_currMaterial->m_shaderType)
+		{
+		case bqShaderType::Standart:
+			if (m_currMesh->m_meshInfo.m_skinned)
+			{
+			}
+			else
+			{
+				m_shaderStandart->SetData(
+					*bqFramework::GetMatrix(bqMatrixType::WorldViewProjection),
+					*bqFramework::GetMatrix(bqMatrixType::World));
+				m_shaderStandart->SetConstants(m_currMaterial);
+			}
+			break;
+		}
+	}break;
+	}
+
+	uint32_t offset = 0u;
+	m_d3d11DevCon->IASetVertexBuffers(0, 1, &m_currMesh->m_vBuffer, &m_currMesh->m_meshInfo.m_stride, &offset);
+
+	switch (m_currMesh->m_meshInfo.m_vertexType)
+	{
+	default:
+	case bqMeshVertexType::Triangle:
+		m_d3d11DevCon->IASetIndexBuffer(m_currMesh->m_iBuffer, m_currMesh->m_indexType, 0);
+		m_d3d11DevCon->DrawIndexed(m_currMesh->m_meshInfo.m_iCount, 0, 0);
+		break;
+	}
+}
+

@@ -83,6 +83,10 @@ public:
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) = 0;
 
 	virtual bqGPUMesh* SummonMesh(bqMesh* m) = 0;
+
+	virtual void SetMesh(bqGPUMesh* m) = 0;
+	virtual void SetMaterial(bqMaterial* m) = 0;
+	virtual void Draw() = 0;
 };
 
 #endif

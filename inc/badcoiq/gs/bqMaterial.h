@@ -27,17 +27,43 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_SHADER_H__
-#define __BQ_SHADER_H__
+#ifndef __BQ_MATERIAL_H__
+#define __BQ_MATERIAL_H__
 
-enum class bqShaderType
+#include "badcoiq/common/bqColor.h"
+#include "badcoiq/gs/bqShader.h"
+
+// Параметры для шейдеров
+class bqMaterial
 {
-	// 3D objects
-	Standart,
+public:
 
-	Line3D,
+	bqShaderType m_shaderType = bqShaderType::Standart;
 
-	User,
+	float m_opacity = 1.f;
+	float m_alphaDiscard = 0.5f;
+	bqColor m_colorDiffuse = bq::ColorWhite;
+	bqColor m_colorAmbient = bq::ColorGray;
+	bqColor m_colorSpecular = bq::ColorWhite;
+	bqVec3 m_sunPosition = bqVec3(0.1, 1.0, 0.0);
+	bool m_wireframe = false;
+	bool m_cullBackFace = false;
+
+	struct map
+	{
+		map()
+		{
+			for (int i = 0; i < 0x1000; ++i)
+			{
+				m_filePath[i] = 0;
+			}
+		}
+
+		bqTexture* m_texture = 0;
+		char8_t m_filePath[0x1000];
+	}m_maps[16];
+
+	bqString m_name;
 };
 
 #endif

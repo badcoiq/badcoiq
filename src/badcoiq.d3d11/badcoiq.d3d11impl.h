@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "shader/badcoiq.d3d11.shader.h"
 #include "shader/badcoiq.d3d11.shader.Line3D.h"
+#include "shader/badcoiq.d3d11.shader.Standart.h"
 #include "badcoiq.d3d11.mesh.h"
 
 #define BQD3DSAFE_RELEASE(x) if(x){x->Release();x=0;}
@@ -47,8 +48,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqGSD3D11 : public bqGS
 {
 	friend class bqD3D11ShaderLine3D;
+	friend class bqD3D11ShaderStandart;
 
 	bqD3D11ShaderLine3D* m_shaderLine3D = 0;
+	bqD3D11ShaderStandart* m_shaderStandart = 0;
 
 	bqWindow* m_activeWindow = 0;
 	bqPoint* m_windowCurrentSize = 0;
@@ -72,6 +75,9 @@ class bqGSD3D11 : public bqGS
 	
 	// bool m_vsync = true; // можно же сделать по другому.
 	UINT m_vsync = 1;       // m_SwapChain->Present(m_vsync, 0);
+
+	bqGSD3D11Mesh* m_currMesh = 0;
+	bqMaterial* m_currMaterial = 0;
 
 public:
 	bqGSD3D11();
@@ -97,6 +103,10 @@ public:
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) final;
 
 	virtual bqGPUMesh* SummonMesh(bqMesh* m) final;
+
+	virtual void SetMesh(bqGPUMesh* m) final;
+	virtual void SetMaterial(bqMaterial* m) final;
+	virtual void Draw() final;
 
 	bool CreateShaders(
 		const char* vertexTarget,
