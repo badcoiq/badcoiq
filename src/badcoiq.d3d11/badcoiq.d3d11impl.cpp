@@ -353,8 +353,8 @@ void bqGSD3D11::Shutdown()
 	BQD3DSAFE_RELEASE(m_windowDepthStencilBuffer);
 	BQD3DSAFE_RELEASE(m_windowDepthStencilView);
 	BQD3DSAFE_RELEASE(m_windowTargetView);
-	BQD3DSAFE_RELEASE(m_SwapChain);
 	BQD3DSAFE_RELEASE(m_d3d11DevCon);
+	BQD3DSAFE_RELEASE(m_SwapChain);
 	BQD3DSAFE_RELEASE(m_d3d11Device);
 }
 
@@ -828,10 +828,10 @@ void bqGSD3D11::Draw()
 		switch (m_currMaterial->m_shaderType)
 		{
 		case bqShaderType::Standart:
-			if (m_currMesh->m_meshInfo.m_skinned)
-			{
-			}
-			else
+			//if (m_currMesh->m_meshInfo.m_skinned)
+			//{
+			//}
+			//else
 			{
 				m_shaderStandart->SetData(
 					*bqFramework::GetMatrix(bqMatrixType::WorldViewProjection),

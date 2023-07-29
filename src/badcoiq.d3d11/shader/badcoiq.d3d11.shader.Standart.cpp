@@ -137,7 +137,7 @@ void bqD3D11ShaderStandart::SetConstants(bqMaterial* material)
 
 	m_gs->m_d3d11DevCon->PSSetShaderResources(0, 1, &_t->m_textureResView);
 	m_gs->m_d3d11DevCon->PSSetSamplers(0, 1, &_t->m_samplerState);
-
+*/
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		D3D11_BUFFER_DESC d;
@@ -146,7 +146,7 @@ void bqD3D11ShaderStandart::SetConstants(bqMaterial* material)
 		memcpy(mappedResource.pData, &m_cbDataV, d.ByteWidth);
 		m_gs->m_d3d11DevCon->Unmap(m_cbV, 0);
 		m_gs->m_d3d11DevCon->VSSetConstantBuffers(0, 1, &m_cbV);
-	}*/
+	}
 
 	m_cbDataP.alphaDiscard = material->m_alphaDiscard;
 

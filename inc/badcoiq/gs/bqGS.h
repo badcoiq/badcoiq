@@ -33,6 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/string/bqString.h"
 #include "badcoiq/common/bqColor.h"
 #include "badcoiq/gs/bqShader.h"
+#include "badcoiq/gs/bqGPUMesh.h"
+#include "badcoiq/gs/bqMaterial.h"
 
 // Графическая система
 class bqGS

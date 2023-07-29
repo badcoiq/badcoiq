@@ -191,9 +191,9 @@ void bqMesh::Allocate(uint32_t numV, uint32_t numI)
 	m_vertices = (uint8_t*)bqMemory::malloc(m_info.m_vCount * m_info.m_stride);
 
 	if (m_info.m_indexType == bqMeshIndexType::u32)
-		m_indices = (uint8_t*)bqMemory::calloc(m_info.m_iCount * sizeof(uint32_t));
+		m_indices = (uint8_t*)bqMemory::malloc(m_info.m_iCount * sizeof(uint32_t));
 	else
-		m_indices = (uint8_t*)bqMemory::calloc(m_info.m_iCount * sizeof(uint16_t));
+		m_indices = (uint8_t*)bqMemory::malloc(m_info.m_iCount * sizeof(uint16_t));
 }
 
 void bqMesh::Allocate(uint32_t triangles)

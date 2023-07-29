@@ -45,7 +45,7 @@ public:
 	bqColor m_colorDiffuse = bq::ColorWhite;
 	bqColor m_colorAmbient = bq::ColorGray;
 	bqColor m_colorSpecular = bq::ColorWhite;
-	bqVec3 m_sunPosition = bqVec3(0.1, 1.0, 0.0);
+	bqVec3 m_sunPosition = bqVec3(0.1, 0.7, 0.0);
 	bool m_wireframe = false;
 	bool m_cullBackFace = false;
 
