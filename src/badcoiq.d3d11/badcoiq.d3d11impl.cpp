@@ -678,10 +678,14 @@ bool bqGSD3D11::CreateGeometryShaders(const char* target,
 
 void bqGSD3D11::SetActiveShader(bqGSD3D11ShaderBase* shader)
 {
-	m_d3d11DevCon->IASetInputLayout(shader->m_vLayout);
-	m_d3d11DevCon->VSSetShader(shader->m_vShader, 0, 0);
-	m_d3d11DevCon->GSSetShader(shader->m_gShader, 0, 0);
-	m_d3d11DevCon->PSSetShader(shader->m_pShader, 0, 0);
+	if (m_activeShader != shader)
+	{
+		m_activeShader = shader;
+		m_d3d11DevCon->IASetInputLayout(shader->m_vLayout);
+		m_d3d11DevCon->VSSetShader(shader->m_vShader, 0, 0);
+		m_d3d11DevCon->GSSetShader(shader->m_gShader, 0, 0);
+		m_d3d11DevCon->PSSetShader(shader->m_pShader, 0, 0);
+	}
 }
 
 bool bqGSD3D11::CreateShaders()
@@ -717,6 +721,11 @@ void bqGSD3D11::SetShader(bqShaderType t, uint32_t userShaderIndex)
 		SetActiveShader(m_shaderStandart);
 		m_d3d11DevCon->IASetInputLayout(m_shaderStandart->m_vLayout);
 		m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		break;
+	case bqShaderType::StandartSkinned:
+		//SetActiveShader(m_shaderStandartSkinned);
+		//m_d3d11DevCon->IASetInputLayout(m_shaderStandartSkinned->m_vLayout);
+		//m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		break;
 	case bqShaderType::User:
 		break;
@@ -803,45 +812,9 @@ void bqGSD3D11::Draw()
 {
 	BQ_ASSERT_ST(m_currMesh);
 	BQ_ASSERT_ST(m_currMaterial);
-	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::WorldViewProjection));
-	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::World));
+	BQ_ASSERT_ST(m_activeShader);
 
-	if (m_currMaterial->m_wireframe)
-	{
-		if (m_currMaterial->m_cullBackFace)
-			m_d3d11DevCon->RSSetState(m_RasterizerWireframe);
-		else
-			m_d3d11DevCon->RSSetState(m_RasterizerWireframeNoBackFaceCulling);
-	}
-	else
-	{
-		if (m_currMaterial->m_cullBackFace)
-			m_d3d11DevCon->RSSetState(m_RasterizerSolid);
-		else
-			m_d3d11DevCon->RSSetState(m_RasterizerSolidNoBackFaceCulling);
-	}
-
-	switch (m_currMesh->m_meshInfo.m_vertexType)
-	{
-	case bqMeshVertexType::Triangle:
-	{
-		switch (m_currMaterial->m_shaderType)
-		{
-		case bqShaderType::Standart:
-			//if (m_currMesh->m_meshInfo.m_skinned)
-			//{
-			//}
-			//else
-			{
-				m_shaderStandart->SetData(
-					*bqFramework::GetMatrix(bqMatrixType::WorldViewProjection),
-					*bqFramework::GetMatrix(bqMatrixType::World));
-				m_shaderStandart->SetConstants(m_currMaterial);
-			}
-			break;
-		}
-	}break;
-	}
+	m_activeShader->SetConstants(m_currMaterial);
 
 	uint32_t offset = 0u;
 	m_d3d11DevCon->IASetVertexBuffers(0, 1, &m_currMesh->m_vBuffer, &m_currMesh->m_meshInfo.m_stride, &offset);
@@ -856,3 +829,22 @@ void bqGSD3D11::Draw()
 	}
 }
 
+void bqGSD3D11::SetRasterizerState(bqGSRasterizerState rs)
+{
+	switch (rs)
+	{
+	case bqGSRasterizerState::SolidCull:
+			m_d3d11DevCon->RSSetState(m_RasterizerSolid);
+		break;
+	case bqGSRasterizerState::WireframeCull:
+			m_d3d11DevCon->RSSetState(m_RasterizerWireframe);
+		break;
+	case bqGSRasterizerState::Solid:
+	default:
+			m_d3d11DevCon->RSSetState(m_RasterizerSolidNoBackFaceCulling);
+		break;
+	case bqGSRasterizerState::Wireframe:
+			m_d3d11DevCon->RSSetState(m_RasterizerWireframeNoBackFaceCulling);
+		break;
+	}
+}

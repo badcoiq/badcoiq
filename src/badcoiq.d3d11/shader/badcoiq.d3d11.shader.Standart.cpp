@@ -125,12 +125,17 @@ bool bqD3D11ShaderStandart::Init(){
 
 void bqD3D11ShaderStandart::SetData(const bqMat4& WVP, const bqMat4& W)
 {
-	m_cbDataV.W = W;
-	m_cbDataV.WVP = WVP;
+	
 }
 
 void bqD3D11ShaderStandart::SetConstants(bqMaterial* material)
 {
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::WorldViewProjection));
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::World));
+
+	m_cbDataV.W = *bqFramework::GetMatrix(bqMatrixType::World);
+	m_cbDataV.WVP = *bqFramework::GetMatrix(bqMatrixType::WorldViewProjection);
+
 	/*bqGSD3D11Texture* _t = m_gs->m_whiteTexture;
 	if (material->m_maps[0].m_texture)
 		_t = (bqGSD3D11Texture*)material->m_maps[0].m_texture;

@@ -34,6 +34,7 @@ enum class bqShaderType
 {
 	// 3D objects
 	Standart,
+	StandartSkinned,
 
 	Line3D,
 

@@ -115,3 +115,4 @@ void bqD3D11ShaderLine3D::SetConstants(bqMaterial* material){
 	memcpy(mappedResource.pData, &m_cbData, d.ByteWidth);
 	m_gs->m_d3d11DevCon->Unmap(m_cb, 0);
 }
+

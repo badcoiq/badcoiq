@@ -36,6 +36,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/gs/bqGPUMesh.h"
 #include "badcoiq/gs/bqMaterial.h"
 
+// Используется при рисовании
+enum class bqGSRasterizerState
+{
+	SolidCull,     // обычная растеризация + не рисовать заднюю сторону треугольника
+	WireframeCull, // сетка + не рисовать заднюю сторону треугольника
+
+	// то же самое только задняя сторона рисуется
+	Solid,
+	Wireframe
+};
+
 // Графическая система
 class bqGS
 {
@@ -89,6 +100,8 @@ public:
 	virtual void SetMesh(bqGPUMesh* m) = 0;
 	virtual void SetMaterial(bqMaterial* m) = 0;
 	virtual void Draw() = 0;
+
+	virtual void SetRasterizerState(bqGSRasterizerState) = 0;
 };
 
 #endif

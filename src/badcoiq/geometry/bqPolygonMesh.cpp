@@ -188,10 +188,13 @@ bqVec3f bqPolygonMeshPolygon::GetFaceNormal()
 {
 	BQ_ASSERT_ST(m_vertices.m_head);
 
+	// Был установлен(возвращён) правильный порядок. 1 2 3
+	// больше не надо менять.
+
 	bqVec3f _n;
 	auto vertex_1 = m_vertices.m_head;
-	auto vertex_3 = vertex_1->m_right;
-	auto vertex_2 = vertex_3->m_right;
+	auto vertex_2 = vertex_1->m_right;
+	auto vertex_3 = vertex_2->m_right;
 	while (true) {
 		auto e1 = vertex_2->m_data->m_data.BaseData.Position - vertex_1->m_data->m_data.BaseData.Position;
 		auto e2 = vertex_3->m_data->m_data.BaseData.Position - vertex_1->m_data->m_data.BaseData.Position;
@@ -335,8 +338,8 @@ bqMesh* bqPolygonMesh::SummonMesh()
 bool bqPolygonMeshPolygon::IsVisible()
 {
 	auto vertex_1 = m_vertices.m_head;
-	auto vertex_3 = vertex_1->m_right;
-	auto vertex_2 = vertex_3->m_right;
+	auto vertex_2 = vertex_1->m_right;
+	auto vertex_3 = vertex_2->m_right;
 	while (true)
 	{
 		auto a = vertex_2->m_data->m_data.BaseData.Position - vertex_1->m_data->m_data.BaseData.Position;

@@ -56,7 +56,7 @@ public:
 		float paddingf[3];
 	}m_cbDataP;
 
-	virtual void SetConstants(bqMaterial* material);
+	virtual void SetConstants(bqMaterial* material) final;
 
 	void SetData(const bqMat4& WVP, const bqMat4& W);
 

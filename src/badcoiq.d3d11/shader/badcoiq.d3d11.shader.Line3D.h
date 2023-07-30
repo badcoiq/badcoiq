@@ -48,7 +48,7 @@ public:
 		bqVec4  P2;
 		bqColor  Color;
 	}m_cbData;
-	virtual void SetConstants(bqMaterial* material);
+	virtual void SetConstants(bqMaterial* material) final;
 
 	void SetData(const bqVec4& p1, const bqVec4& p2, const bqColor& color, const bqMat4& projMat);
 
