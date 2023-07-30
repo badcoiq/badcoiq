@@ -123,11 +123,6 @@ bool bqD3D11ShaderStandart::Init(){
 	return true;
 }
 
-void bqD3D11ShaderStandart::SetData(const bqMat4& WVP, const bqMat4& W)
-{
-	
-}
-
 void bqD3D11ShaderStandart::SetConstants(bqMaterial* material)
 {
 	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::WorldViewProjection));

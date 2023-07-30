@@ -84,5 +84,8 @@
     <ClCompile Include="..\..\src\badcoiq\geometry\bqPolygonMesh.cpp">
       <Filter>Source Files\geometry</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\common\bqImage.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

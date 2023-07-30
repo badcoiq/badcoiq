@@ -87,10 +87,10 @@ public:
 	float GetBlue() { return m_data[2u]; }
 	float GetAlpha() { return m_data[3u]; }
 
-	uint8_t GetAsByteRed() { return static_cast<uint8_t>(m_data[0u] * 255.); }
-	uint8_t GetAsByteGreen() { return static_cast<uint8_t>(m_data[1u] * 255.); }
-	uint8_t GetAsByteBlue() { return static_cast<uint8_t>(m_data[2u] * 255.); }
-	uint8_t GetAsByteAlpha() { return static_cast<uint8_t>(m_data[3u] * 255.); }
+	uint8_t GetAsByteRed() const { return static_cast<uint8_t>(m_data[0u] * 255.); }
+	uint8_t GetAsByteGreen() const { return static_cast<uint8_t>(m_data[1u] * 255.); }
+	uint8_t GetAsByteBlue() const { return static_cast<uint8_t>(m_data[2u] * 255.); }
+	uint8_t GetAsByteAlpha() const { return static_cast<uint8_t>(m_data[3u] * 255.); }
 
 	bool	operator==(const bqColor& v) const
 	{

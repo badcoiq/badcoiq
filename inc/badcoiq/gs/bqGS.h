@@ -99,9 +99,9 @@ public:
 
 	virtual void SetMesh(bqGPUMesh* m) = 0;
 	virtual void SetMaterial(bqMaterial* m) = 0;
+	virtual void SetRasterizerState(bqGSRasterizerState) = 0;
 	virtual void Draw() = 0;
 
-	virtual void SetRasterizerState(bqGSRasterizerState) = 0;
 };
 
 #endif

@@ -27,43 +27,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_MATERIAL_H__
-#define __BQ_MATERIAL_H__
+#ifndef __BQ_IMAGE_LOADER_H__
+#define __BQ_IMAGE_LOADER_H__
 
-#include "badcoiq/common/bqColor.h"
-#include "badcoiq/gs/bqShader.h"
-
-// Параметры для шейдеров
-class bqMaterial
+class bqImageLoader
 {
 public:
-	// для информации. шейдер устанавливается отдельным методом
-	bqShaderType m_shaderType = bqShaderType::Standart;
+	bqImageLoader() {}
+	virtual ~bqImageLoader() {}
 
-	float m_opacity = 1.f;
-	float m_alphaDiscard = 0.5f;
-	bqColor m_colorDiffuse = bq::ColorWhite;
-	bqColor m_colorAmbient = bq::ColorGray;
-	bqColor m_colorSpecular = bq::ColorWhite;
-	bqVec3 m_sunPosition = bqVec3(0.1, 0.7, 0.0);
-	bool m_wireframe = false;
-	bool m_cullBackFace = false;
+	virtual uint32_t GetSupportedFilesCount() = 0;
+	virtual bqString GetSupportedFileExtension(uint32_t) = 0;
+	virtual bqString GetSupportedFileName(uint32_t) = 0;
 
-	struct map
-	{
-		map()
-		{
-			for (int i = 0; i < 0x1000; ++i)
-			{
-				m_filePath[i] = 0;
-			}
-		}
-
-		bqTexture* m_texture = 0;
-		char8_t m_filePath[0x1000];
-	}m_maps[16];
-
-	bqString m_name;
+	virtual bqImage* Load(const char* path) = 0;
+	virtual bqImage* Load(const char* path, uint8_t* buffer, uint32_t bufferSz) = 0;
 };
 
 #endif

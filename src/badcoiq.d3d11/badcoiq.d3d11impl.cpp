@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/system/bqWindowWin32.h"
 #include "badcoiq/gs/bqMaterial.h"
+#include "badcoiq/common/bqImage.h"
 
 #include "badcoiq.d3d11.mesh.h"
 
@@ -808,6 +809,26 @@ void bqGSD3D11::SetMaterial(bqMaterial* m)
 	m_currMaterial = m;
 }
 
+void bqGSD3D11::SetRasterizerState(bqGSRasterizerState rs)
+{
+	switch (rs)
+	{
+	case bqGSRasterizerState::SolidCull:
+		m_d3d11DevCon->RSSetState(m_RasterizerSolid);
+		break;
+	case bqGSRasterizerState::WireframeCull:
+		m_d3d11DevCon->RSSetState(m_RasterizerWireframe);
+		break;
+	case bqGSRasterizerState::Solid:
+	default:
+		m_d3d11DevCon->RSSetState(m_RasterizerSolidNoBackFaceCulling);
+		break;
+	case bqGSRasterizerState::Wireframe:
+		m_d3d11DevCon->RSSetState(m_RasterizerWireframeNoBackFaceCulling);
+		break;
+	}
+}
+
 void bqGSD3D11::Draw()
 {
 	BQ_ASSERT_ST(m_currMesh);
@@ -825,26 +846,6 @@ void bqGSD3D11::Draw()
 	case bqMeshVertexType::Triangle:
 		m_d3d11DevCon->IASetIndexBuffer(m_currMesh->m_iBuffer, m_currMesh->m_indexType, 0);
 		m_d3d11DevCon->DrawIndexed(m_currMesh->m_meshInfo.m_iCount, 0, 0);
-		break;
-	}
-}
-
-void bqGSD3D11::SetRasterizerState(bqGSRasterizerState rs)
-{
-	switch (rs)
-	{
-	case bqGSRasterizerState::SolidCull:
-			m_d3d11DevCon->RSSetState(m_RasterizerSolid);
-		break;
-	case bqGSRasterizerState::WireframeCull:
-			m_d3d11DevCon->RSSetState(m_RasterizerWireframe);
-		break;
-	case bqGSRasterizerState::Solid:
-	default:
-			m_d3d11DevCon->RSSetState(m_RasterizerSolidNoBackFaceCulling);
-		break;
-	case bqGSRasterizerState::Wireframe:
-			m_d3d11DevCon->RSSetState(m_RasterizerWireframeNoBackFaceCulling);
 		break;
 	}
 }

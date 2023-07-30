@@ -61,6 +61,7 @@ class bqPolygonMeshControlPoint;
 class bqGPUMesh;
 class bqMesh;
 class bqTexture;
+class bqColor;
 
 #endif
 

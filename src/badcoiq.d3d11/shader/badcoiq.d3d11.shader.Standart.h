@@ -58,8 +58,6 @@ public:
 
 	virtual void SetConstants(bqMaterial* material) final;
 
-	void SetData(const bqMat4& WVP, const bqMat4& W);
-
 	bool Init();
 };
 
