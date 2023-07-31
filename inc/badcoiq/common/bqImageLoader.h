@@ -30,17 +30,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_IMAGE_LOADER_H__
 #define __BQ_IMAGE_LOADER_H__
 
+// Класс для загрузки изображения.
+// Библиотеки, загружающие картинки, должны реализовать производный класс.
 class bqImageLoader
 {
 public:
 	bqImageLoader() {}
 	virtual ~bqImageLoader() {}
 
+	// Получить количество поддерживаемых форматов
 	virtual uint32_t GetSupportedFilesCount() = 0;
+
+	// Получить поддерживаемого расширение файла в виде строки
+	// Надо указать индекс в соответствии с GetSupportedFilesCount()
 	virtual bqString GetSupportedFileExtension(uint32_t) = 0;
+
+	// Получить название поддерживаемого формата
+	// Надо указать индекс в соответствии с GetSupportedFilesCount()
 	virtual bqString GetSupportedFileName(uint32_t) = 0;
 
+	// Загрузить из файла
 	virtual bqImage* Load(const char* path) = 0;
+
+	// Загрузить из памяти
 	virtual bqImage* Load(const char* path, uint8_t* buffer, uint32_t bufferSz) = 0;
 };
 

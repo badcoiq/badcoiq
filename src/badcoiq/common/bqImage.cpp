@@ -63,6 +63,7 @@ void bqImage::Create(uint32_t x, uint32_t y)
 	BQ_ASSERT_ST(x);
 	BQ_ASSERT_ST(y);
 	BQ_ASSERT_ST(!m_data);
+	m_info = bqImageInfo();
 	m_info.m_width = x;
 	m_info.m_height = y;
 	m_info.m_pitch = m_info.m_width * 4;

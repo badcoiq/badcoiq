@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "badcoiq", "badcoiq.vcxproj"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "badcoiq.d3d11", "..\badcoiq.d3d11\badcoiq.d3d11.vcxproj", "{C52FE991-AB15-419A-AB09-EDC0779A53D0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "badcoiqConsoleApplication1", "..\badcoiqConsoleApplication1\badcoiqConsoleApplication1.vcxproj", "{DE8DED7D-4F32-4766-BCDC-D9C42FFA1FD4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{C52FE991-AB15-419A-AB09-EDC0779A53D0}.Release|x64.Build.0 = Release|x64
 		{C52FE991-AB15-419A-AB09-EDC0779A53D0}.Release|x86.ActiveCfg = Release|Win32
 		{C52FE991-AB15-419A-AB09-EDC0779A53D0}.Release|x86.Build.0 = Release|Win32
+		{DE8DED7D-4F32-4766-BCDC-D9C42FFA1FD4}.Debug|x64.ActiveCfg = Debug|x64
+		{DE8DED7D-4F32-4766-BCDC-D9C42FFA1FD4}.Debug|x64.Build.0 = Debug|x64
+		{DE8DED7D-4F32-4766-BCDC-D9C42FFA1FD4}.Debug|x86.ActiveCfg = Debug|Win32
+		{DE8DED7D-4F32-4766-BCDC-D9C42FFA1FD4}.Debug|x86.Build.0 = Debug|Win32
+		{DE8DED7D-4F32-4766-BCDC-D9C42FFA1FD4}.Release|x64.ActiveCfg = Release|x64
+		{DE8DED7D-4F32-4766-BCDC-D9C42FFA1FD4}.Release|x64.Build.0 = Release|x64
+		{DE8DED7D-4F32-4766-BCDC-D9C42FFA1FD4}.Release|x86.ActiveCfg = Release|Win32
+		{DE8DED7D-4F32-4766-BCDC-D9C42FFA1FD4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
