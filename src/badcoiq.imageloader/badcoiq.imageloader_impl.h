@@ -25,44 +25,37 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#ifndef __BQ_IMGLDRIMPL_H__
+#define __BQ_IMGLDRIMPL_H__
 
-class bqWindow;
-class bqWindowCallback;
+#include "badcoiq.h"
+#include "badcoiq/common/bqImage.h"
+#include "badcoiq/common/bqImageLoader.h"
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
+class bqImageLoaderImpl : public bqImageLoader
+{
+	enum class extension { _bad, bmp, png, jpg, tga };
+	extension _GetExtension(const char* path);
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+	bqImage* LoadBMP(const char* path);
+	bqImage* LoadBMP(const char* path, uint8_t* buffer, uint32_t bufferSz);
+	bqImage* LoadPNG(const char* path);
+	bqImage* LoadPNG(const char* path, uint8_t* buffer, uint32_t bufferSz);
+	bqImage* LoadJPG(const char* path);
+	bqImage* LoadJPG(const char* path, uint8_t* buffer, uint32_t bufferSz);
+	bqImage* LoadTGA(const char* path);
+	bqImage* LoadTGA(const char* path, uint8_t* buffer, uint32_t bufferSz);
+public:
+	bqImageLoaderImpl();
+	virtual ~bqImageLoaderImpl();
 
-class bqGS;
-class bqMaterial;
-class bqPolygonMeshPolygon;
-class bqMeshPolygonCreator;
-class bqPolygonMeshControlPoint;
-class bqGPUMesh;
-class bqMesh;
-class bqTexture;
-class bqColor;
-class bqImage;
+	virtual uint32_t GetSupportedFilesCount() final;
+	virtual bqString GetSupportedFileExtension(uint32_t) final;
+	virtual bqString GetSupportedFileName(uint32_t) final;
+
+	virtual bqImage* Load(const char* path) final;
+	virtual bqImage* Load(const char* path, uint8_t* buffer, uint32_t bufferSz) final;
+};
 
 #endif
-

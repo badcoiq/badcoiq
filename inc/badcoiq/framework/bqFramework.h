@@ -108,8 +108,13 @@ public:
 	// Получить указатель на матрицу
 	static bqMat4* GetMatrix(bqMatrixType);
 
-	// Установить указатель на матрицу.
+	// Установить указатель на матрицу
 	static void SetMatrix(bqMatrixType, bqMat4*);
+
+	// Прочитать файл в буфер
+	// если isText будут добавлены ' ' и 0 в конец
+	// Функция выделит память для буфера. Использовать bqMemory::free для освобождения.
+	static uint8_t* SummonFileBuffer(const char* path, uint32_t* szOut, bool isText);
 };
 
 #endif

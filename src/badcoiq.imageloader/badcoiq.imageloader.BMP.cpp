@@ -26,43 +26,40 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#include "badcoiq.imageloader.h"
 
-class bqWindow;
-class bqWindowCallback;
+#include "badcoiq/common/bqFileBuffer.h"
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
+bqImage* bqImageLoaderImpl_LoadBMP(bqFileBuffer*);
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+bqImage* bqImageLoaderImpl::LoadBMP(const char* path)
+{
+	BQ_ASSERT_ST(path);
 
-class bqGS;
-class bqMaterial;
-class bqPolygonMeshPolygon;
-class bqMeshPolygonCreator;
-class bqPolygonMeshControlPoint;
-class bqGPUMesh;
-class bqMesh;
-class bqTexture;
-class bqColor;
-class bqImage;
+	bqImage* img = 0;
+	uint32_t file_size = 0;
+	uint8_t* ptr = bqFramework::SummonFileBuffer(path, &file_size, false);
+	if (ptr)
+	{
+		img = LoadBMP(path, ptr, (uint32_t)file_size);
+		bqDestroy(ptr);
+	}
+	return img;
+}
 
-#endif
+// 32bitRGBA
+// 32bitRGB
+// 24bit
+// 16bit565RGB
+// 16bit5551RGBA
+// 16bit5551RGB
+bqImage* bqImageLoaderImpl::LoadBMP(const char* path, uint8_t* buffer, uint32_t bufferSz)
+{
+	BQ_ASSERT_ST(path);
+	BQ_ASSERT_ST(buffer);
+	BQ_ASSERT_ST(bufferSz);
 
+	bqFileBuffer file(buffer, bufferSz);
+
+	return bqImageLoaderImpl_LoadBMP(&file);
+}

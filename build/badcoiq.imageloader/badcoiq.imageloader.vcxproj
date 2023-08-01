@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\badcoiq.imageloader\badcoiq.imageloader.BMP.cpp" />
     <ClCompile Include="..\..\src\badcoiq.imageloader\badcoiq.imageloader.cpp" />
+    <ClCompile Include="..\..\src\badcoiq.imageloader\badcoiq.imageloader_impl.cpp" />
+    <ClCompile Include="..\..\src\badcoiq.imageloader\irrbmp.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

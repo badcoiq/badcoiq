@@ -33,6 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bqFrameworkImpl.h"
 
+#include <filesystem>
+
 extern "C"
 {
 	bqGS* BQ_CDECL bqGSD3D11_create();
@@ -223,3 +225,44 @@ void bqFramework::SetMatrix(bqMatrixType t, bqMat4* m)
 	g_framework->m_matrixPtrs[(uint32_t)t] = m;
 }
 
+uint8_t* bqFramework::SummonFileBuffer(const char* path, uint32_t* szOut, bool isText)
+{
+	BQ_ASSERT_ST(path);
+	BQ_ASSERT_ST(szOut);
+
+	*szOut = 0;
+
+	std::filesystem::path p = path;
+
+	if (std::filesystem::exists(p))
+	{
+		*szOut = (uint32_t)std::filesystem::file_size(p);
+		if (*szOut)
+		{
+			FILE* f = 0;
+			fopen_s(&f, path, "rb");
+			if (f)
+			{
+				if (isText)
+					*szOut += 2;
+
+				uint8_t* data = (uint8_t*)bqMemory::malloc(*szOut);
+				fread(data, *szOut, 1, f);
+				fclose(f);
+
+				if (isText)
+				{
+					data[*szOut - 2] = ' ';
+					data[*szOut - 1] = 0;
+				}
+
+				return data;
+			}
+			else
+			{
+				bqLog::PrintError("Unable to open file in %s\n", BQ_FUNCTION);
+			}
+		}
+	}
+	return 0;
+}
