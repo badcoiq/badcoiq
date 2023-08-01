@@ -63,6 +63,7 @@ class bqMesh;
 class bqTexture;
 class bqColor;
 class bqImage;
+class bqImageLoader;
 
 #endif
 

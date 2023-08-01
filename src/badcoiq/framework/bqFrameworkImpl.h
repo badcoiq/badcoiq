@@ -46,6 +46,7 @@ public:
 	bqInputData m_input;
 
 	std::vector<bqGS*> m_gss;
+	std::vector<bqImageLoader*> m_imageLoaders;
 
 	bqMat4* m_matrixPtrs[(uint32_t)bqMatrixType::_count];
 

@@ -30,16 +30,43 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/system/bqWindowWin32.h"
 #include "badcoiq/gs/bqGS.h"
+#include "badcoiq/common/bqImageLoader.h"
 
 #include "bqFrameworkImpl.h"
 
 #include <filesystem>
 
+#include <algorithm>
+
+//
+//  Lowercases string
+//
+template <typename T>
+std::basic_string<T> lowercase(const std::basic_string<T>& s)
+{
+	std::basic_string<T> s2 = s;
+	std::transform(s2.begin(), s2.end(), s2.begin(), tolower);
+	return s2;
+}
+
+//
+// Uppercases string
+//
+template <typename T>
+std::basic_string<T> uppercase(const std::basic_string<T>& s)
+{
+	std::basic_string<T> s2 = s;
+	std::transform(s2.begin(), s2.end(), s2.begin(), toupper);
+	return s2;
+}
+
 extern "C"
 {
 	bqGS* BQ_CDECL bqGSD3D11_create();
+	bqImageLoader* BQ_CDECL bqImageLoaderDefault_create();
 }
 BQ_LINK_LIBRARY("badcoiq.d3d11");
+BQ_LINK_LIBRARY("badcoiq.imageloader");
 
 void bqInputUpdatePre();
 void bqInputUpdatePost();
@@ -81,6 +108,8 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		g_framework->m_gss.push_back(bqGSD3D11_create());
 		//g_framework->m_gss.push_back(bqGSD3D12_create());
 		//g_framework->m_gss.push_back(bqGSVulkan_create());
+
+		g_framework->m_imageLoaders.push_back(bqImageLoaderDefault_create());
 	}
 }
 
@@ -98,6 +127,15 @@ void bqFramework::Stop()
 
 void bqFrameworkImpl::OnDestroy()
 {
+	if (g_framework->m_imageLoaders.size())
+	{
+		for (auto o : g_framework->m_imageLoaders)
+		{
+			bqDestroy(o);
+		}
+		g_framework->m_imageLoaders.clear();
+	}
+
 	if (g_framework->m_gss.size())
 	{
 		for (auto o : g_framework->m_gss)
@@ -266,3 +304,43 @@ uint8_t* bqFramework::SummonFileBuffer(const char* path, uint32_t* szOut, bool i
 	}
 	return 0;
 }
+
+uint32_t bqFramework::GetImageLoadersNum()
+{
+	return (uint32_t)g_framework->m_imageLoaders.size();
+}
+
+bqImageLoader* bqFramework::GetImageLoader(uint32_t i)
+{
+	BQ_ASSERT_ST(i < g_framework->m_imageLoaders.size());
+	return g_framework->m_imageLoaders[i];
+}
+
+bqImage* bqFramework::SummonImage(const char* path)
+{
+	bqStringA stra;
+	std::filesystem::path p = path;
+	auto e = p.extension();
+	uint32_t mln = GetImageLoadersNum();
+	for (uint32_t i = 0; i < mln; ++i)
+	{
+		auto il = GetImageLoader(i);
+		auto sfc = il->GetSupportedFilesCount();
+		for (uint32_t o = 0; o < sfc; ++o)
+		{
+			bqString sfe = il->GetSupportedFileExtension(o);
+			sfe.insert(U".", 0);
+			sfe.to_lower();
+			sfe.to_utf8(stra);
+			auto stre = lowercase(e.generic_string());
+			if (strcmp((const char*)stra.data(), stre.c_str()) == 0)
+			{
+				bqLog::PrintInfo("Load image: %s\n", path);
+				return il->Load(path);
+			}
+		}
+	}
+	return NULL;
+}
+
+

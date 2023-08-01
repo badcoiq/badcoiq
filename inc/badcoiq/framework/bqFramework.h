@@ -115,6 +115,10 @@ public:
 	// если isText будут добавлены ' ' и 0 в конец
 	// Функция выделит память для буфера. Использовать bqMemory::free для освобождения.
 	static uint8_t* SummonFileBuffer(const char* path, uint32_t* szOut, bool isText);
+
+	static uint32_t GetImageLoadersNum();
+	static bqImageLoader* GetImageLoader(uint32_t);
+	static bqImage* SummonImage(const char*);
 };
 
 #endif
