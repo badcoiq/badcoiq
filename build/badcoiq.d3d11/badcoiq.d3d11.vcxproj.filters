@@ -15,5 +15,6 @@
     <ClCompile Include="..\..\src\badcoiq.d3d11\shader\badcoiq.d3d11.shader.Standart.cpp">
       <Filter>shader</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq.d3d11\badcoiq.d3d11.texture.cpp" />
   </ItemGroup>
 </Project>

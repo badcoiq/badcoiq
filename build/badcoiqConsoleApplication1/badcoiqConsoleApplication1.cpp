@@ -70,41 +70,52 @@ int main()
                 bqMat4 ViewProjection = camera.m_projection * camera.m_view;
                 bqFramework::SetMatrix(bqMatrixType::ViewProjection, &ViewProjection);
                 
-                float H = 1.1f;
+                float H = 0.f;
                 bqPolygonMesh pm;
                 bqMeshPolygonCreator pc;
+                pc.SetPosition(bqVec3f(1.f, H, 1.f));
+                pc.SetUV(bqVec2f(1.f, 0.f));
+                pc.AddVertex();
                 pc.SetPosition(bqVec3f(-1.f, 0.f, 1.f));
+                pc.SetUV(bqVec2f(1.f, 1.f));
                 pc.AddVertex();
-                pc.SetPosition(bqVec3f(0.f, H, 0.f));
-                pc.AddVertex();
-                pc.SetPosition(bqVec3f(1.f, 0.f, 1.f));
+                pc.SetPosition(bqVec3f(1.f, 0.f, -1.f));
+                pc.SetUV(bqVec2f(0.f, 0.f));
                 pc.AddVertex();
                 pm.AddPolygon(&pc, true);
                 pc.Clear();
 
-                pc.SetPosition(bqVec3f(0.f, H, 0.f));
+                pc.SetPosition(bqVec3f(1.f, 0.f, -1.f));
+                pc.SetUV(bqVec2f(0.f, 0.f));
                 pc.AddVertex();
-                pc.SetPosition(bqVec3f(0.f, 0.f, -1.f));
+                pc.SetPosition(bqVec3f(-1.f, H, 1.f));
+                pc.SetUV(bqVec2f(1.f, 1.f));
                 pc.AddVertex();
-                pc.SetPosition(bqVec3f(1.f, 0.f, 1.f));
+                pc.SetPosition(bqVec3f(-1.f, 0.f, -1.f));
+                pc.SetUV(bqVec2f(0.f, 1.f));
                 pc.AddVertex();
                 pm.AddPolygon(&pc, true);
                 pc.Clear();
 
-                pc.SetPosition(bqVec3f(0.f, 0.f, -1.f));
-                pc.AddVertex();
-                pc.SetPosition(bqVec3f(0.f, H, 0.f));
-                pc.AddVertex();
-                pc.SetPosition(bqVec3f(-1.f, 0.f, 1.f));
-                pc.AddVertex();
-                pm.AddPolygon(&pc, true);
-                pc.Clear();
 
                 pm.GenerateNormals(false);
                 
                 bqMesh* mesh = pm.SummonMesh();
                 bqGPUMesh* gpuMesh = gs->SummonMesh(mesh);
                 delete mesh;
+
+                bqImage* image = bqFramework::SummonImage("../media/image.bmp");
+                bqTextureInfo ti;
+                ti.m_filter = bqTextureFilter::PPP;
+                bqTexture* texture = gs->SummonTexture(image, ti);
+                delete image;
+
+                bqMaterial m;
+                m.m_sunPosition.Set(1.f, 3.f, -1.f);
+                m.m_sunPosition.Normalize();
+                m.m_shaderType = bqShaderType::Standart;
+                m.m_maps[0].m_texture = texture;
+                gs->SetMaterial(&m);
 
                // gs->SetRasterizerState(bqGSRasterizerState::Solid);
 
@@ -130,11 +141,7 @@ int main()
                     gs->SetShader(bqShaderType::Standart, 0);
                     gs->SetMesh(gpuMesh);
 
-                    bqMaterial m;
-                    m.m_sunPosition.Set(1.f, 3.f, -1.f);
-                    m.m_sunPosition.Normalize();
-                    m.m_shaderType = bqShaderType::Standart;
-                    gs->SetMaterial(&m);
+                    
 
                     bqMat4 WorldViewProjection;
                     bqMat4 World;
@@ -154,6 +161,7 @@ int main()
                     gs->SwapBuffers();
                 }
                 
+                delete texture;
                 delete gpuMesh;
 
                 gs->Shutdown();

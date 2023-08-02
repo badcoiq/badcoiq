@@ -45,8 +45,8 @@ bqD3D11ShaderStandart::~bqD3D11ShaderStandart()
 
 bool bqD3D11ShaderStandart::Init(){
 	const char* text =
-		//"Texture2D tex2d_1;\n"
-		//"SamplerState tex2D_sampler_1;\n"
+		"Texture2D tex2d_1;\n"
+		"SamplerState tex2D_sampler_1;\n"
 		"struct VSIn{\n"
 		"   float3 position : POSITION;\n"
 		"	float2 uv : TEXCOORD;\n"
@@ -92,8 +92,8 @@ bool bqD3D11ShaderStandart::Init(){
 		"   PSOut output;\n"
 		"   output.color = AmbientColor;\n"
 		
-		//"   float4 textureColor = tex2d_1.Sample(tex2D_sampler_1, input.uv) * BaseColor;\n"
-		"   float4 textureColor = float4(1.f,1.f,1.f,1.f) * BaseColor;\n"
+		"   float4 textureColor = tex2d_1.Sample(tex2D_sampler_1, input.uv) * BaseColor;\n"
+		//"   float4 textureColor = float4(1.f,1.f,1.f,1.f) * BaseColor;\n"
 
 		"	if(diff>1.f) diff = 1.f;\n"
 		"	output.color +=  BaseColor * diff;\n"
@@ -131,13 +131,13 @@ void bqD3D11ShaderStandart::SetConstants(bqMaterial* material)
 	m_cbDataV.W = *bqFramework::GetMatrix(bqMatrixType::World);
 	m_cbDataV.WVP = *bqFramework::GetMatrix(bqMatrixType::WorldViewProjection);
 
-	/*bqGSD3D11Texture* _t = m_gs->m_whiteTexture;
+	bqGSD3D11Texture* _t = m_gs->m_whiteTexture;
 	if (material->m_maps[0].m_texture)
 		_t = (bqGSD3D11Texture*)material->m_maps[0].m_texture;
 
 	m_gs->m_d3d11DevCon->PSSetShaderResources(0, 1, &_t->m_textureResView);
 	m_gs->m_d3d11DevCon->PSSetSamplers(0, 1, &_t->m_samplerState);
-*/
+
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		D3D11_BUFFER_DESC d;

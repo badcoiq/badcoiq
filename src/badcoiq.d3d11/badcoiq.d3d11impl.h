@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "shader/badcoiq.d3d11.shader.Line3D.h"
 #include "shader/badcoiq.d3d11.shader.Standart.h"
 #include "badcoiq.d3d11.mesh.h"
+#include "badcoiq.d3d11.texture.h"
 
 #define BQD3DSAFE_RELEASE(x) if(x){x->Release();x=0;}
 #define BQSAFE_DESTROY2(x) if(x){bqDestroy(x);x=0;}
@@ -79,7 +80,7 @@ class bqGSD3D11 : public bqGS
 
 	bqGSD3D11Mesh* m_currMesh = 0;
 	bqMaterial* m_currMaterial = 0;
-
+	bqGSD3D11Texture* m_whiteTexture = 0;
 public:
 	bqGSD3D11();
 	virtual ~bqGSD3D11();
@@ -110,6 +111,8 @@ public:
 	virtual void Draw() final;
 	virtual void SetRasterizerState(bqGSRasterizerState) final;
 
+	virtual bqTexture* SummonTexture(bqImage*, const bqTextureInfo&) final;
+
 	bool CreateShaders(
 		const char* vertexTarget,
 		const char* pixelTarget,
@@ -126,6 +129,11 @@ public:
 		const char* shaderText,
 		const char* entryPoint,
 		ID3D11GeometryShader** gs);
+	HRESULT	CreateSamplerState(D3D11_FILTER filter,
+		D3D11_TEXTURE_ADDRESS_MODE addressMode,
+		uint32_t anisotropic_level,
+		ID3D11SamplerState** samplerState,
+		D3D11_COMPARISON_FUNC cmpFunc);
 
 	void SetActiveShader(bqGSD3D11ShaderBase* shader);
 	bool CreateShaders();

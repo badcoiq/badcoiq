@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/gs/bqShader.h"
 #include "badcoiq/gs/bqGPUMesh.h"
 #include "badcoiq/gs/bqMaterial.h"
+#include "badcoiq/gs/bqTexture.h"
 
 // Используется при рисовании
 enum class bqGSRasterizerState
@@ -102,6 +103,7 @@ public:
 	virtual void SetRasterizerState(bqGSRasterizerState) = 0;
 	virtual void Draw() = 0;
 
+	virtual bqTexture* SummonTexture(bqImage*, const bqTextureInfo&) = 0;
 };
 
 #endif

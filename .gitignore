@@ -10,3 +10,4 @@ build/badcoiq.d3d11/Debug
 build/badcoiq.d3d11/Release
 build/badcoiqConsoleApplication1/Debug
 build/badcoiq.imageloader/Debug
+*.exe
