@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/common/bqImageLoader.h"
 
+#include "badcoiq/common/bqTextBufferReader.h"
+
 #include "bqFrameworkImpl.h"
 
 #include <filesystem>
