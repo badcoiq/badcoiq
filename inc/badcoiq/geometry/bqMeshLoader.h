@@ -26,7 +26,64 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "badcoiq.h"
+#pragma once
+#ifndef __BQ_MESHLOADER_H__
+#define __BQ_MESHLOADER_H__
 
-#include "badcoiq/geometry/bqMeshLoader.h"
+#include "badcoiq/gs/bqMaterial.h"
+
+class bqMeshLoaderCallback
+{
+public:
+	bqMeshLoaderCallback() {}
+	virtual ~bqMeshLoaderCallback() {}
+	BQ_PLACEMENT_ALLOCATOR(bqMeshLoaderCallback);
+
+	virtual void OnMaterial(bqMaterial* m, bqString* name)
+	{
+		if (m && name)
+			m->m_name = *name;
+	}
+
+	virtual void OnMesh(bqMesh* newMesh, bqString* name, bqString* materialName)
+	{
+		if (newMesh)
+		{
+			// if don't need then destroy this mesh
+			bqDestroy(newMesh);
+		}
+	}
+
+	//virtual void OnSkeleton(bqSkeleton* s)
+	//{
+	//	if (s)
+	//	{
+	//		// if don't need then destroy
+	//		bqDestroy(s);
+	//	}
+	//}
+	//virtual void OnAnimation(bqSkeletonAnimation* a)
+	//{
+	//	if (a)
+	//	{
+	//		bqDestroy(a);
+	//	}
+	//}
+};
+
+class bqMeshLoader
+{
+public:
+	bqMeshLoader() {}
+	virtual ~bqMeshLoader() {}
+
+	virtual uint32_t GetSupportedFilesCount() = 0;
+	virtual bqString GetSupportedFileExtension(uint32_t) = 0;
+	virtual bqString GetSupportedFileName(uint32_t) = 0;
+
+	virtual void Load(const char* path, bqMeshLoaderCallback*) = 0;
+	virtual void Load(const char* path, bqMeshLoaderCallback*, uint8_t* buffer, uint32_t bufferSz) = 0;
+};
+
+#endif
 
