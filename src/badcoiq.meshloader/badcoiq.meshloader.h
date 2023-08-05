@@ -25,48 +25,41 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#ifndef __BQ_MSHLDR_H__
+#define __BQ_MSHLDR_H__
 
-class bqWindow;
-class bqWindowCallback;
+#include "badcoiq.h"
+#include "badcoiq/containers/bqArray.h"
+#include "badcoiq/geometry/bqMeshLoader.h"
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+struct OBJMaterial;
+class bqMeshLoaderImpl : public bqMeshLoader
+{
+	enum class extension { _bad, obj, smd };
+	extension _GetExtension(const char* path);
 
-class bqGS;
-class bqMaterial;
-class bqPolygonMeshPolygon;
-class bqMeshPolygonCreator;
-class bqPolygonMeshControlPoint;
-class bqGPUMesh;
-class bqMesh;
-class bqTexture;
-class bqColor;
-class bqImage;
-class bqImageLoader;
-class bqPolygonMesh;
-class bqMeshLoader;
-class bqMeshLoaderCallback;
+	void ImportOBJ_MTL(bqArray<OBJMaterial*>& materials, const char* obj_fileName, const char* mtl_fileName, bqMeshLoaderCallback* cb);
+	void LoadOBJ(const char* path, bqMeshLoaderCallback*);
+	void LoadOBJ(const char* path, bqMeshLoaderCallback*, uint8_t* buffer, uint32_t bufferSz);
+	void LoadSMD(const char* path, bqMeshLoaderCallback*);
+	void LoadSMD(const char* path, bqMeshLoaderCallback*, uint8_t* buffer, uint32_t bufferSz);
+
+	bqPolygonMesh* _obj_createModel(bqMeshLoaderCallback* cb, bqString* name,
+		bqPolygonMesh*, OBJMaterial*);
+
+public:
+	bqMeshLoaderImpl();
+	virtual ~bqMeshLoaderImpl();
+
+	virtual uint32_t GetSupportedFilesCount() final;
+	virtual bqString GetSupportedFileExtension(uint32_t) final;
+	virtual bqString GetSupportedFileName(uint32_t) final;
+
+	virtual void Load(const char* path, bqMeshLoaderCallback*) final;
+	virtual void Load(const char* path, bqMeshLoaderCallback*, uint8_t* buffer, uint32_t bufferSz) final;
+};
+
 
 #endif
-

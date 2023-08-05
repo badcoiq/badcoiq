@@ -302,13 +302,13 @@ bqMesh* bqPolygonMesh::SummonMesh()
 					{
 					case bqMeshIndexType::u16:
 						*ind16 = baseIndex; ++ind16;
-						*ind16 = index + 1; ++ind16;
 						*ind16 = index + 2; ++ind16;
+						*ind16 = index + 1; ++ind16;
 						break;
 					case bqMeshIndexType::u32:
 						*ind32 = baseIndex; ++ind32;
-						*ind32 = index + 1; ++ind32;
 						*ind32 = index + 2; ++ind32;
+						*ind32 = index + 1; ++ind32;
 						break;
 					}
 

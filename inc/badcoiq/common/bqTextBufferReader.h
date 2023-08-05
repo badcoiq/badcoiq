@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/string/bqString.h"
 
 // Для удобного чтения ANSI текста из буфера
-class slTextBufferReader
+class bqTextBufferReader
 {
 	uint8_t* m_ptrCurr = 0;
 	uint8_t* m_ptrBegin = 0;
@@ -55,17 +55,35 @@ class slTextBufferReader
 		}
 	}
 
+	bool _isdelim(const char* delim, char ch)
+	{
+		if (delim)
+		{
+			const char* ptr = delim;
+			while (*ptr)
+			{
+				if (*ptr == ch)
+					return true;
+
+				++ptr;
+			}
+		}
+		return false;
+	}
+
 	bqStringA m_straTmp;
 
 public:
-	slTextBufferReader() {}
-	slTextBufferReader(uint8_t* buffer, size_t size) :m_ptrCurr(buffer), m_size(size) { _onConstructor(); }
-	slTextBufferReader(char* buffer, size_t size) :m_ptrCurr((uint8_t*)buffer), m_size(size) { _onConstructor(); }
-	slTextBufferReader(char8_t* buffer, size_t size) :m_ptrCurr((uint8_t*)buffer), m_size(size) { _onConstructor(); }
+	bqTextBufferReader() {}
+	bqTextBufferReader(uint8_t* buffer, size_t size) :m_ptrCurr(buffer), m_size(size) { _onConstructor(); }
+	bqTextBufferReader(char* buffer, size_t size) :m_ptrCurr((uint8_t*)buffer), m_size(size) { _onConstructor(); }
+	bqTextBufferReader(char8_t* buffer, size_t size) :m_ptrCurr((uint8_t*)buffer), m_size(size) { _onConstructor(); }
 
-	~slTextBufferReader()
+	~bqTextBufferReader()
 	{
 	}
+
+	void SkipSpaces() { _skipSpaces(); }
 
 	void Set(uint8_t* buffer, size_t size)
 	{
@@ -101,13 +119,13 @@ public:
 	}
 
 	// Получить всё между символами isspace()
-	void GetWord(bqStringA& out)
+	void GetWord(bqStringA& out, const char* delim)
 	{
 		_skipSpaces();
 		out.clear();
 		while (!IsEnd())
 		{
-			if (isspace(*m_ptrCurr))
+			if (isspace(*m_ptrCurr) || _isdelim(delim, *m_ptrCurr))
 				break;
 			out.push_back(*m_ptrCurr);
 			++m_ptrCurr;
@@ -118,19 +136,35 @@ public:
 	void PickWord(bqStringA& out)
 	{
 		uint8_t* save = m_ptrCurr;
-		GetWord(out);
+		GetWord(out, 0);
 		m_ptrCurr = save;
+	}
+
+	char PickChar()
+	{
+		return *m_ptrCurr;
+	}
+
+	char GetChar()
+	{
+		char r = 0;
+		if (*m_ptrCurr)
+		{
+			r = *m_ptrCurr;
+			++m_ptrCurr;
+		}
+		return r;
 	}
 
 	int GetInt()
 	{
-		GetWord(m_straTmp);
+		GetWord(m_straTmp, "/\\|");
 		return atoi(m_straTmp.c_str());
 	}
 
 	float GetFloat()
 	{
-		GetWord(m_straTmp);
+		GetWord(m_straTmp, "/\\|");
 		return (float)atof(m_straTmp.c_str());
 	}
 

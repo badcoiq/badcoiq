@@ -11,3 +11,4 @@ build/badcoiq.d3d11/Release
 build/badcoiqConsoleApplication1/Debug
 build/badcoiq.imageloader/Debug
 *.exe
+build/badcoiq.meshloader/Debug

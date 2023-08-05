@@ -349,7 +349,7 @@ public:
 	void operator+=(other_type* str) { append(str); }
 	void operator+=(const char_type& str) { append(str); }
 
-	bool operator==(const char_type& other) const
+	bool operator==(const bqString_base<char_type>& other) const
 	{
 		if (other.m_size != m_size)
 			return false;
@@ -365,7 +365,7 @@ public:
 		return true;
 	}
 
-	bool operator!=(const char_type& other) const
+	bool operator!=(const bqString_base<char_type>& other) const
 	{
 		if (other.m_size != m_size)
 			return true;

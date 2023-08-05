@@ -47,6 +47,10 @@ public:
 
 	std::vector<bqGS*> m_gss;
 	std::vector<bqImageLoader*> m_imageLoaders;
+	std::vector<bqMeshLoader*> m_meshLoaders;
+
+	bqStringA m_fileExistString;
+	bqStringA m_fileSizeString;
 
 	bqMat4* m_matrixPtrs[(uint32_t)bqMatrixType::_count];
 

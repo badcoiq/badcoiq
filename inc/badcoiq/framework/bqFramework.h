@@ -119,6 +119,18 @@ public:
 	static uint32_t GetImageLoadersNum();
 	static bqImageLoader* GetImageLoader(uint32_t);
 	static bqImage* SummonImage(const char*);
+
+	static bool FileExist(const char*);
+	static bool FileExist(const bqString&);
+
+	static uint64_t FileSize(const char*);
+	static uint64_t FileSize(const bqString&);
+
+	static bqPolygonMesh* SummonPolygonMesh();
+
+	static uint32_t GetMeshLoadersNum();
+	static bqMeshLoader* GetMeshLoader(uint32_t);
+	static void SummonMesh(const char*, bqMeshLoaderCallback*);
 };
 
 #endif

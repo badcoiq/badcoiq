@@ -31,6 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/system/bqWindowWin32.h"
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/common/bqImageLoader.h"
+#include "badcoiq/geometry/bqPolygonMesh.h"
+#include "badcoiq/geometry/bqMeshLoader.h"
 
 #include "badcoiq/common/bqTextBufferReader.h"
 
@@ -66,9 +68,11 @@ extern "C"
 {
 	bqGS* BQ_CDECL bqGSD3D11_create();
 	bqImageLoader* BQ_CDECL bqImageLoaderDefault_create();
+	bqMeshLoader* BQ_CDECL bqMeshLoaderDefault_create();
 }
 BQ_LINK_LIBRARY("badcoiq.d3d11");
 BQ_LINK_LIBRARY("badcoiq.imageloader");
+BQ_LINK_LIBRARY("badcoiq.meshloader");
 
 void bqInputUpdatePre();
 void bqInputUpdatePost();
@@ -112,6 +116,7 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		//g_framework->m_gss.push_back(bqGSVulkan_create());
 
 		g_framework->m_imageLoaders.push_back(bqImageLoaderDefault_create());
+		g_framework->m_meshLoaders.push_back(bqMeshLoaderDefault_create());
 	}
 }
 
@@ -136,6 +141,15 @@ void bqFrameworkImpl::OnDestroy()
 			bqDestroy(o);
 		}
 		g_framework->m_imageLoaders.clear();
+	}
+
+	if (g_framework->m_meshLoaders.size())
+	{
+		for (auto o : g_framework->m_meshLoaders)
+		{
+			bqDestroy(o);
+		}
+		g_framework->m_meshLoaders.clear();
 	}
 
 	if (g_framework->m_gss.size())
@@ -345,4 +359,68 @@ bqImage* bqFramework::SummonImage(const char* path)
 	return NULL;
 }
 
+bool bqFramework::FileExist(const char* p)
+{
+	return std::filesystem::exists(p);
+}
 
+bool bqFramework::FileExist(const bqString& p)
+{
+	g_framework->m_fileExistString.clear();
+	p.to_utf8(g_framework->m_fileExistString);
+	return std::filesystem::exists(g_framework->m_fileExistString.data());
+}
+
+uint64_t bqFramework::FileSize(const char* p)
+{
+	return (uint64_t)std::filesystem::file_size(p);
+}
+
+uint64_t bqFramework::FileSize(const bqString& p)
+{
+	g_framework->m_fileSizeString.clear();
+	p.to_utf8(g_framework->m_fileSizeString);
+	return (uint64_t)std::filesystem::file_size(g_framework->m_fileSizeString.data());
+}
+
+bqPolygonMesh* bqFramework::SummonPolygonMesh()
+{
+	return bqCreate<bqPolygonMesh>();
+}
+
+uint32_t bqFramework::GetMeshLoadersNum()
+{
+	return (uint32_t)g_framework->m_meshLoaders.size();
+}
+
+bqMeshLoader* bqFramework::GetMeshLoader(uint32_t i)
+{
+	BQ_ASSERT_ST(i < g_framework->m_meshLoaders.size());
+	return g_framework->m_meshLoaders[i];
+}
+
+void bqFramework::SummonMesh(const char* path, bqMeshLoaderCallback* cb)
+{
+	bqStringA stra;
+	std::filesystem::path p = path;
+	auto e = p.extension();
+	uint32_t mln = GetMeshLoadersNum();
+	for (uint32_t i = 0; i < mln; ++i)
+	{
+		auto ml = GetMeshLoader(i);
+		auto sfc = ml->GetSupportedFilesCount();
+		for (uint32_t o = 0; o < sfc; ++o)
+		{
+			bqString sfe = ml->GetSupportedFileExtension(o);
+			sfe.insert(U".", 0);
+			sfe.to_lower();
+			sfe.to_utf8(stra);
+			auto stre = lowercase(e.generic_string());
+			if (strcmp((const char*)stra.data(), stre.c_str()) == 0)
+			{
+				ml->Load(path, cb);
+				return;
+			}
+		}
+	}
+}

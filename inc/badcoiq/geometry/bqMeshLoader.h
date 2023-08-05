@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_MESHLOADER_H__
 #define __BQ_MESHLOADER_H__
 
+#include "badcoiq/geometry/bqMesh.h"
 #include "badcoiq/gs/bqMaterial.h"
 
 class bqMeshLoaderCallback
