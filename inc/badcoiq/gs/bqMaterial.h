@@ -49,6 +49,25 @@ public:
 	bool m_wireframe = false;
 	bool m_cullBackFace = false;
 
+	bqString m_name;
+
+	// Надо переписать чтобы не засорять стек
+	/*struct map
+	{
+		map()
+		{
+			for (int i = 0; i < 0x1000; ++i)
+			{
+				m_filePath[i] = 0;
+			}
+		}
+
+		bqTexture* m_texture = 0;
+		
+		char8_t m_filePath[0x1000];
+
+	}m_maps[16];*/
+
 	struct map
 	{
 		map()
@@ -60,10 +79,25 @@ public:
 		}
 
 		bqTexture* m_texture = 0;
-		char8_t m_filePath[0x1000];
-	}m_maps[16];
 
-	bqString m_name;
+		char8_t m_filePath[0x1000];
+
+	};
+	map* m_maps = 0;
+
+
+	bqMaterial() 
+	{
+		m_maps = (map*)bqMemory::malloc(sizeof(map) * 16);
+		for (uint32_t i = 0; i < 16; ++i)
+		{
+			::new(&m_maps[i]) map(); // вызов конструктора
+		}
+	}
+	~bqMaterial()
+	{
+		bqMemory::free(m_maps);
+	}
 };
 
 #endif

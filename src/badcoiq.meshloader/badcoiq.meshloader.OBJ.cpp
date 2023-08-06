@@ -32,14 +32,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/geometry/bqMeshCreator.h"
 #include <vector>
 
+// Для упрощения понимания.
+// фейс (f) может содержать
 enum class OBJFaceType
 {
-	p,
-	pu,
-	pun,
-	pn
+	p,   // только позицию
+	pu,  // позицию и текстурную координату
+	pun, // как pu + нормаль
+	pn   // позиция и нормаль
 };
 
+// для ускорения чтения.
+// если на фейс будет более 100 вершин то ошибка.
+// к чёрту такие модели, или увеличивай data.
 struct OBJSimpleArr
 {
 	OBJSimpleArr() {
@@ -54,6 +59,7 @@ struct OBJSimpleArr
 	void reset() { sz = 0; }
 };
 
+// чтение фейса сюда
 struct OBJFace
 {
 	OBJFace() {
@@ -72,9 +78,7 @@ struct OBJFace
 	}
 };
 
-bool g_ImportOBJ_triangulate = false;
-bool g_ImportOBJ_readMTL = true;
-
+// читаю MTL сюда
 struct OBJMaterial
 {
 	OBJMaterial() {
@@ -103,6 +107,7 @@ struct OBJMaterial
 	bqStringA m_map_reflection; // refl  
 };
 
+// Чтение MTL
 void bqMeshLoaderImpl::ImportOBJ_MTL(
 	bqArray<OBJMaterial*>& materials,
 	const char* obj_fileName,
@@ -110,6 +115,15 @@ void bqMeshLoaderImpl::ImportOBJ_MTL(
 	bqMeshLoaderCallback* cb
 )
 {
+	// .mtl находится рядом с .obj
+	// надо получить путь
+	// было
+	// ../../data/3dmodels/box.obj
+	// убираем до
+	// ../../data/3dmodels/
+	// вставляем mtl_fileName
+	// ../../data/3dmodels/box.mtl
+
 	bqString relPath = obj_fileName;
 
 	for (size_t i = 0, sz = relPath.size(); i < sz; ++i)
@@ -128,11 +142,11 @@ void bqMeshLoaderImpl::ImportOBJ_MTL(
 	bqStringA utf8;
 	mtlPath.to_utf8(utf8);
 	
+	// читаем файл или распаковываем
 	uint32_t file_size = 0;
 	uint8_t* ptr = bqFramework::SummonFileBuffer(utf8.c_str(), &file_size, true);
 	if (ptr)
 	{
-
 		bqTextBufferReader tbr(ptr, file_size); // text buffer reader
 		bqTextBufferReader lbr; // line buffer reader
 		bqStringA line;
@@ -173,12 +187,14 @@ void bqMeshLoaderImpl::ImportOBJ_MTL(
 				if (strcmp(word.c_str(), "Ns") == 0)
 				{
 					tbr.SkipSpaces();
-					curMaterial->m_specularExponent = tbr.GetFloat();
+					if(curMaterial)
+						curMaterial->m_specularExponent = tbr.GetFloat();
 				}
 				else if (strcmp(word.c_str(), "Ni") == 0)
 				{
 					tbr.SkipSpaces();
-					curMaterial->m_refraction = tbr.GetFloat();
+					if (curMaterial)
+						curMaterial->m_refraction = tbr.GetFloat();
 				}
 				else
 					tbr.SkipLine();
@@ -201,7 +217,8 @@ void bqMeshLoaderImpl::ImportOBJ_MTL(
 						mapPath.append(line.data());
 					}
 
-					mapPath.to_utf8(curMaterial->m_map_diffuse);
+					if (curMaterial)
+						mapPath.to_utf8(curMaterial->m_map_diffuse);
 				}
 				else
 					tbr.SkipLine();
@@ -237,8 +254,6 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 
 	bqArray<OBJMaterial*> obj_materials;
 
-	//uint8_t* ptr = buffer;
-
 	bool groupBegin = false;
 	bool isModel = false;
 	bool grpFound = false;
@@ -259,10 +274,8 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 	uv.reserve(0xffff);
 	normal.reserve(0xffff);
 
-	//std::string name_word;
 	bqStringA tmp_word;
-	bqString curr_word;
-	bqString prev_word;
+	bqString name;
 
 	OBJFace f;
 
@@ -292,7 +305,6 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 			if (strcmp(word.c_str(), "mtllib") == 0)
 			{
 				tbr.GetWord(word, 0);
-				//wprintf(L"MTL: %s\n", mtlWord.data());
 				ImportOBJ_MTL(obj_materials, path, word.data(), cb);
 			}
 		}break;
@@ -334,8 +346,6 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 			switch (*ptr)
 			{
 			case 't':
-				//ptr = OBJReadVec2(++ptr, tcoords);
-				
 				tbr.GetLine(line); // надо получить то что справа от vt
 				                   // там может быть 2 или 3 значения
 									// напр vt 0.4402683 0.0862148 0.0000000
@@ -355,8 +365,6 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 				++last_counter[1];
 				break;
 			case 'n':
-				//ptr = OBJReadVec3(++ptr, norm);
-				
 				tbr.GetLine(line);
 				if (line.data())
 				{
@@ -498,7 +506,6 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 					}
 
 					auto n = normal[nor_index];
-					//	geometry_creator->AddNormal(n.x, n.y, n.z);
 					pcNorm = n;
 					genNormals = false;
 				}
@@ -524,27 +531,17 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 				break;
 			}
 
-			/*std::string tmp_word;
-			ptr = OBJReadWord(++ptr, tmp_word);
-			if (tmp_word.size())
-			{
-				if (!name_word.size())
-					name_word = tmp_word;
-			}*/
-			//ptr = OBJReadWord(++ptr, tmp_word);
-			
 			tbr.GetWord(tmp_word, 0); //skip o or g
 			tbr.GetWord(tmp_word, 0); // now get name
 
 			if (tmp_word.size())
 			{
-				prev_word = curr_word;
-				curr_word.assign(tmp_word.data());
+				name.assign(tmp_word.data());
 			}
 
 			if (grpFound)
 			{
-				polygonMesh = _obj_createModel(cb, &curr_word, polygonMesh, currMaterial);
+				polygonMesh = _obj_createModel(cb, &name, polygonMesh, currMaterial);
 			}
 			grpFound = true;
 		}break;
@@ -556,7 +553,7 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 
 	if (polygonMesh)
 	{
-		polygonMesh = _obj_createModel(cb, &curr_word, polygonMesh, currMaterial);
+		polygonMesh = _obj_createModel(cb, &name, polygonMesh, currMaterial);
 	}
 
 	for (uint32_t i = 0; i < obj_materials.m_size; ++i)
@@ -590,9 +587,7 @@ bqPolygonMesh* bqMeshLoaderImpl::_obj_createModel(
 		bqMaterial* m = 0;
 		if (currMaterial)
 		{
-			/*m = g_sdk->CreateMaterial(currMaterial->m_name.data());
-			if (currMaterial->m_map_diffuse.size())
-				m->m_maps[m->mapSlot_Diffuse].m_texturePath = currMaterial->m_map_diffuse;*/
+			// тут надо будет заполнить и передать bqMaterial
 		}
 
 		cb->OnMesh(polygonMesh->SummonMesh(), name, 0);
