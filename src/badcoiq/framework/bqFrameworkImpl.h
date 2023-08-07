@@ -54,6 +54,12 @@ public:
 
 	bqMat4* m_matrixPtrs[(uint32_t)bqMatrixType::_count];
 
+	// Архивы, сжатие
+	bool _compress_fastlz(bqCompressionInfo* info);
+	bool _decompress_fastlz(bqCompressionInfo* info);
+	std::vector<bqArchiveZipFile*> m_zipFiles;
+	void _onDestroy_archive();
+
 	void OnDestroy();
 };
 

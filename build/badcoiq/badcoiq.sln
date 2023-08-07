@@ -13,6 +13,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "badcoiq.imageloader", "..\b
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "badcoiq.meshloader", "..\badcoiq.meshloader\badcoiq.meshloader.vcxproj", "{C52FE991-1000-0000-0000-000000000000}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bzip2", "..\bzip2\bzip2.vcxproj", "{C52FE991-1001-0000-0000-000000000000}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\zlib\zlib.vcxproj", "{C52FE991-1101-0000-0000-000000000000}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minizip", "..\minizip\minizip.vcxproj", "{C52FE991-1111-0000-0000-000000000000}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fastlz", "..\fastlz\fastlz.vcxproj", "{C52FE991-1111-0100-0000-000000000000}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +69,38 @@ Global
 		{C52FE991-1000-0000-0000-000000000000}.Release|x64.Build.0 = Release|x64
 		{C52FE991-1000-0000-0000-000000000000}.Release|x86.ActiveCfg = Release|Win32
 		{C52FE991-1000-0000-0000-000000000000}.Release|x86.Build.0 = Release|Win32
+		{C52FE991-1001-0000-0000-000000000000}.Debug|x64.ActiveCfg = Debug|x64
+		{C52FE991-1001-0000-0000-000000000000}.Debug|x64.Build.0 = Debug|x64
+		{C52FE991-1001-0000-0000-000000000000}.Debug|x86.ActiveCfg = Debug|Win32
+		{C52FE991-1001-0000-0000-000000000000}.Debug|x86.Build.0 = Debug|Win32
+		{C52FE991-1001-0000-0000-000000000000}.Release|x64.ActiveCfg = Release|x64
+		{C52FE991-1001-0000-0000-000000000000}.Release|x64.Build.0 = Release|x64
+		{C52FE991-1001-0000-0000-000000000000}.Release|x86.ActiveCfg = Release|Win32
+		{C52FE991-1001-0000-0000-000000000000}.Release|x86.Build.0 = Release|Win32
+		{C52FE991-1101-0000-0000-000000000000}.Debug|x64.ActiveCfg = Debug|x64
+		{C52FE991-1101-0000-0000-000000000000}.Debug|x64.Build.0 = Debug|x64
+		{C52FE991-1101-0000-0000-000000000000}.Debug|x86.ActiveCfg = Debug|Win32
+		{C52FE991-1101-0000-0000-000000000000}.Debug|x86.Build.0 = Debug|Win32
+		{C52FE991-1101-0000-0000-000000000000}.Release|x64.ActiveCfg = Release|x64
+		{C52FE991-1101-0000-0000-000000000000}.Release|x64.Build.0 = Release|x64
+		{C52FE991-1101-0000-0000-000000000000}.Release|x86.ActiveCfg = Release|Win32
+		{C52FE991-1101-0000-0000-000000000000}.Release|x86.Build.0 = Release|Win32
+		{C52FE991-1111-0000-0000-000000000000}.Debug|x64.ActiveCfg = Debug|x64
+		{C52FE991-1111-0000-0000-000000000000}.Debug|x64.Build.0 = Debug|x64
+		{C52FE991-1111-0000-0000-000000000000}.Debug|x86.ActiveCfg = Debug|Win32
+		{C52FE991-1111-0000-0000-000000000000}.Debug|x86.Build.0 = Debug|Win32
+		{C52FE991-1111-0000-0000-000000000000}.Release|x64.ActiveCfg = Release|x64
+		{C52FE991-1111-0000-0000-000000000000}.Release|x64.Build.0 = Release|x64
+		{C52FE991-1111-0000-0000-000000000000}.Release|x86.ActiveCfg = Release|Win32
+		{C52FE991-1111-0000-0000-000000000000}.Release|x86.Build.0 = Release|Win32
+		{C52FE991-1111-0100-0000-000000000000}.Debug|x64.ActiveCfg = Debug|x64
+		{C52FE991-1111-0100-0000-000000000000}.Debug|x64.Build.0 = Debug|x64
+		{C52FE991-1111-0100-0000-000000000000}.Debug|x86.ActiveCfg = Debug|Win32
+		{C52FE991-1111-0100-0000-000000000000}.Debug|x86.Build.0 = Debug|Win32
+		{C52FE991-1111-0100-0000-000000000000}.Release|x64.ActiveCfg = Release|x64
+		{C52FE991-1111-0100-0000-000000000000}.Release|x64.Build.0 = Release|x64
+		{C52FE991-1111-0100-0000-000000000000}.Release|x86.ActiveCfg = Release|Win32
+		{C52FE991-1111-0100-0000-000000000000}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

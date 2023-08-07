@@ -18,11 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\fastlz\fastlz.c" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c52fe997-ab15-419a-ab09-edc0779a53d0}</ProjectGuid>
-    <RootNamespace>badcoiq</RootNamespace>
+    <ProjectGuid>{C52FE991-1111-0100-0000-000000000000}</ProjectGuid>
+    <RootNamespace>fastlz</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -89,11 +92,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -109,11 +112,11 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
@@ -130,11 +133,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -150,11 +153,11 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
@@ -168,26 +171,6 @@
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\src\badcoiq\archive\bqArchive.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\common\bqAssert.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\common\bqImage.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\common\bqLog.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\common\bqMemory.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\framework\bqFramework.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqAABB.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqMesh.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqMeshCreator.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqPolygonMesh.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqRay.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\input\bqInput.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\math\bqMath.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\system\bqDLL.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\system\bqStacktracer.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\system\bqWindow.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

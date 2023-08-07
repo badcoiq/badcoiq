@@ -7,6 +7,7 @@
 #include "badcoiq/containers/bqArray.h"
 
 #include "badcoiq/geometry/bqMeshLoader.h"
+#include "badcoiq/archive/bqArchive.h"
 
 #include "badcoiq/scene/bqCamera.h"
 #include <list>
@@ -35,23 +36,6 @@ public:
     }
 };
 
-class MyModel
-{
-public:
-    MyModel(bqGS * gs):m_gs(gs) {}
-    ~MyModel() 
-    {
-        for (size_t i = 0; i < m_gpuModels.m_size; ++i)
-        {
-            delete m_gpuModels.m_data[i];
-        }
-    }
-
-    bqGS* m_gs = 0;
-
-    bqArray<bqGPUMesh*> m_gpuModels;
-};
-
 class meshLoaderCallback : public bqMeshLoaderCallback, public bqUserData
 {
 public:
@@ -68,24 +52,51 @@ public:
         }
     }
 
-    virtual void OnMesh(bqMesh* newMesh, bqString* name, bqString* materialName)
+    virtual void OnMesh(bqMesh* newMesh, bqString* name, bqString* materialName);
+};
+
+class MyModel
+{
+public:
+    MyModel(bqGS* gs) :m_gs(gs) {}
+    ~MyModel()
     {
-        if (newMesh)
+        for (size_t i = 0; i < m_gpuModels.m_size; ++i)
         {
-            if (name)
-            {
-                bqStringA stra;
-                name->to_utf8(stra);
-                bqLog::Print("MESH %s\n", stra.c_str());
-            }
-
-            MyModel* m = (MyModel*)GetUserData();
-            m->m_gpuModels.push_back(m->m_gs->SummonMesh(newMesh));
-
-            bqDestroy(newMesh);
+            delete m_gpuModels.m_data[i];
         }
     }
+
+    bqGS* m_gs = 0;
+    meshLoaderCallback m_cb;
+
+    bqArray<bqGPUMesh*> m_gpuModels;
+
+    void Load(const char* f)
+    {
+        m_cb.SetUserData(this);
+        bqFramework::SummonMesh(f, &m_cb);
+    }
 };
+
+void meshLoaderCallback::OnMesh(bqMesh* newMesh, bqString* name, bqString* materialName)
+{
+    if (newMesh)
+    {
+        if (name)
+        {
+            bqStringA stra;
+            name->to_utf8(stra);
+            bqLog::Print("MESH %s\n", stra.c_str());
+        }
+
+        MyModel* m = (MyModel*)GetUserData();
+        m->m_gpuModels.push_back(m->m_gs->SummonMesh(newMesh));
+
+        bqDestroy(newMesh);
+    }
+}
+
 
 #include <Windows.h>
 
@@ -101,6 +112,8 @@ int main()
     {
         window->SetPositionAndSize(10, 10, 800, 600);
         window->SetVisible(true);
+
+        bqArchiveSystem::ZipAdd("../media/data.zip");
 
         bqGS* gs = bqFramework::SummonGS(bqFramework::GetGSUID(0));
         if (gs)
@@ -124,9 +137,7 @@ int main()
                 bqFramework::SetMatrix(bqMatrixType::ViewProjection, &ViewProjection);
                 
                 MyModel* model = new MyModel(gs);
-                meshLoaderCallback meshCB;
-                meshCB.SetUserData(model);
-                bqFramework::SummonMesh("../media/4_objs.obj", &meshCB);
+                model->Load("../media/4_objs.obj");
                 
                 bqImage* image = bqFramework::SummonImage("../media/image.bmp");
                 bqTextureInfo ti;

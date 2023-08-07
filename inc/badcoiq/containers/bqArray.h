@@ -58,6 +58,7 @@ public:
 	typedef type* pointer;
 	typedef type& reference;
 	typedef const type& const_reference;
+	using value_type = type;
 
 	bqArray()
 		:

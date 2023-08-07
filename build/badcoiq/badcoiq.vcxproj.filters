@@ -34,6 +34,9 @@
     <Filter Include="Source Files\geometry">
       <UniqueIdentifier>{a0d208fd-bfc4-415a-9f0b-b2c4bf96528d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\archive">
+      <UniqueIdentifier>{5c269616-0f16-46fa-8aae-d73748776143}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -86,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\common\bqImage.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\archive\bqArchive.cpp">
+      <Filter>Source Files\archive</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

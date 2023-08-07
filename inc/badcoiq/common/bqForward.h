@@ -67,6 +67,8 @@ class bqImageLoader;
 class bqPolygonMesh;
 class bqMeshLoader;
 class bqMeshLoaderCallback;
+struct bqCompressionInfo;
+struct bqArchiveZipFile;
 
 #endif
 

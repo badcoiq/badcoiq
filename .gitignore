@@ -12,3 +12,7 @@ build/badcoiqConsoleApplication1/Debug
 build/badcoiq.imageloader/Debug
 *.exe
 build/badcoiq.meshloader/Debug
+build/bzip2/Debug
+build/fastlz/Debug
+build/minizip/Debug
+build/zlib/Debug
