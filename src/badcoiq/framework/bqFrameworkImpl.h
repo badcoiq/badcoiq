@@ -36,7 +36,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqFrameworkImpl
 {
 public:
-	bqFrameworkImpl() {}
+	bqFrameworkImpl() 
+	{
+		for (uint32_t i = 0; i < (uint32_t)bqMatrixType::_count; ++i)
+		{
+			m_matrixPtrs[i] = 0;
+		}
+	}
 	~bqFrameworkImpl() {}
 	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
 
@@ -44,6 +50,8 @@ public:
 	bqFrameworkCallback* m_frameworkCallback = 0;
 
 	bqInputData m_input;
+
+	bqString m_appPath;
 
 	std::vector<bqGS*> m_gss;
 	std::vector<bqImageLoader*> m_imageLoaders;
@@ -57,8 +65,8 @@ public:
 	// Архивы, сжатие
 	bool _compress_fastlz(bqCompressionInfo* info);
 	bool _decompress_fastlz(bqCompressionInfo* info);
-	std::vector<bqArchiveZipFile*> m_zipFiles;
 	void _onDestroy_archive();
+	std::vector<bqArchiveZipFile*> m_zipFiles;
 
 	void OnDestroy();
 };

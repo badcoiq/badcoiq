@@ -137,9 +137,9 @@ int main()
                 bqFramework::SetMatrix(bqMatrixType::ViewProjection, &ViewProjection);
                 
                 MyModel* model = new MyModel(gs);
-                model->Load("../media/4_objs.obj");
+                model->Load(bqFramework::GetPath("../media/1.obj").c_str());
                 
-                bqImage* image = bqFramework::SummonImage("../media/image.bmp");
+                bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../media/image.bmp").c_str());
                 bqTextureInfo ti;
                 ti.m_filter = bqTextureFilter::PPP;
                 bqTexture* texture = gs->SummonTexture(image, ti);

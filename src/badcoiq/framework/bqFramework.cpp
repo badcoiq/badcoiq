@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/geometry/bqMeshLoader.h"
 
 #include "badcoiq/common/bqTextBufferReader.h"
+#include "badcoiq/archive/bqArchive.h"
 
 #include "bqFrameworkImpl.h"
 
@@ -103,6 +104,12 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		g_framework = new bqFrameworkImpl();
 
 #ifdef BQ_PLATFORM_WINDOWS
+		wchar_t pth[1000];
+		GetModuleFileName(0, pth, 1000);
+		g_framework->m_appPath = pth;
+		g_framework->m_appPath.pop_back_before(U'\\');
+		g_framework->m_appPath.replace(U'\\', U'/');
+
 		RAWINPUTDEVICE device;
 		device.usUsagePage = 0x01;
 		device.usUsage = 0x02;
@@ -318,7 +325,7 @@ uint8_t* bqFramework::SummonFileBuffer(const char* path, uint32_t* szOut, bool i
 			}
 		}
 	}
-	return 0;
+	return bqArchiveSystem::ZipUnzip(path, szOut, 0);
 }
 
 uint32_t bqFramework::GetImageLoadersNum()
@@ -423,4 +430,36 @@ void bqFramework::SummonMesh(const char* path, bqMeshLoaderCallback* cb)
 			}
 		}
 	}
+}
+
+bqString bqFramework::GetAppPath()
+{
+	return g_framework->m_appPath;
+}
+
+bqStringA bqFramework::GetPath(const bqString& v)
+{
+	bqString p = g_framework->m_appPath;
+	p.append(v);
+	bqStringA stra;
+	p.to_utf8(stra);
+
+	if (!std::filesystem::exists(stra.c_str()))
+	{
+		p.assign(v);
+
+		while (p.size())
+		{
+			if (p[0] == U'.'
+				|| p[0] == U'\\'
+				|| p[0] == U'/')
+				p.pop_front();
+			else
+				break;
+		}
+
+		p.to_utf8(stra);
+	}
+
+	return stra;
 }

@@ -131,6 +131,9 @@ public:
 	static uint32_t GetMeshLoadersNum();
 	static bqMeshLoader* GetMeshLoader(uint32_t);
 	static void SummonMesh(const char*, bqMeshLoaderCallback*);
+
+	static bqString GetAppPath();
+	static bqStringA GetPath(const bqString& v);
 };
 
 #endif
