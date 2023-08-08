@@ -159,6 +159,8 @@ void bqFrameworkImpl::OnDestroy()
 		g_framework->m_meshLoaders.clear();
 	}
 
+	_onDestroy_archive();
+
 	if (g_framework->m_gss.size())
 	{
 		for (auto o : g_framework->m_gss)
