@@ -16,3 +16,5 @@ build/bzip2/Debug
 build/fastlz/Debug
 build/minizip/Debug
 build/zlib/Debug
+build/jpeglib/Debug
+build/libpng/Debug

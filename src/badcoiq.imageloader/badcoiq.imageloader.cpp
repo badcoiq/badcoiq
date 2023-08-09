@@ -28,6 +28,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.imageloader.h"
 
+#ifdef USE_PNG
+BQ_LINK_LIBRARY("libpng");
+#endif
+
+#ifdef USE_JPEG
+BQ_LINK_LIBRARY("jpeglib");
+#endif
+
 extern "C"
 {
 	bqImageLoader* BQ_CDECL bqImageLoaderDefault_create()

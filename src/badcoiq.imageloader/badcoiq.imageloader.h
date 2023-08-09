@@ -32,6 +32,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq.h"
 #include "badcoiq/common/bqImageLoader.h"
 
+#define USE_PNG
+#define USE_JPEG
+#define USE_TGA
+
+
+
 #include "badcoiq.imageloader_impl.h"
 
 #include <string.h>

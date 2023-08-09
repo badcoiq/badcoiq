@@ -35,17 +35,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class bqImageLoaderImpl : public bqImageLoader
 {
-	enum class extension { _bad, bmp, png, jpg, tga };
+	enum class extension { _bad, bmp, 
+#ifdef USE_PNG
+		png,
+#endif
+#ifdef USE_JPEG
+		jpg,
+#endif
+#ifdef USE_TGA
+		tga 
+#endif
+	};
 	extension _GetExtension(const char* path);
 
 	bqImage* LoadBMP(const char* path);
 	bqImage* LoadBMP(const char* path, uint8_t* buffer, uint32_t bufferSz);
+#ifdef USE_PNG
 	bqImage* LoadPNG(const char* path);
 	bqImage* LoadPNG(const char* path, uint8_t* buffer, uint32_t bufferSz);
+#endif
+#ifdef USE_JPEG
 	bqImage* LoadJPG(const char* path);
 	bqImage* LoadJPG(const char* path, uint8_t* buffer, uint32_t bufferSz);
+#endif
+#ifdef USE_TGA
 	bqImage* LoadTGA(const char* path);
 	bqImage* LoadTGA(const char* path, uint8_t* buffer, uint32_t bufferSz);
+#endif
 public:
 	bqImageLoaderImpl();
 	virtual ~bqImageLoaderImpl();

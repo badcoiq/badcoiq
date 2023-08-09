@@ -30,6 +30,78 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/common/bqFileBuffer.h"
 
+#ifdef USE_JPEG
+
+#include "jpeglib.h"
+#include <setjmp.h>
+
+struct my_error_mgr {
+	struct jpeg_error_mgr pub;
+	jmp_buf setjmp_buffer;
+};
+typedef struct my_error_mgr* my_error_ptr;
+
+void my_error_exit(j_common_ptr cinfo)
+{
+	my_error_ptr myerr = (my_error_ptr)cinfo->err;
+	(*cinfo->err->output_message) (cinfo);
+	longjmp(myerr->setjmp_buffer, 1);
+}
+
+class JPG_Loader {
+public:
+	JPG_Loader() {}
+	~JPG_Loader() {
+		jpeg_destroy_decompress(&cinfo);
+	}
+
+	bqImage* Load(const char* p, uint8_t* buffer, uint32_t bufferSz)
+	{
+		bqFileBuffer file(buffer, bufferSz);
+
+		cinfo.err = jpeg_std_error(&jerr.pub);
+		jerr.pub.error_exit = my_error_exit;
+		if (setjmp(jerr.setjmp_buffer)) {
+			return 0;
+		}
+		jpeg_create_decompress(&cinfo);
+		jpeg_mem_src(&cinfo, buffer, bufferSz);
+		jpeg_read_header(&cinfo, TRUE);
+		jpeg_start_decompress(&cinfo);
+
+
+		bqImage* img = bqCreate<bqImage>();
+
+		img->m_info.m_width = cinfo.image_width;
+		img->m_info.m_height = cinfo.image_height;
+		img->m_info.m_bits = 24;
+		img->m_info.m_format = bqImageFormat::r8g8b8;
+		img->m_info.m_pitch = cinfo.output_width * cinfo.output_components;
+		img->m_dataSize = img->m_info.m_pitch * img->m_info.m_height;
+		img->m_data = (uint8_t*)bqMemory::malloc(img->m_dataSize);
+
+		uint8_t* imageDataPtr = img->m_data;
+
+		JSAMPARRAY jbuffer = (*cinfo.mem->alloc_sarray)
+			((j_common_ptr)&cinfo, JPOOL_IMAGE, img->m_info.m_pitch, 1);
+
+		while (cinfo.output_scanline < cinfo.output_height) {
+			jpeg_read_scanlines(&cinfo, jbuffer, 1);
+			memcpy(&imageDataPtr[0], jbuffer[0], img->m_info.m_pitch);
+			imageDataPtr += img->m_info.m_pitch;
+		}
+		jpeg_finish_decompress(&cinfo);
+
+		//if (bqFramework::GetImageLoaderConvertToRGBA8())
+			img->ConvertTo(bqImageFormat::r8g8b8a8);;
+
+		return img;
+	}
+
+	jpeg_decompress_struct cinfo;
+	my_error_mgr jerr;
+};
+
 bqImage* bqImageLoaderImpl::LoadJPG(const char* path)
 {
 	BQ_ASSERT_ST(path);
@@ -51,7 +123,8 @@ bqImage* bqImageLoaderImpl::LoadJPG(const char* path, uint8_t* buffer, uint32_t 
 	BQ_ASSERT_ST(buffer);
 	BQ_ASSERT_ST(bufferSz);
 
-	bqFileBuffer file(buffer, bufferSz);
-
-	return 0;
+	JPG_Loader loader;
+	return loader.Load(path, buffer, bufferSz);
 }
+
+#endif
