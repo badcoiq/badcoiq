@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 enum class bqTextureType : uint32_t
 {
 	Texture2D,
-//	RTT       // Render Target Texture / FBO
+	RTT       // Render Target Texture / FBO
 };
 
 // Если фильтр стоит CMP_...

@@ -112,6 +112,20 @@ public:
 	virtual void SetRasterizerState(bqGSRasterizerState) final;
 
 	virtual bqTexture* SummonTexture(bqImage*, const bqTextureInfo&) final;
+	virtual bqTexture* SummonRTT(const bqPoint& size, const bqTextureInfo&) final;
+	virtual void SetRenderTarget(bqTexture*) final;
+	virtual void SetRenderTargetDefault() final;
+
+	virtual void EnableVSync() final;
+	virtual void DisableVSync() final;
+	virtual void EnableDepth()final;
+	virtual void DisableDepth() final;
+	virtual void EnableBlend() final;
+	virtual void DisableBlend() final;
+
+	virtual bqVec2f GetDepthRange() final;
+	virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) final;
+	virtual void SetScissorRect(const bqRect&) final;
 
 	bool CreateShaders(
 		const char* vertexTarget,

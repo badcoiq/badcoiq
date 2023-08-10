@@ -96,14 +96,36 @@ public:
 	// Если bqShaderType::User то необходимо указать индекс шейдера
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) = 0;
 
+	// Создать GPU модель для рисования
 	virtual bqGPUMesh* SummonMesh(bqMesh* m) = 0;
 
+	// Установить текущую модель
 	virtual void SetMesh(bqGPUMesh* m) = 0;
+	// Установить текущий материал
 	virtual void SetMaterial(bqMaterial* m) = 0;
+	// Установить как рисовать треугольники
 	virtual void SetRasterizerState(bqGSRasterizerState) = 0;
+	// Нарисовать
 	virtual void Draw() = 0;
 
+	// Создать текстуру
 	virtual bqTexture* SummonTexture(bqImage*, const bqTextureInfo&) = 0;
+	// Создать Render Target Texture/Frame Buffer Object
+	virtual bqTexture* SummonRTT(const bqPoint& size, const bqTextureInfo&) = 0;
+	// Установить текстуру для рисования.
+	virtual void SetRenderTarget(bqTexture* t) = 0;
+	virtual void SetRenderTargetDefault() = 0;
+
+	virtual void EnableVSync() = 0;
+	virtual void DisableVSync() = 0;
+	virtual void EnableDepth() = 0;
+	virtual void DisableDepth() = 0;
+	virtual void EnableBlend() = 0;
+	virtual void DisableBlend() = 0;
+
+	virtual bqVec2f GetDepthRange() = 0;
+	virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
+	virtual void SetScissorRect(const bqRect&) = 0;
 };
 
 #endif

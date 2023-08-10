@@ -1011,7 +1011,7 @@ bqTexture* bqGSD3D11::SummonTexture(bqImage* img, const bqTextureInfo& inf)
 		if (isGenMips)
 			m_d3d11DevCon->GenerateMips(_textureResView);
 	}
-	else
+	else if(inf.m_type == bqTextureType::RTT)
 	{
 		D3D11_TEXTURE2D_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
@@ -1196,3 +1196,93 @@ HRESULT	bqGSD3D11::CreateSamplerState(D3D11_FILTER filter,
 
 	return m_d3d11Device->CreateSamplerState(&samplerDesc, samplerState);
 }
+
+bqTexture* bqGSD3D11::SummonRTT(const bqPoint& size, const bqTextureInfo& ti)
+{
+	bqImage img;
+	img.m_info.m_width = size.x;
+	img.m_info.m_height = size.y;
+
+	bqTextureInfo _ti = ti;
+	_ti.m_imageInfo = img.m_info;
+	_ti.m_type = bqTextureType::RTT;
+	return SummonTexture(&img, _ti);
+}
+
+void bqGSD3D11::SetRenderTarget(bqTexture* t)
+{
+	BQ_ASSERT_ST(t);
+	BQ_ASSERT_ST(t->GetInfo().m_type == bqTextureType::RTT);
+	bqGSD3D11Texture* gst = (bqGSD3D11Texture*)t;
+	m_d3d11DevCon->OMSetRenderTargets(1, &gst->m_RTV, gst->m_DSV);
+	m_currentTargetView = gst->m_RTV;
+	m_currentDepthStencilView = gst->m_DSV;
+}
+
+void bqGSD3D11::SetRenderTargetDefault()
+{
+	m_d3d11DevCon->OMSetRenderTargets(1, &m_mainTargetRTT->m_RTV, m_mainTargetRTT->m_DSV);
+	m_currentTargetView = m_mainTargetRTT->m_RTV;
+	m_currentDepthStencilView = m_mainTargetRTT->m_DSV;
+	SetViewport(0, 0, (uint32_t)m_mainTargetSize.x, (uint32_t)m_mainTargetSize.y);
+}
+
+void bqGSD3D11::EnableVSync()
+{
+	m_vsync = 1;
+}
+
+void bqGSD3D11::DisableVSync()
+{
+	m_vsync = 0;
+}
+
+void bqGSD3D11::EnableDepth()
+{
+	m_d3d11DevCon->OMSetDepthStencilState(m_depthStencilStateEnabled, 0);
+}
+
+void bqGSD3D11::DisableDepth()
+{
+	m_d3d11DevCon->OMSetDepthStencilState(m_depthStencilStateDisabled, 0);
+}
+
+void bqGSD3D11::EnableBlend()
+{
+	const float blend_factor[4] = { 1.f, 1.f,1.f, 1.f };
+	m_d3d11DevCon->OMSetBlendState(m_blendStateAlphaEnabled, blend_factor, 0xffffffff);
+}
+
+void bqGSD3D11::DisableBlend()
+{
+	const float blend_factor[4] = { 1.f, 1.f,1.f, 1.f };
+	m_d3d11DevCon->OMSetBlendState(m_blendStateAlphaDisabled, blend_factor, 0xffffffff);
+}
+
+bqVec2f bqGSD3D11::GetDepthRange()
+{
+	return bqVec2f(0.f, 1.f);
+}
+
+void bqGSD3D11::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+{
+	D3D11_VIEWPORT viewport;
+	viewport.Width = (float)width;
+	viewport.Height = (float)height;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+	viewport.TopLeftX = (float)x;
+	viewport.TopLeftY = (float)y;
+	m_d3d11DevCon->RSSetViewports(1, &viewport);
+}
+
+void bqGSD3D11::SetScissorRect(const bqRect& rect)
+{
+	D3D11_RECT r;
+	r.left = rect.left;
+	r.top = rect.top;
+	r.right = rect.right;
+	r.bottom = rect.bottom;
+	m_d3d11DevCon->RSSetScissorRects(1, &r);
+}
+
