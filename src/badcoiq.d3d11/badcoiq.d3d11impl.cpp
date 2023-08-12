@@ -63,6 +63,7 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 	bqLog::PrintInfo("Init video driver - D3D11...\n");
 	m_activeWindow = w;
 	m_windowCurrentSize = w->GetCurrentSize();
+	m_mainTargetSize = *m_windowCurrentSize;
 
 	// создать девайс и контекст
 
@@ -153,57 +154,9 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 	dxgiAdapter->Release();
 	dxgiFactory->Release();
 
-	//createBackBuffer begin
-	// создание того места куда будет рисоваться.
-	// Пока это будет поверхность окна.
-	// Потом после добавления Render Target Texture я изменю эту функцию.
-	ID3D11Texture2D* BackBuffer = 0;
-	if (FAILED(m_SwapChain->GetBuffer(
-		0,
-		IID_ID3D11Texture2D,
-		(void**)&BackBuffer)))
-	{
-		bqLog::PrintError("Can't create Direct3D 11 back buffer\n");
-		return false;
-	}
-	if (FAILED(this->m_d3d11Device->CreateRenderTargetView(
-		BackBuffer, 0, &m_windowTargetView)))
-	{
-		bqLog::PrintError("Can't create Direct3D 11 render target\n");
-		if (BackBuffer) BackBuffer->Release();
-		return false;
-	}
-	if (BackBuffer) BackBuffer->Release();
-	D3D11_TEXTURE2D_DESC	DSD;
-	ZeroMemory(&DSD, sizeof(DSD));
-	DSD.Width = (UINT)m_windowCurrentSize->x;
-	DSD.Height = (UINT)m_windowCurrentSize->y;
-	DSD.MipLevels = 1;
-	DSD.ArraySize = 1;
-	DSD.Format = DXGI_FORMAT_D32_FLOAT;
-	DSD.SampleDesc.Count = 1;
-	DSD.SampleDesc.Quality = 0;
-	DSD.Usage = D3D11_USAGE_DEFAULT;
-	DSD.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	DSD.CPUAccessFlags = 0;
-	DSD.MiscFlags = 0;
-	if (FAILED(m_d3d11Device->CreateTexture2D(&DSD, 0, &m_windowDepthStencilBuffer)))
-	{
-		bqLog::PrintError("Can't create Direct3D 11 depth stencil buffer\n");
-		return false;
-	}
-	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-	memset(&depthStencilViewDesc, 0, sizeof(depthStencilViewDesc));
-	depthStencilViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	depthStencilViewDesc.Texture2D.MipSlice = 0;
-	if (FAILED(m_d3d11Device->CreateDepthStencilView(m_windowDepthStencilBuffer, &depthStencilViewDesc, &m_windowDepthStencilView)))
-	{
-		bqLog::PrintError("Can't create Direct3D 11 depth stencil view\n");
-		return false;
-	}
-	m_d3d11DevCon->OMSetRenderTargets(1, &m_windowTargetView, m_windowDepthStencilView);
-	//createBackBuffer end
+	_createWindowBuffers(m_windowCurrentSize->x, m_windowCurrentSize->y);
+	_updateMainTarget();
+	SetRenderTargetDefault();
 
 	D3D11_DEPTH_STENCIL_DESC	depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
@@ -328,6 +281,8 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 	viewport.TopLeftY = 0.0f;
 	m_d3d11DevCon->RSSetViewports(1, &viewport);
 
+	
+
 	m_d3d11DevCon->OMSetDepthStencilState(m_depthStencilStateEnabled, 0);
 
 	if (!CreateShaders())
@@ -352,6 +307,9 @@ void bqGSD3D11::Shutdown()
 	BQSAFE_DESTROY2(m_whiteTexture);
 	BQSAFE_DESTROY2(m_shaderLine3D);
 	BQSAFE_DESTROY2(m_shaderStandart);
+	BQSAFE_DESTROY2(m_shaderEndDraw);
+
+	BQSAFE_DESTROY2(m_mainTargetRTT);
 
 	BQD3DSAFE_RELEASE(m_blendStateAlphaDisabled);
 	BQD3DSAFE_RELEASE(m_blendStateAlphaEnabled);
@@ -408,28 +366,41 @@ void bqGSD3D11::SetClearColor(float r, float g, float b, float a)
 
 void bqGSD3D11::BeginDraw()
 {
-	// пока пусто
+	m_currentTargetView = m_mainTargetRTT->m_RTV;
+	m_currentDepthStencilView = m_mainTargetRTT->m_DSV;
+	m_d3d11DevCon->OMSetRenderTargets(1, &m_currentTargetView, m_currentDepthStencilView);
+	SetViewport(0, 0, (uint32_t)m_mainTargetSize.x, (uint32_t)m_mainTargetSize.y);
 }
 
 void bqGSD3D11::ClearDepth()
 {
-	m_d3d11DevCon->ClearDepthStencilView(m_windowDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	m_d3d11DevCon->ClearDepthStencilView(m_currentDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 void bqGSD3D11::ClearColor()
 {
-	m_d3d11DevCon->ClearRenderTargetView(m_windowTargetView, m_clearColor.Data());
+	m_d3d11DevCon->ClearRenderTargetView(m_currentTargetView, m_clearColor.Data());
 }
 
 void bqGSD3D11::ClearAll()
 {
-	m_d3d11DevCon->ClearDepthStencilView(m_windowDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	m_d3d11DevCon->ClearRenderTargetView(m_windowTargetView, m_clearColor.Data());
+	m_d3d11DevCon->ClearDepthStencilView(m_currentDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	m_d3d11DevCon->ClearRenderTargetView(m_currentTargetView, m_clearColor.Data());
 }
 
 void bqGSD3D11::EndDraw()
 {
-	// пока пусто
+	m_d3d11DevCon->OMSetRenderTargets(1, &m_windowTargetView, m_windowDepthStencilView);
+	m_currentTargetView = m_windowTargetView;
+	SetViewport(0, 0, (uint32_t)m_windowCurrentSize->x, (uint32_t)m_windowCurrentSize->y);
+	SetScissorRect(bqRect(0.f, 0.f, m_windowCurrentSize->x, m_windowCurrentSize->y));
+	ClearColor();
+
+	SetActiveShader(m_shaderEndDraw);
+	m_shaderEndDraw->SetConstants(0);
+
+	m_d3d11DevCon->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_d3d11DevCon->Draw(1, 0);
 }
 
 void bqGSD3D11::SwapBuffers()
@@ -707,6 +678,10 @@ bool bqGSD3D11::CreateShaders()
 
 	m_shaderStandart = bqCreate<bqD3D11ShaderStandart>(this);
 	if (!m_shaderStandart->Init())
+		return false;
+
+	m_shaderEndDraw = bqCreate<bqD3D11ShaderEndDraw>(this);
+	if (!m_shaderEndDraw->Init())
 		return false;
 
 	return true;
@@ -1227,14 +1202,9 @@ void bqGSD3D11::SetRenderTargetDefault()
 	SetViewport(0, 0, (uint32_t)m_mainTargetSize.x, (uint32_t)m_mainTargetSize.y);
 }
 
-void bqGSD3D11::EnableVSync()
+void bqGSD3D11::UseVSync(bool v)
 {
-	m_vsync = 1;
-}
-
-void bqGSD3D11::DisableVSync()
-{
-	m_vsync = 0;
+	m_vsync = v ? 1 : 0;
 }
 
 void bqGSD3D11::EnableDepth()
@@ -1286,3 +1256,92 @@ void bqGSD3D11::SetScissorRect(const bqRect& rect)
 	m_d3d11DevCon->RSSetScissorRects(1, &r);
 }
 
+void bqGSD3D11::OnWindowSize()
+{
+	// тут будет вызов метода для обновления матрицы для GUI
+	// ...
+
+	m_d3d11DevCon->OMSetRenderTargets(0, 0, 0);
+
+	_updateMainTarget();
+
+	// надо удалить все буферы которые нужны для рисования в окно
+	BQD3DSAFE_RELEASE(m_windowDepthStencilBuffer);
+	BQD3DSAFE_RELEASE(m_windowDepthStencilView);
+	BQD3DSAFE_RELEASE(m_windowTargetView);
+	// потом вызвать ResizeBuffers
+	m_SwapChain->ResizeBuffers(0, (UINT)m_windowCurrentSize->x, (UINT)m_windowCurrentSize->y, DXGI_FORMAT_UNKNOWN, 0);
+	// надо опять создать оконные буферы
+	_createWindowBuffers(m_windowCurrentSize->x, m_windowCurrentSize->y);
+}
+
+bool bqGSD3D11::_createWindowBuffers(int32_t x, int32_t y)
+{
+	BQD3DSAFE_RELEASE(m_windowDepthStencilBuffer);
+	BQD3DSAFE_RELEASE(m_windowDepthStencilView);
+	BQD3DSAFE_RELEASE(m_windowTargetView);
+
+	ID3D11Texture2D* BackBuffer = 0;
+	if (FAILED(m_SwapChain->GetBuffer(
+		0,
+		IID_ID3D11Texture2D,
+		(void**)&BackBuffer)))
+	{
+		bqLog::PrintError("Can't create Direct3D 11 back buffer\n");
+		return false;
+	}
+	if (FAILED(this->m_d3d11Device->CreateRenderTargetView(
+		BackBuffer, 0, &m_windowTargetView)))
+	{
+		bqLog::PrintError("Can't create Direct3D 11 render target\n");
+		if (BackBuffer) BackBuffer->Release();
+		return false;
+	}
+	if (BackBuffer) BackBuffer->Release();
+	D3D11_TEXTURE2D_DESC	DSD;
+	ZeroMemory(&DSD, sizeof(DSD));
+	DSD.Width = (UINT)x;
+	DSD.Height = (UINT)y;
+	DSD.MipLevels = 1;
+	DSD.ArraySize = 1;
+	DSD.Format = DXGI_FORMAT_D32_FLOAT;
+	DSD.SampleDesc.Count = 1;
+	DSD.SampleDesc.Quality = 0;
+	DSD.Usage = D3D11_USAGE_DEFAULT;
+	DSD.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	DSD.CPUAccessFlags = 0;
+	DSD.MiscFlags = 0;
+	if (FAILED(m_d3d11Device->CreateTexture2D(&DSD, 0, &m_windowDepthStencilBuffer)))
+	{
+		bqLog::PrintError("Can't create Direct3D 11 depth stencil buffer\n");
+		return false;
+	}
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+	memset(&depthStencilViewDesc, 0, sizeof(depthStencilViewDesc));
+	depthStencilViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthStencilViewDesc.Texture2D.MipSlice = 0;
+	if (FAILED(m_d3d11Device->CreateDepthStencilView(m_windowDepthStencilBuffer, &depthStencilViewDesc, &m_windowDepthStencilView)))
+	{
+		bqLog::PrintError("Can't create Direct3D 11 depth stencil view\n");
+		return false;
+	}
+	m_d3d11DevCon->OMSetRenderTargets(1, &m_windowTargetView, m_windowDepthStencilView);
+	return true;
+}
+
+void bqGSD3D11::_updateMainTarget()
+{
+	BQSAFE_DESTROY2(m_mainTargetRTT);
+	bqTextureInfo tinf;
+	m_mainTargetRTT = (bqGSD3D11Texture*)SummonRTT(
+		bqPoint((uint32_t)m_mainTargetSize.x, (uint32_t)m_mainTargetSize.y),
+		tinf);
+}
+
+void bqGSD3D11::SetMainTargetSize(const bqPoint& p)
+{
+	m_mainTargetSize = p;
+	// возможно сперва надо вызвать m_d3d11DevCon->OMSetRenderTargets(0, 0, 0);
+	_updateMainTarget();
+}

@@ -23,6 +23,7 @@
     <ClCompile Include="..\..\src\badcoiq.d3d11\badcoiq.d3d11.mesh.cpp" />
     <ClCompile Include="..\..\src\badcoiq.d3d11\badcoiq.d3d11.texture.cpp" />
     <ClCompile Include="..\..\src\badcoiq.d3d11\badcoiq.d3d11impl.cpp" />
+    <ClCompile Include="..\..\src\badcoiq.d3d11\shader\badcoiq.d3d11.shader.EndDraw.cpp" />
     <ClCompile Include="..\..\src\badcoiq.d3d11\shader\badcoiq.d3d11.shader.Line3D.cpp" />
     <ClCompile Include="..\..\src\badcoiq.d3d11\shader\badcoiq.d3d11.shader.Standart.cpp" />
   </ItemGroup>

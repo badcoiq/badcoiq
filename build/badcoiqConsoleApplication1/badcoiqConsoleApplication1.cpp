@@ -31,8 +31,14 @@ public:
 
     virtual void OnClose(bqWindow*)
     {
-        printf("Q\n");
         g_run = false;
+    }
+
+    virtual void OnSize(bqWindow* w) 
+    {
+        bqGS* gs = (bqGS*)GetUserData();
+        if(gs)
+            gs->OnWindowSize();
     }
 };
 
@@ -118,6 +124,8 @@ int main()
         bqGS* gs = bqFramework::SummonGS(bqFramework::GetGSUID(0));
         if (gs)
         {
+            wcb.SetUserData(gs);
+
             if (gs->Init(window, 0))
             {
                 gs->SetClearColor(0.3f, 0.3f, 0.3f, 1.f);
@@ -152,6 +160,7 @@ int main()
                // m.m_maps[0].m_texture = texture;
                 gs->SetMaterial(&m);
 
+                gs->SetMainTargetSize(bqPoint(64, 64));
                // gs->SetRasterizerState(bqGSRasterizerState::Solid);
 
                 while (g_run)

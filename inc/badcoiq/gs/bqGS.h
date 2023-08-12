@@ -116,8 +116,7 @@ public:
 	virtual void SetRenderTarget(bqTexture* t) = 0;
 	virtual void SetRenderTargetDefault() = 0;
 
-	virtual void EnableVSync() = 0;
-	virtual void DisableVSync() = 0;
+	virtual void UseVSync(bool) = 0;
 	virtual void EnableDepth() = 0;
 	virtual void DisableDepth() = 0;
 	virtual void EnableBlend() = 0;
@@ -126,6 +125,12 @@ public:
 	virtual bqVec2f GetDepthRange() = 0;
 	virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 	virtual void SetScissorRect(const bqRect&) = 0;
+
+	// Надо вызвать когда был изменён размер окна
+	// Будет вычислена матрица для GUI, и обновятся буферы у SwapChain
+	virtual void OnWindowSize() = 0;
+
+	virtual void SetMainTargetSize(const bqPoint&) = 0;
 };
 
 #endif

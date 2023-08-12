@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "shader/badcoiq.d3d11.shader.h"
 #include "shader/badcoiq.d3d11.shader.Line3D.h"
 #include "shader/badcoiq.d3d11.shader.Standart.h"
+#include "shader/badcoiq.d3d11.shader.EndDraw.h"
 #include "badcoiq.d3d11.mesh.h"
 #include "badcoiq.d3d11.texture.h"
 
@@ -50,10 +51,12 @@ class bqGSD3D11 : public bqGS
 {
 	friend class bqD3D11ShaderLine3D;
 	friend class bqD3D11ShaderStandart;
+	friend class bqD3D11ShaderEndDraw;
 
 	bqGSD3D11ShaderBase* m_activeShader = 0;
 	bqD3D11ShaderLine3D* m_shaderLine3D = 0;
-	bqD3D11ShaderStandart* m_shaderStandart = 0;
+	bqD3D11ShaderStandart* m_shaderStandart = 0; 
+	bqD3D11ShaderEndDraw* m_shaderEndDraw = 0;
 
 	bqWindow* m_activeWindow = 0;
 	bqPoint* m_windowCurrentSize = 0;
@@ -81,6 +84,15 @@ class bqGSD3D11 : public bqGS
 	bqGSD3D11Mesh* m_currMesh = 0;
 	bqMaterial* m_currMaterial = 0;
 	bqGSD3D11Texture* m_whiteTexture = 0;
+
+	bool _createWindowBuffers(int32_t x, int32_t y);
+	void _updateMainTarget();
+
+	bqGSD3D11Texture* m_mainTargetRTT = 0;
+	bqPoint m_mainTargetSize;
+	ID3D11RenderTargetView* m_currentTargetView = 0;
+	ID3D11DepthStencilView* m_currentDepthStencilView = 0;
+
 public:
 	bqGSD3D11();
 	virtual ~bqGSD3D11();
@@ -116,8 +128,7 @@ public:
 	virtual void SetRenderTarget(bqTexture*) final;
 	virtual void SetRenderTargetDefault() final;
 
-	virtual void EnableVSync() final;
-	virtual void DisableVSync() final;
+	virtual void UseVSync(bool) final;
 	virtual void EnableDepth()final;
 	virtual void DisableDepth() final;
 	virtual void EnableBlend() final;
@@ -126,6 +137,11 @@ public:
 	virtual bqVec2f GetDepthRange() final;
 	virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) final;
 	virtual void SetScissorRect(const bqRect&) final;
+
+	virtual void OnWindowSize() final;
+
+	virtual void SetMainTargetSize(const bqPoint&) final;
+	
 
 	bool CreateShaders(
 		const char* vertexTarget,

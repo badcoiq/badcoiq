@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Когда с окном что-то происходит, оно будет вызывать эти коллбэки
 // При создании окна мы обязаны послать указатель на коллбэк
-class bqWindowCallback
+class bqWindowCallback : public bqUserData
 {
 public:
 	bqWindowCallback() {}
