@@ -131,6 +131,11 @@ public:
 	virtual void OnWindowSize() = 0;
 
 	virtual void SetMainTargetSize(const bqPoint&) = 0;
+
+	virtual void BeginGUI() = 0;
+	virtual void EndGUI() = 0;
+	virtual void DrawGUIRectangle(const bqVec4f& rect, const bqColor& color1, const bqColor& color2,
+		bqTexture* t, bqVec4f* UVs) = 0;
 };
 
 #endif

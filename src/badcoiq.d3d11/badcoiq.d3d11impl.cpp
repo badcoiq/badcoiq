@@ -299,6 +299,8 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 		m_whiteTexture = (bqGSD3D11Texture*)SummonTexture(&img, tinf);
 	}
 
+	_recalculateGUIMatrix();
+
 	return true;
 }
 
@@ -308,8 +310,10 @@ void bqGSD3D11::Shutdown()
 	BQSAFE_DESTROY2(m_shaderLine3D);
 	BQSAFE_DESTROY2(m_shaderStandart);
 	BQSAFE_DESTROY2(m_shaderEndDraw);
+	BQSAFE_DESTROY2(m_shaderGUIRectangle);
 
 	BQSAFE_DESTROY2(m_mainTargetRTT);
+	BQSAFE_DESTROY2(m_GUIRTT);
 
 	BQD3DSAFE_RELEASE(m_blendStateAlphaDisabled);
 	BQD3DSAFE_RELEASE(m_blendStateAlphaEnabled);
@@ -393,7 +397,7 @@ void bqGSD3D11::EndDraw()
 	m_d3d11DevCon->OMSetRenderTargets(1, &m_windowTargetView, m_windowDepthStencilView);
 	m_currentTargetView = m_windowTargetView;
 	SetViewport(0, 0, (uint32_t)m_windowCurrentSize->x, (uint32_t)m_windowCurrentSize->y);
-	SetScissorRect(bqRect(0.f, 0.f, m_windowCurrentSize->x, m_windowCurrentSize->y));
+	SetScissorRect(bqRect(0, 0, m_windowCurrentSize->x, m_windowCurrentSize->y));
 	ClearColor();
 
 	SetActiveShader(m_shaderEndDraw);
@@ -682,6 +686,10 @@ bool bqGSD3D11::CreateShaders()
 
 	m_shaderEndDraw = bqCreate<bqD3D11ShaderEndDraw>(this);
 	if (!m_shaderEndDraw->Init())
+		return false;
+
+	m_shaderGUIRectangle = bqCreate<bqD3D11ShaderGUIRectangle>(this);
+	if (!m_shaderGUIRectangle->Init())
 		return false;
 
 	return true;
@@ -1256,10 +1264,18 @@ void bqGSD3D11::SetScissorRect(const bqRect& rect)
 	m_d3d11DevCon->RSSetScissorRects(1, &r);
 }
 
+void bqGSD3D11::_recalculateGUIMatrix()
+{
+	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[0].Set(2.0f / m_windowCurrentSize->x, 0.0f, 0.0f, 0.0f);
+	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[1].Set(0.0f, 2.0f / -m_windowCurrentSize->y, 0.0f, 0.0f);
+	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[2].Set(0.0f, 0.0f, 0.5f, 0.0f);
+	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[3].Set(-1.f, 1.f, 0.5f, 1.0f);
+}
+
 void bqGSD3D11::OnWindowSize()
 {
 	// тут будет вызов метода для обновления матрицы для GUI
-	// ...
+	_recalculateGUIMatrix();
 
 	m_d3d11DevCon->OMSetRenderTargets(0, 0, 0);
 
@@ -1333,9 +1349,16 @@ bool bqGSD3D11::_createWindowBuffers(int32_t x, int32_t y)
 void bqGSD3D11::_updateMainTarget()
 {
 	BQSAFE_DESTROY2(m_mainTargetRTT);
+	BQSAFE_DESTROY2(m_GUIRTT);
+
 	bqTextureInfo tinf;
+	tinf.m_filter = bqTextureFilter::PPP;
 	m_mainTargetRTT = (bqGSD3D11Texture*)SummonRTT(
 		bqPoint((uint32_t)m_mainTargetSize.x, (uint32_t)m_mainTargetSize.y),
+		tinf);
+
+	m_GUIRTT = (bqGSD3D11Texture*)SummonRTT(
+		bqPoint((uint32_t)m_windowCurrentSize->x, (uint32_t)m_windowCurrentSize->y),
 		tinf);
 }
 
@@ -1344,4 +1367,48 @@ void bqGSD3D11::SetMainTargetSize(const bqPoint& p)
 	m_mainTargetSize = p;
 	// возможно сперва надо вызвать m_d3d11DevCon->OMSetRenderTargets(0, 0, 0);
 	_updateMainTarget();
+}
+
+void bqGSD3D11::BeginGUI()
+{
+	const float cc[4] = { 0.f,0.f,0.f,0.f };
+	SetRenderTarget(m_GUIRTT);
+	DisableDepth();
+	EnableBlend();
+	SetViewport(0, 0, (uint32_t)m_windowCurrentSize->x, (uint32_t)m_windowCurrentSize->y);
+	m_d3d11DevCon->ClearRenderTargetView(m_currentTargetView, cc);
+	SetActiveShader(m_shaderGUIRectangle);
+	m_shaderGUIRectangle->SetOnFrame();
+	m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+}
+
+void bqGSD3D11::EndGUI()
+{
+	SetRenderTarget(m_mainTargetRTT);
+	EnableDepth();
+}
+
+void bqGSD3D11::DrawGUIRectangle(
+	const bqVec4f& rect, 
+	const bqColor& color1, 
+	const bqColor& color2,
+	bqTexture* t, 
+	bqVec4f* UVs)
+{
+	m_shaderGUIRectangle->m_cbDataElement.Color1 = color1;
+	m_shaderGUIRectangle->m_cbDataElement.Color2 = color2;
+
+	m_shaderGUIRectangle->m_cbDataElement.Corners = rect;
+
+	m_shaderGUIRectangle->m_cbDataElement.UVs.x = 0.f;
+	m_shaderGUIRectangle->m_cbDataElement.UVs.y = 0.f;
+	m_shaderGUIRectangle->m_cbDataElement.UVs.z = 1.f;
+	m_shaderGUIRectangle->m_cbDataElement.UVs.w = 1.f;
+
+	if (UVs)
+		m_shaderGUIRectangle->m_cbDataElement.UVs = *UVs;
+
+	m_shaderGUIRectangle->SetOnElement(dynamic_cast<bqGSD3D11Texture*>(t ? t : m_whiteTexture));
+
+	m_d3d11DevCon->Draw(1, 0);
 }

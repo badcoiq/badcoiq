@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "shader/badcoiq.d3d11.shader.Line3D.h"
 #include "shader/badcoiq.d3d11.shader.Standart.h"
 #include "shader/badcoiq.d3d11.shader.EndDraw.h"
+#include "shader/badcoiq.d3d11.shader.GUIRectangle.h"
 #include "badcoiq.d3d11.mesh.h"
 #include "badcoiq.d3d11.texture.h"
 
@@ -52,11 +53,13 @@ class bqGSD3D11 : public bqGS
 	friend class bqD3D11ShaderLine3D;
 	friend class bqD3D11ShaderStandart;
 	friend class bqD3D11ShaderEndDraw;
+	friend class bqD3D11ShaderGUIRectangle;
 
 	bqGSD3D11ShaderBase* m_activeShader = 0;
 	bqD3D11ShaderLine3D* m_shaderLine3D = 0;
 	bqD3D11ShaderStandart* m_shaderStandart = 0; 
 	bqD3D11ShaderEndDraw* m_shaderEndDraw = 0;
+	bqD3D11ShaderGUIRectangle* m_shaderGUIRectangle = 0;
 
 	bqWindow* m_activeWindow = 0;
 	bqPoint* m_windowCurrentSize = 0;
@@ -92,6 +95,9 @@ class bqGSD3D11 : public bqGS
 	bqPoint m_mainTargetSize;
 	ID3D11RenderTargetView* m_currentTargetView = 0;
 	ID3D11DepthStencilView* m_currentDepthStencilView = 0;
+	bqGSD3D11Texture* m_GUIRTT = 0;
+
+	void _recalculateGUIMatrix();
 
 public:
 	bqGSD3D11();
@@ -142,6 +148,10 @@ public:
 
 	virtual void SetMainTargetSize(const bqPoint&) final;
 	
+	virtual void BeginGUI() final;
+	virtual void EndGUI() final;
+	virtual void DrawGUIRectangle(const bqVec4f& rect, const bqColor& color1, const bqColor& color2,
+		bqTexture* t, bqVec4f* UVs) final;
 
 	bool CreateShaders(
 		const char* vertexTarget,

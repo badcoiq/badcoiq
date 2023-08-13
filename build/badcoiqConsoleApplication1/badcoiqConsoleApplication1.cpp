@@ -160,9 +160,6 @@ int main()
                // m.m_maps[0].m_texture = texture;
                 gs->SetMaterial(&m);
 
-                gs->SetMainTargetSize(bqPoint(64, 64));
-               // gs->SetRasterizerState(bqGSRasterizerState::Solid);
-
                 while (g_run)
                 {
                     bqFramework::Update();
@@ -201,6 +198,10 @@ int main()
                         gs->SetMesh(model->m_gpuModels.m_data[i]);
                         gs->Draw();
                     }
+
+                    gs->BeginGUI();
+                    gs->DrawGUIRectangle(bqVec4f(0.f, 0.f, 100.f, 20.f), bq::ColorRed, bq::ColorYellow, 0, 0);
+                    gs->EndGUI();
 
                     gs->EndDraw();
                     gs->SwapBuffers();

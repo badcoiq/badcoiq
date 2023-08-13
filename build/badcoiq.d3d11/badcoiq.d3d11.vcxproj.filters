@@ -19,5 +19,8 @@
     <ClCompile Include="..\..\src\badcoiq.d3d11\shader\badcoiq.d3d11.shader.EndDraw.cpp">
       <Filter>shader</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq.d3d11\shader\badcoiq.d3d11.shader.GUIRectangle.cpp">
+      <Filter>shader</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

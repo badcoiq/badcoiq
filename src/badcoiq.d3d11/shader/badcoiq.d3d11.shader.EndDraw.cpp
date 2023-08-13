@@ -46,6 +46,8 @@ bool bqD3D11ShaderEndDraw::Init() {
 	const char* text =
 		"Texture2D tex2d_1;\n"
 		"SamplerState tex2D_sampler_1;\n"
+		"Texture2D tex2d_2;\n" // GUI
+		"SamplerState tex2D_sampler_2;\n" // GUI
 		"struct VSIn{\n"
 		"   float3 position : POSITION;\n"
 		"   float2 uv : TEXCOORD;\n"
@@ -69,8 +71,8 @@ bool bqD3D11ShaderEndDraw::Init() {
 		"}\n"
 		"PSOut PSMain(VSOut input){\n"
 		"   PSOut output;\n"
-
-		"   output.color = tex2d_1.Sample(tex2D_sampler_1, input.uv);\n"
+		"   float4 GUIColor = tex2d_2.Sample(tex2D_sampler_2, input.uv);\n"
+		"   output.color = lerp(tex2d_1.Sample(tex2D_sampler_1, input.uv),GUIColor,GUIColor.w);\n"
 		"   return output;\n"
 		"}\n"
 		"[maxvertexcount(4)]\n"
@@ -118,11 +120,12 @@ bool bqD3D11ShaderEndDraw::Init() {
 	return true;
 }
 
-void bqD3D11ShaderEndDraw::SetConstants(bqMaterial* material) {
-
+void bqD3D11ShaderEndDraw::SetConstants(bqMaterial* material)
+{
 	m_gs->m_d3d11DevCon->PSSetShaderResources(0, 1, &m_gs->m_mainTargetRTT->m_textureResView);
 	m_gs->m_d3d11DevCon->PSSetSamplers(0, 1, &m_gs->m_mainTargetRTT->m_samplerState);
-
+	m_gs->m_d3d11DevCon->PSSetShaderResources(1, 1, &m_gs->m_GUIRTT->m_textureResView);
+	m_gs->m_d3d11DevCon->PSSetSamplers(1, 1, &m_gs->m_GUIRTT->m_samplerState);
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		D3D11_BUFFER_DESC d;
