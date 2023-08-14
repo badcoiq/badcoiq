@@ -9,6 +9,8 @@
 #include "badcoiq/geometry/bqMeshLoader.h"
 #include "badcoiq/archive/bqArchive.h"
 
+#include "badcoiq/GUI/bqGUI.h"
+
 #include "badcoiq/scene/bqCamera.h"
 #include <list>
 BQ_LINK_LIBRARY("badcoiq");
