@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_GUIFONT_H__
 #define __BQ_GUIFONT_H__
 
+#include "badcoiq/containers/bqArray.h"
+
 struct bqGUIFontGlyph
 {
 	// символ
@@ -75,19 +77,7 @@ public:
 
 	void AddTexture(bqTexture*);
 	void AddGlyph(const bqGUIFontGlyph&);
-	void AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& charSz, uint32_t texture, const bqPoint& texSz)
-	{
-		bqGUIFontGlyph glyph;
-		glyph.m_symbol = ch;
-		glyph.m_width = charSz.x;
-		glyph.m_height = charSz.y;
-		glyph.m_textureSlot = texture;
-		glyph.m_UV.x = bqMath::CoordToUV(leftTop.x, (float)texSz.x);
-		glyph.m_UV.y = bqMath::CoordToUV(leftTop.y, (float)texSz.y);
-		glyph.m_UV.z = bqMath::CoordToUV(leftTop.x + (float)charSz.x, (float)texSz.x);
-		glyph.m_UV.w = bqMath::CoordToUV(leftTop.y + (float)charSz.y, (float)texSz.y);
-		AddGlyph(glyph);
-	}
+	void AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& charSz, uint32_t texture, const bqPoint& texSz);
 
 	const bqPoint& GetMaxSize() { return m_maxSize; }
 	bqGUIFontGlyph** GetGlyphMap() { return m_glyphMap; }

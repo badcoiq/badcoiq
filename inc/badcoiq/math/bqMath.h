@@ -191,6 +191,12 @@ public:
 	static void OrthoRH(bqMat4&, float width, float height, float near, float far);
 	static void OrthoOfCenterLH(bqMat4&, float left, float right, float top, float bottom, float near, float far);
 	static void OrthoOfCenterRH(bqMat4&, float left, float right, float top, float bottom, float near, float far);
+
+	// Получить текстурную координату
+	// Если картинка имеет ширину например 100 пикселей, то,
+	// value равное 100 должно вернуть 1.f
+	// textureSz не может равняться 0
+	static float CoordToUV(float value, float textureSz);
 };
 
 

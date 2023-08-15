@@ -1089,3 +1089,9 @@ void bqMath::OrthoOfCenterRH(bqMat4& out, float left, float right, float top, fl
 		1.0f);
 }
 
+float bqMath::CoordToUV(float value, float textureSz)
+{
+	BQ_ASSERT_ST(textureSz != 0.f);
+	return value * (1.f / textureSz);
+}
+

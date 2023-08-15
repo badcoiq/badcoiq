@@ -37,6 +37,9 @@
     <Filter Include="Source Files\archive">
       <UniqueIdentifier>{5c269616-0f16-46fa-8aae-d73748776143}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\gui">
+      <UniqueIdentifier>{2aff2b2f-baf2-41b7-abd0-6156ed5e72d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\archive\bqArchive.cpp">
       <Filter>Source Files\archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIFont.cpp">
+      <Filter>Source Files\gui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
