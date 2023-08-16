@@ -25,6 +25,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "..\libpng\libpng.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeglib", "..\jpeglib\jpeglib.vcxproj", "{C52FE991-1121-2100-0000-000000000000}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{C553BD37-9BC7-4237-9B2A-A50A5EB4ADB0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bingen", "..\..\tools\bingen\bingen.vcxproj", "{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -121,9 +125,20 @@ Global
 		{C52FE991-1121-2100-0000-000000000000}.Release|x64.Build.0 = Release|x64
 		{C52FE991-1121-2100-0000-000000000000}.Release|x86.ActiveCfg = Release|Win32
 		{C52FE991-1121-2100-0000-000000000000}.Release|x86.Build.0 = Release|Win32
+		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4}.Debug|x64.ActiveCfg = Debug|x64
+		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4}.Debug|x64.Build.0 = Debug|x64
+		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4}.Debug|x86.ActiveCfg = Debug|Win32
+		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4}.Debug|x86.Build.0 = Debug|Win32
+		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4}.Release|x64.ActiveCfg = Release|x64
+		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4}.Release|x64.Build.0 = Release|x64
+		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4}.Release|x86.ActiveCfg = Release|Win32
+		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4} = {C553BD37-9BC7-4237-9B2A-A50A5EB4ADB0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8E513EBC-B4DA-48C8-92EF-3124877EE907}

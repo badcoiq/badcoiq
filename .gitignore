@@ -18,3 +18,4 @@ build/minizip/Debug
 build/zlib/Debug
 build/jpeglib/Debug
 build/libpng/Debug
+tools/bingen/Debug
