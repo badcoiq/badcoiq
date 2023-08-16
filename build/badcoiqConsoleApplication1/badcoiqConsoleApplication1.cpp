@@ -121,7 +121,7 @@ int main()
         window->SetPositionAndSize(10, 10, 800, 600);
         window->SetVisible(true);
 
-        bqArchiveSystem::ZipAdd("../media/data.zip");
+        bqArchiveSystem::ZipAdd("../data/data.zip");
 
         bqGS* gs = bqFramework::SummonGS(bqFramework::GetGSUID(0));
         if (gs)
@@ -147,9 +147,9 @@ int main()
                 bqFramework::SetMatrix(bqMatrixType::ViewProjection, &ViewProjection);
                 
                 MyModel* model = new MyModel(gs);
-                model->Load(bqFramework::GetPath("../media/1.obj").c_str());
+                model->Load(bqFramework::GetPath("../data/1.obj").c_str());
                 
-                bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../media/image.bmp").c_str());
+                bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/image.bmp").c_str());
                 bqTextureInfo ti;
                 ti.m_filter = bqTextureFilter::PPP;
                 bqTexture* texture = gs->SummonTexture(image, ti);

@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/system/bqWindowWin32.h"
 #include "badcoiq/gs/bqGS.h"
+#include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/common/bqImageLoader.h"
 #include "badcoiq/geometry/bqPolygonMesh.h"
 #include "badcoiq/geometry/bqMeshLoader.h"
@@ -42,6 +43,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <filesystem>
 
 #include <algorithm>
+
+static uint8_t g_defaultFontPNG[] = {
+	#include "../_data/font.inl"
+};
+static uint8_t g_defaultIconsPNG[] = {
+	#include "../_data/defaultIcons.inl"
+};
 
 //
 //  Lowercases string
@@ -141,6 +149,25 @@ void bqFramework::Stop()
 
 void bqFrameworkImpl::OnDestroy()
 {
+	if (m_texturesForDestroy.m_size)
+	{
+		for (size_t i = 0; i < m_texturesForDestroy.m_size; ++i)
+		{
+			if (m_texturesForDestroy.m_data[i])
+				delete m_texturesForDestroy.m_data[i];
+		}
+		m_texturesForDestroy.clear();
+	}
+	if (g_framework->m_defaultFonts.m_size)
+	{
+		for (size_t i = 0; i < m_defaultFonts.m_size; ++i)
+		{
+			if (m_defaultFonts.m_data[i])
+				delete m_defaultFonts.m_data[i];
+		}
+		m_defaultFonts.clear();
+	}
+
 	if (g_framework->m_imageLoaders.size())
 	{
 		for (auto o : g_framework->m_imageLoaders)
@@ -464,4 +491,224 @@ bqStringA bqFramework::GetPath(const bqString& v)
 	}
 
 	return stra;
+}
+
+void bqFramework::InitDefaultFonts(bqGS* gs)
+{
+	static bool isInit = false;
+	if (!isInit)
+	{
+		auto getImage = [](uint8_t* buf, uint32_t sz)->bqImage* {
+			for (uint32_t i = 0; i < bqFramework::GetImageLoadersNum(); ++i)
+			{
+				auto il = bqFramework::GetImageLoader(i);
+				for (uint32_t o = 0; o < il->GetSupportedFilesCount(); ++o)
+				{
+					auto str = il->GetSupportedFileExtension(o);
+					if (str == U"png")
+						return il->Load("something/file.png", buf, sz);
+				}
+			}
+			return 0;
+		};
+
+		auto getTexture = [gs](bqImage* img)->bqTexture* {
+			bqTextureInfo ti;
+			bqTexture* t = gs->SummonTexture(img, ti);
+			if (img)
+				delete img;
+			return t;
+		};
+
+		bqImage* img = getImage(g_defaultFontPNG, sizeof(g_defaultFontPNG));
+
+		if (!img)
+			return;
+
+		bqTexture* myFontTexture = getTexture(img);
+
+		if (!myFontTexture)
+			return;
+
+		g_framework->m_texturesForDestroy.push_back(myFontTexture);
+
+		bqGUIFont* myFont = bqFramework::SummonFont();
+		myFont->AddTexture(myFontTexture);
+		myFont->AddGlyph(U'A', bqVec2f(0, 0), bqPoint(11, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'B', bqVec2f(10, 0), bqPoint(9, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'C', bqVec2f(19, 0), bqPoint(9, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'D', bqVec2f(27, 0), bqPoint(11, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'E', bqVec2f(37, 0), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'F', bqVec2f(45, 0), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'G', bqVec2f(52, 0), bqPoint(11, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'H', bqVec2f(62, 0), bqPoint(10, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'I', bqVec2f(72, 0), bqPoint(4, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'J', bqVec2f(76, 0), bqPoint(6, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'K', bqVec2f(82, 0), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'L', bqVec2f(90, 0), bqPoint(7, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'M', bqVec2f(97, 0), bqPoint(13, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'N', bqVec2f(110, 0), bqPoint(10, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'O', bqVec2f(120, 0), bqPoint(11, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'P', bqVec2f(131, 0), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Q', bqVec2f(139, 0), bqPoint(12, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'R', bqVec2f(151, 0), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'S', bqVec2f(159, 0), bqPoint(7, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'T', bqVec2f(166, 0), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'U', bqVec2f(175, 0), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'V', bqVec2f(184, 0), bqPoint(9, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'W', bqVec2f(193, 0), bqPoint(14, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'X', bqVec2f(207, 0), bqPoint(9, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Y', bqVec2f(216, 0), bqPoint(7, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Z', bqVec2f(224, 0), bqPoint(7, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'0', bqVec2f(231, 0), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'1', bqVec2f(239, 0), bqPoint(7, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'2', bqVec2f(247, 0), bqPoint(7, 15), 0, bqPoint(256, 256));
+
+		myFont->AddGlyph(U'3', bqVec2f(1, 20), bqPoint(7, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'4', bqVec2f(9, 20), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'5', bqVec2f(17, 20), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'6', bqVec2f(25, 20), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'7', bqVec2f(33, 20), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'8', bqVec2f(41, 20), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'9', bqVec2f(49, 20), bqPoint(8, 15), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'a', bqVec2f(57, 20), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'b', bqVec2f(65, 20), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'c', bqVec2f(73, 20), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'd', bqVec2f(80, 20), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'e', bqVec2f(89, 20), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'f', bqVec2f(96, 20), bqPoint(6, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'g', bqVec2f(102, 20), bqPoint(6, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'h', bqVec2f(109, 20), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'i', bqVec2f(117, 20), bqPoint(3, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'j', bqVec2f(120, 20), bqPoint(4, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'k', bqVec2f(125, 20), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'l', bqVec2f(132, 20), bqPoint(3, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'm', bqVec2f(136, 20), bqPoint(12, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'n', bqVec2f(148, 20), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'o', bqVec2f(157, 20), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'p', bqVec2f(165, 20), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'q', bqVec2f(173, 20), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'r', bqVec2f(182, 20), bqPoint(6, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U's', bqVec2f(188, 20), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U't', bqVec2f(194, 20), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'u', bqVec2f(199, 20), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'v', bqVec2f(207, 20), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'w', bqVec2f(214, 20), bqPoint(12, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'x', bqVec2f(226, 20), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'y', bqVec2f(233, 20), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'z', bqVec2f(240, 20), bqPoint(7, 16), 0, bqPoint(256, 256));
+
+		myFont->AddGlyph(U'~', bqVec2f(1, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'`', bqVec2f(9, 39), bqPoint(4, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'!', bqVec2f(14, 39), bqPoint(4, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'?', bqVec2f(19, 39), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'\'', bqVec2f(26, 39), bqPoint(4, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'\"', bqVec2f(30, 39), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'@', bqVec2f(37, 39), bqPoint(13, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'#', bqVec2f(50, 39), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'№', bqVec2f(59, 39), bqPoint(15, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U';', bqVec2f(75, 39), bqPoint(3, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U':', bqVec2f(80, 39), bqPoint(3, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'%', bqVec2f(84, 39), bqPoint(11, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'&', bqVec2f(95, 39), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'^', bqVec2f(106, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'<', bqVec2f(114, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'>', bqVec2f(121, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'(', bqVec2f(130, 39), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U')', bqVec2f(134, 39), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'[', bqVec2f(140, 39), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U']', bqVec2f(144, 39), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'{', bqVec2f(150, 39), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'}', bqVec2f(154, 39), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'*', bqVec2f(160, 39), bqPoint(6, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'.', bqVec2f(167, 39), bqPoint(3, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U',', bqVec2f(171, 39), bqPoint(3, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'/', bqVec2f(174, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'\\', bqVec2f(181, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'|', bqVec2f(189, 39), bqPoint(4, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'+', bqVec2f(195, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'-', bqVec2f(203, 39), bqPoint(5, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'=', bqVec2f(208, 39), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'_', bqVec2f(216, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'$', bqVec2f(233, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U' ', bqVec2f(225, 39), bqPoint(8, 16), 0, bqPoint(256, 256));
+
+		myFont->AddGlyph(U'А', bqVec2f(0, 59), bqPoint(11, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Б', bqVec2f(10, 59), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'В', bqVec2f(19, 59), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Г', bqVec2f(28, 59), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Д', bqVec2f(37, 59), bqPoint(12, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Е', bqVec2f(48, 59), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ё', bqVec2f(56, 59), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ж', bqVec2f(64, 59), bqPoint(13, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'З', bqVec2f(77, 59), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'И', bqVec2f(85, 59), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Й', bqVec2f(95, 59), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'К', bqVec2f(105, 59), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Л', bqVec2f(114, 59), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'М', bqVec2f(124, 59), bqPoint(12, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Н', bqVec2f(138, 59), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'О', bqVec2f(147, 59), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'П', bqVec2f(159, 59), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Р', bqVec2f(168, 59), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'С', bqVec2f(176, 59), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Т', bqVec2f(184, 59), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'У', bqVec2f(193, 59), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ф', bqVec2f(201, 59), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Х', bqVec2f(211, 59), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ц', bqVec2f(220, 59), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ч', bqVec2f(230, 59), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ш', bqVec2f(239, 59), bqPoint(12, 16), 0, bqPoint(256, 256));
+
+		myFont->AddGlyph(U'Щ', bqVec2f(2, 79), bqPoint(13, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ь', bqVec2f(16, 79), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ы', bqVec2f(25, 79), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ъ', bqVec2f(36, 79), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Э', bqVec2f(46, 79), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Ю', bqVec2f(55, 79), bqPoint(13, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'Я', bqVec2f(69, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'а', bqVec2f(78, 79), bqPoint(6, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'б', bqVec2f(86, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'в', bqVec2f(94, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'г', bqVec2f(101, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'д', bqVec2f(110, 79), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'е', bqVec2f(120, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'ё', bqVec2f(128, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'ж', bqVec2f(135, 79), bqPoint(11, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'з', bqVec2f(146, 79), bqPoint(6, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'и', bqVec2f(154, 79), bqPoint(6, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'й', bqVec2f(162, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'к', bqVec2f(171, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'л', bqVec2f(178, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'м', bqVec2f(186, 79), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'н', bqVec2f(197, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'о', bqVec2f(205, 79), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'п', bqVec2f(214, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'р', bqVec2f(223, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'с', bqVec2f(230, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'т', bqVec2f(237, 79), bqPoint(6, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'у', bqVec2f(247, 79), bqPoint(7, 16), 0, bqPoint(256, 256));
+
+		myFont->AddGlyph(U'ф', bqVec2f(1, 98), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'х', bqVec2f(11, 98), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'ц', bqVec2f(18, 98), bqPoint(8, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'ч', bqVec2f(26, 98), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'ш', bqVec2f(35, 98), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'щ', bqVec2f(46, 98), bqPoint(11, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'ь', bqVec2f(58, 98), bqPoint(7, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'ы', bqVec2f(66, 98), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'ъ', bqVec2f(75, 98), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'э', bqVec2f(84, 98), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'ю', bqVec2f(92, 98), bqPoint(10, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'я', bqVec2f(103, 98), bqPoint(7, 16), 0, bqPoint(256, 256));
+
+		g_framework->m_defaultFonts.push_back(myFont);
+
+		isInit = true;
+	}
+}
+
+bqGUIFont* bqFramework::SummonFont()
+{
+	return new bqGUIFont();
 }

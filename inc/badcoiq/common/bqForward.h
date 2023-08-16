@@ -69,6 +69,7 @@ class bqMeshLoader;
 class bqMeshLoaderCallback;
 struct bqCompressionInfo;
 struct bqArchiveZipFile;
+class bqGUIFont;
 
 #endif
 

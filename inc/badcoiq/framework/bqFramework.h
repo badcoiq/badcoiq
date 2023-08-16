@@ -134,6 +134,9 @@ public:
 
 	static bqString GetAppPath();
 	static bqStringA GetPath(const bqString& v);
+
+	static void InitDefaultFonts(bqGS* gs);
+	static bqGUIFont* SummonFont();
 };
 
 #endif

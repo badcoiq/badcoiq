@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_FRAMEWORKIMPL_H__
 
 #include "badcoiq/input/bqInput.h"
+#include "badcoiq/containers/bqArray.h"
 #include <vector>
 
 class bqFrameworkImpl
@@ -56,6 +57,9 @@ public:
 	std::vector<bqGS*> m_gss;
 	std::vector<bqImageLoader*> m_imageLoaders;
 	std::vector<bqMeshLoader*> m_meshLoaders;
+	
+	bqArray<bqTexture*> m_texturesForDestroy;
+	bqArray<bqGUIFont*> m_defaultFonts;
 
 	bqStringA m_fileExistString;
 	bqStringA m_fileSizeString;
