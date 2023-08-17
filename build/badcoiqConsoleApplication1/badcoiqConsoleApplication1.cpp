@@ -108,6 +108,30 @@ void meshLoaderCallback::OnMesh(bqMesh* newMesh, bqString* name, bqString* mater
 
 #include <Windows.h>
 
+class MyGUIDrawTextCallback : public bqGUIDrawTextCallback
+{
+    bqColor m_colorBlack;
+    bqGUIFont* m_defaultFont = 0;
+public:
+    MyGUIDrawTextCallback() {}
+    virtual ~MyGUIDrawTextCallback() {}
+
+    virtual bqGUIFont* OnFont(uint32_t, char32_t)
+    {
+        return m_defaultFont;
+    }
+
+    virtual bqColor* OnColor(uint32_t, char32_t)
+    {
+        return &m_colorBlack;
+    }
+
+    void SetFont(bqGUIFont* f)
+    {
+        m_defaultFont = f;
+    }
+};
+
 int main()
 {
 
@@ -162,6 +186,10 @@ int main()
                // m.m_maps[0].m_texture = texture;
                 gs->SetMaterial(&m);
 
+                bqFramework::InitDefaultFonts(gs);
+                MyGUIDrawTextCallback tdcb;
+                tdcb.SetFont(bqFramework::GetDefaultFont(0));
+
                 while (g_run)
                 {
                     bqFramework::Update();
@@ -203,6 +231,7 @@ int main()
 
                     gs->BeginGUI();
                     gs->DrawGUIRectangle(bqVec4f(0.f, 0.f, 100.f, 20.f), bq::ColorRed, bq::ColorYellow, 0, 0);
+                    gs->DrawGUIText(U"Hello!!!", 9, bqVec2f(10.f), &tdcb);
                     gs->EndGUI();
 
                     gs->EndDraw();

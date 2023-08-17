@@ -136,6 +136,8 @@ public:
 	virtual void EndGUI() = 0;
 	virtual void DrawGUIRectangle(const bqVec4f& rect, const bqColor& color1, const bqColor& color2,
 		bqTexture* t, bqVec4f* UVs) = 0;
+	virtual void DrawGUIText(const char32_t* text, uint32_t textSz, const bqVec2f& position,
+		bqGUIDrawTextCallback*) = 0;
 };
 
 #endif

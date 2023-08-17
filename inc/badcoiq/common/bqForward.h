@@ -70,6 +70,7 @@ class bqMeshLoaderCallback;
 struct bqCompressionInfo;
 struct bqArchiveZipFile;
 class bqGUIFont;
+class bqGUIDrawTextCallback;
 
 #endif
 

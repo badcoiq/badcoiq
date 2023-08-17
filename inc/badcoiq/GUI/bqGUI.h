@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_GUI_H__
 
 #include "badcoiq/GUI/bqGUIFont.h"
+#include "badcoiq/GUI/bqGUIText.h"
 
 #endif
 

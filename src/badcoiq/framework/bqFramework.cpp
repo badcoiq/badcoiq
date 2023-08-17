@@ -493,6 +493,11 @@ bqStringA bqFramework::GetPath(const bqString& v)
 	return stra;
 }
 
+bqGUIFont* bqFramework::GetDefaultFont(uint32_t index)
+{
+	return g_framework->m_defaultFonts.m_data[index];
+}
+
 void bqFramework::InitDefaultFonts(bqGS* gs)
 {
 	static bool isInit = false;

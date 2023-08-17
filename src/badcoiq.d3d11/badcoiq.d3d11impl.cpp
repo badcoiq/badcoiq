@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/gs/bqMaterial.h"
 #include "badcoiq/common/bqImage.h"
 #include "badcoiq/common/bqColor.h"
+#include "badcoiq/GUI/bqGUI.h"
 
 #include "badcoiq.d3d11.mesh.h"
 
@@ -1411,4 +1412,50 @@ void bqGSD3D11::DrawGUIRectangle(
 	m_shaderGUIRectangle->SetOnElement(dynamic_cast<bqGSD3D11Texture*>(t ? t : m_whiteTexture));
 
 	m_d3d11DevCon->Draw(1, 0);
+}
+
+void bqGSD3D11::DrawGUIText(
+	const char32_t* text, 
+	uint32_t textSz, 
+	const bqVec2f& _position,
+	bqGUIDrawTextCallback* cb)
+{
+	BQ_ASSERT_ST(cb);
+	BQ_ASSERT_ST(text);
+
+	bqVec2f position = _position;
+
+	for (uint32_t i = 0; i < textSz; ++i)
+	{
+		bqGUIFont* font = cb->OnFont(cb->m_reason, text[i]);
+		bqColor* color = cb->OnColor(cb->m_reason, text[i]);
+
+		bqGUIFontGlyph* g = font->GetGlyphMap()[text[i]];
+
+		bqVec4f rct;
+		rct.x = position.x;
+		rct.y = position.y;
+
+		rct.z = rct.x + g->m_width;
+		rct.w = rct.y + g->m_height;
+
+		DrawGUIRectangle(rct, *color, *color, (bqGSD3D11Texture*)font->GetTexture(g->m_textureSlot),
+			&g->m_UV);
+
+		position.x += g->m_width + g->m_overhang + g->m_underhang + font->m_characterSpacing;
+
+		switch (text[i])
+		{
+		case U' ':
+			position.x += font->m_spaceSize;
+			break;
+		case U'\t':
+			position.x += font->m_tabSize;
+			break;
+		case U'\n':
+			position.y += font->GetMaxSize().y;
+			position.x = _position.x;
+			break;
+		}
+	}
 }
