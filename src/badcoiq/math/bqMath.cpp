@@ -372,6 +372,20 @@ bool bqMath::PointInRect(const bqPoint& p, const bqRect& r)
 	return false;
 }
 
+bool bqMath::PointInRect(const bqPointf& p, const bqRect& r)
+{
+	if ((p.x >= r.left) && (p.x <= r.right) && (p.y >= r.top) && (p.y <= r.bottom))
+		return true;
+	return false;
+}
+
+bool bqMath::PointInRect(const bqPointf& p, const bqVec4f& r)
+{
+	if ((p.x >= r.x) && (p.x <= r.z) && (p.y >= r.y) && (p.y <= r.w))
+		return true;
+	return false;
+}
+
 void bqMath::Cross(const bqVec3& v1, const bqVec3& v2, bqVec3& r)
 {
 	r.x = (v1.y * v2.z) - (v1.z * v2.y);

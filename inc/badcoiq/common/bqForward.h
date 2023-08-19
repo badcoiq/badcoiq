@@ -73,6 +73,8 @@ class bqGUIFont;
 class bqGUIDrawTextCallback;
 enum class bqGUIStyleTheme;
 struct bqGUIStyle;
+class bqGUIWindow;
+struct bqGUIState;
 
 #endif
 

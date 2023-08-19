@@ -153,6 +153,8 @@ public:
 	// Находится ли точка в прямоугольной области
 	static bool PointInRect(const bqPoint&, const bqRect&);
 	static bool PointInRect(const bqPoint&, const bqVec4f&);
+	static bool PointInRect(const bqPointf&, const bqRect&);
+	static bool PointInRect(const bqPointf&, const bqVec4f&);
 	static bool PointInRect(const bqVec2f&, const bqVec4f&);
 
 	static void Normalize(bqVec3& v);

@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/input/bqInput.h"
 #include "badcoiq/containers/bqArray.h"
+#include "badcoiq/GUI/bqGUI.h"
 #include <vector>
 
 class bqFrameworkImpl
@@ -77,6 +78,7 @@ public:
 	bqGUIStyle m_themeLight;
 	bqGUIStyle m_themeDark;
 	void _initGUIThemes();
+	bqGUIState m_GUIState;
 };
 
 
