@@ -73,6 +73,10 @@ public:
 	std::vector<bqArchiveZipFile*> m_zipFiles;
 
 	void OnDestroy();
+
+	bqGUIStyle m_themeLight;
+	bqGUIStyle m_themeDark;
+	void _initGUIThemes();
 };
 
 

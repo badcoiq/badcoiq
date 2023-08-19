@@ -71,6 +71,8 @@ struct bqCompressionInfo;
 struct bqArchiveZipFile;
 class bqGUIFont;
 class bqGUIDrawTextCallback;
+enum class bqGUIStyleTheme;
+struct bqGUIStyle;
 
 #endif
 

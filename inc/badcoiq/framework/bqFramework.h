@@ -138,6 +138,8 @@ public:
 	static void InitDefaultFonts(bqGS* gs);
 	static bqGUIFont* SummonFont();
 	static bqGUIFont* GetDefaultFont(uint32_t index);
+
+	static bqGUIStyle* GetGUIStyle(bqGUIStyleTheme);
 };
 
 #endif

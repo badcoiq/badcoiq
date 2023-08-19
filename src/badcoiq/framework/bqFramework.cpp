@@ -110,6 +110,7 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 	if (!g_framework)
 	{
 		g_framework = new bqFrameworkImpl();
+		g_framework->_initGUIThemes();
 
 #ifdef BQ_PLATFORM_WINDOWS
 		wchar_t pth[1000];
@@ -716,4 +717,69 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 bqGUIFont* bqFramework::SummonFont()
 {
 	return new bqGUIFont();
+}
+
+bqGUIStyle* bqFramework::GetGUIStyle(bqGUIStyleTheme theme)
+{
+	switch (theme)
+	{
+	case bqGUIStyleTheme::Light:
+		return &g_framework->m_themeLight;
+	case bqGUIStyleTheme::Dark:
+		return &g_framework->m_themeDark;
+	}
+	return &g_framework->m_themeLight;
+}
+
+void bqFrameworkImpl::_initGUIThemes()
+{
+	g_framework->m_themeLight.m_windowActiveBGColor1 = 0xE1E6F7;
+	g_framework->m_themeLight.m_windowActiveBGColor2 = 0xEFEFFF;
+	g_framework->m_themeLight.m_windowActiveBorderColor = 0xE1E6F7;
+	g_framework->m_themeLight.m_windowActiveTitleBGColor1 = 0xB5CCFF;
+	g_framework->m_themeLight.m_windowActiveTitleBGColor2 = 0xBFCFFF;
+	g_framework->m_themeLight.m_windowActiveTitleTextColor = 0x0;
+	g_framework->m_themeLight.m_buttonBGColor1 = 0x999999;
+	g_framework->m_themeLight.m_buttonBGColor2 = 0x666666;
+	g_framework->m_themeLight.m_buttonBorderColor = 0x999999;
+	g_framework->m_themeLight.m_buttonTextColor = 0x0;
+	g_framework->m_themeLight.m_buttonDisabledBGColor1 = 0x999999;
+	g_framework->m_themeLight.m_buttonDisabledBGColor2 = 0x666666;
+	g_framework->m_themeLight.m_buttonDisabledBorderColor = 0x999999;
+	g_framework->m_themeLight.m_buttonDisabledTextColor = 0x555555;
+	g_framework->m_themeLight.m_buttonMouseHoverBGColor1 = 0xAAAAAA;
+	g_framework->m_themeLight.m_buttonMouseHoverBGColor2 = 0x777777;
+	g_framework->m_themeLight.m_buttonMouseHoverTextColor = 0x222222;
+	g_framework->m_themeLight.m_buttonMousePressBGColor1 = 0x777777;
+	g_framework->m_themeLight.m_buttonMousePressBGColor2 = 0x444444;
+	g_framework->m_themeLight.m_buttonMousePressTextColor = 0xFF0000;
+
+	g_framework->m_themeLight.m_chkradioDisabledTextColor = 0xFF0000;
+	g_framework->m_themeLight.m_chkradioMouseHoverTextColor = bq::ColorYellow;
+	g_framework->m_themeLight.m_chkradioMousePressTextColor = 0xFF55FF;
+	g_framework->m_themeLight.m_chkradioTextColor = 0x0;
+
+	g_framework->m_themeLight.m_textEditorBGColor = 0xFFFFFF;
+	g_framework->m_themeLight.m_textEditorLine1BGColor = 0xFAFAFA;
+	g_framework->m_themeLight.m_textEditorLine2BGColor = 0xF1F1F1;
+	g_framework->m_themeLight.m_textEditorTextColor = 0x0;
+	g_framework->m_themeLight.m_textEditorSelectedTextBGColor = 0x999999;
+	g_framework->m_themeLight.m_textEditorSelectedTextColor = 0x0;
+	g_framework->m_themeLight.m_textEditorCursorColor = 0x0;
+
+	g_framework->m_themeLight.m_staticTextBGColor = 0xFAFAFA;
+	g_framework->m_themeLight.m_staticTextTextColor = 0;
+
+	g_framework->m_themeLight.m_listboxBGColor = 0xFAFAFA;
+	g_framework->m_themeLight.m_listboxLine1BGColor = 0xFAFAFA;
+	g_framework->m_themeLight.m_listboxLine2BGColor = 0xF1F1F1;
+	g_framework->m_themeLight.m_listboxSelectedLineBGColor = 0x999999;
+
+	g_framework->m_themeLight.m_sliderTextColor = 0;
+	g_framework->m_themeLight.m_sliderAxisEmtpyColor = 0xD1D1D1;
+	g_framework->m_themeLight.m_sliderAxisFillColor = bq::ColorBlue;
+	g_framework->m_themeLight.m_sliderControlColor = 0xD1D1D1;
+
+
+	g_framework->m_themeDark = g_framework->m_themeLight;
 }
