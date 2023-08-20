@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/GUI/bqGUIFont.h"
 #include "badcoiq/GUI/bqGUIText.h"
 #include "badcoiq/GUI/bqGUIStyle.h"
+#include "badcoiq/GUI/bqGUICommon.h"
 #include "badcoiq/GUI/bqGUIElement.h"
 
 // Надо знать текущее состояние GUI
