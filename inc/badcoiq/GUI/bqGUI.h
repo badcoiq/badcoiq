@@ -35,6 +35,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/GUI/bqGUIStyle.h"
 #include "badcoiq/GUI/bqGUICommon.h"
 #include "badcoiq/GUI/bqGUIElement.h"
+#include "badcoiq/GUI/bqGUIRootElement.h"
+#include "badcoiq/GUI/bqGUIWindow.h"
 
 // Надо знать текущее состояние GUI
 // Тут состояние об окнах. Окна хранят своё состояние сами.

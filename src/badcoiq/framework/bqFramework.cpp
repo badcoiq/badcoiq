@@ -187,6 +187,35 @@ void bqFrameworkImpl::OnDestroy()
 		g_framework->m_meshLoaders.clear();
 	}
 
+	if (g_framework->m_GUIWindows.m_head)
+	{
+		// надо собрать все окна в массив
+		bqArray<bqGUIWindow*> allWindows;
+		allWindows.reserve(10);
+
+		auto cw = g_framework->m_GUIWindows.m_head;
+		auto lw = cw->m_left;
+
+		while (1)
+		{
+			auto nw = cw->m_right;
+
+			allWindows.push_back(cw->m_data);
+			//bqFramework::Destroy(cw->m_data);
+
+			if (cw == lw)
+				break;
+			cw = nw;
+		}
+		g_framework->m_GUIWindows.clear();
+
+		// теперь спокойно удалять
+		for (size_t i = 0; i < allWindows.m_size; ++i)
+		{
+			bqFramework::Destroy(allWindows.m_data[i]);
+		}
+	}
+
 	_onDestroy_archive();
 
 	if (g_framework->m_gss.size())
@@ -783,3 +812,122 @@ void bqFrameworkImpl::_initGUIThemes()
 
 	g_framework->m_themeDark = g_framework->m_themeLight;
 }
+
+bqGUIWindow* bqFramework::SummonGUIWindow(const bqVec2f& position, const bqVec2f& size)
+{
+	bqGUIWindow* newWindow = new bqGUIWindow(position, size);
+	newWindow->SetStyle(bqFramework::GetGUIStyle(bqGUIStyleTheme::Light));
+	g_framework->m_GUIWindows.push_back(newWindow);
+	return newWindow;
+}
+
+
+void bqFramework::UpdateGUI()
+{
+	if (g_framework->m_GUIWindows.m_head)
+	{
+		g_framework->m_GUIState.m_scrollBlock = false;
+		
+		// сброс значения здеь, оно будет установлено в каком нибудь Update если курсор попадает в его область
+		g_framework->m_GUIState.m_windowUnderCursor = 0;
+
+		auto last = g_framework->m_GUIWindows.m_head;
+		auto curr = last->m_left;
+		while (1)
+		{
+			if (curr->m_data->IsVisible() 
+				&& 
+				!g_framework->m_GUIState.m_windowUnderCursor // запрет обрабатывать ввод другим окнам
+				)
+			{
+				curr->m_data->Update();
+			}
+
+			if (curr == last)
+				break;
+			curr = curr->m_left;
+		}
+	}
+}
+
+void bqFramework::DrawGUI(bqGS* gs)
+{
+	if (g_framework->m_GUIWindows.m_head)
+	{
+		auto last = g_framework->m_GUIWindows.m_head;
+		auto curr = last->m_left;
+		while (1)
+		{
+			if (curr->m_data->IsVisible())
+			{
+				curr->m_data->Draw(gs, g_framework->m_deltaTime);
+			}
+
+			if (curr == last)
+				break;
+			curr = curr->m_left;
+		}
+	}
+}
+
+void bqFramework::RebuildGUI()
+{
+	if (g_framework->m_GUIWindows.m_head)
+	{
+		auto last = g_framework->m_GUIWindows.m_head;
+		auto curr = last->m_left;
+		while (1)
+		{
+			curr->m_data->Rebuild();
+
+			if (curr == last)
+				break;
+			curr = curr->m_left;
+		}
+	}
+}
+
+void DestroyGUIElement_internal(bqGUIElement* e)
+{
+	if (e->GetChildren()->m_head)
+	{
+		auto children = e->GetChildren();
+		if (children->m_head)
+		{
+			auto curr = children->m_head;
+			auto last = curr->m_left;
+			while (1)
+			{
+				DestroyGUIElement_internal(dynamic_cast<bqGUIElement*>(curr->m_data));
+				if (curr == last)
+					break;
+				curr = curr->m_right;
+			}
+		}
+	}
+
+	delete e;
+}
+
+void _DestroyGUIElement(bqGUIElement* e)
+{
+	e->SetParent(0);
+	DestroyGUIElement_internal(e);
+}
+
+void bqFramework::Destroy(bqGUIWindow* w)
+{
+	BQ_ASSERT_ST(w);
+	_DestroyGUIElement(w->GetRootElement());
+	g_framework->m_GUIWindows.erase_first(w);
+	delete w;
+}
+
+void bqFramework::Destroy(bqGUIElement* e)
+{
+	BQ_ASSERT_ST(e);
+	if (e->GetWindow()->GetRootElement() == e)
+		return;
+	_DestroyGUIElement(e);
+}
+

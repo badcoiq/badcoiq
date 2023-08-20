@@ -79,6 +79,7 @@ public:
 	bqGUIStyle m_themeDark;
 	void _initGUIThemes();
 	bqGUIState m_GUIState;
+	bqList<bqGUIWindow*> m_GUIWindows;
 };
 
 

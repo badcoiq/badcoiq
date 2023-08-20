@@ -27,56 +27,49 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#ifndef __BQ_GUIWINDOW_H__
+#define __BQ_GUIWINDOW_H__
 
-class bqWindow;
-class bqWindowCallback;
+class bqGUIWindow : public bqGUICommon
+{
+public:
+	enum
+	{
+		windowFlag_withCloseButton = 0x1,
+		windowFlag_withCollapseButton = 0x2,
+		windowFlag_withTitleBar = 0x4,
+		windowFlag_canMove = 0x8,
+		windowFlag_canResize = 0x10,
+		windowFlag_canDock = 0x20,
+		windowFlag_canToTop = 0x40,
+	};
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
+private:
+	bqGUIElement* m_rootElement = 0;
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+	bqVec2f m_sizeMinimum = bqVec2f(100.f, 30.f);
 
-class bqGS;
-class bqMaterial;
-class bqPolygonMeshPolygon;
-class bqMeshPolygonCreator;
-class bqPolygonMeshControlPoint;
-class bqGPUMesh;
-class bqMesh;
-class bqTexture;
-class bqColor;
-class bqImage;
-class bqImageLoader;
-class bqPolygonMesh;
-class bqMeshLoader;
-class bqMeshLoaderCallback;
-struct bqCompressionInfo;
-struct bqArchiveZipFile;
-class bqGUIFont;
-class bqGUIDrawTextCallback;
-enum class bqGUIStyleTheme;
-struct bqGUIStyle;
-class bqGUIWindow;
-struct bqGUIState;
-class bqGUIElement;
-class bqGUICommon;
+	bqString m_title;
+	uint32_t m_windowFlags = 0;
+public:
+	bqGUIWindow(const bqVec2f& position, const bqVec2f& size);
+	virtual ~bqGUIWindow();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIWindow);
+
+	// Надо будет вызвать Rebuild
+	void SetPositionAndSize(const bqVec2f& p, const bqVec2f& sz);
+
+	void SetSizeMinimum(const bqVec2f& sz) { m_sizeMinimum = sz; }
+
+	bqGUIElement* GetRootElement() { return m_rootElement; }
+
+	virtual void Rebuild() override;
+	virtual void Update() override;
+	virtual void Draw(bqGS* gs, float dt) override;
+
+	void SetTitle(const char32_t*);
+};
+
 
 #endif
 

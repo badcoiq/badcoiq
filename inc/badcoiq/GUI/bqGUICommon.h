@@ -64,6 +64,7 @@ protected:
 public:
 	bqGUICommon(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUICommon();
+	BQ_PLACEMENT_ALLOCATOR(bqGUICommon);
 
 	const bqVec4f& GetBuildRectOnCreation() { return m_buildRectOnCreation; }
 	void SetBuildRectOnCreation(const bqVec4f& r) { m_buildRectOnCreation = r; }

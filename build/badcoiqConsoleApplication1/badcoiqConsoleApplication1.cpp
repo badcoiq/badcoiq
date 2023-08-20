@@ -190,10 +190,13 @@ int main()
                 MyGUIDrawTextCallback tdcb;
                 tdcb.SetFont(bqFramework::GetDefaultFont(0));
 
+                auto guiWindow = bqFramework::SummonGUIWindow(bqVec2f(100.f, 100.f), bqVec2f(300.f));
+                bqFramework::RebuildGUI();
+
                 while (g_run)
                 {
                     bqFramework::Update();
-                    
+                    bqFramework::UpdateGUI();
 
                     gs->BeginDraw();
                     gs->ClearAll();
@@ -232,6 +235,7 @@ int main()
                     gs->BeginGUI();
                     gs->DrawGUIRectangle(bqVec4f(0.f, 0.f, 100.f, 20.f), bq::ColorRed, bq::ColorYellow, 0, 0);
                     gs->DrawGUIText(U"Hello!!!", 9, bqVec2f(10.f), &tdcb);
+                    bqFramework::DrawGUI(gs);
                     gs->EndGUI();
 
                     gs->EndDraw();

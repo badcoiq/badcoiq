@@ -140,6 +140,12 @@ public:
 	static bqGUIFont* GetDefaultFont(uint32_t index);
 
 	static bqGUIStyle* GetGUIStyle(bqGUIStyleTheme);
+	static bqGUIWindow* SummonGUIWindow(const bqVec2f& position, const bqVec2f& size);
+	static void UpdateGUI();
+	static void DrawGUI(bqGS* gs);
+	static void RebuildGUI();
+	static void Destroy(bqGUIWindow*);
+	static void Destroy(bqGUIElement*);
 };
 
 #endif
