@@ -27,27 +27,31 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_GUI_H__
-#define __BQ_GUI_H__
+#ifndef __BQ_GUIBTN_H__
+#define __BQ_GUIBTN_H__
 
-#include "badcoiq/GUI/bqGUIFont.h"
-#include "badcoiq/GUI/bqGUIText.h"
-#include "badcoiq/GUI/bqGUIStyle.h"
-#include "badcoiq/GUI/bqGUICommon.h"
-#include "badcoiq/GUI/bqGUIElement.h"
-#include "badcoiq/GUI/bqGUIRootElement.h"
-#include "badcoiq/GUI/bqGUIWindow.h"
+// У всех элементов есть указатель на bqGUIDrawTextCallback
+// Фреймворк должен иметь дефолтный bqGUIDrawTextCallback (возможно отдельные на каждый тип элемента)
+// При создании нового элемента, будет установлен дефолтный m_textDrawCallback (из bqGUICommon)
 
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
-struct bqGUIState
+// кнопка
+class bqGUIButton : public bqGUIElement
 {
-	bqGUIWindow* m_windowUnderCursor = 0;
-	bqGUIWindow* m_activeWindow = 0;
-	bool m_scrollBlock = false;
-};
+protected:
+	bqString m_text;  // Этот текст рисуется
+	bqVec2f m_textPosition; // на такой позиции
+	void UpdateTextPosition(); // надо найти эту позицию
+public:
+	bqGUIButton(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	virtual ~bqGUIButton();
+	virtual void Rebuild() override;
+	virtual void Update() override;
+	virtual void Draw(bqGS* gs, float dt) override;
 
-#include "badcoiq/GUI/bqGUIButton.h"
+	Alignment m_textAlign = Alignment::Center;
+
+	virtual void SetText(const bqString&);
+};
 
 #endif
 
