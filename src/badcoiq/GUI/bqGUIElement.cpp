@@ -157,7 +157,8 @@ void bqGUIElement::Rebuild()
 	// только root element без родителя
 	// перестроить root в bqGUIWindow::Rebuild();
 
-	Update();
+	bqGUIElement::Update(); // не надо вызывать -переполнение стека
+	                         // но если написать bqGUIElement::Update() то ошибка пропадёт
 }
 
 void bqGUIElement::Update()

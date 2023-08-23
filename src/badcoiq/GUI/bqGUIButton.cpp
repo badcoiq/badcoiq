@@ -58,8 +58,11 @@ bqGUIButton::bqGUIButton(bqGUIWindow* w, const bqVec2f& position, const bqVec2f&
 	:
 	bqGUIElement::bqGUIElement(w, position, size)
 {
+	// установка дефолтного коллбэка
 	m_textDrawCallback = g_framework->m_defaultTextDrawCallback_button;
 	
+	// установка дефолтного шрифта.
+	// перед использованием надо создать дефолтные шрифты
 	bqGUIButtonTextDrawCallback* cb = (bqGUIButtonTextDrawCallback*)g_framework->m_defaultTextDrawCallback_button;
 	cb->SetFont(bqFramework::GetDefaultFont(0));
 }
@@ -76,7 +79,7 @@ void bqGUIButton::Update()
 {
 	bqGUIElement::Update();
 	if (m_window->GetRootElement()->m_scrollDelta.y)
-		Rebuild();
+		bqGUIButton::Rebuild();
 }
 
 void bqGUIButton::Draw(bqGS* gs, float dt)

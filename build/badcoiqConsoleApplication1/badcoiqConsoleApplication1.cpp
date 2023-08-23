@@ -213,7 +213,7 @@ int main()
                 tdcb.SetFont(bqFramework::GetDefaultFont(0));
 
                 auto guiWindow = bqFramework::SummonGUIWindow(bqVec2f(100.f, 100.f), bqVec2f(300.f));
-                MyButton* btn = new MyButton(guiWindow, bqVec2f(0.f, 0.f), bqVec2f(50.f, 20.f));
+                MyButton* btn = new MyButton(guiWindow, bqVec2f(0.f, 0.f), bqVec2f(50.f, 420.f));
                 
                 bqFramework::RebuildGUI();
 
