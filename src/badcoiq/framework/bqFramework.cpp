@@ -111,6 +111,7 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 	{
 		g_framework = new bqFrameworkImpl();
 		g_framework->_initGUIThemes();
+		g_framework->_initGUITextDrawCallbacks();
 
 #ifdef BQ_PLATFORM_WINDOWS
 		wchar_t pth[1000];
@@ -216,6 +217,7 @@ void bqFrameworkImpl::OnDestroy()
 		}
 	}
 
+	_onDestroy_GUITextDrawCallbacks();
 	_onDestroy_archive();
 
 	if (g_framework->m_gss.size())
@@ -929,5 +931,16 @@ void bqFramework::Destroy(bqGUIElement* e)
 	if (e->GetWindow()->GetRootElement() == e)
 		return;
 	_DestroyGUIElement(e);
+}
+
+void bqFrameworkImpl::_initGUITextDrawCallbacks()
+{
+	m_defaultTextDrawCallback_button = new bqGUIButtonTextDrawCallback;
+}
+
+void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
+{
+	delete m_defaultTextDrawCallback_button;
+	m_defaultTextDrawCallback_button = 0;
 }
 

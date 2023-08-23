@@ -32,7 +32,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // У всех элементов есть указатель на bqGUIDrawTextCallback
 // Фреймворк должен иметь дефолтный bqGUIDrawTextCallback (возможно отдельные на каждый тип элемента)
-// При создании нового элемента, будет установлен дефолтный m_textDrawCallback (из bqGUICommon)
+// При создании нового элемента, будет установлен дефолтный m_textDrawCallback (bqGUICommon)
+class bqGUIButtonTextDrawCallback : public bqGUIDrawTextCallback
+{
+	bqGUIFont* m_font = 0;
+	bqColor m_color;
+public:
+	bqGUIButtonTextDrawCallback();
+	virtual ~bqGUIButtonTextDrawCallback();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIButtonTextDrawCallback);
+
+	void SetFont(bqGUIFont* f) { m_font = f; }
+
+	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
+	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+};
 
 // кнопка
 class bqGUIButton : public bqGUIElement
@@ -44,6 +58,9 @@ protected:
 public:
 	bqGUIButton(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIButton();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIButton);
+
+
 	virtual void Rebuild() override;
 	virtual void Update() override;
 	virtual void Draw(bqGS* gs, float dt) override;

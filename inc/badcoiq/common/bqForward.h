@@ -77,6 +77,7 @@ class bqGUIWindow;
 struct bqGUIState;
 class bqGUIElement;
 class bqGUICommon;
+class bqGUIButton;
 
 #endif
 

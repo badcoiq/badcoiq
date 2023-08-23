@@ -80,6 +80,10 @@ public:
 	void _initGUIThemes();
 	bqGUIState m_GUIState;
 	bqList<bqGUIWindow*> m_GUIWindows;
+
+	void _initGUITextDrawCallbacks();
+	void _onDestroy_GUITextDrawCallbacks();
+	bqGUIDrawTextCallback* m_defaultTextDrawCallback_button = 0;
 };
 
 

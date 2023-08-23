@@ -60,6 +60,11 @@ public:
 	T top = 0;
 	T right = 0;
 	T bottom = 0;
+
+	T Width() { return right - left; }
+	T Height() { return bottom - top; }
+
+	using _type = T;
 };
 
 using bqRect = bqRect_t<int32_t>;

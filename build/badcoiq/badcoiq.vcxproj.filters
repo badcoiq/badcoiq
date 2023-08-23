@@ -111,5 +111,8 @@
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIWindow.cpp">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIButton.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

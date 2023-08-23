@@ -614,6 +614,9 @@ public:
 	T z = static_cast<T>(0);
 	T w = static_cast<T>(0);
 	T* Data() { return &x; }
+
+	bqRect GetRect() { return bqRect((bqRect::_type)x, (bqRect::_type)y, (bqRect::_type)z, (bqRect::_type)w); }
+	bqRectf GetRectf() { return bqRectf((bqRect::_type)x, (bqRect::_type)y, (bqRect::_type)z, (bqRect::_type)w); }
 };
 BQ_FORCEINLINE bqVec4f operator*(const bqReal& s, const bqVec4f& v) { return v * s; }
 

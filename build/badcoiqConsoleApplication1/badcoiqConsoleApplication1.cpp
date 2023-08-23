@@ -132,6 +132,28 @@ public:
     }
 };
 
+class MyButton : public bqGUIButton
+{
+public:
+    MyButton(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+        :
+        bqGUIButton(w, position, size)
+    {
+    }
+
+    virtual ~MyButton()
+    {
+    }
+
+    BQ_PLACEMENT_ALLOCATOR(MyButton);
+  
+    virtual void OnClickLMB() override
+    {
+        bqLog::Print("BTN LMB\n");
+        SetText(U"BTN");
+    }
+};
+
 int main()
 {
 
@@ -191,6 +213,8 @@ int main()
                 tdcb.SetFont(bqFramework::GetDefaultFont(0));
 
                 auto guiWindow = bqFramework::SummonGUIWindow(bqVec2f(100.f, 100.f), bqVec2f(300.f));
+                MyButton* btn = new MyButton(guiWindow, bqVec2f(0.f, 0.f), bqVec2f(50.f, 20.f));
+                
                 bqFramework::RebuildGUI();
 
                 while (g_run)

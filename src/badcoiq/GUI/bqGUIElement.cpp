@@ -39,7 +39,7 @@ bqGUIElement::bqGUIElement(bqGUIWindow* w, const bqVec2f& position, const bqVec2
 {
 	BQ_ASSERT_ST(w);
 	m_window = w;
-	//SetParent(w->GetRootElement());
+	SetParent(w->GetRootElement());
 	SetStyle(bqFramework::GetGUIStyle(bqGUIStyleTheme::Light));
 }
 bqGUIElement::~bqGUIElement() {}
