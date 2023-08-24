@@ -38,6 +38,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/common/bqTextBufferReader.h"
 #include "badcoiq/archive/bqArchive.h"
 
+#include "../GUI/bqGUIDefaultTextDrawCallbacks.h"
+
 #include "bqFrameworkImpl.h"
 
 #include <filesystem>

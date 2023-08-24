@@ -25,36 +25,29 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_GUIBTN_H__
-#define __BQ_GUIBTN_H__
+#ifndef __BQ_GUICBS_H_
+#define __BQ_GUICBS_H_
 
-// У всех элементов есть указатель на bqGUIDrawTextCallback
-// Фреймворк должен иметь дефолтный bqGUIDrawTextCallback (возможно отдельные на каждый тип элемента)
-// При создании нового элемента, будет установлен дефолтный m_textDrawCallback (bqGUICommon)
+#include "badcoiq.h"
 
-// кнопка
-class bqGUIButton : public bqGUIElement
+#include "badcoiq/GUI/bqGUI.h"
+
+
+class bqGUIButtonTextDrawCallback : public bqGUIDrawTextCallback
 {
-protected:
-	bqString m_text;  // Этот текст рисуется
-	bqVec2f m_textPosition; // на такой позиции
-	void UpdateTextPosition(); // надо найти эту позицию
+	bqGUIFont* m_font = 0;
+	bqColor m_color;
 public:
-	bqGUIButton(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
-	virtual ~bqGUIButton();
-	BQ_PLACEMENT_ALLOCATOR(bqGUIButton);
+	bqGUIButtonTextDrawCallback();
+	virtual ~bqGUIButtonTextDrawCallback();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIButtonTextDrawCallback);
 
+	void SetFont(bqGUIFont* f) { m_font = f; }
 
-	virtual void Rebuild() override;
-	virtual void Update() override;
-	virtual void Draw(bqGS* gs, float dt) override;
-
-	Alignment m_textAlign = Alignment::Center;
-
-	virtual void SetText(const bqString&);
+	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
+	virtual bqColor* OnColor(uint32_t r, char32_t) override;
 };
 
-#endif
 
+#endif

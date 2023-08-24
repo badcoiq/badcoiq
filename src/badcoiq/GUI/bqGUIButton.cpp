@@ -34,6 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
+#include "bqGUIDefaultTextDrawCallbacks.h"
+
 bqGUIButtonTextDrawCallback::bqGUIButtonTextDrawCallback()
 {
 	m_color = bq::ColorBlack;
