@@ -25,41 +25,32 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 #pragma once
-#ifndef __BQ_GUICBS_H_
-#define __BQ_GUICBS_H_
+#ifndef __BQ_GUICHRDBX_H__
+#define __BQ_GUICHRDBX_H__
 
-#include "badcoiq.h"
-
-#include "badcoiq/GUI/bqGUI.h"
-
-
-class bqGUIButtonTextDrawCallback : public bqGUIDrawTextCallback
+class bqGUICheckRadioBox : public bqGUIButton
 {
-	bqGUIFont* m_font = 0;
-	bqColor m_color;
+	bqGUIDrawTextCallback* m_iconDrawCallback = 0;
 public:
-	bqGUIButtonTextDrawCallback();
-	virtual ~bqGUIButtonTextDrawCallback();
-	BQ_PLACEMENT_ALLOCATOR(bqGUIButtonTextDrawCallback);
+	bqGUICheckRadioBox(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	virtual ~bqGUICheckRadioBox();
+	
+	virtual void Rebuild() final;
+	virtual void Draw(bqGS* gs, float dt) final;
+	float m_iconVerticalIndent = 0.f;
 
-	void SetFont(bqGUIFont* f) { m_font = f; }
 
-	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
-	virtual bqColor* OnColor(uint32_t r, char32_t) override;
-};
+	virtual void OnClickLMB() override;
+	bool m_isChecked = false;
 
-class bqGUICheckRadioBoxTextDrawCallback : public bqGUIDrawTextCallback
-{
-	bqGUIFont* m_font = 0;
-	bqColor m_color;
-public:
-	bqGUICheckRadioBoxTextDrawCallback();
-	virtual ~bqGUICheckRadioBoxTextDrawCallback();
-	BQ_PLACEMENT_ALLOCATOR(bqGUIButtonTextDrawCallback);
+	virtual void OnCheck();
+	virtual void OnUnCheck();
 
-	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
-	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+	bool m_asRadioButton = false;
+	uint32_t m_radiouGroup = 0;
 };
 
 #endif
+

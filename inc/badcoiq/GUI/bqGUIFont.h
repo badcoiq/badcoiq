@@ -89,5 +89,25 @@ public:
 	int32_t m_tabSize = 12;
 };
 
+enum class bqGUIDefaultFont
+{
+	Text,
+	Icons
+};
+
+enum class bqGUIDefaultIconID
+{
+	CheckboxUncheck = 1,
+	CheckboxCheck,
+	RadioUncheck,
+	RadioCheck,
+	Plus,
+	Minus,
+	ArrowUp,
+	ArrowDonw,
+	ArrowRight,
+	ArrowLeft,
+};
+
 #endif
 

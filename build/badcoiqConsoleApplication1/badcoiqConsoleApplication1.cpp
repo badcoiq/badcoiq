@@ -210,7 +210,7 @@ int main()
 
                 bqFramework::InitDefaultFonts(gs);
                 MyGUIDrawTextCallback tdcb;
-                tdcb.SetFont(bqFramework::GetDefaultFont(0));
+                tdcb.SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
 
                 auto guiWindow = bqFramework::SummonGUIWindow(bqVec2f(100.f, 100.f), bqVec2f(300.f));
                 MyButton* btn = new MyButton(guiWindow, bqVec2f(0.f, 0.f), bqVec2f(50.f, 420.f));

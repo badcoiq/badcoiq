@@ -182,6 +182,7 @@
     <ClCompile Include="..\..\src\badcoiq\geometry\bqPolygonMesh.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqRay.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIButton.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUICheckRadioBox.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUICommon.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIElement.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIFont.cpp" />

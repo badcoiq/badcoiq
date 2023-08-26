@@ -527,9 +527,19 @@ bqStringA bqFramework::GetPath(const bqString& v)
 	return stra;
 }
 
-bqGUIFont* bqFramework::GetDefaultFont(uint32_t index)
+bqGUIFont* bqFramework::GetDefaultFont(bqGUIDefaultFont t)
 {
-	return g_framework->m_defaultFonts.m_data[index];
+	switch (t)
+	{
+	case bqGUIDefaultFont::Text:
+	case bqGUIDefaultFont::Icons:
+		return g_framework->m_defaultFonts.m_data[(uint32_t)t];
+		break;
+	default:
+		bqLog::PrintWarning("%s : not implemented\n", BQ_FUNCTION);
+		break;
+	}
+	return g_framework->m_defaultFonts.m_data[0];
 }
 
 void bqFramework::InitDefaultFonts(bqGS* gs)
@@ -743,6 +753,31 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 
 		g_framework->m_defaultFonts.push_back(myFont);
 
+		img = getImage(g_defaultIconsPNG, 4825);
+		if (img)
+		{
+			myFontTexture = getTexture(img);
+			if (myFontTexture)
+			{
+				g_framework->m_texturesForDestroy.push_back(myFontTexture);
+
+				myFont = bqFramework::SummonFont();
+				myFont->AddTexture(myFontTexture);
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::CheckboxUncheck, bqVec2f(0, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::RadioUncheck, bqVec2f(0, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::CheckboxCheck, bqVec2f(28, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::RadioCheck, bqVec2f(14, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::Minus, bqVec2f(43, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::Plus, bqVec2f(57, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::ArrowUp, bqVec2f(71, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::ArrowDonw, bqVec2f(85, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::ArrowRight, bqVec2f(97, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::ArrowLeft, bqVec2f(109, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+
+				g_framework->m_defaultFonts.push_back(myFont);
+			}
+		}
+
 		isInit = true;
 	}
 }
@@ -938,11 +973,12 @@ void bqFramework::Destroy(bqGUIElement* e)
 void bqFrameworkImpl::_initGUITextDrawCallbacks()
 {
 	m_defaultTextDrawCallback_button = new bqGUIButtonTextDrawCallback;
+	m_defaultTextDrawCallback_icons = new bqGUICheckRadioBoxTextDrawCallback;
 }
 
 void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 {
-	delete m_defaultTextDrawCallback_button;
-	m_defaultTextDrawCallback_button = 0;
+	delete m_defaultTextDrawCallback_button; m_defaultTextDrawCallback_button = 0;
+	delete m_defaultTextDrawCallback_icons; m_defaultTextDrawCallback_icons = 0;
 }
 

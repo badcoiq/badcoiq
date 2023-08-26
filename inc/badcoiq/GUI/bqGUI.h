@@ -48,6 +48,7 @@ struct bqGUIState
 };
 
 #include "badcoiq/GUI/bqGUIButton.h"
+#include "badcoiq/GUI/bqGUICheckRadioBox.h"
 
 #endif
 

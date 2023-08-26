@@ -137,7 +137,7 @@ public:
 
 	static void InitDefaultFonts(bqGS* gs);
 	static bqGUIFont* SummonFont();
-	static bqGUIFont* GetDefaultFont(uint32_t index);
+	static bqGUIFont* GetDefaultFont(bqGUIDefaultFont);
 
 	static bqGUIStyle* GetGUIStyle(bqGUIStyleTheme);
 	static bqGUIWindow* SummonGUIWindow(const bqVec2f& position, const bqVec2f& size);

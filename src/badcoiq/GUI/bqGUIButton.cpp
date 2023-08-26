@@ -66,7 +66,7 @@ bqGUIButton::bqGUIButton(bqGUIWindow* w, const bqVec2f& position, const bqVec2f&
 	// установка дефолтного шрифта.
 	// перед использованием надо создать дефолтные шрифты
 	bqGUIButtonTextDrawCallback* cb = (bqGUIButtonTextDrawCallback*)g_framework->m_defaultTextDrawCallback_button;
-	cb->SetFont(bqFramework::GetDefaultFont(0));
+	cb->SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
 }
 
 bqGUIButton::~bqGUIButton() {}
