@@ -554,7 +554,6 @@ void bqGUITextEditor::UpdateContentSize()
 		// + when scroll to bottom there is must 1 line be visible
 		m_contentSize.y += (m_baseRect.w - m_baseRect.y) - m_lineHeight;
 	}
-	printf("m_contentSize.y %f\n", m_contentSize.y);
 	UpdateScrollLimit();
 }
 
@@ -578,8 +577,8 @@ void bqGUITextEditor::Rebuild()
 	}
 	//findVScroll();
 	//findHScroll();
-	printf("Num of lines: %i\n", m_numberOfLines);
-	printf("Num of visible lines: %i\n", m_numberOfVisibleLines);
+//	printf("Num of lines: %i\n", m_numberOfLines);
+//	printf("Num of visible lines: %i\n", m_numberOfVisibleLines);
 }
 
 void bqGUITextEditor::Update()
@@ -926,8 +925,6 @@ void bqGUITextEditor::Draw(bqGS* gs, float dt)
 				gs->DrawGUIRectangle(r, cc, cc, 0, 0);
 			}
 
-			float fontMaxSizeY = 0.f;
-
 			size_t last = m_textBufferLen + 1;
 			for (size_t o = m_lines.m_data[index].m_index; o < last; ++o)
 			{
@@ -935,14 +932,12 @@ void bqGUITextEditor::Draw(bqGS* gs, float dt)
 				bqGUIFont* font = m_textDrawCallback->OnFont(0, ch);
 				bqGUIFontGlyph* g = font->GetGlyphMap()[ch];
 
-				if (font->GetMaxSize().y > fontMaxSizeY)
-					fontMaxSizeY = (float)font->GetMaxSize().y;
-
 				bqVec4f chrct;
 				chrct.x = textPosition.x;
 				chrct.y = textPosition.y;
-				chrct.z = chrct.x + g->m_width + g->m_overhang + g->m_underhang + font->m_characterSpacing;
-				chrct.w = chrct.y + m_lineHeight;
+
+				chrct.z = chrct.x + g->m_width + g->m_overhang + g->m_underhang;
+				chrct.w = chrct.y + g->m_height;
 
 				auto d = bqMath::Distance(bqVec4f(chrct.x, chrct.y, 0.f, 0.f),
 					bqVec4f(mp.x, mp.y, 0.f, 0.f));

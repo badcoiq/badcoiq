@@ -582,6 +582,7 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 		g_framework->m_texturesForDestroy.push_back(myFontTexture);
 
 		bqGUIFont* myFont = bqFramework::SummonFont();
+	//	myFont->m_characterSpacing = 3.f;
 		myFont->AddTexture(myFontTexture);
 		myFont->AddGlyph(U'A', bqVec2f(0, 0), bqPoint(11, 15), 0, bqPoint(256, 256));
 		myFont->AddGlyph(U'B', bqVec2f(10, 0), bqPoint(9, 15), 0, bqPoint(256, 256));
