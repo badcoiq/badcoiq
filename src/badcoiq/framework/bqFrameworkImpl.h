@@ -85,6 +85,7 @@ public:
 	void _onDestroy_GUITextDrawCallbacks();
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_button = 0;
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_icons = 0;
+	bqGUIDrawTextCallback* m_defaultTextDrawCallback_textEditor = 0;
 };
 
 

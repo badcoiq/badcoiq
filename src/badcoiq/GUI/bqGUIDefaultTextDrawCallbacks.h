@@ -66,4 +66,18 @@ public:
 	virtual bqColor* OnColor(uint32_t r, char32_t) override;
 };
 
+class bqGUITextEditorTextDrawCallback : public bqGUIDrawTextCallback
+{
+	bqGUIFont* m_font = 0;
+	bqColor m_color;
+public:
+	bqGUITextEditorTextDrawCallback();
+	virtual ~bqGUITextEditorTextDrawCallback();
+
+	void SetFont(bqGUIFont* f) { m_font = f; }
+
+	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
+	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+};
+
 #endif

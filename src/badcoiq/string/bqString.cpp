@@ -28,45 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
-static uint8_t g_stringWordSize = 16;
-const static float g_string_to_float_table[17] =
-{
-	0.f,
-	0.1f,
-	0.01f,
-	0.001f,
-	0.0001f,
-	0.00001f,
-	0.000001f,
-	0.0000001f,
-	0.00000001f,
-	0.000000001f,
-	0.0000000001f,
-	0.00000000001f,
-	0.000000000001f,
-	0.0000000000001f,
-	0.00000000000001f,
-	0.000000000000001f,
-	0.0000000000000001f,
-};
-
-// для to_utf8 to_utf16.
-union UC
-{
-	uint8_t bytes[4];
-	uint16_t shorts[2];
-	uint32_t integer;
-};
-
-struct slUnicodeCharNode
-{
-	uint32_t m_utf8; // код для UTF-8
-	uint32_t m_utf16;// код для UTF-16
-};
-static slUnicodeCharNode g_UnicodeChars[0x32000] =
-{
-#include "UnicodeChars.inl" // коды здесь
-};
+#include "bqStringInternal.h"
 
 void bqString::reallocate(size_t new_allocated)
 {

@@ -79,6 +79,7 @@ class bqGUIElement;
 class bqGUICommon;
 class bqGUIButton;
 enum class bqGUIDefaultFont;
+class bqGUITextEditor;
 
 #endif
 

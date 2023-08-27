@@ -25,32 +25,48 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_GUI_H__
-#define __BQ_GUI_H__
+#ifndef _BQSTRINT_H_
+#define _BQSTRINT_H_
 
-#include "badcoiq/GUI/bqGUIFont.h"
-#include "badcoiq/GUI/bqGUIText.h"
-#include "badcoiq/GUI/bqGUIStyle.h"
-#include "badcoiq/GUI/bqGUICommon.h"
-#include "badcoiq/GUI/bqGUIElement.h"
-#include "badcoiq/GUI/bqGUIRootElement.h"
-#include "badcoiq/GUI/bqGUIWindow.h"
-
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
-struct bqGUIState
+static uint8_t g_stringWordSize = 16;
+const static float g_string_to_float_table[17] =
 {
-	bqGUIWindow* m_windowUnderCursor = 0;
-	bqGUIWindow* m_activeWindow = 0;
-	bqGUITextEditor* m_activeTextEditor = 0;
-	bool m_scrollBlock = false;
+	0.f,
+	0.1f,
+	0.01f,
+	0.001f,
+	0.0001f,
+	0.00001f,
+	0.000001f,
+	0.0000001f,
+	0.00000001f,
+	0.000000001f,
+	0.0000000001f,
+	0.00000000001f,
+	0.000000000001f,
+	0.0000000000001f,
+	0.00000000000001f,
+	0.000000000000001f,
+	0.0000000000000001f,
 };
 
-#include "badcoiq/GUI/bqGUIButton.h"
-#include "badcoiq/GUI/bqGUICheckRadioBox.h"
-#include "badcoiq/GUI/bqGUITextEditor.h"
+// для to_utf8 to_utf16.
+union UC
+{
+	uint8_t bytes[4];
+	uint16_t shorts[2];
+	uint32_t integer;
+};
+
+struct slUnicodeCharNode
+{
+	uint32_t m_utf8; // код для UTF-8
+	uint32_t m_utf16;// код для UTF-16
+};
+static slUnicodeCharNode g_UnicodeChars[0x32000] =
+{
+#include "UnicodeChars.inl" // коды здесь
+};
 
 #endif
-

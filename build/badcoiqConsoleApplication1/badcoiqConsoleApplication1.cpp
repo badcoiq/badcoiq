@@ -180,6 +180,15 @@ public:
     virtual ~MyRadiobutton() {}
 };
 
+class MyTextEditor : public bqGUITextEditor
+{
+public:
+    MyTextEditor(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size):
+        bqGUITextEditor(w, position, size)
+    {}
+    virtual ~MyTextEditor() {}
+};
+
 int main()
 {
 
@@ -257,6 +266,9 @@ int main()
                 rdbtn4->SetText(U"Radio4 g2");
                 rdbtn5->SetText(U"Radio5 g2");
                 rdbtn6->SetText(U"Radio6 g2");
+                rdbtn1->m_isChecked = true;
+                rdbtn5->m_isChecked = true;
+                MyTextEditor* txtedtr = new MyTextEditor(guiWindow, bqVec2f(60.f, 140.f), bqVec2f(150.f, 200.f));
                 bqFramework::RebuildGUI();
 
                 while (g_run)
