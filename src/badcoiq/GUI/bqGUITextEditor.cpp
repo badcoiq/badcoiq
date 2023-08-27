@@ -313,6 +313,13 @@ void bqGUITextEditor::GoHome()
 
 		m_col = 1;
 	}
+	
+
+	{
+		if (IsTextSelected() && (input->m_keyboardModifier != bq::KeyboardMod_Shift))
+			Deselect();
+	}
+
 	m_colFix = m_col;
 	findTextCursorRect();
 	findHScroll();
@@ -341,6 +348,10 @@ void bqGUITextEditor::GoEnd()
 	if (input->m_keyboardModifier == bq::KeyboardMod_Shift || m_isLMBHit)
 	{
 		m_selectionEnd = m_textCursor;
+	}
+	{
+		if (IsTextSelected() && (input->m_keyboardModifier != bq::KeyboardMod_Shift))
+			Deselect();
 	}
 
 	m_colFix = m_col;
@@ -1514,6 +1525,7 @@ void bqGUITextEditor::Paste()
 #endif
 
 	findNumberOfLines();
+	findColAndLineByTextCursor();
 	findTextCursorRect();
 	findHScroll();
 	findVScroll();
