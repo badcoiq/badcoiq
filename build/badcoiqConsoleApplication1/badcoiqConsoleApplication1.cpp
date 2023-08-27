@@ -154,6 +154,32 @@ public:
     }
 };
 
+class MyCheckBox : public bqGUICheckRadioBox
+{
+public:
+    MyCheckBox(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+        :
+        bqGUICheckRadioBox(w, position, size)
+    {
+    }
+
+    virtual ~MyCheckBox() {}
+};
+
+class MyRadiobutton : public bqGUICheckRadioBox
+{
+public:
+    MyRadiobutton(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+        :
+        bqGUICheckRadioBox(w, position, size)
+    {
+        m_asRadioButton = true;
+        m_radiouGroup = 1;
+    }
+
+    virtual ~MyRadiobutton() {}
+};
+
 int main()
 {
 
@@ -214,7 +240,23 @@ int main()
 
                 auto guiWindow = bqFramework::SummonGUIWindow(bqVec2f(100.f, 100.f), bqVec2f(300.f));
                 MyButton* btn = new MyButton(guiWindow, bqVec2f(0.f, 0.f), bqVec2f(50.f, 420.f));
-                
+                MyCheckBox* chckbx = new MyCheckBox(guiWindow, bqVec2f(60.f, 0.f), bqVec2f(100.f, 20.f));
+                chckbx->SetText(U"Use thing");
+                MyRadiobutton* rdbtn1 = new MyRadiobutton(guiWindow, bqVec2f(60.f, 20.f), bqVec2f(100.f, 20.f));
+                MyRadiobutton* rdbtn2 = new MyRadiobutton(guiWindow, bqVec2f(60.f, 40.f), bqVec2f(100.f, 20.f));
+                MyRadiobutton* rdbtn3 = new MyRadiobutton(guiWindow, bqVec2f(60.f, 60.f), bqVec2f(100.f, 20.f));
+                MyRadiobutton* rdbtn4 = new MyRadiobutton(guiWindow, bqVec2f(60.f, 80.f), bqVec2f(100.f, 20.f));
+                MyRadiobutton* rdbtn5 = new MyRadiobutton(guiWindow, bqVec2f(60.f, 100.f), bqVec2f(100.f, 20.f));
+                MyRadiobutton* rdbtn6 = new MyRadiobutton(guiWindow, bqVec2f(60.f, 120.f), bqVec2f(100.f, 20.f));
+                rdbtn4->m_radiouGroup = 2;
+                rdbtn5->m_radiouGroup = 2;
+                rdbtn6->m_radiouGroup = 2;
+                rdbtn1->SetText(U"Radio1 g1");
+                rdbtn2->SetText(U"Radio2 g1");
+                rdbtn3->SetText(U"Radio3 g1");
+                rdbtn4->SetText(U"Radio4 g2");
+                rdbtn5->SetText(U"Radio5 g2");
+                rdbtn6->SetText(U"Radio6 g2");
                 bqFramework::RebuildGUI();
 
                 while (g_run)

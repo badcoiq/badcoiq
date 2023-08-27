@@ -36,7 +36,9 @@ class bqGUICheckRadioBox : public bqGUIButton
 public:
 	bqGUICheckRadioBox(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUICheckRadioBox();
-	
+	BQ_PLACEMENT_ALLOCATOR(bqGUICheckRadioBox);
+
+	virtual void Update() final;
 	virtual void Rebuild() final;
 	virtual void Draw(bqGS* gs, float dt) final;
 	float m_iconVerticalIndent = 0.f;

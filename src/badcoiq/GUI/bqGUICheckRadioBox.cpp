@@ -38,7 +38,9 @@ extern bqFrameworkImpl* g_framework;
 
 bqGUICheckRadioBoxTextDrawCallback::bqGUICheckRadioBoxTextDrawCallback()
 {
-	m_color = bq::ColorWhite;
+	m_colorDefault = bq::ColorWhite;
+	m_colorMouseHover = bq::ColorYellow;
+	m_colorDisabled = bq::ColorGrey;
 }
 
 bqGUICheckRadioBoxTextDrawCallback::~bqGUICheckRadioBoxTextDrawCallback()
@@ -52,13 +54,26 @@ bqGUIFont* bqGUICheckRadioBoxTextDrawCallback::OnFont(uint32_t r, char32_t)
 
 bqColor* bqGUICheckRadioBoxTextDrawCallback::OnColor(uint32_t r, char32_t)
 {
-	return &m_color;
+	switch (r)
+	{
+	case bqGUIDrawTextCallback::Reason_mouseAbove:
+		return &m_colorMouseHover;
+	case bqGUIDrawTextCallback::Reason_disabled:
+		return &m_colorDisabled;
+	default:
+		return &m_colorDefault;
+	}
+	return &m_colorDefault;
 }
 
 bqGUICheckRadioBox::bqGUICheckRadioBox(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
 	:
 	bqGUIButton(w, position, size)
 {
+	bqGUICheckRadioBoxTextDrawCallback* cbi = (bqGUICheckRadioBoxTextDrawCallback*)g_framework->m_defaultTextDrawCallback_icons;
+	cbi->SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Icons));
+
+	m_iconDrawCallback = cbi;
 	m_iconVerticalIndent = 2.f;
 	SetDrawBG(false);
 }
@@ -67,11 +82,21 @@ bqGUICheckRadioBox::~bqGUICheckRadioBox() {}
 
 void bqGUICheckRadioBox::Rebuild()
 {
-	bqGUIButton::Rebuild();
+	bqGUIElement::Rebuild();
+	UpdateTextPosition();
+}
+
+void bqGUICheckRadioBox::Update()
+{
+	bqGUIElement::Update();
+	if (m_window->GetRootElement()->m_scrollDelta.y)
+		UpdateTextPosition();
 }
 
 void bqGUICheckRadioBox::Draw(bqGS* gs, float dt)
 {
+	gs->SetScissorRect(m_clipRect.GetRect());
+
 	char32_t text[2] = { (char32_t)bqGUIDefaultIconID::CheckboxUncheck, 0 };
 
 	if (m_asRadioButton)
@@ -89,40 +114,42 @@ void bqGUICheckRadioBox::Draw(bqGS* gs, float dt)
 
 	auto iconTextSz = m_iconDrawCallback->GetTextSize(text);
 
-	m_textPosition.x += iconTextSz.x;
-	bqGUIButton::Draw(gs, dt);
-	m_textPosition.x -= iconTextSz.x;
-
-	bqVec2f textPosition;
-	textPosition.x = m_buildRect.x;
-	textPosition.y = m_buildRect.y + m_iconVerticalIndent;
+	bqVec2f iconPosition;
+	iconPosition.x = m_buildRect.x + iconTextSz.x;
+	iconPosition.y = m_buildRect.y + m_iconVerticalIndent;
 
 	if (IsEnabled())
 	{
 		if (IsClickedLMB())
-		{
-			m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_pressed;
-			gs->DrawGUIText(text, 1, textPosition, m_textDrawCallback);
-		}
+			m_iconDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_pressed;
 		else
 		{
 			if (IsCursorInRect())
-			{
-				m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_mouseAbove;
-				gs->DrawGUIText(text, 1, textPosition, m_textDrawCallback);
-			}
+				m_iconDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_mouseAbove;
 			else
-			{
-				m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_icon;
-				gs->DrawGUIText(text, 1, textPosition, m_textDrawCallback);
-			}
+				m_iconDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_icon;
 		}
 	}
 	else
-	{
-		m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_disabled;
-		gs->DrawGUIText(text, 1, textPosition, m_textDrawCallback);
-	}
+		m_iconDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_disabled;
+
+	auto iconFont = m_iconDrawCallback->OnFont(0, text[0]);
+	auto glyph = iconFont->GetGlyphMap()[text[0]];
+	gs->DrawGUIRectangle(
+		bqVec4f(
+			iconPosition.x,
+			iconPosition.y,
+			iconPosition.x + iconTextSz.x, iconPosition.y + iconTextSz.y),
+		*m_iconDrawCallback->OnColor(m_iconDrawCallback->m_reason, text[0]),
+		bq::ColorWhite,
+		iconFont->GetTexture(glyph->m_textureSlot),
+		&glyph->m_UV);
+
+	
+	bqVec2f textPosition = m_textPosition;
+	textPosition.x += iconTextSz.x;
+
+	gs->DrawGUIText(m_text.c_str(), m_text.size(), textPosition, m_textDrawCallback);
 }
 
 void bqGUICheckRadioBox::OnClickLMB()
