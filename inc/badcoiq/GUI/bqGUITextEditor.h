@@ -79,9 +79,9 @@ class bqGUITextEditor : public bqGUIElement
 	struct LineInfo
 	{
 		LineInfo(size_t ind, size_t line, size_t sz) :m_index(ind), m_line(line), m_size(sz) {}
-		size_t m_index = 0;
-		size_t m_line = 1;
-		size_t m_size = 0;
+		size_t m_index = 0; // индекс символа в главном буфере
+		size_t m_line = 1;  // линия. начинается с 1
+		size_t m_size = 0;  // количество символов
 	};
 	bqArray<LineInfo> m_lines;
 	void findNumberOfLines();

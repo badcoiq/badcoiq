@@ -73,6 +73,23 @@ class bqGUITextEditorTextDrawCallback : public bqGUIDrawTextCallback
 public:
 	bqGUITextEditorTextDrawCallback();
 	virtual ~bqGUITextEditorTextDrawCallback();
+	BQ_PLACEMENT_ALLOCATOR(bqGUITextEditorTextDrawCallback);
+
+	void SetFont(bqGUIFont* f) { m_font = f; }
+
+	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
+	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+};
+
+class bqGUIListBoxTextDrawCallback : public bqGUIDrawTextCallback
+{
+	bqGUIFont* m_font = 0;
+	bqColor m_color;
+	bqColor m_colorRed;
+public:
+	bqGUIListBoxTextDrawCallback();
+	virtual ~bqGUIListBoxTextDrawCallback();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIListBoxTextDrawCallback);
 
 	void SetFont(bqGUIFont* f) { m_font = f; }
 

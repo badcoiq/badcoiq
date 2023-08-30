@@ -27,31 +27,48 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_GUI_H__
-#define __BQ_GUI_H__
+#ifndef __BQ_GUILSTBX_H__
+#define __BQ_GUILSTBX_H__
 
-#include "badcoiq/GUI/bqGUIFont.h"
-#include "badcoiq/GUI/bqGUIText.h"
-#include "badcoiq/GUI/bqGUIStyle.h"
-#include "badcoiq/GUI/bqGUICommon.h"
-#include "badcoiq/GUI/bqGUIElement.h"
-#include "badcoiq/GUI/bqGUIRootElement.h"
-#include "badcoiq/GUI/bqGUIWindow.h"
-
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
-struct bqGUIState
+struct bqGUIListBoxItem
 {
-	bqGUIWindow* m_windowUnderCursor = 0;
-	bqGUIWindow* m_activeWindow = 0;
-	bqGUITextEditor* m_activeTextEditor = 0;
-	bool m_scrollBlock = false;
+	bqString m_text;
+	uint32_t m_id = 0;
+	void* m_data = 0;
+
+	bool m_isSelected = false;
 };
 
-#include "badcoiq/GUI/bqGUIButton.h"
-#include "badcoiq/GUI/bqGUICheckRadioBox.h"
-#include "badcoiq/GUI/bqGUITextEditor.h"
-#include "badcoiq/GUI/bqGUIListBox.h"
+class bqGUIListBox : public bqGUIElement
+{
+	bqArray<bqGUIListBoxItem*> m_items;
+	float m_lineHeight = 0.f;
+	size_t m_firstItemIndexForDraw = 0;
+	size_t m_numberOfVisibleLines = 0;
+
+public:
+	bqGUIListBox(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	virtual ~bqGUIListBox();
+
+	virtual void Rebuild() final;
+	virtual void Update() final;
+	virtual void Draw(bqGS* gs, float dt) final;
+
+	virtual void UpdateContentSize() final;
+
+	bqGUIListBoxItem* AddItem(const char32_t*, uint32_t id, void* data);
+	void RemoveItem(bqGUIListBoxItem*);
+
+	bqArray<bqGUIListBoxItem*>* GetItems() { return &m_items; }
+
+	bool m_drawItemBG = true;
+	bool m_multiSelect = false;
+
+	// return true if need to select
+	virtual bool OnSelect(bqGUIListBoxItem*) { return true; }
+	// return true if need to deselect
+	virtual bool OnDeSelect(bqGUIListBoxItem*) { return true; }
+};
 
 #endif
 

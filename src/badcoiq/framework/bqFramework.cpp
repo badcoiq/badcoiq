@@ -976,6 +976,7 @@ void bqFrameworkImpl::_initGUITextDrawCallbacks()
 	m_defaultTextDrawCallback_button = new bqGUIButtonTextDrawCallback;
 	m_defaultTextDrawCallback_icons = new bqGUICheckRadioBoxTextDrawCallback;
 	m_defaultTextDrawCallback_textEditor = new bqGUITextEditorTextDrawCallback;
+	m_defaultTextDrawCallback_listbox = new bqGUIListBoxTextDrawCallback;
 }
 
 void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
@@ -983,5 +984,6 @@ void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 	delete m_defaultTextDrawCallback_button; m_defaultTextDrawCallback_button = 0;
 	delete m_defaultTextDrawCallback_icons; m_defaultTextDrawCallback_icons = 0;
 	delete m_defaultTextDrawCallback_textEditor; m_defaultTextDrawCallback_textEditor = 0;
+	delete m_defaultTextDrawCallback_listbox; m_defaultTextDrawCallback_listbox = 0;
 }
 

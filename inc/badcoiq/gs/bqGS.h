@@ -125,6 +125,7 @@ public:
 	virtual bqVec2f GetDepthRange() = 0;
 	virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 	virtual void SetScissorRect(const bqRect&) = 0;
+	virtual void SetScissorRect(const bqVec4f&) = 0;
 
 	// Надо вызвать когда был изменён размер окна
 	// Будет вычислена матрица для GUI, и обновятся буферы у SwapChain

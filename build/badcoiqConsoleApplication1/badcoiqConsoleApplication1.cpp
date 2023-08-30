@@ -189,6 +189,15 @@ public:
     virtual ~MyTextEditor() {}
 };
 
+class MyListBox : public bqGUIListBox
+{
+public:
+    MyListBox(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size) :
+        bqGUIListBox(w, position, size)
+    {}
+    virtual ~MyListBox() {}
+};
+
 int main()
 {
 
@@ -269,6 +278,26 @@ int main()
                 rdbtn1->m_isChecked = true;
                 rdbtn5->m_isChecked = true;
                 MyTextEditor* txtedtr = new MyTextEditor(guiWindow, bqVec2f(60.f, 140.f), bqVec2f(150.f, 200.f));
+                MyListBox* lstbx = new MyListBox(guiWindow, bqVec2f(180.f, 20.f), bqVec2f(60.f, 70.f));
+                lstbx->AddItem(U"Item1", 0, 0);
+                lstbx->AddItem(U"Item12", 0, 0);
+                lstbx->AddItem(U"Item13", 0, 0);
+                lstbx->AddItem(U"Item14", 0, 0);
+                lstbx->AddItem(U"Item15", 0, 0);
+                lstbx->AddItem(U"Item16", 0, 0);
+                lstbx->AddItem(U"Item17", 0, 0);
+                lstbx->AddItem(U"Item18", 0, 0);
+                lstbx->AddItem(U"Item19", 0, 0);
+                lstbx->AddItem(U"Item10", 0, 0);
+                lstbx->AddItem(U"Itemq1", 0, 0);
+                lstbx->AddItem(U"Itemw1", 0, 0);
+                lstbx->AddItem(U"Iteme1", 0, 0);
+                lstbx->AddItem(U"Item1tr", 0, 0);
+                lstbx->AddItem(U"Item1y", 0, 0);
+                lstbx->AddItem(U"Item1i", 0, 0);
+                lstbx->AddItem(U"Item1o", 0, 0);
+                lstbx->AddItem(U"Item1p", 0, 0);
+                lstbx->AddItem(U"Item1k", 0, 0);
                 bqFramework::RebuildGUI();
 
                 while (g_run)

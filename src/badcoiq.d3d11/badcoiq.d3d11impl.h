@@ -143,6 +143,7 @@ public:
 	virtual bqVec2f GetDepthRange() final;
 	virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) final;
 	virtual void SetScissorRect(const bqRect&) final;
+	virtual void SetScissorRect(const bqVec4f&) final;
 
 	virtual void OnWindowSize() final;
 

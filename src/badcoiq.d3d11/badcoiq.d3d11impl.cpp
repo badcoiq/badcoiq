@@ -1265,6 +1265,16 @@ void bqGSD3D11::SetScissorRect(const bqRect& rect)
 	m_d3d11DevCon->RSSetScissorRects(1, &r);
 }
 
+void bqGSD3D11::SetScissorRect(const bqVec4f& rect)
+{
+	D3D11_RECT r;
+	r.left = (LONG)rect.x;
+	r.top = (LONG)rect.y;
+	r.right = (LONG)rect.z;
+	r.bottom = (LONG)rect.w;
+	m_d3d11DevCon->RSSetScissorRects(1, &r);
+}
+
 void bqGSD3D11::_recalculateGUIMatrix()
 {
 	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[0].Set(2.0f / m_windowCurrentSize->x, 0.0f, 0.0f, 0.0f);

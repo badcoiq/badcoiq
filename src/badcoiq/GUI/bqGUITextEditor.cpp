@@ -74,6 +74,7 @@ bqGUITextEditor::bqGUITextEditor(bqGUIWindow* w, const bqVec2f& position, const 
 	cb->SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
 
 	m_textDrawCallback = cb;
+
 	Clear(true);
 	findTextCursorRect();
 }

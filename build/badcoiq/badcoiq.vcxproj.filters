@@ -120,5 +120,8 @@
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUITextEditor.cpp">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIListBox.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
