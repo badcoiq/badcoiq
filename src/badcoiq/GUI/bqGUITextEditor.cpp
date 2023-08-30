@@ -99,7 +99,7 @@ void bqGUITextEditor::reallocate(size_t newSize)
 
 void bqGUITextEditor::findNumberOfLines()
 {
-	m_numberOfLines = 1; // minimum 1 line even if there is no text
+	m_numberOfLines = 1; // минимум 1 линия доже если нет текста
 	m_lines.clear();
 	m_lines.push_back(LineInfo(0, 1, 0));
 
@@ -109,7 +109,7 @@ void bqGUITextEditor::findNumberOfLines()
 	size_t ln = 1;
 	for (uint32_t i = 0; i < m_textBufferLen; ++i)
 	{
-		// if we have \n then next m_character is first in new line
+		// если имеем \n тогда след.символ является первым в новой строке
 		if (m_textBuffer[i] == U'\n')
 		{
 			++m_numberOfLines;
@@ -999,6 +999,7 @@ void bqGUITextEditor::Draw(bqGS* gs, float dt)
 						*clr, *clr,
 						font->GetTexture(g->m_textureSlot),
 						&g->m_UV);
+
 					/*gs->DrawGUICharacter(
 						m_textBuffer[o],
 						font,
