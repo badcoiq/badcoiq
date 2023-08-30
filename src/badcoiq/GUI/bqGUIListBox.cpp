@@ -52,7 +52,7 @@ bqGUIFont* bqGUIListBoxTextDrawCallback::OnFont(uint32_t r, char32_t c)
 
 bqColor* bqGUIListBoxTextDrawCallback::OnColor(uint32_t r, char32_t c)
 {
-	switch (r)
+	switch (m_reason)
 	{
 	case bqGUIDrawTextCallback::Reason_selected:
 		return &m_colorRed;
@@ -117,10 +117,9 @@ void bqGUIListBox::Update()
 {
 	bqGUIElement::Update();
 
-	// find m_firstItemIndexForDraw, use only m_v_scroll
 	bqVec2f pos;
 	pos.x = m_buildRect.x;
-	pos.y = m_buildRect.y - 0.f;
+	pos.y = m_buildRect.y;
 	pos.y += (m_lineHeight * (float)m_firstItemIndexForDraw) - m_scroll.y;
 	uint32_t itemsSize = m_items.m_size + m_numberOfVisibleLines;
 
@@ -148,7 +147,7 @@ void bqGUIListBox::Update()
 				m_firstItemIndexForDraw = 0;
 		}
 	}
-	printf("m_firstItemIndexForDraw %i\n", m_firstItemIndexForDraw);
+	//printf("m_firstItemIndexForDraw %i\n", m_firstItemIndexForDraw);
 }
 
 void bqGUIListBox::Draw(bqGS* gs, float dt)
@@ -214,6 +213,11 @@ void bqGUIListBox::Draw(bqGS* gs, float dt)
 
 			if (m_items.m_data[index]->m_text.size())
 			{
+				if (m_items.m_data[index]->m_isSelected)
+					m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_selected;
+				else
+					m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_default;
+
 				gs->DrawGUIText(
 					m_items.m_data[index]->m_text.c_str(),
 					m_items.m_data[index]->m_text.size(),

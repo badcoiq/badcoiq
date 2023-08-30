@@ -188,6 +188,7 @@
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIFont.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIListBox.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIRootElement.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUISlider.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUITextEditor.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIWindow.cpp" />
     <ClCompile Include="..\..\src\badcoiq\input\bqInput.cpp" />

@@ -705,7 +705,6 @@ void bqGUITextEditor::Update()
 		}
 	}
 
-	// find m_firstItemIndexForDraw, use only m_v_scroll
 	bqVec2f pos;
 	pos.x = m_buildRect.x;
 	pos.y = m_buildRect.y - m_v_scroll;

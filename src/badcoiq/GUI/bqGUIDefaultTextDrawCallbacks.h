@@ -97,4 +97,20 @@ public:
 	virtual bqColor* OnColor(uint32_t r, char32_t) override;
 };
 
+class bqGUISliderTextDrawCallback : public bqGUIDrawTextCallback
+{
+	bqGUIFont* m_font = 0;
+	bqColor m_color;
+public:
+	bqGUISliderTextDrawCallback();
+	virtual ~bqGUISliderTextDrawCallback();
+	BQ_PLACEMENT_ALLOCATOR(bqGUISliderTextDrawCallback);
+
+	void SetFont(bqGUIFont* f) { m_font = f; }
+
+	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
+	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+};
+
+
 #endif

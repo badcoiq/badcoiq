@@ -198,6 +198,15 @@ public:
     virtual ~MyListBox() {}
 };
 
+class MySlider : public bqGUISlider
+{
+public:
+    MySlider(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size) :
+        bqGUISlider(w, position, size)
+    {}
+    virtual ~MySlider() {}
+};
+
 int main()
 {
 
@@ -298,6 +307,8 @@ int main()
                 lstbx->AddItem(U"Item1o", 0, 0);
                 lstbx->AddItem(U"Item1p", 0, 0);
                 lstbx->AddItem(U"Item1k", 0, 0);
+                MySlider* sld = new MySlider(guiWindow, bqVec2f(180.f, 100.f), bqVec2f(90.f, 30.f));
+                sld->m_morePrecise = true;
                 bqFramework::RebuildGUI();
 
                 while (g_run)

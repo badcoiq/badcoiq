@@ -52,6 +52,7 @@ struct bqGUIState
 #include "badcoiq/GUI/bqGUICheckRadioBox.h"
 #include "badcoiq/GUI/bqGUITextEditor.h"
 #include "badcoiq/GUI/bqGUIListBox.h"
+#include "badcoiq/GUI/bqGUISlider.h"
 
 #endif
 
