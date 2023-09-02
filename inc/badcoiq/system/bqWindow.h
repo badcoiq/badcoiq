@@ -37,6 +37,7 @@ class bqWindowCallback : public bqUserData
 public:
 	bqWindowCallback() {}
 	virtual ~bqWindowCallback() {}
+	BQ_PLACEMENT_ALLOCATOR(bqWindowCallback);
 
 	// Когда переключились к этому окну
 	virtual void OnActivate(bqWindow*) {}

@@ -35,6 +35,9 @@ class bqGUIDrawTextCallback : public bqUserData
 public:
 	bqGUIDrawTextCallback() {}
 	virtual ~bqGUIDrawTextCallback() {}
+	BQ_PLACEMENT_ALLOCATOR(bqGUIDrawTextCallback);
+
+	bqGUIElement* m_element = 0;
 
 	enum {
 		Reason_default,

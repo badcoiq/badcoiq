@@ -81,6 +81,7 @@ public:
 		m_update = &bqCamera::_updatePerspective;
 	}
 	~bqCamera() {}
+	BQ_PLACEMENT_ALLOCATOR(bqCamera);
 
 	void Update(float dt)
 	{
@@ -117,6 +118,7 @@ public:
 
 	bqMat4 m_view;
 	bqMat4 m_projection;
+	bqMat4 m_viewProjectionMatrix;
 
 	bqVec4 m_position;
 	bqVec4 m_lookAtTargett;

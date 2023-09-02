@@ -1429,45 +1429,45 @@ void bqGUITextEditor::Copy()
 
 		uint32_t len = num_to_select;
 		EmptyClipboard();
-		HGLOBAL clipbuffer;
-
-		clipbuffer = GlobalAlloc(GMEM_DDESHARE, ((len + len) + 1) * sizeof(WCHAR));
-
-		wchar_t* buffer;
-		buffer = (wchar_t*)GlobalLock(clipbuffer);
-
-		memset(buffer, 0, (len + len + 1) * sizeof(wchar_t));
-		wchar_t* wchar_ptr = buffer;
-		//memcpy(buffer, &impl->text[s1], len * sizeof(wchar_t));
-
-		UC uc;
-		for (size_t i = 0; i < len; ++i)
+		HGLOBAL clipbuffer = GlobalAlloc(GMEM_DDESHARE, ((len + len) + 1) * sizeof(WCHAR));
+		if (clipbuffer)
 		{
-			char32_t c = m_textBuffer[s1 + i];
-
-			if (c >= 0x32000)
-				c = '?';
-
-			uc.integer = g_UnicodeChars[c].m_utf16;
-
-			if (uc.shorts[1])
+			wchar_t* buffer = (wchar_t*)GlobalLock(clipbuffer);
+			if (buffer)
 			{
-				*wchar_ptr = uc.shorts[1];
+				memset(buffer, 0, (len + len + 1) * sizeof(wchar_t));
+				wchar_t* wchar_ptr = buffer;
+				//memcpy(buffer, &impl->text[s1], len * sizeof(wchar_t));
+				UC uc;
+				for (size_t i = 0; i < len; ++i)
+				{
+					char32_t c = m_textBuffer[s1 + i];
+
+					if (c >= 0x32000)
+						c = '?';
+
+					uc.integer = g_UnicodeChars[c].m_utf16;
+
+					if (uc.shorts[1])
+					{
+						*wchar_ptr = uc.shorts[1];
+						++wchar_ptr;
+					}
+					if (uc.shorts[0])
+					{
+						*wchar_ptr = uc.shorts[0];
+						++wchar_ptr;
+					}
+				}
+				*wchar_ptr = 0;
 				++wchar_ptr;
+
+				buffer[len] = 0;
 			}
-			if (uc.shorts[0])
-			{
-				*wchar_ptr = uc.shorts[0];
-				++wchar_ptr;
-			}
+			GlobalUnlock(clipbuffer);
+			SetClipboardData(CF_UNICODETEXT, clipbuffer);
 		}
-		*wchar_ptr = 0;
-		++wchar_ptr;
 
-		buffer[len] = 0;
-
-		GlobalUnlock(clipbuffer);
-		SetClipboardData(CF_UNICODETEXT, clipbuffer);
 		CloseClipboard();
 #else
 #error Need implementation....

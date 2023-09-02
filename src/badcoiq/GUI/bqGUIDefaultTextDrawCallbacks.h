@@ -112,5 +112,16 @@ public:
 	virtual bqColor* OnColor(uint32_t r, char32_t) override;
 };
 
+class bqGUIStaticTextTextDrawCallback : public bqGUIDrawTextCallback
+{
+public:
+	bqGUIStaticTextTextDrawCallback();
+	virtual ~bqGUIStaticTextTextDrawCallback();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIStaticTextTextDrawCallback);
+
+	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
+	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+};
+
 
 #endif

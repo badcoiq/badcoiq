@@ -18,35 +18,40 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\demo\demo.cpp" />
+    <ClCompile Include="..\..\src\demo\DemoApp.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_3DLineAndCamera.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c52fe997-ab15-419a-ab09-edc0779a53d0}</ProjectGuid>
-    <RootNamespace>badcoiq</RootNamespace>
+    <ProjectGuid>{de8ded7d-4f32-4711-bcdc-d9c42ffa1fd4}</ProjectGuid>
+    <RootNamespace>demo</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -71,38 +76,31 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\libs\</OutDir>
-    <TargetName>$(ProjectName)_$(PlatformToolset)_$(PlatformShortName)_$(Configuration)</TargetName>
+    <OutDir>..\..\bin32\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\libs\</OutDir>
-    <TargetName>$(ProjectName)_$(PlatformToolset)_$(PlatformShortName)_$(Configuration)</TargetName>
+    <OutDir>..\..\bin32\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\libs\</OutDir>
-    <TargetName>$(ProjectName)_$(PlatformToolset)_$(PlatformShortName)_$(Configuration)</TargetName>
+    <OutDir>..\..\bin64\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\libs\</OutDir>
-    <TargetName>$(ProjectName)_$(PlatformToolset)_$(PlatformShortName)_$(Configuration)</TargetName>
+    <OutDir>..\..\bin64\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/</AdditionalIncludeDirectories>
-      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <Lib>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -110,40 +108,33 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <Lib>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/</AdditionalIncludeDirectories>
-      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <Lib>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -151,54 +142,19 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <Lib>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-    </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\src\badcoiq\archive\bqArchive.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\common\bqAssert.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\common\bqImage.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\common\bqLog.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\common\bqMemory.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\framework\bqFramework.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqAABB.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqMesh.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqMeshCreator.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqPolygonMesh.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\geometry\bqRay.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIButton.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUICheckRadioBox.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUICommon.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIElement.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIFont.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIListBox.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIRootElement.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUISlider.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIStaticText.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUITextEditor.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIWindow.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\input\bqInput.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\math\bqMath.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\system\bqDLL.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\system\bqStacktracer.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\system\bqWindow.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -66,6 +66,7 @@ class bqFrameworkCallback
 public:
 	bqFrameworkCallback() {}
 	virtual ~bqFrameworkCallback() {}
+	BQ_PLACEMENT_ALLOCATOR(bqFrameworkCallback);
 
 	virtual void OnMessage() = 0;
 };

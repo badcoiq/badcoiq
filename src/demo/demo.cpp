@@ -26,34 +26,15 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_GUI_H__
-#define __BQ_GUI_H__
+#include "DemoApp.h"
 
-#include "badcoiq/GUI/bqGUIFont.h"
-#include "badcoiq/GUI/bqGUIText.h"
-#include "badcoiq/GUI/bqGUIStyle.h"
-#include "badcoiq/GUI/bqGUICommon.h"
-#include "badcoiq/GUI/bqGUIElement.h"
-#include "badcoiq/GUI/bqGUIRootElement.h"
-#include "badcoiq/GUI/bqGUIWindow.h"
-
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
-struct bqGUIState
+int main()
 {
-	bqGUIWindow* m_windowUnderCursor = 0;
-	bqGUIWindow* m_activeWindow = 0;
-	bqGUITextEditor* m_activeTextEditor = 0;
-	bool m_scrollBlock = false;
-};
+	DemoApp app;
+	if (app.Init())
+	{
+		app.Run();
+	}
 
-#include "badcoiq/GUI/bqGUIButton.h"
-#include "badcoiq/GUI/bqGUICheckRadioBox.h"
-#include "badcoiq/GUI/bqGUITextEditor.h"
-#include "badcoiq/GUI/bqGUIListBox.h"
-#include "badcoiq/GUI/bqGUISlider.h"
-#include "badcoiq/GUI/bqGUIStaticText.h"
-
-#endif
-
+	return EXIT_SUCCESS;
+}

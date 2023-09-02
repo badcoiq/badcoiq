@@ -781,6 +781,9 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 
 		isInit = true;
 	}
+
+	g_framework->m_themeDark.m_staticTextFont = bqFramework::GetDefaultFont(bqGUIDefaultFont::Text);
+	g_framework->m_themeLight.m_staticTextFont = bqFramework::GetDefaultFont(bqGUIDefaultFont::Text);
 }
 
 bqGUIFont* bqFramework::SummonFont()
@@ -978,6 +981,13 @@ void bqFrameworkImpl::_initGUITextDrawCallbacks()
 	m_defaultTextDrawCallback_textEditor = new bqGUITextEditorTextDrawCallback;
 	m_defaultTextDrawCallback_listbox = new bqGUIListBoxTextDrawCallback;
 	m_defaultTextDrawCallback_slider = new bqGUISliderTextDrawCallback;
+
+	// далее коллбеки работающие чуть по иному
+	// в таких коллбэках нужно будет указывать m_element, внутри этого элемента
+	// это позволяет использовать m_style - темы
+	// надо инициилизировать шрифты - в том месте где шрифты создаются bqFramework::InitDefaultFonts
+	// надо переделать остальные коллбэки
+	m_defaultTextDrawCallback_staticText = new bqGUIStaticTextTextDrawCallback;
 }
 
 void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
@@ -987,5 +997,6 @@ void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 	delete m_defaultTextDrawCallback_textEditor; m_defaultTextDrawCallback_textEditor = 0;
 	delete m_defaultTextDrawCallback_listbox; m_defaultTextDrawCallback_listbox = 0;
 	delete m_defaultTextDrawCallback_slider; m_defaultTextDrawCallback_slider = 0;
+	delete m_defaultTextDrawCallback_staticText; m_defaultTextDrawCallback_staticText = 0;
 }
 

@@ -27,33 +27,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_GUI_H__
-#define __BQ_GUI_H__
+#ifndef __BQ_GUISTTEXT_H__
+#define __BQ_GUISTTEXT_H__
 
-#include "badcoiq/GUI/bqGUIFont.h"
-#include "badcoiq/GUI/bqGUIText.h"
-#include "badcoiq/GUI/bqGUIStyle.h"
-#include "badcoiq/GUI/bqGUICommon.h"
-#include "badcoiq/GUI/bqGUIElement.h"
-#include "badcoiq/GUI/bqGUIRootElement.h"
-#include "badcoiq/GUI/bqGUIWindow.h"
-
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
-struct bqGUIState
+class bqGUIStaticText : public bqGUIElement
 {
-	bqGUIWindow* m_windowUnderCursor = 0;
-	bqGUIWindow* m_activeWindow = 0;
-	bqGUITextEditor* m_activeTextEditor = 0;
-	bool m_scrollBlock = false;
-};
+	bqString m_text;
+	bool m_useDrawLimit = false;
+	size_t m_drawLimit = 0;
+	float m_lineHeight = 0.f;
+public:
+	bqGUIStaticText(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	virtual ~bqGUIStaticText();
 
-#include "badcoiq/GUI/bqGUIButton.h"
-#include "badcoiq/GUI/bqGUICheckRadioBox.h"
-#include "badcoiq/GUI/bqGUITextEditor.h"
-#include "badcoiq/GUI/bqGUIListBox.h"
-#include "badcoiq/GUI/bqGUISlider.h"
-#include "badcoiq/GUI/bqGUIStaticText.h"
+	virtual void Rebuild() final;
+	virtual void Update() final;
+	virtual void Draw(bqGS* gs, float dt) final;
+
+	virtual void SetText(const bqString&);
+	virtual void UseDrawLimit(bool use, size_t limit)
+	{
+		m_useDrawLimit = use;
+		m_drawLimit = limit;
+	}
+};
 
 #endif
 

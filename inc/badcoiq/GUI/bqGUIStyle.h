@@ -79,6 +79,7 @@ struct bqGUIStyle
 
 	bqColor m_staticTextBGColor;
 	bqColor m_staticTextTextColor;
+	bqGUIFont* m_staticTextFont = 0;
 
 	bqColor m_listboxBGColor;
 	bqColor m_listboxLine1BGColor;

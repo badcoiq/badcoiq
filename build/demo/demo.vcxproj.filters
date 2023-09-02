@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\src\demo\demo.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_3DLineAndCamera.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="examples">
+      <UniqueIdentifier>{36be6b63-6685-4289-9a49-ff5619cc8e5a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
