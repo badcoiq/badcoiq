@@ -99,19 +99,3 @@ void ExampleBasics3DLineAndCamera::OnDraw()
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();
 }
-
-const char32_t* ExampleBasics3DLineAndCamera::GetName()
-{
-	return U"3D line and camera";
-}
-
-const char32_t* ExampleBasics3DLineAndCamera::GetDescription()
-{
-	return U"Basic thing. Add camera and draw something. Use WASDQE";
-}
-
-const char* ExampleBasics3DLineAndCamera::GetCategory()
-{
-	return "basics/";
-}
-

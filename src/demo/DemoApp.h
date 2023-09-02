@@ -70,9 +70,7 @@ public:
 	virtual bool Init() = 0;
 	virtual void Shutdown() = 0;
 	virtual void OnDraw() = 0;
-	virtual const char32_t* GetName() = 0;
-	virtual const char32_t* GetDescription() = 0;
-	virtual const char* GetCategory() = 0;
+
 	virtual void OnWindowSize(bqWindow* w);
 
 	bqGS* GetGS() { return m_gs; }
@@ -180,7 +178,8 @@ public:
 	bqWindow* GetWindow() { return m_window; }
 	GUIDrawTextCallback* GetTextDrawCallback() { return m_textDrawCallback; }
 
-	void AddExample(DemoExample*);
+	void AddExample(DemoExample*, const char32_t* name, const char* category,
+		const char32_t* description);
 	void OnDraw();
 	DemoCategory* GetCategory(const char* category);
 	DemoCategory* FindCategory(DemoCategory*, const char* name);

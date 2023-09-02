@@ -127,8 +127,8 @@ void bqGUIStaticText::Draw(bqGS* gs, float dt)
 			bqVec4f chrct;
 			chrct.x = textPosition.x;
 			chrct.y = textPosition.y;
-			chrct.z = chrct.x + g->m_width + g->m_overhang + g->m_underhang + font->m_characterSpacing;
-			chrct.w = chrct.y + m_lineHeight;
+			chrct.z = chrct.x + g->m_width + g->m_overhang + g->m_underhang;
+			chrct.w = chrct.y + g->m_height;
 
 			if (chrct.z > m_buildRect.z)
 			{

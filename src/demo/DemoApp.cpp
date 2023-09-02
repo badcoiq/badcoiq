@@ -144,7 +144,7 @@ bool DemoApp::Init()
 
 
 	m_currentCategory = &m_rootCategory;
-	AddExample(new ExampleBasics3DLineAndCamera(this));
+	AddExample(new ExampleBasics3DLineAndCamera(this), U"3D line and camera", "basics/", U"Basic thing. Add camera and draw something. Use WASDQE");
 	/*AddExample(new ExampleBasicsMouseAndKeyboard(this), U"Mouse and keyboard", "basics/", U"Show information about keyboard and mouse.");
 	AddExample(new ExampleBasicsImageAndTexture(this), U"Image and texture", "basics/", U"Load image and create texture.");
 	AddExample(new ExampleBasics3DModel(this), U"Load model", "basics/", U"Load model data from file. File can contain many objects, need to use callback. Better to create special class for this.");
@@ -188,12 +188,13 @@ void DemoApp::Run()
 	}
 }
 
-void DemoApp::AddExample(DemoExample* e)
+void DemoApp::AddExample(DemoExample* e, const char32_t* name, const char* category,
+	const char32_t* description)
 {
 	m_allExamples.push_back(e);
-	e->m_name = e->GetName();
-	e->m_description = e->GetDescription();
-	auto cat = GetCategory(e->GetCategory());
+	e->m_name = name;
+	e->m_description = description;
+	auto cat = GetCategory(category);
 	if (cat)
 	{
 		cat->m_examples.push_back(e);

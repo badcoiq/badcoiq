@@ -42,9 +42,6 @@ public:
 	virtual bool Init() override;
 	virtual void Shutdown() override;
 	virtual void OnDraw() override;
-	virtual const char32_t* GetName() override;
-	virtual const char32_t* GetDescription() override;
-	virtual const char* GetCategory() override;
 };
 
 #endif
