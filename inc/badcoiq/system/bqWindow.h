@@ -80,6 +80,9 @@ struct bqWindowCommonData
 	// текущий размер окна (клиентской области)
 	bqPoint m_sizeCurrent;
 
+	// координата левого верхнего угла относительно монитора
+	bqPoint m_position;
+
 	// окно видимо или нет
 	bool m_isVisible = false;
 
@@ -143,6 +146,8 @@ public:
 
 	void ToFullscreenMode();
 	void ToWindowMode();
+
+	void GetCenter(bqPoint&);
 };
 
 

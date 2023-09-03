@@ -43,8 +43,20 @@ void bqWindowWin32_findCurrentSize(bqWindow* w, bqWindowWin32* w32)
 {
     RECT rc;
     GetClientRect(w32->m_hWnd, &rc);
-    w->GetData()->m_sizeCurrent.x = rc.right - rc.left;
-    w->GetData()->m_sizeCurrent.y = rc.bottom - rc.top;
+    //w->GetData()->m_sizeCurrent.x = rc.right - rc.left;
+    //w->GetData()->m_sizeCurrent.y = rc.bottom - rc.top;
+    w->GetData()->m_sizeCurrent.x = rc.right;
+    w->GetData()->m_sizeCurrent.y = rc.bottom;
+
+    //m_position
+}
+
+void bqWindowWin32_findPosition(bqWindow* w, bqWindowWin32* w32)
+{
+    RECT rc;
+    GetWindowRect(w32->m_hWnd, &rc);
+    w->GetData()->m_position.x = rc.left;
+    w->GetData()->m_position.y = rc.top;
 }
 #endif
 
@@ -133,6 +145,22 @@ void bqWindow::SetTitle(const char* s)
     bqWindowWin32* w32 = (bqWindowWin32*)m_data.m_implementation;
     if (w32->m_hWnd)
         SetWindowTextA(w32->m_hWnd, s);
+#endif
+}
+
+void bqWindow::GetCenter(bqPoint& p)
+{
+    p.x = p.y = 0;
+
+#ifdef BQ_PLATFORM_WINDOWS
+    bqWindowWin32* w32 = (bqWindowWin32*)m_data.m_implementation;
+    RECT cr, wr;
+    GetWindowRect(w32->m_hWnd, &wr);
+    GetClientRect(w32->m_hWnd, &cr);
+    p.x = (int32_t)floor((float)m_data.m_sizeCurrent.x * 0.5f);
+    p.y = (int32_t)floor((float)m_data.m_sizeCurrent.y * 0.5f);
+    p.x += m_data.m_borderSize.x + wr.left;
+    p.y += m_data.m_borderSize.y + wr.top;
 #endif
 }
 
@@ -328,6 +356,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (pW)
         {
+            bqWindowWin32_findCurrentSize(pW, (bqWindowWin32*)pW->GetData()->m_implementation);
+            bqWindowWin32_findPosition(pW, (bqWindowWin32*)pW->GetData()->m_implementation);
             int wmId = LOWORD(wParam);
             switch (wmId)
             {
@@ -342,8 +372,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
             }
 
-            bqWindowWin32_findCurrentSize(pW, (bqWindowWin32*)pW->GetData()->m_implementation);
-
             pW->GetData()->m_cb->OnSize(pW);
         }
 
@@ -353,7 +381,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (pW)
         {
             bqWindowWin32_findCurrentSize(pW, (bqWindowWin32*)pW->GetData()->m_implementation);
-
+            bqWindowWin32_findPosition(pW, (bqWindowWin32*)pW->GetData()->m_implementation);
             pW->GetData()->m_cb->OnSizing(pW);
         }
     }break;
@@ -366,6 +394,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }break;
     case WM_MOVE:
     {
+        bqWindowWin32_findPosition(pW, (bqWindowWin32*)pW->GetData()->m_implementation);
         if (pW)
             pW->GetData()->m_cb->OnMove(pW);
     }break;
@@ -413,6 +442,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 //ScreenToClient(hWnd, &cursorPoint);
                 id->m_mousePosition.x = (float)(cursorPoint.x - rct.left - pW->GetBorderSize()->x);
                 id->m_mousePosition.y = (float)(cursorPoint.y - rct.top - pW->GetBorderSize()->y);
+
+                //printf("mp %f %f\n", id->m_mousePosition.x, id->m_mousePosition.y);
 
                 // printf("%i %i\n", cursorPoint.x, cursorPoint.y);
 

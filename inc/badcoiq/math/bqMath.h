@@ -175,6 +175,7 @@ public:
 	static void Mul(const bqMat4&, const bqMat4&, bqMat4&);
 	static void Mul(const bqMat4&, const bqVec3&, bqVec3&);
 	static void Mul(const bqMat4&, const bqVec4&, bqVec4&);
+	static void Mul(const bqMat4&, const bqVec4f&, bqVec4f&);
 	static void Mul(const bqMat4&, const bqVec3f&, bqVec3f&);
 	static void Mul(const bqQuaternion&, const bqQuaternion&, bqQuaternion&);
 

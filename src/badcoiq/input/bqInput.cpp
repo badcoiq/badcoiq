@@ -32,6 +32,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../framework/bqFrameworkImpl.h"
 
+#ifdef BQ_PLATFORM_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include "badcoiq/system/bqWindow.h"
+#include "badcoiq/system/bqWindowWin32.h"
+#endif
 extern bqFrameworkImpl* g_framework;
 
 static const uint64_t g_keyToBin[] =
@@ -201,9 +207,9 @@ void bqInputUpdatePost()
 	case 7:  g_framework->m_input.m_keyboardModifier = bq::KeyboardMod_CtrlShiftAlt;  break;
 	}
 
-	g_framework->m_input.m_mouseMoveDelta.x = g_framework->m_input.m_mousePosition.x - 
+	g_framework->m_input.m_mouseMoveDelta.x = g_framework->m_input.m_mousePosition.x -
 		g_framework->m_input.m_mousePositionOld.x;
-	g_framework->m_input.m_mouseMoveDelta.y = g_framework->m_input.m_mousePosition.y - 
+	g_framework->m_input.m_mouseMoveDelta.y = g_framework->m_input.m_mousePosition.y -
 		g_framework->m_input.m_mousePositionOld.y;
 }
 
@@ -373,4 +379,19 @@ bool bqInput::IsX2MBRelease() { return (g_framework->m_input.m_mouseButtonFlags 
 static const uint64_t* GetKeyToBin()
 {
 	return g_keyToBin;
+}
+
+void bqInput::SetMousePosition(bqWindow* w, int32_t x, int32_t y)
+{
+
+#ifdef BQ_PLATFORM_WINDOWS
+	SetCursorPos(x, y);
+	
+	g_framework->m_input.m_mousePosition.x = (float)(x - w->GetData()->m_position.x) - w->GetData()->m_borderSize.x;
+	g_framework->m_input.m_mousePosition.y = (float)(y - w->GetData()->m_position.y) - w->GetData()->m_borderSize.y;
+
+	//printf("%i %i : %f %f\n", x, y, g_framework->m_input.m_mousePosition.x, g_framework->m_input.m_mousePosition.y);
+#else
+#error Need implementation
+#endif
 }

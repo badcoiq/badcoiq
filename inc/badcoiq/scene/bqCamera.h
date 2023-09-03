@@ -48,7 +48,14 @@ class bqCamera
 		bqMat4 R;
 		R.SetRotation(m_rotation);
 
-		m_view = R * P;
+		bqVec4 V;
+		bqMath::Mul(m_rotationMatrix, -m_position, V);
+		
+		//V = -m_position;
+
+		m_view = m_rotationMatrix;// *P;
+		m_view[3] = V;
+		m_view[3].w = 1.f;
 	}
 
 	void _updatePerspective(float dt)
@@ -73,6 +80,15 @@ class bqCamera
 	{
 		bqMath::LookAtRH(m_view, m_position, m_lookAtTargett, m_upVector);
 		bqMath::OrthoRH(m_projection, m_orthoWidth, m_orthoHeight, m_near, m_far);
+	}
+
+	void _moveCamera(bqVec4& vel)
+	{
+		auto RotInv = m_rotationMatrix;
+		RotInv.Invert();
+		bqVec4 v;
+		bqMath::Mul(RotInv, vel, v);
+		m_position += v; // m_localPosition is just vec4 for position
 	}
 
 public:
@@ -116,13 +132,82 @@ public:
 		}
 	}
 
+	void MoveLeft(float dt)
+	{
+		bqVec4 v(-m_moveSpeed * dt, 0.f, 0.f, 1.f);
+		_moveCamera(v);
+	}
+	void MoveRight(float dt)
+	{
+		bqVec4 v(m_moveSpeed * dt, 0.f, 0.f, 1.f);
+		_moveCamera(v);
+	}
+	void MoveUp(float dt)
+	{
+		bqVec4 v(0.f, m_moveSpeed * dt, 0.f, 1.f);
+		_moveCamera(v);
+	}
+	void MoveDown(float dt)
+	{
+		bqVec4 v(0.f, -m_moveSpeed * dt, 0.f, 1.f);
+		_moveCamera(v);
+	}
+	void MoveBackward(float dt)
+	{
+		bqVec4 v(0.f, 0.f, m_moveSpeed * dt, 1.f);
+		_moveCamera(v);
+	}
+	void MoveForward(float dt)
+	{
+		bqVec4 v(0.f, 0.f, -m_moveSpeed * dt, 1.f);
+		_moveCamera(v);
+	}
+	
+	void Rotate(const bqPointf& mouseDelta, float dt)
+	{
+		float speed = 4.4f;
+		bqMat4 RX;
+		bqMat4 RY;
+		bool update = false;
+		if (mouseDelta.x != 0.f)
+		{
+			update = true;
+			RY.SetRotation(bqQuaternion(0.f, bqMath::DegToRad(-mouseDelta.x) * dt * speed, 0.f));
+		}
+		if (mouseDelta.y != 0.f)
+		{
+			update = true;
+			RX.SetRotation(bqQuaternion(bqMath::DegToRad(-mouseDelta.y) * dt * speed, 0.f, 0.f));
+		}
+
+		if (update)
+		{
+			m_rotationMatrix = RX * m_rotationMatrix * RY;
+		}
+	}
+
+	void Rotate(float x, float y, float z)
+	{
+		bqMat4 RX;
+		bqMat4 RY;
+		bqMat4 RZ;
+		RY.SetRotation(bqQuaternion(0.f, bqMath::DegToRad(x), 0.f));
+		RX.SetRotation(bqQuaternion(bqMath::DegToRad(y), 0.f, 0.f));
+		RZ.SetRotation(bqQuaternion(0.f, 0.f, bqMath::DegToRad(z)));
+
+		m_rotationMatrix = RX * m_rotationMatrix * RY * RZ;
+	}
+
 	bqMat4 m_view;
 	bqMat4 m_projection;
 	bqMat4 m_viewProjectionMatrix;
+	bqMat4 m_rotationMatrix;
 
 	bqVec4 m_position;
 	bqVec4 m_lookAtTargett;
 	bqVec4 m_upVector = bqVec4(0.0, 1.0, 0.0, 0.0);
+
+	float m_moveSpeed = 10.f;
 
 	float m_aspect = 800.f / 600.f;
 	float m_fov = (float)PI * 0.25f;

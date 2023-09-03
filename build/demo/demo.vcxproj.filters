@@ -5,6 +5,10 @@
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_3DLineAndCamera.cpp">
       <Filter>examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\DemoApp.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_fly.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">

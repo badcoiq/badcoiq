@@ -145,6 +145,7 @@ bool DemoApp::Init()
 
 	m_currentCategory = &m_rootCategory;
 	AddExample(new ExampleBasics3DLineAndCamera(this), U"3D line and camera", "basics/", U"Basic thing. Add camera and draw something. Use WASDQE");
+	AddExample(new ExampleSceneCameraFly(this), U"Flying camera", "scene/camera", U"Use WASDQE and mouse");
 	/*AddExample(new ExampleBasicsMouseAndKeyboard(this), U"Mouse and keyboard", "basics/", U"Show information about keyboard and mouse.");
 	AddExample(new ExampleBasicsImageAndTexture(this), U"Image and texture", "basics/", U"Load image and create texture.");
 	AddExample(new ExampleBasics3DModel(this), U"Load model", "basics/", U"Load model data from file. File can contain many objects, need to use callback. Better to create special class for this.");
@@ -176,8 +177,6 @@ void DemoApp::Run()
 	while (m_isRun)
 	{
 		bqFramework::Update();
-
-	//	Sleep(1);
 
 		m_gs->EnableBlend();
 
