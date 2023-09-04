@@ -63,7 +63,7 @@ public:
 		const bqVec2f& coord,
 		const bqVec2f& rc_sz,
 		const bqMat4& VPinv,
-		const bqVec3f& depthRange);
+		const bqVec2f& depthRange);
 
 	// Пересечение линий.
 	// Установить пересекает ли линия другую линию невозможно так как они не имеют

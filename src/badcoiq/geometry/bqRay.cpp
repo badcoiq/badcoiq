@@ -40,7 +40,7 @@ void bqRay::CreateFrom2DCoords(
 	const bqVec2f& coord,
 	const bqVec2f& rc_sz,
 	const bqMat4& VPinv,
-	const bqVec3f& depthRange)
+	const bqVec2f& depthRange)
 {
 	// cursor ccordinates from -1 до +1
 	float pt_x = (coord.x / rc_sz.x) * 2.f - 1.f;

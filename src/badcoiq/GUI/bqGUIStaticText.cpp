@@ -105,12 +105,6 @@ void bqGUIStaticText::Draw(bqGS* gs, float dt)
 
 		bqVec2f textPosition = pos;
 
-		bqVec4f r;
-		r.x = pos.x;
-		r.y = pos.y;
-		r.z = m_buildRect.z;
-		r.w = r.y;
-
 		bool draw = true;
 		for (size_t i = 0; i < sz; ++i)
 		{
@@ -123,7 +117,7 @@ void bqGUIStaticText::Draw(bqGS* gs, float dt)
 			char32_t ch = m_text[i];
 			bqGUIFont* font = m_textDrawCallback->OnFont(0, ch);
 			bqGUIFontGlyph* g = font->GetGlyphMap()[ch];
-
+			
 			bqVec4f chrct;
 			chrct.x = textPosition.x;
 			chrct.y = textPosition.y;
@@ -134,6 +128,13 @@ void bqGUIStaticText::Draw(bqGS* gs, float dt)
 			{
 				textPosition.y += m_lineHeight;
 				textPosition.x = pos.x;
+
+				// надо заново вычислить chrct
+				// просто дубликат кода
+				chrct.x = textPosition.x;
+				chrct.y = textPosition.y;
+				chrct.z = chrct.x + g->m_width + g->m_overhang + g->m_underhang;
+				chrct.w = chrct.y + g->m_height;
 			}
 
 
