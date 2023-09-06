@@ -120,6 +120,12 @@ public:
 	// Удалить полигон. bqListNode должен принадлежать списку m_polygons.
 	void DeletePolygon(bqListNode<bqPolygonMeshPolygon*>*);
 
+	void AddCube(float size, const bqMat4& m);
+	void AddBox(const bqAabb&, const bqMat4& m);
+	void AddSphere(float radius, uint32_t segments, const bqMat4& m);
+
+	void Clear();
+
 	bqList<bqPolygonMeshControlPoint*> m_controlPoints;
 	bqList<bqPolygonMeshPolygon*> m_polygons;
 	bqList<bqPolygonMeshEdge*> m_edges;

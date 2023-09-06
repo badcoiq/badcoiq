@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/geometry/bqMeshCreator.h"
 #include "badcoiq/geometry/bqPolygonMesh.h"
+#include "badcoiq/containers/bqArray.h"
 
 #include <map>
 #include <string>
@@ -64,6 +65,11 @@ bqPolygonMesh::bqPolygonMesh()
 
 bqPolygonMesh::~bqPolygonMesh()
 {
+	Clear();
+}
+
+void bqPolygonMesh::Clear()
+{
 	for (auto o : m_controlPoints)
 	{
 		delete o;
@@ -78,6 +84,10 @@ bqPolygonMesh::~bqPolygonMesh()
 	{
 		delete o;
 	}
+	m_controlPoints.clear();
+	m_polygons.clear();
+	m_edges.clear();
+	m_aabb.Reset();
 }
 
 // При добавлении полигона необходимо создавать новые управляющие точки
@@ -150,9 +160,9 @@ void bqPolygonMesh::GenerateNormals(bool smooth)
 				std::vector<bqPolygonMeshVertex*> verts;
 			};
 
+			std::map<std::string, Container> map;
 			for (auto p : m_polygons)
 			{
-				std::map<std::string, Container> map;
 				bqStringA str;
 				std::string stdstr;
 
@@ -170,6 +180,10 @@ void bqPolygonMesh::GenerateNormals(bool smooth)
 					map[stdstr].normal += p->GetFaceNormal();
 				}
 
+			}
+
+			for (auto p : m_polygons)
+			{
 				for (auto& o : map)
 				{
 					for (auto& c : o.second.verts)
@@ -179,7 +193,6 @@ void bqPolygonMesh::GenerateNormals(bool smooth)
 					}
 				}
 			}
-			
 		}
 	}
 }
@@ -455,5 +468,293 @@ void bqPolygonMesh::DeleteBadControlPoints()
 	{
 		delete cp->m_data;
 		m_controlPoints.erase_by_node(cp);
+	}
+}
+
+void bqPolygonMesh::AddCube(float size, const bqMat4& m)
+{
+	BQ_ASSERT_ST(size != 0.f);
+
+	float halfSize = size * 0.5f;
+
+	bqAabb aabb;
+	aabb.m_min.Set(-halfSize);
+	aabb.m_max.Set(halfSize);
+
+	AddBox(aabb, m);
+}
+
+
+/*
+* x - max
+* n - min
+
+  nxx+______________+ xxx
+	 |\             \
+	 | \            .\
+	 |  \           . \
+	 |   \  nxn     .  \
+	 |    \+____________\+ xxn
+	 |     |        .    |
+  nnx+.....|........+xnx |
+	  \    |         .   |
+	   \   |          .  |
+		\  |           . |
+		 \ |            .|
+	  nnn \+_____________+ xnn
+*/
+
+void bqPolygonMesh::AddBox(const bqAabb& box, const bqMat4& m)
+{
+	bqMeshPolygonCreator pc;
+	// maybe UV is not correct...
+	// top
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(0.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(1.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(1.f, 1.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(0.f, 1.f));
+	pc.AddVertex();
+	pc.Mul(m);
+	AddPolygon(&pc, true);
+
+	// bottom
+	pc.Clear();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_min.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(0.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_min.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(1.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_min.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(1.f, 1.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_min.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(0.f, 1.f));
+	pc.AddVertex();
+	pc.Mul(m);
+	AddPolygon(&pc, true);
+
+	// left
+	pc.Clear();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(0.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(1.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_min.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(1.f, 1.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_min.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(0.f, 1.f));
+	pc.AddVertex();
+	pc.Mul(m);
+	AddPolygon(&pc, true);
+
+	// right
+	pc.Clear();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(0.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_min.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(1.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_min.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(1.f, 1.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(0.f, 1.f));
+	pc.AddVertex();
+	pc.Mul(m);
+	AddPolygon(&pc, true);
+
+	// back
+	pc.Clear();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(0.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(1.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_min.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(1.f, 1.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_min.y, (float)box.m_min.z));
+	pc.SetUV(bqVec2f(0.f, 1.f));
+	pc.AddVertex();
+	pc.Mul(m);
+	AddPolygon(&pc, true);
+
+	// front
+	pc.Clear();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(0.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_min.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(1.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_min.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(1.f, 1.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_max.z));
+	pc.SetUV(bqVec2f(0.f, 1.f));
+	pc.AddVertex();
+	pc.Mul(m);
+	AddPolygon(&pc, true);
+}
+
+void bqPolygonMesh::AddSphere(float radius, uint32_t segments, const bqMat4& m)
+{
+	if (radius == 0.f) radius = 1.f;
+	if (radius < 0.f) radius = 1.f;
+
+	if (segments < 3)
+		segments = 3;
+	if (segments > 30)
+		segments = 30;
+
+	// 1. Generate points in 2D.
+	//    Generate from 90 to 270 degrees
+	//    2 points must be in 90 and in 270 degrees
+	bqArray<bqVec3> points;
+	float angle = 90.f;
+	float angleStep = 180.f / (segments - 1);
+	for (uint32_t i = 0; i < segments; ++i)
+	{
+		if (i == segments - 1)
+			angle = 270.f;
+
+		auto sn = ::sin(bqMath::DegToRad(angle));
+		auto cs = ::cos(bqMath::DegToRad(angle));
+		//	printf("A[%f]: %f %f\n", angle, sn, cs);
+		points.push_back(bqVec3((bqReal)cs, (bqReal)sn, 0.0));
+
+		angle += angleStep;
+	}
+
+	// 2. Create polygons. Take points, rotate them, use them to build new polygon.
+	/*
+	*                    +0
+	*                  / |
+	*                /   |
+	*              /     |
+	*            /      /
+	*          1+  -  - +1rotated
+	*           |       |
+	*           |       |
+	*           |       |
+	*           |       |
+	*          2+  -  - +2rotated
+	*            \      \
+	*              \     |
+	*                \   |
+	*                  \ |
+	*                   3+
+	*   Top and bottom polygons are triangles
+	*/
+
+	angle = 0.f;
+	angleStep = 360.f / (segments);
+	float nextAngle = angleStep;
+	bqVec2f UV;
+	float UVstep = 1.f / (segments - 1);
+	for (uint32_t i1 = 0; i1 < segments; ++i1)
+	{
+		bqMat4 M, Mn;
+		M.SetRotation(bqQuaternion(0.f, bqMath::DegToRad(angle), 0.f));
+		Mn.SetRotation(bqQuaternion(0.f, bqMath::DegToRad(nextAngle), 0.f));
+
+		for (uint32_t i2 = 0; i2 < segments - 1; ++i2)
+		{
+			// top triangle
+			if (i2 == 0)
+			{
+				bqVec3 v0 = points[i2];
+				bqVec3 v1 = points[i2 + 1];
+				bqVec3 v2 = v1;
+
+				bqMath::Mul(M, points[i2], v0);
+				bqMath::Mul(M, points[i2 + 1], v1);
+				bqMath::Mul(Mn, points[i2 + 1], v2);
+
+				bqMeshPolygonCreator pc;
+				pc.SetPosition(bqVec3f((float)v1.x, (float)v1.y, (float)v1.z));
+				pc.SetUV(bqVec2f(UV.x, UV.y + UVstep));
+				pc.AddVertex();
+				pc.SetPosition(bqVec3f((float)v0.x, (float)v0.y, (float)v0.z));
+				pc.SetUV(bqVec2f(UV.x + (UVstep * 0.5f), UV.y));
+				pc.AddVertex();
+				pc.SetPosition(bqVec3f((float)v2.x, (float)v2.y, (float)v2.z));
+				pc.SetUV(bqVec2f(UV.x + UVstep, UV.y + UVstep));
+				pc.AddVertex();
+				pc.Mul(m);
+				AddPolygon(&pc, true);
+			}
+			else if (i2 == segments - 2) // bottom
+			{
+				bqVec3 v0 = points[i2];
+				bqVec3 v1 = points[i2 + 1];
+				bqVec3 v2 = points[i2];
+
+				bqMath::Mul(M, points[i2], v0);
+				bqMath::Mul(M, points[i2 + 1], v1);
+				bqMath::Mul(Mn, points[i2], v2);
+
+				bqMeshPolygonCreator pc;
+				pc.SetPosition(bqVec3f((float)v1.x, (float)v1.y, (float)v1.z));
+				pc.SetUV(bqVec2f(UV.x + (UVstep * 0.5f), UV.y + UVstep));
+				pc.AddVertex();
+				pc.SetPosition(bqVec3f((float)v0.x, (float)v0.y, (float)v0.z));
+				pc.SetUV(bqVec2f(UV.x, UV.y));
+				pc.AddVertex();
+				pc.SetPosition(bqVec3f((float)v2.x, (float)v2.y, (float)v2.z));
+				pc.SetUV(bqVec2f(UV.x + UVstep, UV.y));
+				pc.AddVertex();
+				pc.Mul(m);
+				AddPolygon(&pc, true);
+			}
+			else
+			{
+				bqVec3 v0 = points[i2];
+				bqVec3 v1 = points[i2 + 1];
+				bqVec3 v2 = v0;
+				bqVec3 v3 = v1;
+
+				bqMath::Mul(M, points[i2], v0);
+				bqMath::Mul(M, points[i2 + 1], v1);
+				bqMath::Mul(Mn, points[i2], v2);
+				bqMath::Mul(Mn, points[i2 + 1], v3);
+
+				bqMeshPolygonCreator pc;
+				pc.SetPosition(bqVec3f((float)v1.x, (float)v1.y, (float)v1.z));
+				pc.SetUV(bqVec2f(UV.x, UV.y + UVstep));
+				pc.AddVertex();
+				pc.SetPosition(bqVec3f((float)v0.x, (float)v0.y, (float)v0.z));
+				pc.SetUV(bqVec2f(UV.x, UV.y));
+				pc.AddVertex();
+				pc.SetPosition(bqVec3f((float)v2.x, (float)v2.y, (float)v2.z));
+				pc.SetUV(bqVec2f(UV.x + UVstep, UV.y));
+				pc.AddVertex();
+				pc.SetPosition(bqVec3f((float)v3.x, (float)v3.y, (float)v3.z));
+				pc.SetUV(bqVec2f(UV.x + UVstep, UV.y + UVstep));
+				pc.AddVertex();
+				pc.Mul(m);
+				AddPolygon(&pc, true);
+			}
+
+			UV.y += UVstep;
+		}
+
+		UV.x += UVstep;
+
+		angle += angleStep;
+		nextAngle += angleStep;
 	}
 }

@@ -25,44 +25,26 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_MESHCREATOR_H__
-#define __BQ_MESHCREATOR_H__
+#ifndef _EXmshgnrt_H_
+#define _EXmshgnrt_H_
 
-#include "badcoiq/geometry/bqPolygonMesh.h"
-
-class bqMeshPolygonCreator
+class DemoExample;
+class DemoApp;
+class ExampleBasicsMshGnrtr : public DemoExample
 {
-	bqVertexTriangleSkinned m_vertexData;
-	bqPolygonMeshPolygon* m_polygon = 0;
-	void _createPolygon();
-	uint32_t m_size = 0;
+	bqCamera* m_camera = 0;
+	bqGPUMesh* m_meshBox = 0;
+	bqGPUMesh* m_meshSphere = 0;
+	bqMat4 m_worldBox, m_worldSphere, m_wvp;
 public:
-	bqMeshPolygonCreator();
-	~bqMeshPolygonCreator();
+	ExampleBasicsMshGnrtr(DemoApp*);
+	virtual ~ExampleBasicsMshGnrtr();
+	BQ_PLACEMENT_ALLOCATOR(ExampleBasicsMshGnrtr);
 
-	// set vertex data using this
-	void SetPosition(const bqVec3f&);
-	void SetNormal(const bqVec3f&);
-	void SetBinormal(const bqVec3f&);
-	void SetTangent(const bqVec3f&);
-	void SetColor(const bqVec4f&);
-	void SetUV(const bqVec2f&);
-	void SetBoneInds(const bqVec4_t<uint8_t>&);
-	void SetBoneWeights(const bqVec4f&);
-	// or this
-	void SetVertex(const bqVertexTriangle&);
-	// then call this
-
-	void AddVertex();
-	uint32_t Size();
-
-	void Mul(const bqMat4& m);
-
-	void Clear();
-	bqPolygonMeshPolygon* DropPolygon();
+	virtual bool Init() override;
+	virtual void Shutdown() override;
+	virtual void OnDraw() override;
 };
 
 #endif
-

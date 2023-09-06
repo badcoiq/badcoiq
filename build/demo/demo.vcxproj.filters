@@ -12,6 +12,9 @@
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_rayFromCursor.cpp">
       <Filter>examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_meshGenerator.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">

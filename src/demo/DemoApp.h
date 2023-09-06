@@ -279,6 +279,7 @@ public:
 
 #include "examples/basic/ex_basic_3DLineAndCamera.h"
 #include "examples/basic/ex_basic_rayFromCursor.h"
+#include "examples/basic/ex_basic_meshGenerator.h"
 #include "examples/scene/camera/ex_sc_camera_fly.h"
 
 #endif

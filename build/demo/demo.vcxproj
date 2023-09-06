@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\src\demo\demo.cpp" />
     <ClCompile Include="..\..\src\demo\DemoApp.cpp" />
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_3DLineAndCamera.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_meshGenerator.cpp" />
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_rayFromCursor.cpp" />
     <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_fly.cpp" />
   </ItemGroup>

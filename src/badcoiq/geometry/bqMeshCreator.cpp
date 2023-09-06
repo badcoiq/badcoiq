@@ -126,3 +126,18 @@ bqPolygonMeshPolygon* bqMeshPolygonCreator::DropPolygon()
 
 	return p;
 }
+
+void bqMeshPolygonCreator::Mul(const bqMat4& m)
+{
+	if(m_polygon->m_vertices.m_head)
+	{
+		for (auto v : m_polygon->m_vertices)
+		{
+			auto p = v->m_data.BaseData.Position;
+			bqMath::Mul(m, p, v->m_data.BaseData.Position);
+			v->m_data.BaseData.Position.x += (float)m.m_data[3].x;
+			v->m_data.BaseData.Position.y += (float)m.m_data[3].y;
+			v->m_data.BaseData.Position.z += (float)m.m_data[3].z;
+		}
+	}
+}

@@ -87,7 +87,7 @@ bool bqD3D11ShaderStandart::Init(){
 		"}\n"
 		"PSOut PSMain(VSOut input){\n"
 		"	float3 lightDir = normalize(-SunPosition.xyz);\n"
-		"	float diff = max(dot(input.normal, -lightDir), 0.0);\n"
+		"	float diff = max(dot(input.normal, lightDir), 0.0);\n"
 
 		"   PSOut output;\n"
 		"   output.color = AmbientColor;\n"
