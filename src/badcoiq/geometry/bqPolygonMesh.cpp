@@ -758,3 +758,65 @@ void bqPolygonMesh::AddSphere(float radius, uint32_t segments, const bqMat4& m)
 		nextAngle += angleStep;
 	}
 }
+
+void bqPolygonMesh::GenerateUVPlanar(float scale)
+{
+	if (!m_polygons.m_head)
+		return;
+
+	bqVec3f n;
+	auto cp = m_polygons.m_head;
+	auto lp = cp->m_left;
+	while (true)
+	{
+		n += cp->m_data->GetFaceNormal();
+
+		if (cp == lp)
+			break;
+		cp = cp->m_right;
+	}
+	n.Normalize();
+	if (n.x == 0.f) n.x = 0.0001f;
+	if (n.y == 0.f) n.y = 0.0001f;
+	if (n.z == 0.f) n.z = 0.0001f;
+
+	bqMat4 V;
+	bqMat4 P;
+	bqMath::LookAtRH(V, n, bqVec4(), bqVec4(0.f, 1.f, 0.f, 0.f));
+	bqMath::OrthoRH(P, 100.f, 100.f, -1000.f, 1000.f);
+
+	bqMat4 W;
+	W.m_data[0].x = scale;
+	W.m_data[1].y = scale;
+	W.m_data[2].z = scale;
+
+	bqMat4 VP = P * V * W;
+
+	{
+		auto cp = m_polygons.m_head;
+		auto lp = cp->m_left;
+		while (true)
+		{
+			auto cv = cp->m_data->m_vertices.m_head;
+			auto lv = cv->m_left;
+			while (true)
+			{
+				bqVec4 point = cv->m_data->m_data.BaseData.Position;// -center3d;
+				point.w = 1.f;
+				bqMath::Mul(VP, bqVec4(point), point);
+
+				cv->m_data->m_data.BaseData.UV.x = (float)(point.x / point.w);
+				cv->m_data->m_data.BaseData.UV.y = (float)(-point.y / point.w);
+
+				//aabb2d.add(v3f(cv->m_data.m_uv.x, cv->m_data.m_uv.y, 0.f));
+
+				if (cv == lv)
+					break;
+				cv = cv->m_right;
+			}
+			if (cp == lp)
+				break;
+			cp = cp->m_right;
+		}
+	}
+}

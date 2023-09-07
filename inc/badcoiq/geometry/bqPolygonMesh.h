@@ -76,7 +76,6 @@ public:
 
 	bqVec3f GetFaceNormal();
 	void CalculateNormal();
-
 	bool IsVisible();
 	uint32_t GetVerticesNumber();
 
@@ -123,6 +122,8 @@ public:
 	void AddCube(float size, const bqMat4& m);
 	void AddBox(const bqAabb&, const bqMat4& m);
 	void AddSphere(float radius, uint32_t segments, const bqMat4& m);
+
+	void GenerateUVPlanar(float scale);
 
 	void Clear();
 

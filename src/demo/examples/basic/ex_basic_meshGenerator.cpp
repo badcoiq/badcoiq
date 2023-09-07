@@ -61,6 +61,7 @@ bool ExampleBasicsMshGnrtr::Init()
 	bqPolygonMesh pm; // генерируется используя концепцию полигонов
 	pm.AddBox(aabb, transform); // Добавить коробку. можно вызывать множество Add методов,
 	pm.GenerateNormals(false);
+	pm.GenerateUVPlanar(1.f);
 	// но в этом примере будет 1 на каждый bqGPUMesh
 	bqMesh* mesh = pm.SummonMesh();
 	if (mesh)
@@ -77,6 +78,7 @@ bool ExampleBasicsMshGnrtr::Init()
 	transform.m_data[1].y = 0.5; // сплющю сферу 
 	pm.AddSphere(1.f, 30, transform);
 	pm.GenerateNormals(true);
+	pm.GenerateUVPlanar(1.f);
 	mesh = pm.SummonMesh();
 	if (mesh)
 	{
