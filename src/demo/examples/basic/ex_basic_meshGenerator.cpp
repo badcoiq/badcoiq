@@ -76,7 +76,7 @@ bool ExampleBasicsMshGnrtr::Init()
 
 	pm.Clear();
 	transform.m_data[1].y = 0.5; // сплющю сферу 
-	pm.AddSphere(1.f, 5, transform);
+	pm.AddSphere(1.f, 33, transform);
 	pm.GenerateNormals(true);
 	pm.GenerateUVPlanar(100.f);
 	mesh = pm.SummonMesh();
