@@ -76,9 +76,9 @@ bool ExampleBasicsMshGnrtr::Init()
 
 	pm.Clear();
 	transform.m_data[1].y = 0.5; // сплющю сферу 
-	pm.AddSphere(1.f, 30, transform);
+	pm.AddSphere(1.f, 5, transform);
 	pm.GenerateNormals(true);
-	pm.GenerateUVPlanar(1.f);
+	pm.GenerateUVPlanar(100.f);
 	mesh = pm.SummonMesh();
 	if (mesh)
 	{
@@ -95,6 +95,8 @@ bool ExampleBasicsMshGnrtr::Init()
 		bqLog::PrintError("Can't create GPU mesh: %s %i\n", BQ_FUNCTION, BQ_LINE);
 		return false;
 	}
+
+	
 
 	return true;
 }
@@ -145,6 +147,7 @@ void ExampleBasicsMshGnrtr::OnDraw()
 	bqMaterial material;
 	material.m_shaderType = bqShaderType::Standart;
 	material.m_sunPosition.Set(2.f, 2.f, 1.f);
+	material.m_maps[0].m_texture = m_app->m_texture4x4;
 	m_gs->SetMaterial(&material);
 	m_gs->Draw();
 

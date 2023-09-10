@@ -189,6 +189,7 @@ public:
 	
 	float* m_dt = 0;
 	bqTexture* m_whiteTexture = 0;
+	bqTexture* m_texture4x4 = 0;
 
 	bqTexture* LoadTexture(const char*);
 	bqGPUMesh* CreateMeshSphere(uint32_t segments, float radius, bool smooth);

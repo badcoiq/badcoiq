@@ -808,8 +808,6 @@ void bqPolygonMesh::GenerateUVPlanar(float scale)
 				cv->m_data->m_data.BaseData.UV.x = (float)(point.x / point.w);
 				cv->m_data->m_data.BaseData.UV.y = (float)(-point.y / point.w);
 
-				//aabb2d.add(v3f(cv->m_data.m_uv.x, cv->m_data.m_uv.y, 0.f));
-
 				if (cv == lv)
 					break;
 				cv = cv->m_right;

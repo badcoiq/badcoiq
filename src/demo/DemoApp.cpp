@@ -72,7 +72,7 @@ DemoApp::~DemoApp()
 	{
 		delete m_allExamples.m_data[i];
 	}
-
+	BQ_SAFEDESTROY(m_texture4x4);
 	BQ_SAFEDESTROY(m_whiteTexture);
 	BQ_SAFEDESTROY(m_textDrawCallback);
 	BQ_SAFEDESTROY(m_frameworkCallback);
@@ -142,6 +142,13 @@ bool DemoApp::Init()
 		m_whiteTexture = m_gs->SummonTexture(&img, tinf);
 	}
 
+	bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/images/4x4.png").c_str());
+	if (image)
+	{
+		bqTextureInfo tinf;
+		m_texture4x4 = m_gs->SummonTexture(image, tinf);
+		delete image;
+	}
 
 	m_currentCategory = &m_rootCategory;
 	AddExample(new ExampleBasics3DLineAndCamera(this), U"3D линия и камера", "basics/", U"Основы. Надо хотьчто-то нарисовать и уметь перемещаться нажимая кнопки. Используй WASDQE");
