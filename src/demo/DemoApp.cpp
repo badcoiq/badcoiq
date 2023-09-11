@@ -117,7 +117,7 @@ bool DemoApp::Init()
 	m_GUIWindow = bqFramework::SummonGUIWindow(bqVec2f(300.f, 0.f),
 		bqVec2f(300.f, 400.f));
 	m_GUIWindow->SetDrawBG(false);
-	auto staticText = new MyStaticText(m_GUIWindow, bqVec2f(0.f, 0.f), bqVec2f(300.f, 100.f));
+	auto staticText = new MyStaticText(m_GUIWindow, bqVec2f(0.f, 0.f), bqVec2f(300.f, 300.f));
 	m_staticTextDescription = staticText;
 	m_staticTextDescription->SetText(U" ");
 
@@ -153,7 +153,8 @@ bool DemoApp::Init()
 	m_currentCategory = &m_rootCategory;
 	AddExample(new ExampleBasics3DLineAndCamera(this), U"3D линия и камера", "basics/", U"Основы. Надо хотьчто-то нарисовать и уметь перемещаться нажимая кнопки. Используй WASDQE");
 	AddExample(new ExampleBasicsRayFromCursor(this), U"Луч от курсора", "basics/", U"Кликаем ЛКМ, перемещаемся WASDQE, и видим созданные лучи");
-	AddExample(new ExampleBasicsMshGnrtr(this), U"Генератор моделей", "basics/", U"основа работы с генератором моделей. Вместо мучений с загрузкой файлов проще что нибудь сгенерировать.");
+	AddExample(new ExampleBasicsMshGnrtr(this), U"Генератор моделей", "basics/", U"Основа работы с генератором моделей. Вместо мучений с загрузкой файлов проще что нибудь сгенерировать.");
+	AddExample(new ExampleBasics3DModel(this), U"Загрузка моделей", "basics/", U"Обычно файл с моделью содержит множество моделей. Будет правильнее грузить эти модели по отдельности. Для этого нужно будет передать коллбэк. Использовать конечно будет не так просто, правильнее сделать базовый класс для моделей.");
 	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
 	/*AddExample(new ExampleBasicsMouseAndKeyboard(this), U"Mouse and keyboard", "basics/", U"Show information about keyboard and mouse.");
 	AddExample(new ExampleBasicsImageAndTexture(this), U"Image and texture", "basics/", U"Load image and create texture.");

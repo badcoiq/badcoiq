@@ -506,7 +506,7 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 					}
 
 					auto n = normal[nor_index];
-					pcNorm = n;
+					pcNorm = -n;
 					genNormals = false;
 				}
 				polygonCreator.SetPosition(pcPos);
