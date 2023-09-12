@@ -1,3 +1,3 @@
-### Hi there 👋
+### BADCOIQ
 
-[Ход разработки на wiki](https://github.com/badcoiq/badcoiq/wiki)
+[BADCOIQ](https://github.com/badcoiq/badcoiq/wiki)
