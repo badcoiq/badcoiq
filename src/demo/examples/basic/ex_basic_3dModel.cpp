@@ -53,14 +53,9 @@ bool ExampleBasics3DModel::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_model = new MyModel(m_gs);
-	m_model->Load(bqFramework::GetPath("../data/models/4_objs.obj").c_str());
+	m_model->Load(bqFramework::GetPath("../data/models/1.obj").c_str());
 
 	return true;
-}
-
-void ExampleBasics3DModel::MyModel::Load(const char* f)
-{
-	bqFramework::SummonMesh(f, &m_cb);
 }
 
 void ExampleBasics3DModel::Shutdown()
@@ -109,11 +104,14 @@ void ExampleBasics3DModel::OnDraw()
 	material.m_shaderType = bqShaderType::Standart;
 	material.m_sunPosition.Set(2.f, 2.f, 1.f);
 	m_gs->SetMaterial(&material);
-	for (size_t i = 0; i < m_model->m_gpuModels.m_size; ++i)
+	for (size_t i = 0; i < m_model->m_meshBuffers.m_size; ++i)
 	{
-		material.m_maps[0].m_texture = m_app->m_texture4x4;
+		if(m_model->m_meshBuffers.m_data[i]->m_texture)
+			material.m_maps[0].m_texture = m_model->m_meshBuffers.m_data[i]->m_texture;
+		else
+			material.m_maps[0].m_texture = m_app->m_texture4x4;
 
-		m_gs->SetMesh(m_model->m_gpuModels.m_data[i]);
+		m_gs->SetMesh(m_model->m_meshBuffers.m_data[i]->m_mesh);
 		m_gs->Draw();
 	}
 

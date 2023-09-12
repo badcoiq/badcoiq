@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_MATERIAL_H__
 
 #include "badcoiq/common/bqColor.h"
+#include "badcoiq/containers/bqArray.h"
 #include "badcoiq/gs/bqShader.h"
 
 // Параметры для шейдеров
@@ -68,7 +69,7 @@ public:
 
 	}m_maps[16];*/
 
-	struct map
+	/*struct map
 	{
 		map()
 		{
@@ -83,20 +84,39 @@ public:
 		char8_t m_filePath[0x1000];
 
 	};
-	map* m_maps = 0;
+	map* m_maps = 0;*/
 
+	struct map
+	{
+		map()
+		{
+			for (int i = 0; i < 0x1000; ++i)
+			{
+				m_filePath[i] = 0;
+			}
+		}
+
+		bqTexture* m_texture = 0;
+
+		char8_t m_filePath[0x1000];
+	};
+	bqArray<map> m_maps;
 
 	bqMaterial() 
 	{
-		m_maps = (map*)bqMemory::malloc(sizeof(map) * 16);
+		//m_maps = (map*)bqMemory::malloc(sizeof(map) * 16);
+		//for (uint32_t i = 0; i < 16; ++i)
+		//{
+		//	::new(&m_maps[i]) map(); // вызов конструктора
+		//}
 		for (uint32_t i = 0; i < 16; ++i)
 		{
-			::new(&m_maps[i]) map(); // вызов конструктора
+			m_maps.push_back(map());
 		}
 	}
 	~bqMaterial()
 	{
-		bqMemory::free(m_maps);
+		//bqMemory::free(m_maps);
 	}
 };
 

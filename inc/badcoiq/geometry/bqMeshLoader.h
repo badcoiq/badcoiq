@@ -40,10 +40,8 @@ public:
 	virtual ~bqMeshLoaderCallback() {}
 	BQ_PLACEMENT_ALLOCATOR(bqMeshLoaderCallback);
 
-	virtual void OnMaterial(bqMaterial* m, bqString* name)
+	virtual void OnMaterial(bqMaterial* m)
 	{
-		if (m && name)
-			m->m_name = *name;
 	}
 
 	virtual void OnMesh(bqMesh* newMesh, bqString* name, bqString* materialName)
@@ -53,6 +51,14 @@ public:
 			// if don't need then destroy this mesh
 			bqDestroy(newMesh);
 		}
+	}
+
+	// Будет вызван по окончании чтения файла.
+	// Неизвестно что юудет прочитано первым, материал или модель.
+	// После чтения, можно будет в данном методе найти нужный материал для нужной модели.
+	virtual void Finale()
+	{
+
 	}
 
 	//virtual void OnSkeleton(bqSkeleton* s)

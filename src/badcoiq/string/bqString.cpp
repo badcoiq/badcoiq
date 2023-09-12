@@ -112,11 +112,7 @@ void bqString::reserve(size_t size)
 	}
 }
 
-void bqString::clear()
-{
-	m_data[0] = 0;
-	m_size = 0;
-}
+
 
 void bqString::assign(const char* s)
 {
@@ -854,6 +850,12 @@ bqString& bqString::operator=(const char32_t* s)
 	clear();
 	append(s);
 	return *this;
+}
+
+void bqString::clear()
+{
+	m_data[0] = 0;
+	m_size = 0;
 }
 
 bqString& bqString::operator=(const bqString& s)

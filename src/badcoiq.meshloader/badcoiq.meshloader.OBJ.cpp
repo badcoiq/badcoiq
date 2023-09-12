@@ -316,13 +316,13 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 			{
 				tbr.GetWord(word, 0);
 				currMaterial = OBJGetMaterial(obj_materials, word);
-				if (currMaterial)
+				/*if (currMaterial)
 				{
 					bqMaterial m;
 					m.m_name = currMaterial->m_name.c_str();
 
-					cb->OnMaterial(&m, &m.m_name);
-				}
+					cb->OnMaterial(&m);
+				}*/
 			}
 		}break;
 		case 's':
@@ -556,6 +556,8 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 		polygonMesh = _obj_createModel(cb, &name, polygonMesh, currMaterial);
 	}
 
+	cb->Finale();
+
 	for (uint32_t i = 0; i < obj_materials.m_size; ++i)
 	{
 		delete obj_materials.m_data[i];
@@ -585,12 +587,19 @@ bqPolygonMesh* bqMeshLoaderImpl::_obj_createModel(
 	if (polygonMesh->m_polygons.m_head)
 	{
 		bqMaterial* m = 0;
+		bqString matName;
 		if (currMaterial)
 		{
 			// тут надо будет заполнить и передать bqMaterial
+			bqMaterial m;
+			m.m_name = currMaterial->m_name.c_str();
+			sprintf_s((char*)m.m_maps[0].m_filePath, sizeof(m.m_maps[0].m_filePath), "%s", (const char*)currMaterial->m_map_diffuse.c_str());
+			matName = m.m_name;
+
+			cb->OnMaterial(&m);
 		}
 
-		cb->OnMesh(polygonMesh->SummonMesh(), name, 0);
+		cb->OnMesh(polygonMesh->SummonMesh(), name, &matName);
 
 		bqDestroy(polygonMesh);
 		polygonMesh = 0;

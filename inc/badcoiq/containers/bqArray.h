@@ -67,6 +67,32 @@ public:
 		m_data(0)
 	{}
 
+	bqArray(const bqArray& other)
+		:
+		m_allocated(0),
+		m_size(0),
+		m_data(0)
+	{
+		_reallocate(other.m_allocated);
+		for (size_t i = 0u; i < other.m_size; ++i)
+		{
+			m_data[i] = other.m_data[i];
+		}
+		m_size = other.m_size;
+	}
+
+	bqArray& operator=(const bqArray& other)
+	{
+		free_memory();
+		_reallocate(other.m_allocated);
+		for (size_t i = 0u; i < other.m_size; ++i)
+		{
+			m_data[i] = other.m_data[i];
+		}
+		m_size = other.m_size;
+		return *this;
+	}
+
 	~bqArray()
 	{
 		free_memory();
