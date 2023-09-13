@@ -27,34 +27,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_GUI_H__
-#define __BQ_GUI_H__
+#ifndef __BQ_GUIPICBOX_H__
+#define __BQ_GUIPICBOX_H__
 
-#include "badcoiq/GUI/bqGUIFont.h"
-#include "badcoiq/GUI/bqGUIText.h"
-#include "badcoiq/GUI/bqGUIStyle.h"
-#include "badcoiq/GUI/bqGUICommon.h"
-#include "badcoiq/GUI/bqGUIElement.h"
-#include "badcoiq/GUI/bqGUIRootElement.h"
-#include "badcoiq/GUI/bqGUIWindow.h"
-
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
-struct bqGUIState
+class bqGUIPictureBox : public bqGUIElement
 {
-	bqGUIWindow* m_windowUnderCursor = 0;
-	bqGUIWindow* m_activeWindow = 0;
-	bqGUITextEditor* m_activeTextEditor = 0;
-	bool m_scrollBlock = false;
-};
+	bqTexture* m_texture = 0;
+	bqVec4f m_uv = bqVec4f(0.f, 0.f, 1.f, 1.f);
+public:
+	bqGUIPictureBox(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	virtual ~bqGUIPictureBox();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIPictureBox);
 
-#include "badcoiq/GUI/bqGUIButton.h"
-#include "badcoiq/GUI/bqGUICheckRadioBox.h"
-#include "badcoiq/GUI/bqGUITextEditor.h"
-#include "badcoiq/GUI/bqGUIListBox.h"
-#include "badcoiq/GUI/bqGUISlider.h"
-#include "badcoiq/GUI/bqGUIStaticText.h"
-#include "badcoiq/GUI/bqGUIPictureBox.h"
+	virtual void Rebuild() final;
+	virtual void Update() final;
+	virtual void Draw(bqGS* gs, float dt) final;
+
+	void SetTexture(bqTexture* t);
+	void SetUV(const bqVec4f&);
+	void SetTCoords(float left, float top, float right, float bottom);
+};
 
 #endif
 

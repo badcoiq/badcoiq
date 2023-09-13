@@ -26,35 +26,64 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_GUI_H__
-#define __BQ_GUI_H__
+#include "badcoiq.h"
 
-#include "badcoiq/GUI/bqGUIFont.h"
-#include "badcoiq/GUI/bqGUIText.h"
-#include "badcoiq/GUI/bqGUIStyle.h"
-#include "badcoiq/GUI/bqGUICommon.h"
-#include "badcoiq/GUI/bqGUIElement.h"
-#include "badcoiq/GUI/bqGUIRootElement.h"
-#include "badcoiq/GUI/bqGUIWindow.h"
+#include "badcoiq/GUI/bqGUI.h"
+#include "badcoiq/gs/bqGS.h"
+#include "badcoiq/input/bqInputEx.h"
 
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
-struct bqGUIState
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
+
+bqGUIPictureBox::bqGUIPictureBox(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+	:
+	bqGUIElement::bqGUIElement(w, position, size)
 {
-	bqGUIWindow* m_windowUnderCursor = 0;
-	bqGUIWindow* m_activeWindow = 0;
-	bqGUITextEditor* m_activeTextEditor = 0;
-	bool m_scrollBlock = false;
-};
+}
 
-#include "badcoiq/GUI/bqGUIButton.h"
-#include "badcoiq/GUI/bqGUICheckRadioBox.h"
-#include "badcoiq/GUI/bqGUITextEditor.h"
-#include "badcoiq/GUI/bqGUIListBox.h"
-#include "badcoiq/GUI/bqGUISlider.h"
-#include "badcoiq/GUI/bqGUIStaticText.h"
-#include "badcoiq/GUI/bqGUIPictureBox.h"
+bqGUIPictureBox::~bqGUIPictureBox()
+{
+}
 
-#endif
+void bqGUIPictureBox::Rebuild()
+{
+	bqGUIElement::Rebuild();
+}
 
+void bqGUIPictureBox::Update()
+{
+	bqGUIElement::Update();
+}
+
+void bqGUIPictureBox::Draw(bqGS* gs, float dt)
+{
+	gs->SetScissorRect(m_clipRect);
+	gs->DrawGUIRectangle(m_buildRect, 
+		m_style->m_pictureBoxBGColor,
+		m_style->m_pictureBoxBGColor,
+		m_texture,
+		&m_uv);
+}
+
+void bqGUIPictureBox::SetTexture(bqTexture* t)
+{
+	m_texture = t; 
+}
+
+void bqGUIPictureBox::SetUV(const bqVec4f& uv)
+{
+	m_uv = uv;
+}
+
+void bqGUIPictureBox::SetTCoords(float left, float top, float right, float bottom)
+{
+	if (m_texture)
+	{
+		float h = (float)m_texture->GetInfo().m_imageInfo.m_height;
+		float w = (float)m_texture->GetInfo().m_imageInfo.m_width;
+		m_uv.x = bqMath::CoordToUV(left, w);
+		m_uv.y = bqMath::CoordToUV(top, h);
+		m_uv.z = bqMath::CoordToUV(right, w);
+		m_uv.w = bqMath::CoordToUV(bottom, h);
+	}
+}
