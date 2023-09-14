@@ -18,6 +18,9 @@
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_3dModel.cpp">
       <Filter>examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_raytriangle.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">

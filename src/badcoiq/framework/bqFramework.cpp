@@ -748,7 +748,7 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 		myFont->AddGlyph(U'ь', bqVec2f(58, 98), bqPoint(7, 16), 0, bqPoint(256, 256));
 		myFont->AddGlyph(U'ы', bqVec2f(66, 98), bqPoint(9, 16), 0, bqPoint(256, 256));
 		myFont->AddGlyph(U'ъ', bqVec2f(75, 98), bqPoint(9, 16), 0, bqPoint(256, 256));
-		myFont->AddGlyph(U'э', bqVec2f(84, 98), bqPoint(9, 16), 0, bqPoint(256, 256));
+		myFont->AddGlyph(U'э', bqVec2f(84, 98), bqPoint(8, 16), 0, bqPoint(256, 256));
 		myFont->AddGlyph(U'ю', bqVec2f(92, 98), bqPoint(10, 16), 0, bqPoint(256, 256));
 		myFont->AddGlyph(U'я', bqVec2f(103, 98), bqPoint(7, 16), 0, bqPoint(256, 256));
 

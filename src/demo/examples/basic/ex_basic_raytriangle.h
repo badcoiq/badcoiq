@@ -25,43 +25,28 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_GUIBTN_H__
-#define __BQ_GUIBTN_H__
+#ifndef _EXraytri_H_
+#define _EXraytri_H_
 
-// У всех элементов есть указатель на bqGUIDrawTextCallback
-// Фреймворк должен иметь дефолтный bqGUIDrawTextCallback (возможно отдельные на каждый тип элемента)
-// При создании нового элемента, будет установлен дефолтный m_textDrawCallback (bqGUICommon)
-
-// кнопка
-class bqGUIButton : public bqGUIElement
+class DemoExample;
+class DemoApp;
+class ExampleBasicsRayTri : public DemoExample
 {
-protected:
-	bqString m_text;  // Этот текст рисуется
-	bqVec2f m_textPosition; // на такой позиции
-	void UpdateTextPosition(); // надо найти эту позицию
+	bqCamera* m_camera = 0;
+	bqGPUMesh* m_meshSphere = 0;
+	bqPolygonMesh* m_polygonMesh = 0;
+	bqMat4 m_worldSphere, m_wvp;
 
-	bqTexture* m_texture = 0;
-	bqVec4f m_uv = bqVec4f(0.f, 0.f, 1.f, 1.f);
+	bool _getTriangle(bqTriangle*, bqRay*, bqVec4& ip);
 public:
-	bqGUIButton(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
-	virtual ~bqGUIButton();
-	BQ_PLACEMENT_ALLOCATOR(bqGUIButton);
+	ExampleBasicsRayTri(DemoApp*);
+	virtual ~ExampleBasicsRayTri();
+	BQ_PLACEMENT_ALLOCATOR(ExampleBasicsRayTri);
 
-
-	virtual void Rebuild() override;
-	virtual void Update() override;
-	virtual void Draw(bqGS* gs, float dt) override;
-
-	Alignment m_textAlign = Alignment::Center;
-
-	virtual void SetText(const bqString&);
-
-	void SetTexture(bqTexture* t);
-	void SetUV(const bqVec4f&);
-	void SetTCoords(float left, float top, float right, float bottom);
+	virtual bool Init() override;
+	virtual void Shutdown() override;
+	virtual void OnDraw() override;
 };
 
 #endif
-

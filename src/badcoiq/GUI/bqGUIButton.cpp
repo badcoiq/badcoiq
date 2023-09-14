@@ -92,7 +92,7 @@ void bqGUIButton::Draw(bqGS* gs, float dt)
 		if (IsClickedLMB())
 		{
 			if (IsDrawBG())
-				gs->DrawGUIRectangle(m_buildRect, m_style->m_buttonMousePressBGColor1, m_style->m_buttonMousePressBGColor2, 0, 0);
+				gs->DrawGUIRectangle(m_buildRect, m_style->m_buttonMousePressBGColor1, m_style->m_buttonMousePressBGColor2, m_texture, &m_uv);
 			m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_pressed;
 			gs->DrawGUIText(m_text.c_str(), m_text.size(), m_textPosition, m_textDrawCallback);
 		}
@@ -101,14 +101,14 @@ void bqGUIButton::Draw(bqGS* gs, float dt)
 			if (IsCursorInRect())
 			{
 				if (IsDrawBG())
-					gs->DrawGUIRectangle(m_buildRect, m_style->m_buttonMouseHoverBGColor1, m_style->m_buttonMouseHoverBGColor2, 0, 0);
+					gs->DrawGUIRectangle(m_buildRect, m_style->m_buttonMouseHoverBGColor1, m_style->m_buttonMouseHoverBGColor2, m_texture, &m_uv);
 				m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_mouseAbove;
 				gs->DrawGUIText(m_text.c_str(), m_text.size(), m_textPosition, m_textDrawCallback);
 			}
 			else
 			{
 				if (IsDrawBG())
-					gs->DrawGUIRectangle(m_buildRect, m_style->m_buttonBGColor1, m_style->m_buttonBGColor2, 0, 0);
+					gs->DrawGUIRectangle(m_buildRect, m_style->m_buttonBGColor1, m_style->m_buttonBGColor2, m_texture, &m_uv);
 				m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_default;
 				gs->DrawGUIText(m_text.c_str(), m_text.size(), m_textPosition, m_textDrawCallback);
 			}
@@ -117,7 +117,7 @@ void bqGUIButton::Draw(bqGS* gs, float dt)
 	else
 	{
 		if (IsDrawBG())
-			gs->DrawGUIRectangle(m_buildRect, m_style->m_buttonDisabledBGColor1, m_style->m_buttonDisabledBGColor2, 0, 0);
+			gs->DrawGUIRectangle(m_buildRect, m_style->m_buttonDisabledBGColor1, m_style->m_buttonDisabledBGColor2, m_texture, &m_uv);
 		m_textDrawCallback->m_reason = bqGUIDrawTextCallback::Reason_disabled;
 		gs->DrawGUIText(m_text.c_str(), m_text.size(), m_textPosition, m_textDrawCallback);
 	}
@@ -164,4 +164,28 @@ void bqGUIButton::SetText(const bqString& s)
 {
 	m_text = s;
 	UpdateTextPosition();
+}
+
+
+void bqGUIButton::SetTexture(bqTexture* t)
+{
+	m_texture = t;
+}
+
+void bqGUIButton::SetUV(const bqVec4f& uv)
+{
+	m_uv = uv;
+}
+
+void bqGUIButton::SetTCoords(float left, float top, float right, float bottom)
+{
+	if (m_texture)
+	{
+		float h = (float)m_texture->GetInfo().m_imageInfo.m_height;
+		float w = (float)m_texture->GetInfo().m_imageInfo.m_width;
+		m_uv.x = bqMath::CoordToUV(left, w);
+		m_uv.y = bqMath::CoordToUV(top, h);
+		m_uv.z = bqMath::CoordToUV(right, w);
+		m_uv.w = bqMath::CoordToUV(bottom, h);
+	}
 }

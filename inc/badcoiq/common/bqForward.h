@@ -80,6 +80,7 @@ class bqGUICommon;
 class bqGUIButton;
 enum class bqGUIDefaultFont;
 class bqGUITextEditor;
+class bqTriangle;
 
 #endif
 

@@ -25,6 +25,7 @@
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_3dModel.cpp" />
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_meshGenerator.cpp" />
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_rayFromCursor.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_raytriangle.cpp" />
     <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_fly.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
