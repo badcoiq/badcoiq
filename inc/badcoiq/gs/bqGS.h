@@ -139,6 +139,9 @@ public:
 		bqTexture* t, bqVec4f* UVs) = 0;
 	virtual void DrawGUIText(const char32_t* text, uint32_t textSz, const bqVec2f& position,
 		bqGUIDrawTextCallback*) = 0;
+
+	virtual void EnableBackFaceCulling() = 0;
+	virtual void DisableBackFaceCulling() = 0;
 };
 
 #endif

@@ -39,6 +39,7 @@ class ExampleBasicsRayTri : public DemoExample
 	bqMat4 m_worldSphere, m_wvp;
 
 	bool _getTriangle(bqTriangle*, bqRay*, bqVec4& ip);
+	void _onCamera();
 public:
 	ExampleBasicsRayTri(DemoApp*);
 	virtual ~ExampleBasicsRayTri();

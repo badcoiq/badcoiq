@@ -139,6 +139,8 @@ public:
 	virtual void DisableDepth() final;
 	virtual void EnableBlend() final;
 	virtual void DisableBlend() final;
+	virtual void EnableBackFaceCulling() final;
+	virtual void DisableBackFaceCulling() final;
 
 	virtual bqVec2f GetDepthRange() final;
 	virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) final;

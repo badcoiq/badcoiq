@@ -155,7 +155,8 @@ bool DemoApp::Init()
 	AddExample(new ExampleBasicsRayFromCursor(this), U"Луч от курсора", "basics/", U"Кликаем ЛКМ, перемещаемся WASDQE, и видим созданные лучи");
 	AddExample(new ExampleBasicsMshGnrtr(this), U"Генератор моделей", "basics/", U"Основа работы с генератором моделей. Вместо мучений с загрузкой файлов проще что нибудь сгенерировать.");
 	AddExample(new ExampleBasics3DModel(this), U"Загрузка моделей", "basics/", U"Обычно файл с моделью содержит множество моделей. Будет правильнее грузить эти модели по отдельности. Для этого нужно будет передать коллбэк. Использовать конечно будет не так просто, правильнее сделать базовый класс для моделей.");
-	AddExample(new ExampleBasicsRayTri(this), U"Пересечение луча и треугольника", "basics/", U"Для того чтобы понять пересёк ли луч модель, нужно хранить эту модель в памяти");
+	AddExample(new ExampleBasicsRayTri(this), U"Пересечение луча и треугольника", "basics/", U"Для того чтобы понять пересёк ли луч модель, нужно хранить эту модель в памяти. В этом примере используется bqPolygonMesh");
+	AddExample(new ExampleBasicsRayTri2(this), U"Пересечение луча и треугольника / 2", "basics/", U"Почти тоже самое но модель грузится из файла, и треугольники берутся из bqMesh");
 	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
 	/*AddExample(new ExampleBasicsMouseAndKeyboard(this), U"Mouse and keyboard", "basics/", U"Show information about keyboard and mouse.");
 	AddExample(new ExampleBasicsImageAndTexture(this), U"Image and texture", "basics/", U"Load image and create texture.");

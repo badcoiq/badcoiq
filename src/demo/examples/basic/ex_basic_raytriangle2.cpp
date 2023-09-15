@@ -26,49 +26,24 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "../../../DemoApp.h"
+#include "../../DemoApp.h"
+
+#include "badcoiq/geometry/bqTriangle.h"
 
 
-ExampleSceneCameraFly::ExampleSceneCameraFly(DemoApp* app)
+
+ExampleBasicsRayTri2::ExampleBasicsRayTri2(DemoApp* app)
 	:
 	DemoExample(app)
 {
 }
 
-ExampleSceneCameraFly::~ExampleSceneCameraFly()
+ExampleBasicsRayTri2::~ExampleBasicsRayTri2()
 {
 }
 
-
-bool ExampleSceneCameraFly::Init()
+void ExampleBasicsRayTri2::_onCamera()
 {
-	m_camera = new bqCamera();
-	m_camera->m_position = bqVec3(3.f, 3.f, 3.f);
-	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
-	m_camera->Rotate(36.f, -45.f, 0.f);
-	m_camera->SetType(bqCamera::Type::Perspective);
-	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
-
-	// для 3D линии
-	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
-
-	return true;
-}
-
-void ExampleSceneCameraFly::Shutdown()
-{
-	BQ_SAFEDESTROY(m_camera);
-}
-
-void ExampleSceneCameraFly::OnDraw()
-{
-	if (bqInput::IsKeyHit(bqInput::KEY_ESCAPE))
-	{
-		m_app->StopExample();
-		return;
-	}
-
 	m_camera->Update(0.f);
 	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
 
@@ -98,12 +73,68 @@ void ExampleSceneCameraFly::OnDraw()
 		m_camera->Rotate(0.f, 0.f, 10.f * *m_app->m_dt);
 	if (bqInput::IsKeyHold(bqInput::KEY_F))
 		m_camera->Rotate(0.f, 0.f, -10.f * *m_app->m_dt);
+}
+
+bool ExampleBasicsRayTri2::Init()
+{
+	m_camera = new bqCamera();
+	m_camera->m_position = bqVec3(3.f, 3.f, 3.f);
+	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
+	m_camera->Rotate(36.f, -45.f, 0.f);
+	m_camera->SetType(bqCamera::Type::Perspective);
+	m_camera->Update(0.f);
+	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+
+	// для 3D линии
+	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
+
+	m_model = new MyModel(m_gs);
+	m_model->Load(bqFramework::GetPath("../data/models/4_objs.obj").c_str());
+	
+	m_gs->DisableBackFaceCulling();
+
+	return true;
+}
+
+void ExampleBasicsRayTri2::Shutdown()
+{
+	BQ_SAFEDESTROY(m_model);
+	BQ_SAFEDESTROY(m_camera);
+}
+
+void ExampleBasicsRayTri2::OnDraw()
+{
+	if (bqInput::IsKeyHit(bqInput::KEY_ESCAPE))
+	{
+		m_app->StopExample();
+		return;
+	}
+
+	_onCamera();
+
 
 	m_gs->BeginGUI();
 	m_gs->EndGUI();
 
 	m_gs->BeginDraw();
 	m_gs->ClearAll();
+	
+	m_gs->SetShader(bqShaderType::Standart, 0);
+	bqMat4 W, WVP;
+	bqFramework::SetMatrix(bqMatrixType::World, &W);
+	WVP = m_camera->m_projection * m_camera->m_view * W;
+	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
+	bqMaterial material;
+	material.m_shaderType = bqShaderType::Standart;
+	material.m_sunPosition.Set(2.f, 2.f, 1.f);
+	material.m_colorDiffuse = bq::ColorBlue;
+	material.m_cullBackFace = false;
+	m_gs->SetMaterial(&material);
+	for (size_t i = 0; i < m_model->m_meshBuffers.m_size; ++i)
+	{
+		m_gs->SetMesh(m_model->m_meshBuffers.m_data[i]->m_mesh);
+		m_gs->Draw();
+	}
 
 	m_gs->SetShader(bqShaderType::Line3D, 0);
 	m_gs->DrawLine3D(bqVec3(-1.f, 0.f, 0.f), bqVec3(1.f, 0.f, 0.f), bq::ColorRed);

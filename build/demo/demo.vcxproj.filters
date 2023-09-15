@@ -21,6 +21,9 @@
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_raytriangle.cpp">
       <Filter>examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_raytriangle2.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">

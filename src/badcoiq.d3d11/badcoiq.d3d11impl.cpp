@@ -1469,3 +1469,13 @@ void bqGSD3D11::DrawGUIText(
 		}
 	}
 }
+
+void bqGSD3D11::EnableBackFaceCulling()
+{
+	m_d3d11DevCon->RSSetState(m_RasterizerSolid);
+}
+
+void bqGSD3D11::DisableBackFaceCulling()
+{
+	m_d3d11DevCon->RSSetState(m_RasterizerSolidNoBackFaceCulling);
+}

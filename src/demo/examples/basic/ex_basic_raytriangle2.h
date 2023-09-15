@@ -26,29 +26,27 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #pragma once
-#ifndef _EX3dmod_H_
-#define _EX3dmod_H_
-
-#include "badcoiq/geometry/bqMeshLoader.h"
+#ifndef _EXraytri2_H_
+#define _EXraytri2_H_
 
 class DemoExample;
 class DemoApp;
-class ExampleBasics3DModel : public DemoExample
+class ExampleBasicsRayTri2 : public DemoExample
 {
 	bqCamera* m_camera = 0;
-    
+	
     class MyModel
     {
         class mesh_buffer
         {
         public:
             mesh_buffer() {}
-            ~mesh_buffer() 
+            ~mesh_buffer()
             {
-                if(m_mesh)
+                if (m_mesh)
                     delete m_mesh;
             }
-            
+
             bqGPUMesh* m_mesh = 0;
             bqTexture* m_texture = 0;
             bqString m_materialName;
@@ -64,12 +62,7 @@ class ExampleBasics3DModel : public DemoExample
             {
                 if (m)
                 {
-                    bqStringA stra;
-                    m->m_name.to_utf8(stra);
-                    bqLog::Print("MATERIAL %s\n", stra.c_str());
-
                     MyModel* mesh = (MyModel*)GetUserData();
-                    
                     mesh->m_materials.push_back(*m);
                 }
             }
@@ -78,13 +71,6 @@ class ExampleBasics3DModel : public DemoExample
             {
                 if (newMesh)
                 {
-                    if (name)
-                    {
-                        bqStringA stra;
-                        name->to_utf8(stra);
-                        bqLog::Print("MESH %s\n", stra.c_str());
-                    }
-
                     MyModel* m = (MyModel*)GetUserData();
                     mesh_buffer* mb = new mesh_buffer;
                     mb->m_mesh = m->m_gs->SummonMesh(newMesh);
@@ -103,7 +89,7 @@ class ExampleBasics3DModel : public DemoExample
         };
         MyMeshLoaderCallback m_cb;
     public:
-        MyModel(bqGS* gs) :m_gs(gs) 
+        MyModel(bqGS* gs) :m_gs(gs)
         {
             m_cb.SetUserData(this);
         }
@@ -128,7 +114,6 @@ class ExampleBasics3DModel : public DemoExample
 
         void OnFinale()
         {
-            // надо найти материалы по имени, и загрузить текстуры.
             for (size_t i = 0; i < m_meshBuffers.m_size; ++i)
             {
                 mesh_buffer* mb = m_meshBuffers.m_data[i];
@@ -169,11 +154,15 @@ class ExampleBasics3DModel : public DemoExample
         bqArray<bqTexture*> m_loadedTextures;
     };
 
+	bqMat4 m_worldSphere, m_wvp;
+
     MyModel* m_model = 0;
+
+    void _onCamera();
 public:
-	ExampleBasics3DModel(DemoApp*);
-	virtual ~ExampleBasics3DModel();
-	BQ_PLACEMENT_ALLOCATOR(ExampleBasics3DModel);
+	ExampleBasicsRayTri2(DemoApp*);
+	virtual ~ExampleBasicsRayTri2();
+	BQ_PLACEMENT_ALLOCATOR(ExampleBasicsRayTri2);
 
 	virtual bool Init() override;
 	virtual void Shutdown() override;
