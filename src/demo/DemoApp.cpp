@@ -156,7 +156,7 @@ bool DemoApp::Init()
 	AddExample(new ExampleBasicsMshGnrtr(this), U"Генератор моделей", "basics/", U"Основа работы с генератором моделей. Вместо мучений с загрузкой файлов проще что нибудь сгенерировать.");
 	AddExample(new ExampleBasics3DModel(this), U"Загрузка моделей", "basics/", U"Обычно файл с моделью содержит множество моделей. Будет правильнее грузить эти модели по отдельности. Для этого нужно будет передать коллбэк. Использовать конечно будет не так просто, правильнее сделать базовый класс для моделей.");
 	AddExample(new ExampleBasicsRayTri(this), U"Пересечение луча и треугольника", "basics/", U"Для того чтобы понять пересёк ли луч модель, нужно хранить эту модель в памяти. В этом примере используется bqPolygonMesh");
-	AddExample(new ExampleBasicsRayTri2(this), U"Пересечение луча и треугольника / 2", "basics/", U"Почти тоже самое но модель грузится из файла, и треугольники берутся из bqMesh");
+	AddExample(new ExampleBasicsRayTri2(this), U"Пересечение луча и треугольника / 2", "basics/", U"Почти тоже самое но модель грузится из файла, и треугольники берутся из bqMesh. Так же есть оптимизация, проверка на пересечение AABB");
 	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
 	/*AddExample(new ExampleBasicsMouseAndKeyboard(this), U"Mouse and keyboard", "basics/", U"Show information about keyboard and mouse.");
 	AddExample(new ExampleBasicsImageAndTexture(this), U"Image and texture", "basics/", U"Load image and create texture.");
@@ -484,3 +484,31 @@ bqGPUMesh* DemoApp::CreateMeshBox(const bqAabb& b)
 	return m_GPUMesh;
 }
 
+void DemoApp::DrawAABB(const bqAabb& aabb, const bqColor& color, const bqVec4& position)
+{
+	auto& p1 = aabb.m_min;
+	auto& p2 = aabb.m_max;
+
+	bqVec4 v1 = p1;
+	bqVec4 v2 = p2;
+
+	bqVec4 v3(p1.x, p1.y, p2.z, 1.f);
+	bqVec4 v4(p2.x, p1.y, p1.z, 1.f);
+	bqVec4 v5(p1.x, p2.y, p1.z, 1.f);
+	bqVec4 v6(p1.x, p2.y, p2.z, 1.f);
+	bqVec4 v7(p2.x, p1.y, p2.z, 1.f);
+	bqVec4 v8(p2.x, p2.y, p1.z, 1.f);
+
+	m_gs->DrawLine3D(v1 + position, v4 + position, color);
+	m_gs->DrawLine3D(v5 + position, v8 + position, color);
+	m_gs->DrawLine3D(v1 + position, v5 + position, color);
+	m_gs->DrawLine3D(v4 + position, v8 + position, color);
+	m_gs->DrawLine3D(v3 + position, v7 + position, color);
+	m_gs->DrawLine3D(v6 + position, v2 + position, color);
+	m_gs->DrawLine3D(v3 + position, v6 + position, color);
+	m_gs->DrawLine3D(v7 + position, v2 + position, color);
+	m_gs->DrawLine3D(v2 + position, v8 + position, color);
+	m_gs->DrawLine3D(v4 + position, v7 + position, color);
+	m_gs->DrawLine3D(v5 + position, v6 + position, color);
+	m_gs->DrawLine3D(v1 + position, v3 + position, color);
+}

@@ -53,7 +53,7 @@ public:
 	void Add(const bqVec4f& point);
 	void Add(const bqVec3f& point);
 	void Add(const bqAabb& box);
-	bool RayTest(const bqRay& r);
+	bool RayTest(const bqRay& r) const;
 
 	void Center(bqVec4& v) const
 	{

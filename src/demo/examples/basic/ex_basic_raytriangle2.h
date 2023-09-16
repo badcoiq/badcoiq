@@ -45,9 +45,12 @@ class ExampleBasicsRayTri2 : public DemoExample
             {
                 if (m_mesh)
                     delete m_mesh;
+                if (m_CPUMmesh)
+                    delete m_CPUMmesh;
             }
 
             bqGPUMesh* m_mesh = 0;
+            bqMesh* m_CPUMmesh = 0;
             bqTexture* m_texture = 0;
             bqString m_materialName;
         };
@@ -74,10 +77,9 @@ class ExampleBasicsRayTri2 : public DemoExample
                     MyModel* m = (MyModel*)GetUserData();
                     mesh_buffer* mb = new mesh_buffer;
                     mb->m_mesh = m->m_gs->SummonMesh(newMesh);
+                    mb->m_CPUMmesh = newMesh;
                     m->m_meshBuffers.push_back(mb);
                     mb->m_materialName = *materialName;
-
-                    bqDestroy(newMesh);
                 }
             }
 
@@ -159,6 +161,7 @@ class ExampleBasicsRayTri2 : public DemoExample
     MyModel* m_model = 0;
 
     void _onCamera();
+    bool _getRayHit(bqAabb&, bqTriangle& out, bqRay& ray, bqVec4& ip);
 public:
 	ExampleBasicsRayTri2(DemoApp*);
 	virtual ~ExampleBasicsRayTri2();

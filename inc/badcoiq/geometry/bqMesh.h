@@ -86,6 +86,7 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqMesh);
 
 	const bqMeshInfo& GetInfo() const { return m_info; }
+	bqMeshInfo& GetInfo(){ return m_info; }
 	uint8_t* GetVBuffer() const { return m_vertices; }
 	uint8_t* GetIBuffer() const { return m_indices; }
 

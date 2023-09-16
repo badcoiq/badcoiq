@@ -283,6 +283,7 @@ bqMesh* bqPolygonMesh::SummonMesh()
 		// создание и настройка bqMesh
 		m = new bqMesh;
 		m->Allocate(numV, numI);
+		m->GetInfo().m_aabb = m_aabb;
 
 		bqVertexTriangle* vertex = (bqVertexTriangle*)m->GetVBuffer();
 		uint32_t* ind32 = (uint32_t*)m->GetIBuffer();

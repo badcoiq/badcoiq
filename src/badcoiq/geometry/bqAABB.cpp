@@ -134,7 +134,7 @@ void bqAabb::Add(const bqAabb& box)
 	if (box.m_max.z > m_max.z) m_max.z = box.m_max.z;
 }
 
-bool bqAabb::RayTest(const bqRay& r)
+bool bqAabb::RayTest(const bqRay& r) const
 {
 	bqReal t1 = (m_min.x - r.m_origin.x) * r.m_invDir.x;
 	bqReal t2 = (m_max.x - r.m_origin.x) * r.m_invDir.x;

@@ -136,6 +136,36 @@ void ExampleBasicsRayTri2::OnDraw()
 		m_gs->Draw();
 	}
 
+	// Луч от курсора
+	bqMat4 VPi = m_camera->m_viewProjectionMatrix;
+	VPi.Invert();
+	bqRay r;
+	r.CreateFrom2DCoords(
+		bqVec2f(bqInput::GetData()->m_mousePosition.x,
+			bqInput::GetData()->m_mousePosition.y),
+		bqVec2f((float)m_app->GetWindow()->GetCurrentSize()->x,
+			(float)m_app->GetWindow()->GetCurrentSize()->y),
+		VPi,
+		m_app->GetGS()->GetDepthRange());
+	r.Update();
+
+	bqVec4 ip;
+	bqTriangle triangle;
+	bqAabb aabb;
+	if (_getRayHit(aabb, triangle, r, ip))
+	{
+		m_gs->SetShader(bqShaderType::Line3D, 0);
+		m_gs->DrawLine3D(triangle.v1, triangle.v2, bq::ColorYellow);
+		m_gs->DrawLine3D(triangle.v2, triangle.v3, bq::ColorYellow);
+		m_gs->DrawLine3D(triangle.v3, triangle.v1, bq::ColorYellow);
+
+		m_gs->DrawLine3D(ip + bqVec4(-1.f, 0.f, 0.f, 0.f), ip + bqVec4(1.f, 0.f, 0.f, 0.f), bq::ColorRed);
+		m_gs->DrawLine3D(ip + bqVec4(0.f, -1.f, 0.f, 0.f), ip + bqVec4(0.f, 1.f, 0.f, 0.f), bq::ColorRed);
+		m_gs->DrawLine3D(ip + bqVec4(0.f, 0.f, -1.f, 0.f), ip + bqVec4(0.f, 0.f, 1.f, 0.f), bq::ColorRed);
+
+		m_app->DrawAABB(aabb, bq::ColorWhite, bqVec4());
+	}
+
 	m_gs->SetShader(bqShaderType::Line3D, 0);
 	m_gs->DrawLine3D(bqVec3(-1.f, 0.f, 0.f), bqVec3(1.f, 0.f, 0.f), bq::ColorRed);
 	m_gs->DrawLine3D(bqVec3(0.f, -1.f, 0.f), bqVec3(0.f, 1.f, 0.f), bq::ColorYellow);
@@ -143,4 +173,83 @@ void ExampleBasicsRayTri2::OnDraw()
 
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();
+}
+
+bool ExampleBasicsRayTri2::_getRayHit(bqAabb& aabb, bqTriangle& outTri, bqRay& ray, bqVec4& ip)
+{
+	bool ret = false;
+	bqReal len = 9999.0;
+
+	for (size_t i = 0; i < m_model->m_meshBuffers.m_size; ++i)
+	{
+		auto inf = m_model->m_meshBuffers.m_data[i]->m_CPUMmesh->GetInfo();
+		if (inf.m_aabb.RayTest(ray))
+		{
+			auto VB = m_model->m_meshBuffers.m_data[i]->m_CPUMmesh->GetVBuffer();
+			auto IB = m_model->m_meshBuffers.m_data[i]->m_CPUMmesh->GetIBuffer();
+			
+			bqVertexTriangle* vt = (bqVertexTriangle*)VB;
+			bqVertexTriangleSkinned* vts = (bqVertexTriangleSkinned*)VB;
+			uint32_t* i32 = (uint32_t*)IB;
+			uint16_t* i16 = (uint16_t*)IB;
+
+			for (uint32_t ii = 0; ii < inf.m_iCount; )
+			{
+				bqTriangle tri;
+
+				uint32_t ind1 = 0;
+				uint32_t ind2 = 0;
+				uint32_t ind3 = 0;
+
+				if (inf.m_indexType == bqMeshIndexType::u16)
+				{
+					ind1 = i16[ii];
+					ind2 = i16[ii+1];
+					ind3 = i16[ii+2];
+				}
+				else
+				{
+					ind1 = i32[ii];
+					ind2 = i32[ii + 1];
+					ind3 = i32[ii + 2];
+				}
+
+				if (inf.m_skinned)
+				{
+					tri.v1 = vts[ind1].BaseData.Position;
+					tri.v2 = vts[ind2].BaseData.Position;
+					tri.v3 = vts[ind3].BaseData.Position;
+				}
+				else
+				{
+					tri.v1 = vt[ind1].Position;
+					tri.v2 = vt[ind2].Position;
+					tri.v3 = vt[ind3].Position;
+				}
+
+				ii += 3;
+
+				tri.Update();
+
+				bqReal T = 0.f;
+				bqReal U = 0.f;
+				bqReal V = 0.f;
+				bqReal W = 0.f;
+				ray.Update();
+				if (tri.RayTest_MT(ray, true, T, U, V, W))
+				{
+					if (T < len)
+					{
+						ip = ray.m_origin + (T * ray.m_direction);
+						len = T;
+						outTri = tri;
+						ret = true;
+						aabb = inf.m_aabb;
+					}
+				}
+			}
+		}
+	}
+
+	return ret;
 }

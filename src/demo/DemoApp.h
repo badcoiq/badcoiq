@@ -194,6 +194,8 @@ public:
 	bqTexture* LoadTexture(const char*);
 	bqGPUMesh* CreateMeshSphere(uint32_t segments, float radius, bool smooth);
 	bqGPUMesh* CreateMeshBox(const bqAabb&);
+
+	void DrawAABB(const bqAabb&, const bqColor&, const bqVec4& position);
 };
 
 class FrameworkCallback : public bqFrameworkCallback
