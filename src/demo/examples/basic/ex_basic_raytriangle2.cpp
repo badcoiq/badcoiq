@@ -236,7 +236,7 @@ bool ExampleBasicsRayTri2::_getRayHit(bqAabb& aabb, bqTriangle& outTri, bqRay& r
 				bqReal V = 0.f;
 				bqReal W = 0.f;
 				ray.Update();
-				if (tri.RayTest_MT(ray, true, T, U, V, W))
+				if (tri.RayTest_Watertight(ray, true, T, U, V, W))
 				{
 					if (T < len)
 					{

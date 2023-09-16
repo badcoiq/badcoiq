@@ -34,7 +34,7 @@ class bqTriangle
 {
 public:
 	bqTriangle() {}
-	bqTriangle(const bqVec4& _v1, const bqVec4& _v2, const bqVec4& _v3)
+	bqTriangle(const bqVec4_t<bqReal>& _v1, const bqVec4_t<bqReal>& _v2, const bqVec4_t<bqReal>& _v3)
 		:
 		v1(_v1),
 		v2(_v2),
@@ -50,33 +50,33 @@ public:
 	{
 	}
 
-	bqVec4 v1;
-	bqVec4 v2;
-	bqVec4 v3;
-	bqVec4 e1;
-	bqVec4 e2;
+	bqVec4_t<bqReal> v1;
+	bqVec4_t<bqReal> v2;
+	bqVec4_t<bqReal> v3;
+	bqVec4_t<bqReal> e1;
+	bqVec4_t<bqReal> e2;
 
 	void Update()
 	{
-		e1 = bqVec4(v2.x - v1.x,
+		e1 = bqVec4_t<bqReal>(v2.x - v1.x,
 			v2.y - v1.y,
 			v2.z - v1.z,
 			0.f);
-		e2 = bqVec4(v3.x - v1.x,
+		e2 = bqVec4_t<bqReal>(v3.x - v1.x,
 			v3.y - v1.y,
 			v3.z - v1.z,
 			0.f);
 		//	e1.cross(e2, faceNormal);
 	}
 
-	void Center(bqVec4& out)
+	void Center(bqVec4_t<bqReal>& out)
 	{
 		out = (v1 + v2 + v3) * 0.3333333;
 	}
 
 	bool RayTest_MT(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W)
 	{
-		bqVec4  pvec;
+		bqVec4_t<bqReal>  pvec;
 		bqMath::Cross(ray.m_direction, e2, pvec);
 		bqReal det = e1.Dot(pvec);
 
@@ -91,7 +91,7 @@ public:
 				return false;
 		}
 
-		bqVec4 tvec(
+		bqVec4_t<bqReal> tvec(
 			ray.m_origin.x - v1.x,
 			ray.m_origin.y - v1.y,
 			ray.m_origin.z - v1.z,
@@ -103,7 +103,7 @@ public:
 		if (U < 0.f || U > 1.f)
 			return false;
 
-		bqVec4  qvec;
+		bqVec4_t<bqReal>  qvec;
 		bqMath::Cross(tvec, e1, qvec);
 
 		V = ray.m_direction.Dot(qvec) * inv_det;
