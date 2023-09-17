@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/common/bqImage.h"
 #include "badcoiq/common/bqColor.h"
 #include "badcoiq/GUI/bqGUI.h"
+#include "badcoiq/scene/bqSprite.h"
 
 #include "badcoiq.d3d11.mesh.h"
 
@@ -312,6 +313,7 @@ void bqGSD3D11::Shutdown()
 	BQSAFE_DESTROY2(m_shaderStandart);
 	BQSAFE_DESTROY2(m_shaderEndDraw);
 	BQSAFE_DESTROY2(m_shaderGUIRectangle);
+	BQSAFE_DESTROY2(m_shaderSprite);
 
 	BQSAFE_DESTROY2(m_mainTargetRTT);
 	BQSAFE_DESTROY2(m_GUIRTT);
@@ -691,6 +693,10 @@ bool bqGSD3D11::CreateShaders()
 
 	m_shaderGUIRectangle = bqCreate<bqD3D11ShaderGUIRectangle>(this);
 	if (!m_shaderGUIRectangle->Init())
+		return false;
+
+	m_shaderSprite = bqCreate<bqD3D11ShaderSprite>(this);
+	if (!m_shaderSprite->Init())
 		return false;
 
 	return true;
@@ -1478,4 +1484,44 @@ void bqGSD3D11::EnableBackFaceCulling()
 void bqGSD3D11::DisableBackFaceCulling()
 {
 	m_d3d11DevCon->RSSetState(m_RasterizerSolidNoBackFaceCulling);
+}
+
+void bqGSD3D11::DrawSprite(bqSprite* s)
+{
+	BQ_ASSERT_ST(s);
+	BQ_ASSERT_ST(s->GetTexture());
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::ViewInvert));
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::World));
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::View));
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::Projection));
+
+	bqVec4f UV;
+	UV.w = UV.z = 1.f;
+
+	auto state = s->GetActiveState();
+	if (state)
+	{
+		if (state->m_frames.m_size)
+			UV = state->m_frames.m_data[state->m_frameCurrent];
+	}
+
+	_drawSprite(s->GetColor(), s->GetRect(), UV, s->m_alphaDiscard, dynamic_cast<bqGSD3D11Texture*>(s->GetTexture()));
+}
+
+void bqGSD3D11::_drawSprite(const bqColor& color, const bqVec4& corners, const bqVec4f& UVs, float alphaDiscard, bqGSD3D11Texture* t)
+{
+	m_shaderSprite->m_cbDataElement.Color1 = color;
+	m_shaderSprite->m_cbDataElement.Corners = corners;
+	m_shaderSprite->m_cbDataElement.UVs = UVs;
+
+	m_shaderSprite->m_cbDataElement.alphaDiscard = alphaDiscard;
+
+	m_shaderSprite->m_cbDataElement.Vi = *bqFramework::GetMatrix(bqMatrixType::ViewInvert);
+	m_shaderSprite->m_cbDataElement.W = *bqFramework::GetMatrix(bqMatrixType::World);
+	m_shaderSprite->m_cbDataElement.V = *bqFramework::GetMatrix(bqMatrixType::View);
+	m_shaderSprite->m_cbDataElement.P = *bqFramework::GetMatrix(bqMatrixType::Projection);
+
+	m_shaderSprite->SetOnElement(t);
+
+	m_d3d11DevCon->Draw(1, 0);
 }

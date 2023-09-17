@@ -27,61 +27,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#ifndef _BQ_D3D11_SHADER_Sprt_H__
+#define _BQ_D3D11_SHADER_Sprt_H__
 
-class bqWindow;
-class bqWindowCallback;
+class bqGSD3D11;
+class bqGSD3D11Texture;
+class bqD3D11ShaderSprite : public bqGSD3D11ShaderBase
+{
+public:
+	bqD3D11ShaderSprite(bqGSD3D11* gs);
+	virtual ~bqD3D11ShaderSprite();
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
+	bqGSD3D11* m_gs = 0;
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+	ID3D11Buffer* m_cbElement = 0;
 
-class bqGS;
-class bqMaterial;
-class bqPolygonMeshPolygon;
-class bqMeshPolygonCreator;
-class bqPolygonMeshControlPoint;
-class bqGPUMesh;
-class bqMesh;
-class bqTexture;
-class bqColor;
-class bqImage;
-class bqImageLoader;
-class bqPolygonMesh;
-class bqMeshLoader;
-class bqMeshLoaderCallback;
-struct bqCompressionInfo;
-struct bqArchiveZipFile;
-class bqGUIFont;
-class bqGUIDrawTextCallback;
-enum class bqGUIStyleTheme;
-struct bqGUIStyle;
-class bqGUIWindow;
-struct bqGUIState;
-class bqGUIElement;
-class bqGUICommon;
-class bqGUIButton;
-enum class bqGUIDefaultFont;
-class bqGUITextEditor;
-class bqTriangle;
-class bqSprite;
+	struct cbElement
+	{
+		bqMat4 W;
+		bqMat4 V;
+		bqMat4 P;
+		bqMat4 Vi;
+		bqVec4 Corners;
+		bqColor Color1;
+		bqVec4f UVs;
+		float alphaDiscard = 0.5f;
+		float padding[3];
+	}m_cbDataElement;
+
+	virtual void SetConstants(bqMaterial* material) final;
+
+	bool Init();
+	void SetOnElement(bqGSD3D11Texture* texture);
+};
 
 #endif
-

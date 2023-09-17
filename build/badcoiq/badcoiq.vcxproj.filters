@@ -40,6 +40,9 @@
     <Filter Include="Source Files\gui">
       <UniqueIdentifier>{2aff2b2f-baf2-41b7-abd0-6156ed5e72d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\scene">
+      <UniqueIdentifier>{a60c8d54-d234-481c-bb36-940cecd3221d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -131,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIPictureBox.cpp">
       <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\scene\bqSprite.cpp">
+      <Filter>Source Files\scene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -142,6 +142,8 @@ public:
 
 	virtual void EnableBackFaceCulling() = 0;
 	virtual void DisableBackFaceCulling() = 0;
+
+	virtual void DrawSprite(bqSprite*) = 0;
 };
 
 #endif

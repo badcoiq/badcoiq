@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "shader/badcoiq.d3d11.shader.h"
 #include "shader/badcoiq.d3d11.shader.Line3D.h"
 #include "shader/badcoiq.d3d11.shader.Standart.h"
+#include "shader/badcoiq.d3d11.shader.Sprite.h"
 #include "shader/badcoiq.d3d11.shader.EndDraw.h"
 #include "shader/badcoiq.d3d11.shader.GUIRectangle.h"
 #include "badcoiq.d3d11.mesh.h"
@@ -54,12 +55,14 @@ class bqGSD3D11 : public bqGS
 	friend class bqD3D11ShaderStandart;
 	friend class bqD3D11ShaderEndDraw;
 	friend class bqD3D11ShaderGUIRectangle;
+	friend class bqD3D11ShaderSprite;
 
 	bqGSD3D11ShaderBase* m_activeShader = 0;
 	bqD3D11ShaderLine3D* m_shaderLine3D = 0;
 	bqD3D11ShaderStandart* m_shaderStandart = 0; 
 	bqD3D11ShaderEndDraw* m_shaderEndDraw = 0;
 	bqD3D11ShaderGUIRectangle* m_shaderGUIRectangle = 0;
+	bqD3D11ShaderSprite* m_shaderSprite = 0;
 
 	bqWindow* m_activeWindow = 0;
 	bqPoint* m_windowCurrentSize = 0;
@@ -157,6 +160,9 @@ public:
 		bqTexture* t, bqVec4f* UVs) final;
 	virtual void DrawGUIText(const char32_t* text, uint32_t textSz, const bqVec2f& position,
 		bqGUIDrawTextCallback*) final;
+
+	virtual void DrawSprite(bqSprite*) final;
+	void _drawSprite(const bqColor& color, const bqVec4& corners, const bqVec4f& UVs, float alphaDiscard, bqGSD3D11Texture* t);
 
 	bool CreateShaders(
 		const char* vertexTarget,
