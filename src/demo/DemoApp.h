@@ -286,6 +286,7 @@ public:
 #include "examples/basic/ex_basic_3dModel.h"
 #include "examples/basic/ex_basic_raytriangle.h"
 #include "examples/basic/ex_basic_raytriangle2.h"
+#include "examples/basic/ex_basic_sprite.h"
 #include "examples/scene/camera/ex_sc_camera_fly.h"
 
 #endif
