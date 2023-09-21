@@ -34,7 +34,15 @@ class DemoApp;
 class ExampleBasicsSprite : public DemoExample
 {
 	bqCamera* m_camera = 0;
+
+	bqSprite* m_sprite = 0;
+	bqSprite* m_spriteWithState = 0;
+	bqSprite* m_spriteWithStateAndAnimation = 0;
+	bqSprite* m_spriteWithStateAndAnimationAndColor = 0;
+	bqSprite* m_spriteFire = 0;
 	
+	bqArray<bqTexture*> m_loadedTextures;
+
     void _onCamera();
 public:
 	ExampleBasicsSprite(DemoApp*);

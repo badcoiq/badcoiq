@@ -35,6 +35,11 @@ bqSprite::bqSprite()
 {
 }
 
+bqSprite::bqSprite(bqTexture* t)
+{
+	SetTexture(t);
+}
+
 bqSprite::~bqSprite()
 {
 	for (size_t i = 0; i < m_states.m_size; ++i)

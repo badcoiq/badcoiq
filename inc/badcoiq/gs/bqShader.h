@@ -37,6 +37,7 @@ enum class bqShaderType
 	StandartSkinned,
 
 	Line3D,
+	Sprite,
 
 	User,
 };

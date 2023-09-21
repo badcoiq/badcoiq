@@ -48,6 +48,7 @@ class bqSprite : public bqSceneObject
 	bqColor m_color = bq::ColorWhite;
 public:
 	bqSprite();
+	bqSprite(bqTexture*);
 	virtual ~bqSprite();
 	BQ_PLACEMENT_ALLOCATOR(bqSprite);
 
