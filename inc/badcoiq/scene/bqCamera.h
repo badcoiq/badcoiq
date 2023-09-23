@@ -32,71 +32,49 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/math/bqMath.h"
 
-// Простой класс который будет вычислять View и Projection матрицы
+class bqCameraFrustum
+{
+public:
+	bqCameraFrustum();
+	~bqCameraFrustum();
+
+	enum FrustumSide
+	{
+		RIGHT = 0,		// The RIGHT side of the frustum
+		LEFT = 1,		// The LEFT	 side of the frustum
+		BOTTOM = 2,		// The BOTTOM side of the frustum
+		TOP = 3,		// The TOP side of the frustum
+		BACK = 4,		// The BACK	side of the frustum
+		FRONT = 5			// The FRONT side of the frustum
+	};
+
+	bqVec4 m_planes[6u];
+
+	bool PointInFrustum(const bqVec4& point);
+	bool SphereInFrustum(bqReal radius, const bqVec4& position);
+	bool AABBInFrustum(const bqAabb& aabb);
+	void NormalizePlane(bqVec4& plane);
+	void CalculateFrustum(bqMat4& P, bqMat4& V);
+};
+
+
 class bqCamera
 {
 	void(bqCamera::* m_update)(float) = 0;
 	
-	void _calculateView()
-	{
-		bqMat4 P;
-		P.m_data[3].x = -m_position.x;
-		P.m_data[3].y = -m_position.y;
-		P.m_data[3].z = -m_position.z;
-		P.m_data[3].w = 1.f;
+	void _calculateView();
+	void _updatePerspective(float dt);
+	void _updatePerspectiveLookAt(float dt);
+	void _updateOrtho(float dt);
+	void _updateOrthoLookAt(float dt);
+	void _updateEditor(float dt);
 
-		bqMat4 R;
-		R.SetRotation(m_rotation);
+	void _moveCamera(bqVec4& vel);
 
-		bqVec4 V;
-		bqMath::Mul(m_rotationMatrix, -m_position, V);
-		
-		//V = -m_position;
-
-		m_view = m_rotationMatrix;// *P;
-		m_view[3] = V;
-		m_view[3].w = 1.f;
-	}
-
-	void _updatePerspective(float dt)
-	{
-		_calculateView();
-		bqMath::PerspectiveRH(m_projection, m_fov, m_aspect, m_near, m_far);
-	}
-
-	void _updatePerspectiveLookAt(float dt)
-	{
-		bqMath::LookAtRH(m_view, m_position, m_lookAtTargett, m_upVector);
-		bqMath::PerspectiveRH(m_projection, m_fov, m_aspect, m_near, m_far);
-	}
-
-	void _updateOrtho(float dt)
-	{
-		_calculateView();
-		bqMath::OrthoRH(m_projection, m_orthoWidth, m_orthoHeight, m_near, m_far);
-	}
-
-	void _updateOrthoLookAt(float dt)
-	{
-		bqMath::LookAtRH(m_view, m_position, m_lookAtTargett, m_upVector);
-		bqMath::OrthoRH(m_projection, m_orthoWidth, m_orthoHeight, m_near, m_far);
-	}
-
-	void _moveCamera(bqVec4& vel)
-	{
-		auto RotInv = m_rotationMatrix;
-		RotInv.Invert();
-		bqVec4 v;
-		bqMath::Mul(RotInv, vel, v);
-		m_position += v; // m_localPosition is just vec4 for position
-	}
-
+	bqCameraFrustum m_frustum;
 public:
-	bqCamera() 
-	{
-		m_update = &bqCamera::_updatePerspective;
-	}
-	~bqCamera() {}
+	bqCamera();
+	~bqCamera();
 	BQ_PLACEMENT_ALLOCATOR(bqCamera);
 
 	void Update(float dt)
@@ -110,98 +88,63 @@ public:
 		PerspectiveLookAt,
 		Orthographic,
 		OrthographicLookAt,
+		Editor
 	};
 
-	void SetType(Type t)
+	// for Editor camera
+	enum class Direction : uint32_t
 	{
-		switch (t)
-		{
-		case bqCamera::Type::Perspective:
-		default:
-			m_update = &bqCamera::_updatePerspective;
-			break;
-		case bqCamera::Type::PerspectiveLookAt:
-			m_update = &bqCamera::_updatePerspectiveLookAt;
-			break;
-		case bqCamera::Type::Orthographic:
-			m_update = &bqCamera::_updateOrtho;
-			break;
-		case bqCamera::Type::OrthographicLookAt:
-			m_update = &bqCamera::_updateOrthoLookAt;
-			break;
-		}
-	}
+		North,
+		NorthEast,
+		East,
+		SouthEast,
+		South,
+		SouthWest,
+		West,
+		NorthWest
+	};
+	enum class CameraEditorType
+	{
+		Perspective,
+		Bottom, Left, Right, Back, Front, Top
+	};
 
-	void MoveLeft(float dt)
-	{
-		bqVec4 v(-m_moveSpeed * dt, 0.f, 0.f, 1.f);
-		_moveCamera(v);
-	}
-	void MoveRight(float dt)
-	{
-		bqVec4 v(m_moveSpeed * dt, 0.f, 0.f, 1.f);
-		_moveCamera(v);
-	}
-	void MoveUp(float dt)
-	{
-		bqVec4 v(0.f, m_moveSpeed * dt, 0.f, 1.f);
-		_moveCamera(v);
-	}
-	void MoveDown(float dt)
-	{
-		bqVec4 v(0.f, -m_moveSpeed * dt, 0.f, 1.f);
-		_moveCamera(v);
-	}
-	void MoveBackward(float dt)
-	{
-		bqVec4 v(0.f, 0.f, m_moveSpeed * dt, 1.f);
-		_moveCamera(v);
-	}
-	void MoveForward(float dt)
-	{
-		bqVec4 v(0.f, 0.f, -m_moveSpeed * dt, 1.f);
-		_moveCamera(v);
-	}
-	
-	void Rotate(const bqPointf& mouseDelta, float dt)
-	{
-		float speed = 4.4f;
-		bqMat4 RX;
-		bqMat4 RY;
-		bool update = false;
-		if (mouseDelta.x != 0.f)
-		{
-			update = true;
-			RY.SetRotation(bqQuaternion(0.f, bqMath::DegToRad(-mouseDelta.x) * dt * speed, 0.f));
-		}
-		if (mouseDelta.y != 0.f)
-		{
-			update = true;
-			RX.SetRotation(bqQuaternion(bqMath::DegToRad(-mouseDelta.y) * dt * speed, 0.f, 0.f));
-		}
+	bqVec3f m_rotationPlatform;
+	bqVec4 m_positionPlatform; // w = height, zoom, mouse wheel value
+	bqVec4 m_positionCamera; // in world
+	Direction m_direction;
+	CameraEditorType m_editorCameraType = CameraEditorType::Perspective;
+	bool m_forceOrtho = false;
+	void EditorPanMove(bqPointf* mouseDelta, float timeDelta);
+	void EditorRotate(bqPointf* mouseDelta, float timeDelta);
+	void EditorZoom(int wheelDelta);
+	void EditorChangeFOV(bqPointf* mouseDelta, float timeDelta);
+	void EditorRotateZ(bqPointf* mouseDelta, float timeDelta);
+	void EditorReset();
 
-		if (update)
-		{
-			m_rotationMatrix = RX * m_rotationMatrix * RY;
-		}
-	}
+	void SetType(Type t);
 
-	void Rotate(float x, float y, float z)
-	{
-		bqMat4 RX;
-		bqMat4 RY;
-		bqMat4 RZ;
-		RY.SetRotation(bqQuaternion(0.f, bqMath::DegToRad(x), 0.f));
-		RX.SetRotation(bqQuaternion(bqMath::DegToRad(y), 0.f, 0.f));
-		RZ.SetRotation(bqQuaternion(0.f, 0.f, bqMath::DegToRad(z)));
+	void MoveLeft(float dt);
+	void MoveRight(float dt);
+	void MoveUp(float dt);
+	void MoveDown(float dt);
+	void MoveBackward(float dt);
+	void MoveForward(float dt);	
+	void Rotate(const bqPointf& mouseDelta, float dt);
+	void Rotate(float x, float y, float z);
 
-		m_rotationMatrix = RX * m_rotationMatrix * RY * RZ;
-	}
-
-	bqMat4 m_view;
-	bqMat4 m_projection;
+	bqMat4 m_viewMatrix;
+	bqMat4 m_projectionMatrix;
+	bqMat4 m_viewInvertMatrix; // вычисляется пока только для editor camera. это просто m_view.Invert();
+	bqMat4 m_viewProjectionInvertMatrix; // тоже пока только для editor camera для
 	bqMat4 m_viewProjectionMatrix;
 	bqMat4 m_rotationMatrix;
+
+	const bqMat4& GetMatrixView() { return m_viewMatrix; }
+	const bqMat4& GetMatrixProjection() { return m_projectionMatrix; }
+	const bqMat4& GetMatrixViewInvert() { return m_viewInvertMatrix; }
+	const bqMat4& GetMatrixViewProjectionInvert() { return m_viewProjectionInvertMatrix; }
+	const bqMat4& GetMatrixViewProjection() { return m_viewProjectionMatrix; }
 
 	bqVec4 m_position;
 	bqVec4 m_lookAtTargett;

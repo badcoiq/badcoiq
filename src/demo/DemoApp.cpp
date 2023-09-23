@@ -159,6 +159,10 @@ bool DemoApp::Init()
 	AddExample(new ExampleBasicsRayTri2(this), U"Пересечение луча и треугольника / 2", "basics/", U"Почти тоже самое но модель грузится из файла, и треугольники берутся из bqMesh. Так же есть оптимизация, проверка на пересечение AABB");
 	AddExample(new ExampleBasicsSprite(this), U"Спрайты", "basics/", U"Создание спрайта, установка анимации.");
 	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
+	
+	// что-то не работает код хотя 99 процентов копипаста
+	//AddExample(new ExampleSceneCameraEdtr(this), U"Камера для 3D редактора", "scene/camera", U"Как в 3Ds Max");
+
 	/*AddExample(new ExampleBasicsMouseAndKeyboard(this), U"Mouse and keyboard", "basics/", U"Show information about keyboard and mouse.");
 	AddExample(new ExampleBasicsImageAndTexture(this), U"Image and texture", "basics/", U"Load image and create texture.");
 	AddExample(new ExampleBasics3DModel(this), U"Load model", "basics/", U"Load model data from file. File can contain many objects, need to use callback. Better to create special class for this.");

@@ -45,7 +45,7 @@ ExampleBasicsRayTri2::~ExampleBasicsRayTri2()
 void ExampleBasicsRayTri2::_onCamera()
 {
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	if (bqInput::IsKeyHold(bqInput::KEY_SPACE))
 	{
@@ -83,7 +83,7 @@ bool ExampleBasicsRayTri2::Init()
 	m_camera->Rotate(36.f, -45.f, 0.f);
 	m_camera->SetType(bqCamera::Type::Perspective);
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
@@ -122,7 +122,7 @@ void ExampleBasicsRayTri2::OnDraw()
 	m_gs->SetShader(bqShaderType::Standart, 0);
 	bqMat4 W, WVP;
 	bqFramework::SetMatrix(bqMatrixType::World, &W);
-	WVP = m_camera->m_projection * m_camera->m_view * W;
+	WVP = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * W;
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
 	bqMaterial material;
 	material.m_shaderType = bqShaderType::Standart;

@@ -50,7 +50,7 @@ bool ExampleBasicsRayTri::Init()
 	m_camera->Rotate(36.f, -45.f, 0.f);
 	m_camera->SetType(bqCamera::Type::Perspective);
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
@@ -92,7 +92,7 @@ void ExampleBasicsRayTri::Shutdown()
 void ExampleBasicsRayTri::_onCamera()
 {
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	if (bqInput::IsKeyHold(bqInput::KEY_SPACE))
 	{
@@ -150,7 +150,7 @@ void ExampleBasicsRayTri::OnDraw()
 
 	bqFramework::SetMatrix(bqMatrixType::World, &m_worldSphere);
 
-	m_wvp = m_camera->m_projection * m_camera->m_view * m_worldSphere;
+	m_wvp = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * m_worldSphere;
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &m_wvp);
 
 	m_gs->Draw();

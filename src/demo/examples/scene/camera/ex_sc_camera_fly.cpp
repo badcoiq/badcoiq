@@ -48,7 +48,7 @@ bool ExampleSceneCameraFly::Init()
 	m_camera->Rotate(36.f, -45.f, 0.f);
 	m_camera->SetType(bqCamera::Type::Perspective);
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->m_projectionMatrix * m_camera->m_viewMatrix;
 
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
@@ -70,7 +70,7 @@ void ExampleSceneCameraFly::OnDraw()
 	}
 
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->m_projectionMatrix * m_camera->m_viewMatrix;
 
 	if (bqInput::IsKeyHold(bqInput::KEY_SPACE))
 	{

@@ -76,6 +76,14 @@ public:
 	static bool IsKeyHold(uint32_t);
 	static bool IsKeyRelease(uint32_t);
 
+	static bool IsAlt();
+	static bool IsCtrl();
+	static bool IsShift();
+	static bool IsShiftAlt();
+	static bool IsCtrlAlt();
+	static bool IsCtrlShift();
+	static bool IsCtrlShiftAlt();
+
 	static void EnableLMBDown();
 	static void EnableLMBHold();
 	static void EnableLMBUp();

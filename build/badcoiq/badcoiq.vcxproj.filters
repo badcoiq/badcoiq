@@ -138,5 +138,11 @@
     <ClCompile Include="..\..\src\badcoiq\scene\bqSprite.cpp">
       <Filter>Source Files\scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\scene\bqCamera.cpp">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\scene\bqCameraFrustum.cpp">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

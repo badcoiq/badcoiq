@@ -26,84 +26,63 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "../../DemoApp.h"
+#include "../../../DemoApp.h"
 
 
-ExampleBasicsRayFromCursor::ExampleBasicsRayFromCursor(DemoApp* app)
+ExampleSceneCameraEdtr::ExampleSceneCameraEdtr(DemoApp* app)
 	:
 	DemoExample(app)
 {
 }
 
-ExampleBasicsRayFromCursor::~ExampleBasicsRayFromCursor()
+ExampleSceneCameraEdtr::~ExampleSceneCameraEdtr()
 {
 }
 
 
-bool ExampleBasicsRayFromCursor::Init()
+bool ExampleSceneCameraEdtr::Init()
 {
 	m_camera = new bqCamera();
-	m_camera->m_position = bqVec3(10.f, 10.f, 10.f);
-	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
-	m_camera->SetType(bqCamera::Type::PerspectiveLookAt);
+	m_camera->SetType(bqCamera::Type::Editor);
+	m_camera->EditorReset();
 	m_camera->Update(0.f);
+	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
+	
 	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
-	m_rays.reserve(100);
 
 	return true;
 }
 
-void ExampleBasicsRayFromCursor::Shutdown()
+void ExampleSceneCameraEdtr::Shutdown()
 {
-	m_rays.clear();
 	BQ_SAFEDESTROY(m_camera);
 }
 
-void ExampleBasicsRayFromCursor::OnDraw()
+void ExampleSceneCameraEdtr::OnDraw()
 {
 	if (bqInput::IsKeyHit(bqInput::KEY_ESCAPE))
 	{
 		m_app->StopExample();
 		return;
 	}
-
 	m_camera->Update(0.f);
 	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
-	if (bqInput::IsKeyHold(bqInput::KEY_A))
-		m_camera->m_position.x += 10.0 * (double)(*m_app->m_dt);
-	if (bqInput::IsKeyHold(bqInput::KEY_D))
-		m_camera->m_position.x -= 10.0 * (double)(*m_app->m_dt);
-	if (bqInput::IsKeyHold(bqInput::KEY_W))
-		m_camera->m_position.z += 10.0 * (double)(*m_app->m_dt);
-	if (bqInput::IsKeyHold(bqInput::KEY_S))
-		m_camera->m_position.z -= 10.0 * (double)(*m_app->m_dt);
-	if (bqInput::IsKeyHold(bqInput::KEY_Q))
-		m_camera->m_position.y += 10.0 * (double)(*m_app->m_dt);
-	if (bqInput::IsKeyHold(bqInput::KEY_E))
-		m_camera->m_position.y -= 10.0 * (double)(*m_app->m_dt);
+	if (bqInput::GetData()->m_mouseWheelDelta != 0.f)
+		m_camera->EditorZoom((int)bqInput::GetData()->m_mouseWheelDelta);
 
-	if (bqInput::IsLMBHit())
+	if (bqInput::IsAlt())
 	{
-		if (m_rays.m_size < 100)
-		{
-			bqMat4 VPi = m_camera->m_viewProjectionMatrix;
-			VPi.Invert();
-
-			bqRay r;
-			r.CreateFrom2DCoords(
-				bqVec2f(bqInput::GetData()->m_mousePosition.x,
-						bqInput::GetData()->m_mousePosition.y), 
-				bqVec2f((float)m_app->GetWindow()->GetCurrentSize()->x,
-					(float)m_app->GetWindow()->GetCurrentSize()->y),
-				VPi, 
-				m_app->GetGS()->GetDepthRange());
-
-			m_rays.push_back(r);
-		}
+		if (bqInput::IsRMBHold())
+			m_camera->EditorRotate(&bqInput::GetData()->m_mouseMoveDelta, *m_app->m_dt);
+	}
+	else
+	{
+		if (bqInput::IsRMBHold())
+			m_camera->EditorPanMove(&bqInput::GetData()->m_mouseMoveDelta, *m_app->m_dt);
 	}
 
 	m_gs->BeginGUI();
@@ -116,10 +95,7 @@ void ExampleBasicsRayFromCursor::OnDraw()
 	m_gs->DrawLine3D(bqVec3(-1.f, 0.f, 0.f), bqVec3(1.f, 0.f, 0.f), bq::ColorRed);
 	m_gs->DrawLine3D(bqVec3(0.f, -1.f, 0.f), bqVec3(0.f, 1.f, 0.f), bq::ColorYellow);
 	m_gs->DrawLine3D(bqVec3(0.f, 0.f, -1.f), bqVec3(0.f, 0.f, 1.f), bq::ColorLime);
-	for (size_t i = 0; i < m_rays.m_size; ++i)
-	{
-		m_gs->DrawLine3D(m_rays.m_data[i].m_origin, m_rays.m_data[i].m_end, bq::ColorWhite);		
-	}
+
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();
 }

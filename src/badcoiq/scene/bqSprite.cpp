@@ -87,30 +87,6 @@ void bqSpriteState::AddFrame(const bqVec4f& rect)
 	m_frameNum = m_frames.size();
 }
 
-void bqSpriteState::AnimationUpdate(float dt)
-{
-	if (m_isAnimation && m_play)
-	{
-		m_updateTimer += dt;
-		if (m_updateTimer >= m_fpsTime)
-		{
-			m_updateTimer = 0.f;
-			++m_frameCurrent;
-			if (m_frameCurrent == m_frameNum)
-			{
-				if (m_loop)
-				{
-					m_frameCurrent = 0;
-				}
-				else
-				{
-					m_play = false;
-				}
-			}
-		}
-	}
-}
-
 void bqSpriteState::CreateAnimation(uint32_t numFrames, const bqVec2f& frameSize, const bqVec2f& startPosition)
 {
 	bqVec2f textureSize((float)m_sprite->GetTexture()->GetInfo().m_imageInfo.m_width,
@@ -144,3 +120,26 @@ void bqSpriteState::CreateAnimation(uint32_t numFrames, const bqVec2f& frameSize
 	}
 }
 
+void bqSpriteState::AnimationUpdate(float dt)
+{
+	if (m_isAnimation && m_play)
+	{
+		m_updateTimer += dt;
+		if (m_updateTimer >= m_fpsTime)
+		{
+			m_updateTimer = 0.f;
+			++m_frameCurrent;
+			if (m_frameCurrent == m_frameNum)
+			{
+				if (m_loop)
+				{
+					m_frameCurrent = 0;
+				}
+				else
+				{
+					m_play = false;
+				}
+			}
+		}
+	}
+}

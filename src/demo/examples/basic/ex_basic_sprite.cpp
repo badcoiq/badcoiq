@@ -45,7 +45,7 @@ ExampleBasicsSprite::~ExampleBasicsSprite()
 void ExampleBasicsSprite::_onCamera()
 {
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	if (bqInput::IsKeyHold(bqInput::KEY_SPACE))
 	{
@@ -83,7 +83,7 @@ bool ExampleBasicsSprite::Init()
 	m_camera->Rotate(36.f, -45.f, 0.f);
 	m_camera->SetType(bqCamera::Type::Perspective);
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
@@ -216,11 +216,11 @@ void ExampleBasicsSprite::OnDraw()
 	m_gs->ClearAll();
 
 	m_gs->SetShader(bqShaderType::Sprite, 0);
-	bqMat4 viewI = m_camera->m_view;
+	bqMat4 viewI = m_camera->GetMatrixView();
 	viewI.Invert();
 	bqFramework::SetMatrix(bqMatrixType::ViewInvert, &viewI);
-	bqFramework::SetMatrix(bqMatrixType::View, &m_camera->m_view);
-	bqFramework::SetMatrix(bqMatrixType::Projection, &m_camera->m_projection);
+	bqFramework::SetMatrix(bqMatrixType::View, &m_camera->m_viewMatrix);
+	bqFramework::SetMatrix(bqMatrixType::Projection, &m_camera->m_projectionMatrix);
 	bqFramework::SetMatrix(bqMatrixType::World, &m_sprite->GetMatrixWorld());
 	m_gs->DrawSprite(m_sprite);
 	

@@ -242,7 +242,7 @@ int main()
                 camera.Update(*bqFramework::GetDeltaTime());
                 
                // bqMath::LookAtRH(camera.m_view, camera.m_position, bqVec4(), bqVec4(0.f, 1.f, 0.f, 0.f));
-                bqMat4 ViewProjection = camera.m_projection * camera.m_view;
+                bqMat4 ViewProjection = camera.GetMatrixProjection() * camera.GetMatrixView();
                 bqFramework::SetMatrix(bqMatrixType::ViewProjection, &ViewProjection);
                 
                 MyModel* model = new MyModel(gs);
@@ -340,7 +340,7 @@ int main()
                     angle += 0.01f;
                     if (angle > PIPI)
                         angle = 0.f;
-                    WorldViewProjection = camera.m_projection * camera.m_view * World;
+                    WorldViewProjection = camera.GetMatrixProjection() * camera.GetMatrixView() * World;
                     bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WorldViewProjection);
                     bqFramework::SetMatrix(bqMatrixType::World, &World);
 

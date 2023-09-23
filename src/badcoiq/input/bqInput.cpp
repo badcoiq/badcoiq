@@ -395,3 +395,39 @@ void bqInput::SetMousePosition(bqWindow* w, int32_t x, int32_t y)
 #error Need implementation
 #endif
 }
+
+bool bqInput::IsAlt()
+{
+	return g_framework->m_input.m_keyboardModifier == bq::KeyboardMod_Alt;
+}
+
+bool bqInput::IsCtrl()
+{
+	return g_framework->m_input.m_keyboardModifier == bq::KeyboardMod_Ctrl;
+}
+
+bool bqInput::IsShift()
+{
+	return g_framework->m_input.m_keyboardModifier == bq::KeyboardMod_Shift;
+}
+
+bool bqInput::IsShiftAlt()
+{
+	return g_framework->m_input.m_keyboardModifier == bq::KeyboardMod_ShiftAlt;
+}
+
+bool bqInput::IsCtrlAlt()
+{
+	return g_framework->m_input.m_keyboardModifier == bq::KeyboardMod_CtrlAlt;
+}
+
+bool bqInput::IsCtrlShift()
+{
+	return g_framework->m_input.m_keyboardModifier == bq::KeyboardMod_CtrlShift;
+}
+
+bool bqInput::IsCtrlShiftAlt()
+{
+	return g_framework->m_input.m_keyboardModifier == bq::KeyboardMod_CtrlShiftAlt;
+}
+

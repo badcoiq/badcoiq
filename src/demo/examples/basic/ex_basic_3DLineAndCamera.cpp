@@ -47,7 +47,7 @@ bool ExampleBasics3DLineAndCamera::Init()
 	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
 	m_camera->SetType(bqCamera::Type::PerspectiveLookAt);
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
@@ -69,7 +69,7 @@ void ExampleBasics3DLineAndCamera::OnDraw()
 	}
 
 	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->m_projection * m_camera->m_view;
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	if (bqInput::IsKeyHold(bqInput::KEY_A))
 		m_camera->m_position.x += 10.0 * (double)(*m_app->m_dt);

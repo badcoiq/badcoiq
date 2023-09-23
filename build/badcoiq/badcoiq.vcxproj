@@ -195,6 +195,8 @@
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIWindow.cpp" />
     <ClCompile Include="..\..\src\badcoiq\input\bqInput.cpp" />
     <ClCompile Include="..\..\src\badcoiq\math\bqMath.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\scene\bqCamera.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\scene\bqCameraFrustum.cpp" />
     <ClCompile Include="..\..\src\badcoiq\scene\bqSprite.cpp" />
     <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp" />
     <ClCompile Include="..\..\src\badcoiq\system\bqDLL.cpp" />
