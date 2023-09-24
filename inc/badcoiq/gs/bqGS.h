@@ -144,6 +144,15 @@ public:
 	virtual void DisableBackFaceCulling() = 0;
 
 	virtual void DrawSprite(bqSprite*) = 0;
+
+	// textSizeInPixels - опционально. Он определяет точку вокруг которой будет вращаться текст.
+	//                    чисто технически (по умолчанию), текст крутится так как будто точка
+	//                    находится в левом нижнем углу. Решение - надо просто сдвинуть текст
+	//                    на половину длинны. Постоянно вычислять длинну внутри метода думаю
+	//                    не верно. Проще указать эту длинну вручную. bqGUIFont должен иметь метод
+	//                    который вернёт длинну в пикселях. Если метода нет то его надо написать.
+	virtual void DrawText3D(const bqVec4& pos, const char32_t* text, size_t textLen,
+		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) = 0;
 };
 
 #endif

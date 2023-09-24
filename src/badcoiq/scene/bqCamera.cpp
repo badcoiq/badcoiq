@@ -208,16 +208,16 @@ void bqCamera::_updateEditor(float dt)
 	bqMat4 MY(bqQuaternion(0.f, m_rotationPlatform.y, 0.f));
 	//Mat4 MZ(Quat(0.f, 0.f, m_rotationPlatform.z));
 
-	m_positionCamera = bqVec4(0.f, m_positionPlatform.w, 0.f, 1.f);
+	m_position = bqVec4(0.f, m_positionPlatform.w, 0.f, 1.f);
 
-	bqMath::Mul((MY * MX), bqVec4(m_positionCamera), m_positionCamera);
+	bqMath::Mul((MY * MX), bqVec4(m_position), m_position);
 
-	m_positionCamera += bqVec4(m_positionPlatform.x, m_positionPlatform.y, m_positionPlatform.z, 0.f);
+	m_position += bqVec4(m_positionPlatform.x, m_positionPlatform.y, m_positionPlatform.z, 0.f);
 
 	bqMat4 T;
-	T.m_data[3].x = -m_positionCamera.x;
-	T.m_data[3].y = -m_positionCamera.y;
-	T.m_data[3].z = -m_positionCamera.z;
+	T.m_data[3].x = -m_position.x;
+	T.m_data[3].y = -m_position.y;
+	T.m_data[3].z = -m_position.z;
 	T.m_data[3].w = 1.f;
 
 	bqMat4 P(bqQuaternion(m_rotationPlatform.x + bqMath::DegToRad(-90.f), 0.f, 0.f));

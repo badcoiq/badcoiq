@@ -239,10 +239,7 @@ void ExampleBasicsSprite::OnDraw()
 	m_spriteFire->AnimationUpdate(*m_app->m_dt);
 	m_gs->DrawSprite(m_spriteFire);
 	
-	m_gs->SetShader(bqShaderType::Line3D, 0);
-	m_gs->DrawLine3D(bqVec3(-1.f, 0.f, 0.f), bqVec3(1.f, 0.f, 0.f), bq::ColorRed);
-	m_gs->DrawLine3D(bqVec3(0.f, -1.f, 0.f), bqVec3(0.f, 1.f, 0.f), bq::ColorYellow);
-	m_gs->DrawLine3D(bqVec3(0.f, 0.f, -1.f), bqVec3(0.f, 0.f, 1.f), bq::ColorLime);
+	m_app->DrawGrid(14, (float)m_camera->m_position.y);
 
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();

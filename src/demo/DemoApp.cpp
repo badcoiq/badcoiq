@@ -158,6 +158,7 @@ bool DemoApp::Init()
 	AddExample(new ExampleBasicsRayTri(this), U"Пересечение луча и треугольника", "basics/", U"Для того чтобы понять пересёк ли луч модель, нужно хранить эту модель в памяти. В этом примере используется bqPolygonMesh");
 	AddExample(new ExampleBasicsRayTri2(this), U"Пересечение луча и треугольника / 2", "basics/", U"Почти тоже самое но модель грузится из файла, и треугольники берутся из bqMesh. Так же есть оптимизация, проверка на пересечение AABB");
 	AddExample(new ExampleBasicsSprite(this), U"Спрайты", "basics/", U"Создание спрайта, установка анимации.");
+	AddExample(new ExampleBasicsText3D(this), U"Текст в 3D", "basics/", U"Плоский текст в 3D. Просто рисуем спрайты.");
 	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
 	
 	// что-то не работает код хотя 99 процентов копипаста
@@ -516,4 +517,15 @@ void DemoApp::DrawAABB(const bqAabb& aabb, const bqColor& color, const bqVec4& p
 	m_gs->DrawLine3D(v4 + position, v7 + position, color);
 	m_gs->DrawLine3D(v5 + position, v6 + position, color);
 	m_gs->DrawLine3D(v1 + position, v3 + position, color);
+}
+
+void DemoApp::DrawGrid(int gridSize, float positionCameraY)
+{
+	m_gs->SetShader(bqShaderType::Line3D, 0);
+	bqColor gridColor = bq::ColorLightGrey;
+	if (positionCameraY < 0.f)	gridColor = bq::ColorBlack;
+	for (int i = 0, z = 7; i <= gridSize; ++i, --z) {
+		m_gs->DrawLine3D(bqVec3(((float)-gridSize) * 0.5f, 0.f, -z), bqVec3(((float)gridSize) * 0.5f, 0.f, -z), gridColor);
+		m_gs->DrawLine3D(bqVec3(-z, 0.f, ((float)-gridSize) * 0.5f), bqVec3(-z, 0.f, ((float)gridSize) * 0.5f), gridColor);
+	}
 }

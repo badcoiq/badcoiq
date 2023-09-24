@@ -1530,3 +1530,59 @@ void bqGSD3D11::_drawSprite(const bqColor& color, const bqVec4& corners, const b
 
 	m_d3d11DevCon->Draw(1, 0);
 }
+
+void bqGSD3D11::DrawText3D(
+	const bqVec4& pos, 
+	const char32_t* text, 
+	size_t textLen,
+	bqGUIFont* font, 
+	const bqColor& color, 
+	float sizeMultipler,
+	size_t textSizeInPixels)
+{
+	BQ_ASSERT_ST(text);
+	BQ_ASSERT_ST(font);
+	BQ_ASSERT_ST(textLen);
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::ViewInvert));
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::View));
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::Projection));
+
+	bqVec4 position;
+	position.x -= (textSizeInPixels * 0.5f) * sizeMultipler;
+
+	static bqMat4 W;
+	bqFramework::SetMatrix(bqMatrixType::World, &W);
+	W.m_data[3].Set(pos.x, pos.y, pos.z, 1.f);
+
+	SetShader(bqShaderType::Sprite, 0);
+
+	for (uint32_t i = 0; i < textLen; ++i)
+	{
+		bqGUIFontGlyph* g = font->GetGlyphMap()[text[i]];
+
+		bqVec4 rct;
+		rct.x = position.x + ((float)g->m_width * sizeMultipler);
+		rct.y = position.y;
+
+		rct.z = position.x;
+		rct.w = rct.y + ((float)g->m_height * sizeMultipler);
+
+		_drawSprite(color, rct, g->m_UV, 0.5f, dynamic_cast<bqGSD3D11Texture*>(font->GetTexture(g->m_textureSlot)));
+
+		position.x += ((float)g->m_width + g->m_overhang + g->m_underhang + font->m_characterSpacing) * sizeMultipler;
+
+		switch (text[i])
+		{
+		case U' ':
+			position.x += font->m_spaceSize * sizeMultipler;
+			break;
+		case U'\t':
+			position.x += font->m_tabSize * sizeMultipler;
+			break;
+		case U'\n':
+			position.y += font->GetMaxSize().y;
+			position.x = pos.x;
+			break;
+		}
+	}
+}

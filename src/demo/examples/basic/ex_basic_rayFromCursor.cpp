@@ -112,14 +112,15 @@ void ExampleBasicsRayFromCursor::OnDraw()
 	m_gs->BeginDraw();
 	m_gs->ClearAll();
 
+
 	m_gs->SetShader(bqShaderType::Line3D, 0);
-	m_gs->DrawLine3D(bqVec3(-1.f, 0.f, 0.f), bqVec3(1.f, 0.f, 0.f), bq::ColorRed);
-	m_gs->DrawLine3D(bqVec3(0.f, -1.f, 0.f), bqVec3(0.f, 1.f, 0.f), bq::ColorYellow);
-	m_gs->DrawLine3D(bqVec3(0.f, 0.f, -1.f), bqVec3(0.f, 0.f, 1.f), bq::ColorLime);
 	for (size_t i = 0; i < m_rays.m_size; ++i)
 	{
 		m_gs->DrawLine3D(m_rays.m_data[i].m_origin, m_rays.m_data[i].m_end, bq::ColorWhite);		
 	}
+
+	m_app->DrawGrid(14, (float)m_camera->m_position.y);
+
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();
 }

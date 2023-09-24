@@ -84,6 +84,8 @@ public:
 	bqGUIFontGlyph** GetGlyphMap() { return m_glyphMap; }
 	bqTexture* GetTexture(uint32_t i) { return m_textures.m_data[i]; }
 
+	//size_t GetTextSize(const char32_t*, size_t len);
+
 	int32_t m_characterSpacing = 1;
 	int32_t m_spaceSize = 1;
 	int32_t m_tabSize = 12;

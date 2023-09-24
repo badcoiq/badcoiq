@@ -30,6 +30,9 @@
     <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_editor.cpp">
       <Filter>examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_text3D.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">

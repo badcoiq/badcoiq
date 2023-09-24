@@ -163,6 +163,8 @@ public:
 
 	virtual void DrawSprite(bqSprite*) final;
 	void _drawSprite(const bqColor& color, const bqVec4& corners, const bqVec4f& UVs, float alphaDiscard, bqGSD3D11Texture* t);
+	virtual void DrawText3D(const bqVec4& pos, const char32_t* text, size_t textLen,
+		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) final;
 
 	bool CreateShaders(
 		const char* vertexTarget,

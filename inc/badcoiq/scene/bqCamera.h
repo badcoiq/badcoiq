@@ -111,7 +111,7 @@ public:
 
 	bqVec3f m_rotationPlatform;
 	bqVec4 m_positionPlatform; // w = height, zoom, mouse wheel value
-	bqVec4 m_positionCamera; // in world
+	//bqVec4 m_positionCamera; // in world
 	Direction m_direction;
 	CameraEditorType m_editorCameraType = CameraEditorType::Perspective;
 	bool m_forceOrtho = false;
