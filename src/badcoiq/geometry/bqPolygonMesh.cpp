@@ -364,7 +364,7 @@ bool bqPolygonMeshPolygon::IsVisible()
 
 		float area = 0.5f * sqrt(n.Dot());
 
-		if (area > 0.001)
+		if (area > 0.000001)
 			return true;
 
 
@@ -400,7 +400,8 @@ void bqPolygonMesh::DeleteBadPolygons()
 
 		for (auto o : forDelete)
 		{
-			DeletePolygon(o);
+			// там ошибка, надо исправить и раздокументировать
+		//	DeletePolygon(o);
 		}
 	}
 }
@@ -632,8 +633,8 @@ void bqPolygonMesh::AddSphere(float radius, uint32_t segments, const bqMat4& m)
 		if (i == segments - 1)
 			angle = 270.f;
 
-		auto sn = ::sin(bqMath::DegToRad(angle));
-		auto cs = ::cos(bqMath::DegToRad(angle));
+		auto sn = ::sin(bqMath::DegToRad(angle)) * radius;
+		auto cs = ::cos(bqMath::DegToRad(angle)) * radius;
 		//	printf("A[%f]: %f %f\n", angle, sn, cs);
 		points.push_back(bqVec3((bqReal)cs, (bqReal)sn, 0.0));
 
@@ -817,5 +818,35 @@ void bqPolygonMesh::GenerateUVPlanar(float scale)
 				break;
 			cp = cp->m_right;
 		}
+	}
+}
+
+void bqPolygonMesh::AddCylinder(
+	float radius, 
+	float height, 
+	uint32_t segments, 
+	bool topSide, 
+	bool bottomSide, 
+	const bqMat4& m)
+{
+	if (segments < 3)
+		segments = 3;
+	if (segments > 100)
+		segments = 100;
+
+	// сгенерирую точки по окружности, в соответствии с сегментами.
+	// если 3 сегмента, то и точек 3, ну и так далее по возростанию.
+	bqArray<bqVec3f> points;
+	float angle = 0.f;
+	float angleStep = 360.f / segments;
+
+	for (uint32_t i = 0; i < segments; ++i)
+	{
+		auto sn = ::sin(bqMath::DegToRad(angle));
+		auto cs = ::cos(bqMath::DegToRad(angle));
+
+		points.push_back(bqVec3(cs, sn, 0.0));
+
+		angle += angleStep;
 	}
 }

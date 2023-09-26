@@ -26,8 +26,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #pragma once
-#ifndef _BQSTRINT_H_
-#define _BQSTRINT_H_
+#ifndef _BQSTRING_H_
+#define _BQSTRING_H_
 
 static uint8_t g_stringWordSize = 16;
 const static float g_string_to_float_table[17] =

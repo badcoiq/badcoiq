@@ -122,6 +122,7 @@ public:
 	void AddCube(float size, const bqMat4& m);
 	void AddBox(const bqAabb&, const bqMat4& m);
 	void AddSphere(float radius, uint32_t segments, const bqMat4& m);
+	void AddCylinder(float radius, float height, uint32_t segments, bool topSide, bool bottomSide, const bqMat4& m);
 
 	void GenerateUVPlanar(float scale);
 
