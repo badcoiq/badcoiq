@@ -60,6 +60,7 @@ bool ExampleBasicsMshGnrtr::Init()
 	// в общем всегда будет умножение на матрицу
 	bqPolygonMesh pm; // генерируется используя концепцию полигонов
 	pm.AddBox(aabb, transform); // Добавить коробку. можно вызывать множество Add методов,
+	
 	pm.GenerateNormals(false);
 	pm.GenerateUVPlanar(1.f);
 	// но в этом примере будет 1 на каждый bqGPUMesh
@@ -77,6 +78,10 @@ bool ExampleBasicsMshGnrtr::Init()
 	pm.Clear();
 	transform.m_data[1].y = 0.5; // сплющю сферу 
 	pm.AddSphere(0.5f, 33, transform);
+	
+	transform.SetRotation(bqQuaternion(1.f, 0.f, 0.f));
+	pm.AddCylinder(1.f, 3.f, 31, true, true, transform);
+
 	pm.GenerateNormals(true);
 	pm.GenerateUVPlanar(100.f);
 	mesh = pm.SummonMesh();

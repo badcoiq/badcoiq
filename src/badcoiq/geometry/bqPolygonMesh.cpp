@@ -842,11 +842,80 @@ void bqPolygonMesh::AddCylinder(
 
 	for (uint32_t i = 0; i < segments; ++i)
 	{
-		auto sn = ::sin(bqMath::DegToRad(angle));
-		auto cs = ::cos(bqMath::DegToRad(angle));
+		auto sn = ::sin(bqMath::DegToRad(angle)) * radius;
+		auto cs = ::cos(bqMath::DegToRad(angle)) * radius;
 
-		points.push_back(bqVec3(cs, sn, 0.0));
+		points.push_back(bqVec3(cs, 0.0, sn));
 
 		angle += angleStep;
+	}
+
+	// создам боковые стороны.
+	// проход циклом по количеству сегментов
+	// надо взять 2 точки из points, и использовать их
+	// делая квадрат
+	for (uint32_t i = 0; i < segments; ++i)
+	{
+		bqVec3f p1, p2, p3, p4;
+
+		p1 = points[i];
+		if (i)
+			p2 = points[i - 1];
+		else
+			p2 = points[segments-1];
+
+		p3 = p2;
+		p4 = p1;
+
+		p3.y += height;
+		p4.y += height;
+
+		bqMeshPolygonCreator pc;
+		pc.SetPosition(p1);
+		//pc.SetUV(bqVec2f(UV.x, UV.y + UVstep));
+		pc.AddVertex();
+		pc.SetPosition(p2);
+		//pc.SetUV(bqVec2f(UV.x + (UVstep * 0.5f), UV.y));
+		pc.AddVertex();
+		pc.SetPosition(p3);
+		//pc.SetUV(bqVec2f(UV.x + UVstep, UV.y + UVstep));
+		pc.AddVertex();
+		pc.SetPosition(p4);
+		//pc.SetUV(bqVec2f(UV.x + UVstep, UV.y + UVstep));
+		pc.AddVertex();
+		pc.Mul(m);
+		AddPolygon(&pc, true);
+	}
+
+	if (bottomSide)
+	{
+		bqMeshPolygonCreator pc;
+		for (uint32_t i = 0; i < segments; ++i)
+		{
+			pc.SetPosition(points[i]);
+			//pc.SetUV(bqVec2f(UV.x, UV.y + UVstep));
+			pc.AddVertex();
+		}
+		pc.Mul(m);
+		AddPolygon(&pc, true);
+	}
+
+	if (topSide)
+	{
+		bqMeshPolygonCreator pc;
+		for (uint32_t i = 0; i < segments; ++i)
+		{
+			for (uint32_t i = segments - 1; i >= 0; --i)
+			{
+				pc.SetPosition(points[i] + bqVec3f(0.f, height, 0.f));
+				//pc.SetUV(bqVec2f(UV.x, UV.y + UVstep));
+				pc.AddVertex();
+
+				if (i == 0)
+					break;
+			}
+		}
+		pc.Mul(m);
+		AddPolygon(&pc, true);
 	}
 }
