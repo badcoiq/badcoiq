@@ -805,12 +805,13 @@ bqGUIStyle* bqFramework::GetGUIStyle(bqGUIStyleTheme theme)
 
 void bqFrameworkImpl::_initGUIThemes()
 {
-	g_framework->m_themeLight.m_windowActiveBGColor1 = 0xE1E6F7;
-	g_framework->m_themeLight.m_windowActiveBGColor2 = 0xEFEFFF;
+	g_framework->m_themeLight.m_windowActiveBGColor1 = 0xF7F7F7;
+	g_framework->m_themeLight.m_windowActiveBGColor2 = 0xF7F7F7;
 	g_framework->m_themeLight.m_windowActiveBorderColor = 0xE1E6F7;
-	g_framework->m_themeLight.m_windowActiveTitleBGColor1 = 0xB5CCFF;
-	g_framework->m_themeLight.m_windowActiveTitleBGColor2 = 0xBFCFFF;
+	g_framework->m_themeLight.m_windowActiveTitleBGColor1 = 0xE5E5E5;
+	g_framework->m_themeLight.m_windowActiveTitleBGColor2 = 0xE5E5E5;
 	g_framework->m_themeLight.m_windowActiveTitleTextColor = 0x0;
+
 	g_framework->m_themeLight.m_buttonBGColor1 = 0x999999;
 	g_framework->m_themeLight.m_buttonBGColor2 = 0x666666;
 	g_framework->m_themeLight.m_buttonBorderColor = 0x999999;
@@ -961,7 +962,7 @@ void _DestroyGUIElement(bqGUIElement* e)
 void bqFramework::Destroy(bqGUIWindow* w)
 {
 	BQ_ASSERT_ST(w);
-	_DestroyGUIElement(w->GetRootElement());
+	_DestroyGUIElement(w->m_rootElement);
 	g_framework->m_GUIWindows.erase_first(w);
 	delete w;
 }
@@ -969,7 +970,7 @@ void bqFramework::Destroy(bqGUIWindow* w)
 void bqFramework::Destroy(bqGUIElement* e)
 {
 	BQ_ASSERT_ST(e);
-	if (e->GetWindow()->GetRootElement() == e)
+	if (e->GetWindow()->m_rootElement == e)
 		return;
 	_DestroyGUIElement(e);
 }
@@ -988,10 +989,12 @@ void bqFrameworkImpl::_initGUITextDrawCallbacks()
 	// надо инициилизировать шрифты - в том месте где шрифты создаются bqFramework::InitDefaultFonts
 	// надо переделать остальные коллбэки
 	m_defaultTextDrawCallback_staticText = new bqGUIStaticTextTextDrawCallback;
+	m_defaultTextDrawCallback_window = new bqGUIWindowTextDrawCallback;
 }
 
 void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 {
+	delete m_defaultTextDrawCallback_window; m_defaultTextDrawCallback_window = 0;
 	delete m_defaultTextDrawCallback_button; m_defaultTextDrawCallback_button = 0;
 	delete m_defaultTextDrawCallback_icons; m_defaultTextDrawCallback_icons = 0;
 	delete m_defaultTextDrawCallback_textEditor; m_defaultTextDrawCallback_textEditor = 0;

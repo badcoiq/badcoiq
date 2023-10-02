@@ -89,6 +89,7 @@ public:
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_listbox = 0;
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_slider = 0;
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_staticText = 0;
+	bqGUIDrawTextCallback* m_defaultTextDrawCallback_window = 0;
 };
 
 

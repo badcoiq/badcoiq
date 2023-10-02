@@ -89,7 +89,7 @@ void bqGUICheckRadioBox::Rebuild()
 void bqGUICheckRadioBox::Update()
 {
 	bqGUIElement::Update();
-	if (m_window->GetRootElement()->m_scrollDelta.y)
+	if (m_window->m_rootElement->m_scrollDelta.y)
 		UpdateTextPosition();
 }
 

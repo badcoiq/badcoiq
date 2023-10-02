@@ -36,7 +36,32 @@ public:
 	enum
 	{
 		windowFlag_withCloseButton = 0x1,
+
+		// нахер оно надо?
+		// хотя...
+		// если есть такой контейнер GUI, который принимает окна...
+		// _________________________________________________________
+		//                                     |_v_____Окно_1_____x|
+		//                                     |                   |
+		//                                     |   содержимое      |
+		//                                     |       окна        |
+		//                                     |                   |
+		//                                     |                   |
+		//                                     |_v_____Окно_2_____x|
+		//                                     |                   |
+		//                                     |   содержимое      |
+		//                                     |       окна        |
+		//                                     |                   |
+		//                                     |_v_____Окно_3_____x|
+		//                                     | и т.д.  их можно  |
+		//                                     | будет сворачивать |
+		//                                     |                   |
+		//                                     |_>____Окно_4______x|
+		//                                     |_>____Окно_5______x|
+		//                                     |_>____Окно_6______x|
+		// ____________________________________|___________________|
 		windowFlag_withCollapseButton = 0x2,
+
 		windowFlag_withTitleBar = 0x4,
 		windowFlag_canMove = 0x8,
 		windowFlag_canResize = 0x10,
@@ -45,12 +70,9 @@ public:
 	};
 
 private:
-	bqGUIElement* m_rootElement = 0;
-
-	bqVec2f m_sizeMinimum = bqVec2f(100.f, 30.f);
 
 	bqString m_title;
-	uint32_t m_windowFlags = 0;
+	bqVec4f m_titlebarRect;
 public:
 	bqGUIWindow(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIWindow();
@@ -59,15 +81,18 @@ public:
 	// Надо будет вызвать Rebuild
 	void SetPositionAndSize(const bqVec2f& p, const bqVec2f& sz);
 
-	void SetSizeMinimum(const bqVec2f& sz) { m_sizeMinimum = sz; }
-
-	bqGUIElement* GetRootElement() { return m_rootElement; }
-
 	virtual void Rebuild() override;
 	virtual void Update() override;
 	virtual void Draw(bqGS* gs, float dt) override;
 
 	void SetTitle(const char32_t*);
+
+	// элементы открыты так как не нужно производить какие-то дополнительные действия
+	// например при установке значения. Нефиг плодить глупые get/set методы.
+	bqGUIElement* m_rootElement = 0;
+	bqVec2f m_sizeMinimum = bqVec2f(100.f, 30.f);
+	uint32_t m_windowFlags = 0;
+	float m_titlebarHeight = 20.f;
 };
 
 

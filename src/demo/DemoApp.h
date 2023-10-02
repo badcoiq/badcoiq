@@ -289,6 +289,7 @@ public:
 #include "examples/basic/ex_basic_raytriangle2.h"
 #include "examples/basic/ex_basic_sprite.h"
 #include "examples/basic/ex_basic_text3D.h"
+#include "examples/meshgen/ex_mshgn_box.h"
 #include "examples/scene/camera/ex_sc_camera_fly.h"
 #include "examples/scene/camera/ex_sc_camera_editor.h"
 

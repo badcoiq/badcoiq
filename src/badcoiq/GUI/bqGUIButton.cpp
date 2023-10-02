@@ -80,7 +80,7 @@ void bqGUIButton::Rebuild()
 void bqGUIButton::Update()
 {
 	bqGUIElement::Update();
-	if (m_window->GetRootElement()->m_scrollDelta.y)
+	if (m_window->m_rootElement->m_scrollDelta.y)
 		bqGUIButton::Rebuild();
 }
 

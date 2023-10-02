@@ -34,12 +34,48 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
+#include "bqGUIDefaultTextDrawCallbacks.h"
+
+bqGUIWindowTextDrawCallback::bqGUIWindowTextDrawCallback()
+{
+	m_color = bq::ColorBlack;
+}
+
+bqGUIWindowTextDrawCallback::~bqGUIWindowTextDrawCallback()
+{
+}
+
+
+bqGUIFont* bqGUIWindowTextDrawCallback::OnFont(uint32_t r, char32_t)
+{
+	return m_window->GetStyle()->m_staticTextFont;
+}
+
+bqColor* bqGUIWindowTextDrawCallback::OnColor(uint32_t r, char32_t)
+{
+	return &m_window->GetStyle()->m_staticTextTextColor;
+}
+
 bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
 	:
 	bqGUICommon(position, size)
 {
 	// создаю корневой элемент
 	m_rootElement = dynamic_cast<bqGUIElement*>(bqCreate<bqGUIRootElement>(this, position, size));
+
+	// установка дефолтного коллбэка
+	m_textDrawCallback = g_framework->m_defaultTextDrawCallback_window;
+	
+	// Далее, там, где будет использован коллбэк (напрямую или где-то внутри других методов)
+	// надо устанавливать указатель на текущее окно. Так
+	// bqGUIWindowTextDrawCallback* wcb = (bqGUIWindowTextDrawCallback*)m_textDrawCallback;
+	// wcb->m_window = this;
+	// 
+	
+	// установка дефолтного шрифта.
+	// перед использованием надо создать дефолтные шрифты
+	bqGUIWindowTextDrawCallback* cb = (bqGUIWindowTextDrawCallback*)g_framework->m_defaultTextDrawCallback_button;
+	cb->SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
 }
 
 bqGUIWindow::~bqGUIWindow()
@@ -92,19 +128,44 @@ void bqGUIWindow::Rebuild()
 	m_baseRect.y = m_position.y;
 	m_baseRect.z = m_baseRect.x + m_size.x;
 	m_baseRect.w = m_baseRect.y + m_size.y;
-	if (m_baseRect.x > m_baseRect.z)
-		m_baseRect.x = m_baseRect.z;
-	if (m_baseRect.y > m_baseRect.w)
-		m_baseRect.y = m_baseRect.w;
-
-	m_clipRect = m_baseRect;
-	m_activeRect = m_clipRect;
-
+	
 	// "перестраиваю" root здесь
 	m_rootElement->m_baseRect.x = m_baseRect.x;
 	m_rootElement->m_baseRect.y = m_baseRect.y;
 	m_rootElement->m_baseRect.z = m_baseRect.x + m_size.x;
 	m_rootElement->m_baseRect.w = m_baseRect.y + m_size.y;
+
+	m_clipRect = m_baseRect;
+	m_activeRect = m_clipRect;
+
+	// GUI элементы устанавливаются используя значения из m_rootElement
+	// Если окно с title bar, то надо изменить верхнюю границу.
+	// Пусть будет значение m_titlebarHeight для размера titlebar
+	// 
+	// Возможно нужно так-же изменить m_baseRect.y.
+	// 
+	if (m_windowFlags & windowFlag_withTitleBar)
+	{
+		// отодвину m_baseRect.y у m_rootElement
+		m_rootElement->m_baseRect.y += m_titlebarHeight;
+
+		// область titlebar
+		// возможно в будущем нужно будет учитывать значение скроллинга.
+		// например если окно находится в контейнере (пример из комментария у windowFlag_withCollapseButton)
+		m_titlebarRect.x = m_baseRect.x;
+		m_titlebarRect.y = m_baseRect.y;
+		m_titlebarRect.z = m_baseRect.z;
+		m_titlebarRect.w = m_titlebarRect.y + m_titlebarHeight;
+
+		m_baseRect.y += m_titlebarHeight; // m_clipRect и m_activeRect зависят от m_baseRect
+		                                  // пусть m_clipRect m_activeRect находится выше данного блока
+	}
+
+	if (m_baseRect.x > m_baseRect.z)
+		m_baseRect.x = m_baseRect.z;
+	if (m_baseRect.y > m_baseRect.w)
+		m_baseRect.y = m_baseRect.w;
+
 	m_rootElement->m_clipRect = m_rootElement->m_baseRect;
 	m_rootElement->m_activeRect = m_rootElement->m_clipRect;
 
@@ -180,6 +241,22 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 {
 	if (IsDrawBG())
 		gs->DrawGUIRectangle(m_baseRect, m_style->m_windowActiveBGColor1, m_style->m_windowActiveBGColor2, 0, 0);
+	
+	if (m_windowFlags & windowFlag_withTitleBar)
+	{
+		bqGUIWindowTextDrawCallback* wcb = (bqGUIWindowTextDrawCallback*)m_textDrawCallback;
+		wcb->m_window = this;
+
+		gs->DrawGUIRectangle(m_titlebarRect, m_style->m_windowActiveTitleBGColor1, m_style->m_windowActiveTitleBGColor2, 0, 0);
+		if (m_title.size())
+		{
+
+			bqVec2f tp;
+			tp.x = m_titlebarRect.x + m_style->m_windowTitleIndent.x;
+			tp.y = m_titlebarRect.y + m_style->m_windowTitleIndent.y;
+			gs->DrawGUIText(m_title.c_str(), m_title.size(), tp, m_textDrawCallback);
+		}
+	}
 
 	_bqGUIWindow_DrawElement(gs, m_rootElement, dt);
 }

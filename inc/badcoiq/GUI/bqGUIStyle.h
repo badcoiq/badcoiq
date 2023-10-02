@@ -48,6 +48,7 @@ struct bqGUIStyle
 	bqColor m_windowActiveTitleBGColor1;
 	bqColor m_windowActiveTitleBGColor2;
 	bqColor m_windowActiveTitleTextColor;
+	bqVec2f m_windowTitleIndent = bqVec2f(20.f, 3.f);
 
 	bqColor m_buttonBGColor1;
 	bqColor m_buttonBGColor2;

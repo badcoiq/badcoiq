@@ -33,6 +33,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/GUI/bqGUI.h"
 
+class bqGUIWindowTextDrawCallback : public bqGUIDrawTextCallback
+{
+	friend class bqGUIWindow;
+
+	bqGUIFont* m_font = 0;
+	bqColor m_color;
+	bqGUIWindow* m_window = 0;
+public:
+	bqGUIWindowTextDrawCallback();
+	virtual ~bqGUIWindowTextDrawCallback();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIWindowTextDrawCallback);
+
+	void SetFont(bqGUIFont* f) { m_font = f; }
+
+	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
+	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+};
 
 class bqGUIButtonTextDrawCallback : public bqGUIDrawTextCallback
 {

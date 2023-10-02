@@ -73,7 +73,7 @@ bqGUISlider::~bqGUISlider() {}
 void bqGUISlider::Update()
 {
 	bqGUIElement::Update();
-	if (m_window->GetRootElement()->m_scrollDelta.y)
+	if (m_window->m_rootElement->m_scrollDelta.y)
 		Rebuild();
 
 	if (!m_isClicked)
