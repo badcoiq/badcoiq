@@ -69,10 +69,36 @@ public:
 		windowFlag_canToTop = 0x40,
 	};
 
+	// нужно знать, где находится курсор
+	enum
+	{
+		CursorInfo_out,         // за пределами окна
+		CursorInfo_titlebar,    // в titlebar
+		CursorInfo_client,       // в клиентской области
+		CursorInfo_closeButton,   // на кнопке закрытия
+		CursorInfo_collapseButton, // на кнопке сворачивания
+		
+		CursorInfo_resizeRB,       // далее на границах и в  углах
+		CursorInfo_resizeB,
+		CursorInfo_resizeLB,
+		CursorInfo_resizeL,
+		CursorInfo_resizeLT,
+		CursorInfo_resizeT,
+		CursorInfo_resizeRT,
+		CursorInfo_resizeR,
+	};
+	uint32_t m_windowCursorInfo = 0;
+
 private:
 
 	bqString m_title;
 	bqVec4f m_titlebarRect;
+
+	enum
+	{
+		windowFlagInternal_isMove = 0x1
+	};
+	uint32_t m_windowFlagsInternal = 0;
 public:
 	bqGUIWindow(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIWindow();

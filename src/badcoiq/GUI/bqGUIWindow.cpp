@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/gs/bqGS.h"
+#include "badcoiq/input/bqInputEx.h"
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
@@ -204,6 +205,33 @@ void bqGUIWindow::Update()
 {
 	if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_activeRect))
 		g_framework->m_GUIState.m_windowUnderCursor = this;
+
+	static float posX = 0;
+	static float posXlerp = 0;
+	static float posY = 0;
+	static float posYlerp = 0;
+
+	// перемещение окна
+	// если курсор на titlebar
+	//if (m_windowCursorInfo & CursorInfo_titlebar)
+	//{
+	//	// если флаг не установлен
+	//	if (!(m_windowFlagsInternal & windowFlagInternal_isMove))
+	//	{
+	//		// и если было нажатие левой кнопки мыши
+	//		if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBDOWN)
+	//		{
+	//			// устанавливаем флаг
+	//			m_windowFlagsInternal |= windowFlagInternal_isMove;
+
+
+	//			posX = (float)m_position.x;
+	//			posY = (float)m_position.y;
+	//			posXlerp = posX;
+	//			posYlerp = posY;
+	//		}
+	//	}
+	//}
 
 	_bqGUIWindow_UpdateElement(m_rootElement);
 }
