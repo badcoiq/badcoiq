@@ -782,8 +782,13 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 		isInit = true;
 	}
 
+	g_framework->m_themeDark.m_windowActiveTitleTextFont = bqFramework::GetDefaultFont(bqGUIDefaultFont::Text);
+	g_framework->m_themeDark.m_windowNActiveTitleTextFont = bqFramework::GetDefaultFont(bqGUIDefaultFont::Text);
+	g_framework->m_themeLight.m_windowActiveTitleTextFont = g_framework->m_themeDark.m_windowActiveTitleTextFont;
+	g_framework->m_themeLight.m_windowNActiveTitleTextFont = g_framework->m_themeDark.m_windowNActiveTitleTextFont;
+	
 	g_framework->m_themeDark.m_staticTextFont = bqFramework::GetDefaultFont(bqGUIDefaultFont::Text);
-	g_framework->m_themeLight.m_staticTextFont = bqFramework::GetDefaultFont(bqGUIDefaultFont::Text);
+	g_framework->m_themeLight.m_staticTextFont = g_framework->m_themeDark.m_staticTextFont;
 }
 
 bqGUIFont* bqFramework::SummonFont()
@@ -808,9 +813,16 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeLight.m_windowActiveBGColor1 = 0xF7F7F7;
 	g_framework->m_themeLight.m_windowActiveBGColor2 = 0xF7F7F7;
 	g_framework->m_themeLight.m_windowActiveBorderColor = 0xE1E6F7;
-	g_framework->m_themeLight.m_windowActiveTitleBGColor1 = 0xE5E5E5;
-	g_framework->m_themeLight.m_windowActiveTitleBGColor2 = 0xE5E5E5;
-	g_framework->m_themeLight.m_windowActiveTitleTextColor = 0x0;
+	g_framework->m_themeLight.m_windowActiveTitleBGColor1 = 0x64A1E4;
+	g_framework->m_themeLight.m_windowActiveTitleBGColor2 = 0x64A1E4;
+	g_framework->m_themeLight.m_windowActiveTitleTextColor = 0xF8FAFC;
+
+	g_framework->m_themeLight.m_windowNActiveBGColor1 = 0xF7F7F7;
+	g_framework->m_themeLight.m_windowNActiveBGColor2 = 0xF7F7F7;
+	g_framework->m_themeLight.m_windowNActiveBorderColor = 0xE1E6F7;
+	g_framework->m_themeLight.m_windowNActiveTitleBGColor1 = 0xE5E5E5;
+	g_framework->m_themeLight.m_windowNActiveTitleBGColor2 = 0xE5E5E5;
+	g_framework->m_themeLight.m_windowNActiveTitleTextColor = 0x0;
 
 	g_framework->m_themeLight.m_buttonBGColor1 = 0x999999;
 	g_framework->m_themeLight.m_buttonBGColor2 = 0x666666;
@@ -857,10 +869,12 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeDark = g_framework->m_themeLight;
 }
 
-bqGUIWindow* bqFramework::SummonGUIWindow(const bqVec2f& position, const bqVec2f& size)
+bqGUIWindow* bqFramework::SummonGUIWindow(bqWindow* window, const bqVec2f& position, const bqVec2f& size)
 {
 	bqGUIWindow* newWindow = new bqGUIWindow(position, size);
 	newWindow->SetStyle(bqFramework::GetGUIStyle(bqGUIStyleTheme::Light));
+	newWindow->m_systemWindow = window;
+
 	g_framework->m_GUIWindows.push_back(newWindow);
 	return newWindow;
 }

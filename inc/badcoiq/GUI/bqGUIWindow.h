@@ -32,6 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class bqGUIWindow : public bqGUICommon
 {
+	friend class bqFramework;
+	
+
 public:
 	enum
 	{
@@ -99,6 +102,9 @@ private:
 		windowFlagInternal_isMove = 0x1
 	};
 	uint32_t m_windowFlagsInternal = 0;
+
+	bqWindow* m_systemWindow = 0;
+
 public:
 	bqGUIWindow(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIWindow();
@@ -113,12 +119,30 @@ public:
 
 	void SetTitle(const char32_t*);
 
+	bqWindow* GetSystemWindow() { return m_systemWindow; }
+
 	// элементы открыты так как не нужно производить какие-то дополнительные действия
 	// например при установке значения. Нефиг плодить глупые get/set методы.
 	bqGUIElement* m_rootElement = 0;
 	bqVec2f m_sizeMinimum = bqVec2f(100.f, 30.f);
 	uint32_t m_windowFlags = 0;
 	float m_titlebarHeight = 20.f;
+	
+public:
+	bqGUIFont* OnFont(uint32_t r, char32_t);
+	bqColor* OnColor(uint32_t r, char32_t);
+
+	void Activate();
+	void Deactivate();
+
+private:
+	bqGUIFont* _OnFont_active(uint32_t r, char32_t);
+	bqColor* _OnColor_active(uint32_t r, char32_t);
+	bqGUIFont* _OnFont_Nactive(uint32_t r, char32_t);
+	bqColor* _OnColor_Nactive(uint32_t r, char32_t);
+	
+	bqGUIFont* (bqGUIWindow::* m_onFont)(uint32_t, char32_t) = 0;
+	bqColor* (bqGUIWindow::* m_onColor)(uint32_t, char32_t) = 0;
 };
 
 

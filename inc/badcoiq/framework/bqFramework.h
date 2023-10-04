@@ -141,7 +141,7 @@ public:
 	static bqGUIFont* GetDefaultFont(bqGUIDefaultFont);
 
 	static bqGUIStyle* GetGUIStyle(bqGUIStyleTheme);
-	static bqGUIWindow* SummonGUIWindow(const bqVec2f& position, const bqVec2f& size);
+	static bqGUIWindow* SummonGUIWindow(bqWindow* window, const bqVec2f& position, const bqVec2f& size);
 	static void UpdateGUI();
 	static void DrawGUI(bqGS* gs);
 	static void RebuildGUI();

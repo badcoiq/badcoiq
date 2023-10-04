@@ -114,7 +114,7 @@ bool DemoApp::Init()
 
 	m_textDrawCallback = new GUIDrawTextCallback(m_fontDefault);
 
-	m_GUIWindow = bqFramework::SummonGUIWindow(bqVec2f(300.f, 0.f),
+	m_GUIWindow = bqFramework::SummonGUIWindow(m_window, bqVec2f(300.f, 0.f),
 		bqVec2f(300.f, 400.f));
 	m_GUIWindow->SetDrawBG(false);
 	auto staticText = new MyStaticText(m_GUIWindow, bqVec2f(0.f, 0.f), bqVec2f(300.f, 300.f));

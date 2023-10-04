@@ -31,15 +31,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/input/bqInputEx.h"
+#include "badcoiq/system/bqWindow.h"
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
 #include "bqGUIDefaultTextDrawCallbacks.h"
 
+inline float
+bqGUIWindow_lerp(float v0, float v1, float t)
+{
+	return (1.f - t) * v0 + t * v1;
+}
+
+
 bqGUIWindowTextDrawCallback::bqGUIWindowTextDrawCallback()
 {
-	m_color = bq::ColorBlack;
+	//m_color = bq::ColorBlack;
 }
 
 bqGUIWindowTextDrawCallback::~bqGUIWindowTextDrawCallback()
@@ -47,14 +55,14 @@ bqGUIWindowTextDrawCallback::~bqGUIWindowTextDrawCallback()
 }
 
 
-bqGUIFont* bqGUIWindowTextDrawCallback::OnFont(uint32_t r, char32_t)
+bqGUIFont* bqGUIWindowTextDrawCallback::OnFont(uint32_t r, char32_t c)
 {
-	return m_window->GetStyle()->m_staticTextFont;
+	return m_window->OnFont(r, c);
 }
 
-bqColor* bqGUIWindowTextDrawCallback::OnColor(uint32_t r, char32_t)
+bqColor* bqGUIWindowTextDrawCallback::OnColor(uint32_t r, char32_t c)
 {
-	return &m_window->GetStyle()->m_staticTextTextColor;
+	return m_window->OnColor(r, c);
 }
 
 bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
@@ -75,12 +83,61 @@ bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
 	
 	// установка дефолтного шрифта.
 	// перед использованием надо создать дефолтные шрифты
-	bqGUIWindowTextDrawCallback* cb = (bqGUIWindowTextDrawCallback*)g_framework->m_defaultTextDrawCallback_button;
-	cb->SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
+	//bqGUIWindowTextDrawCallback* cb = (bqGUIWindowTextDrawCallback*)g_framework->m_defaultTextDrawCallback_button;
+	//cb->SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
+
+	m_onFont = &bqGUIWindow::_OnFont_active;
+	m_onColor = &bqGUIWindow::_OnColor_active;
 }
 
 bqGUIWindow::~bqGUIWindow()
 {
+}
+
+bqGUIFont* bqGUIWindow::_OnFont_active(uint32_t r, char32_t)
+{
+	return m_style->m_windowActiveTitleTextFont;
+}
+
+bqColor* bqGUIWindow::_OnColor_active(uint32_t r, char32_t)
+{
+	return &m_style->m_windowActiveTitleTextColor;
+}
+
+bqGUIFont* bqGUIWindow::_OnFont_Nactive(uint32_t r, char32_t)
+{
+	return m_style->m_windowNActiveTitleTextFont;
+}
+
+bqColor* bqGUIWindow::_OnColor_Nactive(uint32_t r, char32_t)
+{
+	return &m_style->m_windowNActiveTitleTextColor;
+}
+
+
+bqGUIFont* bqGUIWindow::OnFont(uint32_t r, char32_t c)
+{
+	return (this->*m_onFont)(r, c);
+}
+
+bqColor* bqGUIWindow::OnColor(uint32_t r, char32_t c)
+{
+	return (this->*m_onColor)(r, c);
+}
+
+void bqGUIWindow::Activate()
+{
+	// тут надо вырубить предидущее активированное окно
+	// ...
+
+	m_onFont = &bqGUIWindow::_OnFont_active;
+	m_onColor = &bqGUIWindow::_OnColor_active;
+}
+
+void bqGUIWindow::Deactivate()
+{
+	m_onFont = &bqGUIWindow::_OnFont_Nactive;
+	m_onColor = &bqGUIWindow::_OnColor_Nactive;
 }
 
 void bqGUIWindow::SetTitle(const char32_t* t)
@@ -203,51 +260,111 @@ void _bqGUIWindow_UpdateElement(bqGUIElement* e)
 
 void bqGUIWindow::Update()
 {
-// сброс.
+	// сброс.
     m_windowCursorInfo = CursorInfo_out;
 
+	// отступ сверху. Должен содержать высоту titlebar, возможно в будущем полосу меню и прочие вещи
+	int topIndent = 0;
+
 	if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_activeRect))
-{	g_framework->m_GUIState.m_windowUnderCursor = this;
+	{	
+		g_framework->m_GUIState.m_windowUnderCursor = this;
 
-// курсор в окне. значит 100% в области
-   m_windowCursorInfo = CursorInfo_client;
+	// курсор в окне. значит 100% в области
+	   m_windowCursorInfo = CursorInfo_client;
 
-// далее надо определить находится ли курсир в titlebar
-// достаточно проверить по высоте
-    if(m_mousePosition.y < m_titlebarRect.w)
-    {
-        m_windowCursorInfo = CursorInfo_titlebar;
-    }
+	// далее надо определить находится ли курсир в titlebar
+	// достаточно проверить по высоте
+	   if (m_windowFlags & windowFlag_canMove)
+	   {
+		   topIndent += (int)m_titlebarHeight;
 
-// остальные CursorInfo будут найдены позже 
-}
+		   if (g_framework->m_input.m_mousePosition.y < m_titlebarRect.w)
+		   {
+			   m_windowCursorInfo = CursorInfo_titlebar;
+		   }
+	   }
+	// остальные CursorInfo будут найдены позже 
+	}
 
 	static float posX = 0;
 	static float posXlerp = 0;
 	static float posY = 0;
 	static float posYlerp = 0;
 
+	bool needRebuild = false;
+
 	// перемещение окна
 	// если курсор на titlebar
-	//if (m_windowCursorInfo & CursorInfo_titlebar)
-	//{
-	//	// если флаг не установлен
-	//	if (!(m_windowFlagsInternal & windowFlagInternal_isMove))
-	//	{
-	//		// и если было нажатие левой кнопки мыши
-	//		if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBDOWN)
-	//		{
-	//			// устанавливаем флаг
-	//			m_windowFlagsInternal |= windowFlagInternal_isMove;
+	// над определить первое нажатие по titlebar, запомнить  позицию 
+	if (m_windowCursorInfo & CursorInfo_titlebar)
+	{
+		// если флаг не установлен
+		if (!(m_windowFlagsInternal & windowFlagInternal_isMove))
+		{
+			// и если было нажатие левой кнопки мыши
+			if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBDOWN)
+			{
+				// устанавливаем флаг только если это окно можно перемещать
+				if(m_windowFlags & windowFlag_canMove)
+					m_windowFlagsInternal |= windowFlagInternal_isMove;
 
 
-	//			posX = (float)m_position.x;
-	//			posY = (float)m_position.y;
-	//			posXlerp = posX;
-	//			posYlerp = posY;
-	//		}
-	//	}
-	//}
+				posX = (float)m_position.x;
+				posY = (float)m_position.y;
+				posXlerp = posX;
+				posYlerp = posY;
+			}
+		}
+	}
+
+	// перемещение окна
+	if (m_windowFlagsInternal & windowFlagInternal_isMove)
+	{
+		// если удерживается левая кнопка мыши
+		if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBHOLD)
+		{
+			// изменяю значение цели для lerp
+			posXlerp += g_framework->m_input.m_mouseMoveDelta.x;
+			float lf = g_framework->m_deltaTime * 30.f;
+			if (lf > 1.f)
+				lf = 1.f;
+
+			printf("a\n");
+			// вызов lerp
+			// и окно перемещается
+			m_position.x = bqGUIWindow_lerp(m_position.x, posXlerp, lf);
+
+			// для y оси
+			posYlerp += g_framework->m_input.m_mouseMoveDelta.y;
+			m_position.y = bqGUIWindow_lerp(m_position.y, posYlerp, lf);
+
+			needRebuild = true;
+		}
+
+		// прекращение перемещения
+		if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBUP)
+		{
+			m_windowFlagsInternal ^= windowFlagInternal_isMove;
+		}
+
+	}
+
+	// надо передвинуть окно если оно за пределами системного окна
+	if (m_position.x + m_size.x < 30)
+		m_position.x += 30 - (m_position.x + m_size.x);
+
+	if (m_position.x > m_systemWindow->GetCurrentSize()->x - 30)
+		m_position.x = (float)(m_systemWindow->GetCurrentSize()->x - 30);
+
+	if (m_position.y < 0)
+		m_position.y = 0;
+
+	if (m_position.y > m_systemWindow->GetCurrentSize()->y - topIndent)
+		m_position.y = (float)(m_systemWindow->GetCurrentSize()->y - topIndent);
+	
+	if(needRebuild)
+		Rebuild();
 
 	_bqGUIWindow_UpdateElement(m_rootElement);
 }
