@@ -273,9 +273,9 @@ void bqGUIWindow::Update()
 	// курсор в окне. значит 100% в области
 	   m_windowCursorInfo = CursorInfo_client;
 
-	// далее надо определить находится ли курсир в titlebar
+	// далее надо определить находится ли курсор в titlebar
 	// достаточно проверить по высоте
-	   if (m_windowFlags & windowFlag_canMove)
+	   if (m_windowFlags & windowFlag_withTitleBar)
 	   {
 		   topIndent += (int)m_titlebarHeight;
 
