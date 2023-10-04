@@ -203,8 +203,24 @@ void _bqGUIWindow_UpdateElement(bqGUIElement* e)
 
 void bqGUIWindow::Update()
 {
+// сброс.
+    m_windowCursorInfo = CursorInfo_out;
+
 	if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_activeRect))
-		g_framework->m_GUIState.m_windowUnderCursor = this;
+{	g_framework->m_GUIState.m_windowUnderCursor = this;
+
+// курсор в окне. значит 100% в области
+   m_windowCursorInfo = CursorInfo_client;
+
+// далее надо определить находится ли курсир в titlebar
+// достаточно проверить по высоте
+    if(m_mousePosition.y < m_titlebarRect.w)
+    {
+        m_windowCursorInfo = CursorInfo_titlebar;
+    }
+
+// остальные CursorInfo будут найдены позже 
+}
 
 	static float posX = 0;
 	static float posXlerp = 0;
