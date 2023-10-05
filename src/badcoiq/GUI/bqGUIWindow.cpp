@@ -86,6 +86,8 @@ bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
 	//bqGUIWindowTextDrawCallback* cb = (bqGUIWindowTextDrawCallback*)g_framework->m_defaultTextDrawCallback_button;
 	//cb->SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
 
+	m_icons = bqFramework::GetDefaultFont(bqGUIDefaultFont::Icons);
+
 	m_onFont = &bqGUIWindow::_OnFont_active;
 	m_onColor = &bqGUIWindow::_OnColor_active;
 }
@@ -217,6 +219,18 @@ void bqGUIWindow::Rebuild()
 
 		m_baseRect.y += m_titlebarHeight; // m_clipRect и m_activeRect зависят от m_baseRect
 		                                  // пусть m_clipRect m_activeRect находится выше данного блока
+	
+		if (m_icons)
+		{
+			auto g = m_icons->GetGlyphMap()[(uint32_t)bqGUIDefaultIconID::CloseWindow];
+			if (g)
+			{
+				m_closeButtonRect.x = m_titlebarRect.z - g->m_width;
+				m_closeButtonRect.z = m_closeButtonRect.x + g->m_width;
+				m_closeButtonRect.y = m_titlebarRect.y;
+				m_closeButtonRect.w = m_closeButtonRect.y + g->m_height;
+			}
+		}
 	}
 
 	if (m_baseRect.x > m_baseRect.z)
@@ -226,6 +240,7 @@ void bqGUIWindow::Rebuild()
 
 	m_rootElement->m_clipRect = m_rootElement->m_baseRect;
 	m_rootElement->m_activeRect = m_rootElement->m_clipRect;
+
 
 	// потом перестраиваю другие элементы
 	_bqGUIWindow_RebuildElement(m_rootElement);
@@ -281,7 +296,12 @@ void bqGUIWindow::Update()
 
 		   if (g_framework->m_input.m_mousePosition.y < m_titlebarRect.w)
 		   {
-			   m_windowCursorInfo = CursorInfo_titlebar;
+			   if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_closeButtonRect))
+			   {
+				   m_windowCursorInfo = CursorInfo_closeButton;
+			   }
+			   else
+				   m_windowCursorInfo = CursorInfo_titlebar;
 		   }
 	   }
 	// остальные CursorInfo будут найдены позже 
@@ -418,10 +438,22 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 			gs->DrawGUIText(m_title.c_str(), m_title.size(), tp, m_textDrawCallback);
 		}
 
-// для рисовании кнопки закрыть нужен дефолтный шрифт с иконками
-if (m_windowFlags & windowFlag_withCloseButton)
-{
-}
+		// для рисовании кнопки закрыть нужен дефолтный шрифт с иконками
+		if (m_windowFlags & windowFlag_withCloseButton)
+		{
+			bqColor cbc = bq::ColorWhite;
+			
+			if (m_windowCursorInfo == CursorInfo_closeButton)
+				cbc = bq::ColorRed;
+
+			auto g = m_icons->GetGlyphMap()[(uint32_t)bqGUIDefaultIconID::CloseWindow];
+			gs->DrawGUIRectangle(
+				m_closeButtonRect,
+				cbc,
+				cbc,
+				m_icons->GetTexture(0),
+				&g->m_UV);
+		}
 	}
 
 	_bqGUIWindow_DrawElement(gs, m_rootElement, dt);

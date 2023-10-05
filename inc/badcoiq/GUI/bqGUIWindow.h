@@ -96,6 +96,7 @@ private:
 
 	bqString m_title;
 	bqVec4f m_titlebarRect;
+	bqVec4f m_closeButtonRect;
 
 	enum
 	{
@@ -134,6 +135,8 @@ public:
 
 	void Activate();
 	void Deactivate();
+
+	bqGUIFont* m_icons = 0;
 
 private:
 	bqGUIFont* _OnFont_active(uint32_t r, char32_t);

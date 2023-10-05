@@ -106,9 +106,10 @@ enum class bqGUIDefaultIconID
 	Plus,
 	Minus,
 	ArrowUp,
-	ArrowDonw,
+	ArrowDown,
 	ArrowRight,
 	ArrowLeft,
+	CloseWindow
 };
 
 #endif

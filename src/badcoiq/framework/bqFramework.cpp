@@ -529,6 +529,9 @@ bqStringA bqFramework::GetPath(const bqString& v)
 
 bqGUIFont* bqFramework::GetDefaultFont(bqGUIDefaultFont t)
 {
+	if ((uint32_t)t >= g_framework->m_defaultFonts.m_size)
+		return g_framework->m_defaultFonts.m_data[0];
+
 	switch (t)
 	{
 	case bqGUIDefaultFont::Text:
@@ -754,7 +757,7 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 
 		g_framework->m_defaultFonts.push_back(myFont);
 
-		img = getImage(g_defaultIconsPNG, 4825);
+		img = getImage(g_defaultIconsPNG, sizeof(g_defaultIconsPNG));
 		if (img)
 		{
 			myFontTexture = getTexture(img);
@@ -771,9 +774,10 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::Minus, bqVec2f(43, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
 				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::Plus, bqVec2f(57, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
 				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::ArrowUp, bqVec2f(71, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
-				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::ArrowDonw, bqVec2f(85, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::ArrowDown, bqVec2f(85, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
 				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::ArrowRight, bqVec2f(97, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
 				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::ArrowLeft, bqVec2f(109, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
+				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::CloseWindow, bqVec2f(125, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
 
 				g_framework->m_defaultFonts.push_back(myFont);
 			}
