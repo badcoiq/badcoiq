@@ -330,7 +330,7 @@ void bqGUIWindow::Update()
 			if (lf > 1.f)
 				lf = 1.f;
 
-			printf("a\n");
+		//	printf("a\n");
 			// вызов lerp
 			// и окно перемещается
 			m_position.x = bqGUIWindow_lerp(m_position.x, posXlerp, lf);
@@ -417,6 +417,11 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 			tp.y = m_titlebarRect.y + m_style->m_windowTitleIndent.y;
 			gs->DrawGUIText(m_title.c_str(), m_title.size(), tp, m_textDrawCallback);
 		}
+
+// для рисовании кнопки закрыть нужен дефолтный шрифт с иконками
+if (m_windowFlags & windowFlag_withCloseButton)
+{
+}
 	}
 
 	_bqGUIWindow_DrawElement(gs, m_rootElement, dt);
