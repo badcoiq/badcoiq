@@ -47,7 +47,6 @@ bqGUIWindow_lerp(float v0, float v1, float t)
 
 bqGUIWindowTextDrawCallback::bqGUIWindowTextDrawCallback()
 {
-	//m_color = bq::ColorBlack;
 }
 
 bqGUIWindowTextDrawCallback::~bqGUIWindowTextDrawCallback()
@@ -454,6 +453,27 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 				m_icons->GetTexture(0),
 				&g->m_UV);
 		}
+
+if (m_windowFlags & windowFlag_withCollapseButton)
+		{
+bqColor cbc = bq::ColorWhite;
+uint32_t iconid = (uint32_t)bqGUIDefaultIconID::ArrowRight;
+
+if(m_windowFlagsInternal & windowFlagInternal_isExpand)
+{
+iconid = (uint32_t)bqGUIDefaultIconID::ArrowDown;
+}
+
+auto g = m_icons->GetGlyphMap()[iconid];
+			gs->DrawGUIRectangle(
+				m_collapseButtonRect,
+				cbc,
+				cbc,
+				m_icons->GetTexture(0),
+				&g->m_UV);
+}
+
+
 	}
 
 	_bqGUIWindow_DrawElement(gs, m_rootElement, dt);
