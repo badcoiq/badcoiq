@@ -316,6 +316,10 @@ void bqGUIWindow::Update()
 			   {
 				   m_windowCursorInfo = CursorInfo_closeButton;
 			   }
+			   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_collapseButtonRect))
+			   {
+				   m_windowCursorInfo = CursorInfo_collapseButton;
+			   }
 			   else
 				   m_windowCursorInfo = CursorInfo_titlebar;
 		   }
@@ -496,4 +500,12 @@ auto g = m_icons->GetGlyphMap()[iconid];
 	_bqGUIWindow_DrawElement(gs, m_rootElement, dt);
 }
 
+void bqGUIWindow::Show()
+{
+m_windowFlagsInternal |= windowFlagInternal_isVisible;
+}
 
+void bqGUIWindow::Hide()
+{
+m_windowFlagsInternal xxx = ~windowFlagInternal_isVisible;
+}
