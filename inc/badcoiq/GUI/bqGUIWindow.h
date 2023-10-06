@@ -102,8 +102,8 @@ bqVec4f m_collapseButtonRect;
 	enum
 	{
 		windowFlagInternal_isMove = 0x1,
-windowFlagInternal_isExpand = 0x2,
-windowFlagInternal_isVisible = 0x4
+		windowFlagInternal_isExpand = 0x2,
+		windowFlagInternal_closeBtn = 0x4, // когда нажимается кнопка для закрытия, нужно запонить первый щёлк мышки
 	};
 	uint32_t m_windowFlagsInternal = 0;
 
@@ -138,6 +138,8 @@ public:
 
 	void Activate();
 	void Deactivate();
+	void Expand();
+	void Collapse();
 
 	bqGUIFont* m_icons = 0;
 

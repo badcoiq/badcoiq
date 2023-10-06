@@ -83,6 +83,7 @@ bool ExampleMshGnBox::Init()
 	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withTitleBar;
 	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canMove;
 	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCloseButton;
+	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCollapseButton;
 	m_guiWindow->SetTitle(U"Parameters");
 	bqFramework::RebuildGUI();
 

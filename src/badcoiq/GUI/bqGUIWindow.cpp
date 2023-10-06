@@ -89,6 +89,8 @@ bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
 
 	m_onFont = &bqGUIWindow::_OnFont_active;
 	m_onColor = &bqGUIWindow::_OnColor_active;
+
+	Expand();
 }
 
 bqGUIWindow::~bqGUIWindow()
@@ -230,21 +232,21 @@ void bqGUIWindow::Rebuild()
 				m_closeButtonRect.w = m_closeButtonRect.y + g->m_height;
 			}
 
-uint32_t iconid = (uint32_t)bqGUIDefaultIconID::ArrowRight;
+			uint32_t iconid = (uint32_t)bqGUIDefaultIconID::ArrowRight;
 
-if(m_windowFlagsInternal & windowFlagInternal_isExpand)
-{
-iconid = (uint32_t)bqGUIDefaultIconID::ArrowDown;
-}
+			if(m_windowFlagsInternal & windowFlagInternal_isExpand)
+			{
+				iconid = (uint32_t)bqGUIDefaultIconID::ArrowDown;
+			}
 
-g = m_icons->GetGlyphMap()[iconid];
-if(g)
-{
-m_collapseButtonRect.x = m_titlebarRect.x;
+			g = m_icons->GetGlyphMap()[iconid];
+			if(g)
+			{
+				m_collapseButtonRect.x = m_titlebarRect.x;
 				m_collapseButtonRect.z = m_collapseButtonRect.x + g->m_width;
 				m_collapseButtonRect.y = m_titlebarRect.y;
 				m_collapseButtonRect.w = m_collapseButtonRect.y + g->m_height;
-}
+			}
 
 		}
 	}
@@ -337,7 +339,7 @@ void bqGUIWindow::Update()
 	// перемещение окна
 	// если курсор на titlebar
 	// над определить первое нажатие по titlebar, запомнить  позицию 
-	if (m_windowCursorInfo & CursorInfo_titlebar)
+	if (m_windowCursorInfo == CursorInfo_titlebar)
 	{
 		// если флаг не установлен
 		if (!(m_windowFlagsInternal & windowFlagInternal_isMove))
@@ -402,13 +404,48 @@ void bqGUIWindow::Update()
 
 	if (m_position.y > m_systemWindow->GetCurrentSize()->y - topIndent)
 		m_position.y = (float)(m_systemWindow->GetCurrentSize()->y - topIndent);
+
+	// только если есть кнопка закрытия
+	if (m_windowFlags & windowFlag_withCloseButton)
+	{
+		// закрытие (надо просто изменить видимость)
+		if (m_windowCursorInfo == CursorInfo_closeButton)
+		{
+			// надо запомнить первый щёлк
+			// установлю флаг
+			if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBDOWN)
+			{
+				// так-же, если нажали кнопку, нужно сделать так, чтобы она оставалась
+				// красной (ну или как она там будет выглядеть когда наводим курсор)
+				// может быть даже можно указать специальный цвет для нажатия.
+				// пока просто нужно учеть этот факт в рисовании иконки
+				m_windowFlagsInternal |= windowFlagInternal_closeBtn;
+			}
+		
+		}
+		// на отжатии кнопки
+		if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBUP)
+		{
+			// если флаг установлен (то есть ранее нажимали кнопку) - то закрываем окно
+			if (m_windowCursorInfo == CursorInfo_closeButton)
+			{
+				if (m_windowFlagsInternal & windowFlagInternal_closeBtn)
+				{
+					SetVisible(false);
+				}
+			}
+			m_windowFlagsInternal &= ~windowFlagInternal_closeBtn;
+		}
+
+	}
 	
 	if(needRebuild)
 		Rebuild();
 
-if(m_windowFlagsInternal & windowFlagInternal_isVisible)
-{	_bqGUIWindow_UpdateElement(m_rootElement);
-}
+	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
+	{	
+		_bqGUIWindow_UpdateElement(m_rootElement);
+	}
 }
 
 // рисование
@@ -442,7 +479,7 @@ void _bqGUIWindow_DrawElement(bqGS* gs, bqGUIElement* e, float dt)
 
 void bqGUIWindow::Draw(bqGS* gs, float dt)
 {
-	if (IsDrawBG() && (m_windowFlagsInternal & windowFlagInternal_isVisible))
+	if (IsDrawBG() && (m_windowFlagsInternal & windowFlagInternal_isExpand))
 {
 		gs->DrawGUIRectangle(m_baseRect, m_style->m_windowActiveBGColor1, m_style->m_windowActiveBGColor2, 0, 0);
 	}
@@ -467,52 +504,59 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 		{
 			bqColor cbc = bq::ColorWhite;
 			
-			if (m_windowCursorInfo == CursorInfo_closeButton)
+			if (m_windowCursorInfo == CursorInfo_closeButton
+				|| (m_windowFlagsInternal & windowFlagInternal_closeBtn) )
 				cbc = bq::ColorRed;
 
 			auto g = m_icons->GetGlyphMap()[(uint32_t)bqGUIDefaultIconID::CloseWindow];
-			gs->DrawGUIRectangle(
-				m_closeButtonRect,
-				cbc,
-				cbc,
-				m_icons->GetTexture(0),
-				&g->m_UV);
+			if (g)
+			{
+				gs->DrawGUIRectangle(
+					m_closeButtonRect,
+					cbc,
+					cbc,
+					m_icons->GetTexture(0),
+					&g->m_UV);
+			}
 		}
 
-if (m_windowFlags & windowFlag_withCollapseButton)
+		if (m_windowFlags & windowFlag_withCollapseButton)
 		{
-bqColor cbc = bq::ColorWhite;
-uint32_t iconid = (uint32_t)bqGUIDefaultIconID::ArrowRight;
+			bqColor cbc = bq::ColorWhite;
+			uint32_t iconid = (uint32_t)bqGUIDefaultIconID::ArrowRight;
 
-if(m_windowFlagsInternal & windowFlagInternal_isExpand)
-{
-iconid = (uint32_t)bqGUIDefaultIconID::ArrowDown;
-}
-
-auto g = m_icons->GetGlyphMap()[iconid];
-			gs->DrawGUIRectangle(
-				m_collapseButtonRect,
-				cbc,
-				cbc,
-				m_icons->GetTexture(0),
-				&g->m_UV);
-}
+			if(m_windowFlagsInternal & windowFlagInternal_isExpand)
+			{
+				iconid = (uint32_t)bqGUIDefaultIconID::ArrowDown;
+			}
+			
+			auto g = m_icons->GetGlyphMap()[iconid];
+			if (g)
+			{
+				gs->DrawGUIRectangle(
+					m_collapseButtonRect,
+					cbc,
+					cbc,
+					m_icons->GetTexture(0),
+					&g->m_UV);
+			}
+		}
 
 
 	}
 
-if(m_windowFlagsInternal & windowFlagInternal_isVisible)
-{
-	_bqGUIWindow_DrawElement(gs, m_rootElement, dt);
-}
-}
-
-void bqGUIWindow::Show()
-{
-m_windowFlagsInternal |= windowFlagInternal_isVisible;
+	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
+	{
+		_bqGUIWindow_DrawElement(gs, m_rootElement, dt);
+	}
 }
 
-void bqGUIWindow::Hide()
+void bqGUIWindow::Expand()
 {
-m_windowFlagsInternal xxx = ~windowFlagInternal_isVisible;
+	m_windowFlagsInternal |= windowFlagInternal_isExpand;
+}
+
+void bqGUIWindow::Collapse()
+{
+	m_windowFlagsInternal &= ~windowFlagInternal_isExpand;
 }
