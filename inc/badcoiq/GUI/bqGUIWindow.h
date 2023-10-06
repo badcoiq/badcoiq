@@ -97,10 +97,12 @@ private:
 	bqString m_title;
 	bqVec4f m_titlebarRect;
 	bqVec4f m_closeButtonRect;
+bqVec4f m_collapseButtonRect;
 
 	enum
 	{
-		windowFlagInternal_isMove = 0x1
+		windowFlagInternal_isMove = 0x1,
+windowFlagInternal_isExpand = 0x2
 	};
 	uint32_t m_windowFlagsInternal = 0;
 
