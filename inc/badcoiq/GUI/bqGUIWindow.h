@@ -102,7 +102,8 @@ bqVec4f m_collapseButtonRect;
 	enum
 	{
 		windowFlagInternal_isMove = 0x1,
-windowFlagInternal_isExpand = 0x2
+windowFlagInternal_isExpand = 0x2,
+windowFlagInternal_isVisible = 0x4
 	};
 	uint32_t m_windowFlagsInternal = 0;
 
