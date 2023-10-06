@@ -406,7 +406,9 @@ void bqGUIWindow::Update()
 	if(needRebuild)
 		Rebuild();
 
-	_bqGUIWindow_UpdateElement(m_rootElement);
+if(m_windowFlagsInternal & windowFlagInternal_isVisible)
+{	_bqGUIWindow_UpdateElement(m_rootElement);
+}
 }
 
 // рисование
@@ -440,9 +442,11 @@ void _bqGUIWindow_DrawElement(bqGS* gs, bqGUIElement* e, float dt)
 
 void bqGUIWindow::Draw(bqGS* gs, float dt)
 {
-	if (IsDrawBG())
+	if (IsDrawBG() && (m_windowFlagsInternal & windowFlagInternal_isVisible))
+{
 		gs->DrawGUIRectangle(m_baseRect, m_style->m_windowActiveBGColor1, m_style->m_windowActiveBGColor2, 0, 0);
-	
+	}
+
 	if (m_windowFlags & windowFlag_withTitleBar)
 	{
 		bqGUIWindowTextDrawCallback* wcb = (bqGUIWindowTextDrawCallback*)m_textDrawCallback;
@@ -497,7 +501,10 @@ auto g = m_icons->GetGlyphMap()[iconid];
 
 	}
 
+if(m_windowFlagsInternal & windowFlagInternal_isVisible)
+{
 	_bqGUIWindow_DrawElement(gs, m_rootElement, dt);
+}
 }
 
 void bqGUIWindow::Show()
