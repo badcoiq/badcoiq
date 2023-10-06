@@ -436,7 +436,23 @@ void bqGUIWindow::Update()
 			}
 			m_windowFlagsInternal &= ~windowFlagInternal_closeBtn;
 		}
+	}
 
+	if (m_windowFlags & windowFlag_withCollapseButton)
+	{
+		if (m_windowCursorInfo == CursorInfo_collapseButton)
+		{
+			// будет работать при первом нажатии
+			if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBDOWN)
+			{
+				if (m_windowFlagsInternal & windowFlagInternal_isExpand)
+				{
+					Collapse();
+				}
+				else
+					Expand();
+			}
+		}
 	}
 	
 	if(needRebuild)
