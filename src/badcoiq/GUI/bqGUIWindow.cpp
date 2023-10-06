@@ -229,6 +229,23 @@ void bqGUIWindow::Rebuild()
 				m_closeButtonRect.y = m_titlebarRect.y;
 				m_closeButtonRect.w = m_closeButtonRect.y + g->m_height;
 			}
+
+uint32_t iconid = (uint32_t)bqGUIDefaultIconID::ArrowRight;
+
+if(m_windowFlagsInternal & windowFlagInternal_isExpand)
+{
+iconid = (uint32_t)bqGUIDefaultIconID::ArrowDown;
+}
+
+g = m_icons->GetGlyphMap()[iconid];
+if(g)
+{
+m_collapseButtonRect.x = m_titlebarRect.x;
+				m_collapseButtonRect.z = m_collapseButtonRect.x + g->m_width;
+				m_collapseButtonRect.y = m_titlebarRect.y;
+				m_collapseButtonRect.w = m_collapseButtonRect.y + g->m_height;
+}
+
 		}
 	}
 
