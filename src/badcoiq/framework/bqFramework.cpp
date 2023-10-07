@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/archive/bqArchive.h"
 
 #include "../GUI/bqGUIDefaultTextDrawCallbacks.h"
+#include "../system/bqCursorWin32.h"
 
 #include "bqFrameworkImpl.h"
 
@@ -128,7 +129,10 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		device.dwFlags = 0;
 		device.hwndTarget = 0;
 		RegisterRawInputDevices(&device, 1, sizeof device);
+
+		
 #endif
+		g_framework->_initDefaultCursors();
 
 		g_framework->m_gss.push_back(bqGSD3D11_create());
 		//g_framework->m_gss.push_back(bqGSD3D12_create());
@@ -153,6 +157,12 @@ void bqFramework::Stop()
 
 void bqFrameworkImpl::OnDestroy()
 {
+	for (uint32_t i = 0; i < (uint32_t)bqCursorType::_count; ++i)
+	{
+		if (m_defaultCursors[i])
+			delete m_defaultCursors[i];
+	}
+
 	if (m_texturesForDestroy.m_size)
 	{
 		for (size_t i = 0; i < m_texturesForDestroy.m_size; ++i)
@@ -1021,3 +1031,61 @@ void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 	delete m_defaultTextDrawCallback_staticText; m_defaultTextDrawCallback_staticText = 0;
 }
 
+bqCursor* bqFramework::SummonCursor(const char* fn)
+{
+	bqCursor* newCursor = 0;
+
+#ifdef BQ_PLATFORM_WINDOWS
+	bqCursorWin32* c = new bqCursorWin32;
+	bqCursorWin32* ptr = (bqCursorWin32*)c;
+	ptr->m_handle = (HCURSOR)::LoadImageA(GetModuleHandle(0), fn, IMAGE_CURSOR, 0, 0, LR_LOADFROMFILE);
+#endif
+
+	return newCursor;
+}
+
+void bqFrameworkImpl::_initDefaultCursors()
+{
+#ifdef BQ_PLATFORM_WINDOWS
+	for (uint32_t i = 0; i < (uint32_t)bqCursorType::_count; ++i)
+	{
+		m_defaultCursors[i] = new bqCursorWin32();
+
+		switch ((bqCursorType)i)
+		{
+		default:
+		case bqCursorType::Arrow: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_ARROW); break;
+		case bqCursorType::Cross: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_CROSS); break;
+		case bqCursorType::Hand: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_HAND); break;
+		case bqCursorType::Help: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_HELP); break;
+		case bqCursorType::IBeam: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_IBEAM); break;
+		case bqCursorType::No: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_NO); break;
+		case bqCursorType::Size: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_SIZEALL); break;
+		case bqCursorType::SizeNESW: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_SIZENESW); break;
+		case bqCursorType::SizeNS: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_SIZENS); break;
+		case bqCursorType::SizeNWSE: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_SIZENWSE); break;
+		case bqCursorType::SizeWE: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_SIZEWE); break;
+		case bqCursorType::UpArrow: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_UPARROW); break;
+		case bqCursorType::Wait: ((bqCursorWin32*)m_defaultCursors[i])->m_handle = LoadCursor(0, IDC_WAIT); break;
+		}
+	}
+#endif
+
+	m_activeCursor = m_defaultCursors[0];
+}
+
+bqCursor* bqFramework::GetDefaultCursor(bqCursorType ct)
+{
+	BQ_ASSERT_ST(ct != bqCursorType::_count);
+	return g_framework->m_defaultCursors[(uint32_t)ct];
+}
+
+bqCursor* bqFramework::GetActiveCursor()
+{
+	return g_framework->m_activeCursor;
+}
+
+void bqFramework::SetActiveCursor(bqCursor* c)
+{
+	g_framework->m_activeCursor = c;	
+}

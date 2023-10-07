@@ -147,6 +147,11 @@ public:
 	static void RebuildGUI();
 	static void Destroy(bqGUIWindow*);
 	static void Destroy(bqGUIElement*);
+	
+	static bqCursor* SummonCursor(const char* fn);
+	static bqCursor* GetDefaultCursor(bqCursorType);
+	static bqCursor* GetActiveCursor();
+	static void SetActiveCursor(bqCursor*);
 };
 
 #endif

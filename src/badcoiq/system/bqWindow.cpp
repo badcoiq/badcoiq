@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/math/bqMath.h"
 #include "badcoiq/input/bqInput.h"
 
+#include "badcoiq/system/bqCursor.h"
+
 #include "badcoiq/gs/bqGS.h"
 
 #ifdef BQ_PLATFORM_WINDOWS
@@ -576,6 +578,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         bqInputData* id = bqInput::GetData();
         id->m_character = wParam;
+    }break;
+    case WM_SETCURSOR: {
+        auto id = LOWORD(lParam);
+        switch (id)
+        {
+        default:
+            SetCursor((HCURSOR)bqFramework::GetActiveCursor()->GetHandle());
+            return TRUE;
+        case HTLEFT:
+        case HTRIGHT:
+        case HTTOP:
+        case HTBOTTOM:
+        case HTTOPLEFT:
+        case HTBOTTOMRIGHT:
+        case HTBOTTOMLEFT:
+        case HTTOPRIGHT:
+        case HTHELP:
+            return DefWindowProc(hWnd, message, wParam, lParam);
+        }
     }break;
     case WM_SYSCOMMAND:
         if ((wParam & 0xFFF0) == SC_SCREENSAVE ||

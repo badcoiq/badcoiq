@@ -27,64 +27,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#ifndef __BQ_CURSOR_Win32_H__
+#define __BQ_CURSOR_Win32_H__
 
-class bqWindow;
-class bqWindowCallback;
+#include "badcoiq/system/bqCursor.h"
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
+class bqCursorWin32 : public bqCursor
+{
+public:
+	bqCursorWin32();
+	virtual ~bqCursorWin32();
+	BQ_PLACEMENT_ALLOCATOR(bqCursorWin32);
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+	virtual void* GetHandle() override;
 
-class bqGS;
-class bqMaterial;
-class bqPolygonMeshPolygon;
-class bqMeshPolygonCreator;
-class bqPolygonMeshControlPoint;
-class bqGPUMesh;
-class bqMesh;
-class bqTexture;
-class bqColor;
-class bqImage;
-class bqImageLoader;
-class bqPolygonMesh;
-class bqMeshLoader;
-class bqMeshLoaderCallback;
-struct bqCompressionInfo;
-struct bqArchiveZipFile;
-class bqGUIFont;
-class bqGUIDrawTextCallback;
-enum class bqGUIStyleTheme;
-struct bqGUIStyle;
-class bqGUIWindow;
-struct bqGUIState;
-class bqGUIElement;
-class bqGUICommon;
-class bqGUIButton;
-enum class bqGUIDefaultFont;
-class bqGUITextEditor;
-class bqTriangle;
-class bqSprite;
-class bqAabb;
-class bqCursor;
-enum class bqCursorType : uint32_t;
+	HCURSOR m_handle = 0;
+};
 
 #endif
-

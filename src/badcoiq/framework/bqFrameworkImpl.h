@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/input/bqInput.h"
 #include "badcoiq/containers/bqArray.h"
 #include "badcoiq/GUI/bqGUI.h"
+#include "badcoiq/system/bqCursor.h"
 #include <vector>
 
 class bqFrameworkImpl
@@ -90,6 +91,10 @@ public:
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_slider = 0;
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_staticText = 0;
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_window = 0;
+
+	bqCursor* m_defaultCursors[(uint32_t)bqCursorType::_count];
+	bqCursor* m_activeCursor = 0;
+	void _initDefaultCursors();
 };
 
 

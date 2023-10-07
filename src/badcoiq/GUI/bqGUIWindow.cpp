@@ -220,39 +220,45 @@ void bqGUIWindow::Rebuild()
 		m_titlebarRect.z = m_baseRect.z;
 		m_titlebarRect.w = m_titlebarRect.y + m_titlebarHeight;
 
+		auto rectForBorder = m_titlebarRect;
+
+		if (m_windowFlagsInternal & windowFlagInternal_isExpand)
+			rectForBorder = m_baseRect;
+
 		// вычисление рамки перед m_baseRect.y += m_titlebarHeight;
-		m_borderRectLeft.x = m_baseRect.x;
-		m_borderRectLeft.y = m_baseRect.y;
+		m_borderRectLeft.x = rectForBorder.x;
+		m_borderRectLeft.y = rectForBorder.y;
 		m_borderRectLeft.z = m_borderRectLeft.x + m_borderSize;
-		m_borderRectLeft.w = m_baseRect.w;
-		m_borderRectTop.x = m_baseRect.x;
-		m_borderRectTop.y = m_baseRect.y;
-		m_borderRectTop.z = m_baseRect.z;
-		m_borderRectTop.w = m_baseRect.y + m_borderSize;
-		m_borderRectRight.x = m_baseRect.z - m_borderSize;
-		m_borderRectRight.y = m_baseRect.y;
-		m_borderRectRight.z = m_baseRect.z;
-		m_borderRectRight.w = m_baseRect.w;
-		m_borderRectBottom.x = m_baseRect.x;
-		m_borderRectBottom.y = m_baseRect.w - m_borderSize;
-		m_borderRectBottom.z = m_baseRect.z;
-		m_borderRectBottom.w = m_baseRect.w;
-		m_borderRectLeftTop.x = m_baseRect.x;
-		m_borderRectLeftTop.y = m_baseRect.y;
+		m_borderRectLeft.w = rectForBorder.w;
+		m_borderRectTop.x = rectForBorder.x;
+		m_borderRectTop.y = rectForBorder.y;
+		m_borderRectTop.z = rectForBorder.z;
+		m_borderRectTop.w = rectForBorder.y + m_borderSize;
+		m_borderRectRight.x = rectForBorder.z - m_borderSize;
+		m_borderRectRight.y = rectForBorder.y;
+		m_borderRectRight.z = rectForBorder.z;
+		m_borderRectRight.w = rectForBorder.w;
+		m_borderRectBottom.x = rectForBorder.x;
+		m_borderRectBottom.y = rectForBorder.w - m_borderSize;
+		m_borderRectBottom.z = rectForBorder.z;
+		m_borderRectBottom.w = rectForBorder.w;
+		m_borderRectLeftTop.x = rectForBorder.x;
+		m_borderRectLeftTop.y = rectForBorder.y;
 		m_borderRectLeftTop.z = m_borderRectLeftTop.x + m_borderSize + m_borderSize;
 		m_borderRectLeftTop.w = m_borderRectLeftTop.y + m_borderSize + m_borderSize;
-		m_borderRectLeftBottom.x = m_baseRect.x;
-		m_borderRectLeftBottom.y = m_baseRect.w - m_borderSize - m_borderSize;
+		m_borderRectLeftBottom.x = rectForBorder.x;
+		m_borderRectLeftBottom.y = rectForBorder.w - m_borderSize - m_borderSize;
 		m_borderRectLeftBottom.z = m_borderRectLeftBottom.x + m_borderSize + m_borderSize;
-		m_borderRectLeftBottom.w = m_baseRect.w;
-		m_borderRectRightTop.x = m_baseRect.z - m_borderSize - m_borderSize;
-		m_borderRectRightTop.y = m_baseRect.y;
-		m_borderRectRightTop.z = m_baseRect.z;
+		m_borderRectLeftBottom.w = rectForBorder.w;
+		m_borderRectRightTop.x = rectForBorder.z - m_borderSize - m_borderSize;
+		m_borderRectRightTop.y = rectForBorder.y;
+		m_borderRectRightTop.z = rectForBorder.z;
 		m_borderRectRightTop.w = m_borderRectRightTop.y + m_borderSize + m_borderSize;
-		m_borderRectRightBottom.x = m_baseRect.z - m_borderSize - m_borderSize;
-		m_borderRectRightBottom.y = m_baseRect.w - m_borderSize - m_borderSize;
-		m_borderRectRightBottom.z = m_baseRect.z;
-		m_borderRectRightBottom.w = m_baseRect.w;
+		m_borderRectRightBottom.x = rectForBorder.z - m_borderSize - m_borderSize;
+		m_borderRectRightBottom.y = rectForBorder.w - m_borderSize - m_borderSize;
+		m_borderRectRightBottom.z = rectForBorder.z;
+		m_borderRectRightBottom.w = rectForBorder.w;
+		
 
 		m_baseRect.y += m_titlebarHeight; // m_clipRect и m_activeRect зависят от m_baseRect
 		                                  // пусть m_clipRect m_activeRect находится выше данного блока
@@ -341,6 +347,8 @@ void bqGUIWindow::Update()
 		topIndent += (int)m_titlebarHeight;
 	}
 
+	bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::Arrow));
+
 	if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_activeRect))
 	{	
 		g_framework->m_GUIState.m_windowUnderCursor = this;
@@ -365,41 +373,50 @@ void bqGUIWindow::Update()
 			   else
 				   m_windowCursorInfo = CursorInfo_titlebar;
 		   }
-		
+
+
 		   // пусть рамка будет только когда включен titlebar
 		   if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectLeft))
 		   {
 			   m_windowCursorInfo = CursorInfo_resizeL;
+			   bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeWE));
 		   }
 		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectTop))
 		   {
 			   m_windowCursorInfo = CursorInfo_resizeT;
+			   bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNS));
 		   }
 		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectRight))
 		   {
 			   m_windowCursorInfo = CursorInfo_resizeR;
+			   bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeWE));
 		   }
 		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectBottom))
 		   {
 			   m_windowCursorInfo = CursorInfo_resizeB;
+			   bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNS));
 		   }
 		   
 		   // углы имеют приоритет. для этого отдельная группа if else
 		   if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectLeftTop))
 		   {
 			   m_windowCursorInfo = CursorInfo_resizeLT;
+			   bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNWSE));
 		   }
 		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectRightTop))
 		   {
 			   m_windowCursorInfo = CursorInfo_resizeRT;
+			   bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNESW));
 		   }
 		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectLeftBottom))
 		   {
 			   m_windowCursorInfo = CursorInfo_resizeLB;
+			   bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNESW));
 		   }
 		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectRightBottom))
 		   {
 			   m_windowCursorInfo = CursorInfo_resizeRB;
+			   bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNWSE));
 		   }
 	   }
 	}
@@ -514,6 +531,7 @@ void bqGUIWindow::Update()
 				}
 				else
 					Expand();
+				needRebuild = true;
 			}
 		}
 	}
@@ -564,7 +582,7 @@ void bqGUIWindow::Update()
 			}
 		}
 		
-		if (m_windowFlagsInternal & windowFlagInternal_resize)
+		if ((m_windowFlagsInternal & windowFlagInternal_resize))
 		{
 			if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBHOLD)
 			{
@@ -573,45 +591,67 @@ void bqGUIWindow::Update()
 				if (m_windowFlagsInternal & windowFlagInternal_resizeL)
 				{
 					_resizeL();
+					bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeWE));
 				}
 
 				if (m_windowFlagsInternal & windowFlagInternal_resizeR)
 				{
 					_resizeR();
+					bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeWE));
 				}
 
 				if (m_windowFlagsInternal & windowFlagInternal_resizeT)
 				{
-					_resizeT();
+					if((m_windowFlagsInternal & windowFlagInternal_isExpand))
+						_resizeT();
+					bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNS));
 				}
 
 				if (m_windowFlagsInternal & windowFlagInternal_resizeB)
 				{
-					_resizeB();
+					if ((m_windowFlagsInternal & windowFlagInternal_isExpand))
+						_resizeB();
+					bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNS));
 				}
 
 				if (m_windowFlagsInternal & windowFlagInternal_resizeLT)
 				{
-					_resizeL();
-					_resizeT();
+					if ((m_windowFlagsInternal & windowFlagInternal_isExpand))
+					{
+						_resizeL();
+						_resizeT();
+					}
+					bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNWSE));
 				}
 
 				if (m_windowFlagsInternal & windowFlagInternal_resizeRT)
 				{
-					_resizeR();
-					_resizeT();
+					if ((m_windowFlagsInternal & windowFlagInternal_isExpand))
+					{
+						_resizeR();
+						_resizeT();
+					}
+					bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNESW));
 				}
 
 				if (m_windowFlagsInternal & windowFlagInternal_resizeLB)
 				{
-					_resizeL();
-					_resizeB();
+					if ((m_windowFlagsInternal & windowFlagInternal_isExpand))
+					{
+						_resizeL();
+						_resizeB();
+					}
+					bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNESW));
 				}
 
 				if (m_windowFlagsInternal & windowFlagInternal_resizeRB)
 				{
-					_resizeR();
-					_resizeB();
+					if ((m_windowFlagsInternal & windowFlagInternal_isExpand))
+					{
+						_resizeR();
+						_resizeB();
+					}
+					bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::SizeNWSE));
 				}
 
 				needRebuild = true;
@@ -802,14 +842,14 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 			}
 		}
 
-		gs->DrawGUIRectangle(m_borderRectLeft, bq::ColorBlue, bq::ColorBlue, 0, 0);
+		/*gs->DrawGUIRectangle(m_borderRectLeft, bq::ColorBlue, bq::ColorBlue, 0, 0);
 		gs->DrawGUIRectangle(m_borderRectTop, bq::ColorRed, bq::ColorRed, 0, 0);
 		gs->DrawGUIRectangle(m_borderRectRight, bq::ColorGreenYellow, bq::ColorGreenYellow, 0, 0);
 		gs->DrawGUIRectangle(m_borderRectBottom, bq::ColorSeaGreen, bq::ColorSeaGreen, 0, 0);
 		gs->DrawGUIRectangle(m_borderRectLeftTop, bq::ColorDarkViolet, bq::ColorDarkViolet, 0, 0);
 		gs->DrawGUIRectangle(m_borderRectRightTop, bq::ColorFuchsia, bq::ColorFuchsia, 0, 0);
 		gs->DrawGUIRectangle(m_borderRectLeftBottom, bq::ColorGoldenRod, bq::ColorGoldenRod, 0, 0);
-		gs->DrawGUIRectangle(m_borderRectRightBottom, bq::ColorHotPink, bq::ColorHotPink, 0, 0);
+		gs->DrawGUIRectangle(m_borderRectRightBottom, bq::ColorHotPink, bq::ColorHotPink, 0, 0);*/
 	}
 
 	if(m_windowFlagsInternal & windowFlagInternal_isExpand)

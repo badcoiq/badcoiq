@@ -27,64 +27,40 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_FORWARD_H__
-#define __BQ_FORWARD_H__
+#ifndef __BQ_CURSOR_H__
+#define __BQ_CURSOR_H__
 
-class bqWindow;
-class bqWindowCallback;
+// Поку функционал только для изменения курсора внутри окна.
 
-template<typename T>
-class bqVec2_t;
-template<typename T>
-class bqVec3_t;
-template<typename T>
-class bqVec4_t;
-template<typename T>
-class bqMatrix4_t;
+enum class bqCursorType : uint32_t
+{
+	Arrow,
+	Cross,
+	Hand,
+	Help,
+	IBeam,
+	No,
+	Size,
+	SizeNESW,
+	SizeNS,
+	SizeNWSE,
+	SizeWE,
+	UpArrow,
+	Wait,
+	
+	_count
+};
 
-using bqVec2  = bqVec2_t<bqReal>;
-using bqVec2f = bqVec2_t<float>;
-using bqVec2i = bqVec2_t<int32_t>;
-using bqVec3  = bqVec3_t<bqReal>;
-using bqVec3f = bqVec3_t<float>;
-using bqVec3i = bqVec3_t<int32_t>;
-using bqVec4  = bqVec4_t<bqReal>;
-using bqVec4f = bqVec4_t<float>;
-using bqVec4i = bqVec4_t<int32_t>;
-using bqMat4  = bqMatrix4_t<bqReal>;
+class bqCursor
+{
+public:
+	bqCursor() {}
+	virtual ~bqCursor() {}
+	BQ_PLACEMENT_ALLOCATOR(bqCursor);
+	
+	virtual void* GetHandle() = 0;
+};
 
-class bqGS;
-class bqMaterial;
-class bqPolygonMeshPolygon;
-class bqMeshPolygonCreator;
-class bqPolygonMeshControlPoint;
-class bqGPUMesh;
-class bqMesh;
-class bqTexture;
-class bqColor;
-class bqImage;
-class bqImageLoader;
-class bqPolygonMesh;
-class bqMeshLoader;
-class bqMeshLoaderCallback;
-struct bqCompressionInfo;
-struct bqArchiveZipFile;
-class bqGUIFont;
-class bqGUIDrawTextCallback;
-enum class bqGUIStyleTheme;
-struct bqGUIStyle;
-class bqGUIWindow;
-struct bqGUIState;
-class bqGUIElement;
-class bqGUICommon;
-class bqGUIButton;
-enum class bqGUIDefaultFont;
-class bqGUITextEditor;
-class bqTriangle;
-class bqSprite;
-class bqAabb;
-class bqCursor;
-enum class bqCursorType : uint32_t;
 
 #endif
 
