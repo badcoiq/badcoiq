@@ -184,6 +184,8 @@ void _bqGUIWindow_RebuildElement(bqGUIElement* e)
 
 void bqGUIWindow::Rebuild()
 {
+
+
 	// вычисляю rects
 	m_baseRect.x = m_position.x;
 	m_baseRect.y = m_position.y;
@@ -218,6 +220,40 @@ void bqGUIWindow::Rebuild()
 		m_titlebarRect.z = m_baseRect.z;
 		m_titlebarRect.w = m_titlebarRect.y + m_titlebarHeight;
 
+		// вычисление рамки перед m_baseRect.y += m_titlebarHeight;
+		m_borderRectLeft.x = m_baseRect.x;
+		m_borderRectLeft.y = m_baseRect.y;
+		m_borderRectLeft.z = m_borderRectLeft.x + m_borderSize;
+		m_borderRectLeft.w = m_baseRect.w;
+		m_borderRectTop.x = m_baseRect.x;
+		m_borderRectTop.y = m_baseRect.y;
+		m_borderRectTop.z = m_baseRect.z;
+		m_borderRectTop.w = m_baseRect.y + m_borderSize;
+		m_borderRectRight.x = m_baseRect.z - m_borderSize;
+		m_borderRectRight.y = m_baseRect.y;
+		m_borderRectRight.z = m_baseRect.z;
+		m_borderRectRight.w = m_baseRect.w;
+		m_borderRectBottom.x = m_baseRect.x;
+		m_borderRectBottom.y = m_baseRect.w - m_borderSize;
+		m_borderRectBottom.z = m_baseRect.z;
+		m_borderRectBottom.w = m_baseRect.w;
+		m_borderRectLeftTop.x = m_baseRect.x;
+		m_borderRectLeftTop.y = m_baseRect.y;
+		m_borderRectLeftTop.z = m_borderRectLeftTop.x + m_borderSize + m_borderSize;
+		m_borderRectLeftTop.w = m_borderRectLeftTop.y + m_borderSize + m_borderSize;
+		m_borderRectLeftBottom.x = m_baseRect.x;
+		m_borderRectLeftBottom.y = m_baseRect.w - m_borderSize - m_borderSize;
+		m_borderRectLeftBottom.z = m_borderRectLeftBottom.x + m_borderSize + m_borderSize;
+		m_borderRectLeftBottom.w = m_baseRect.w;
+		m_borderRectRightTop.x = m_baseRect.z - m_borderSize - m_borderSize;
+		m_borderRectRightTop.y = m_baseRect.y;
+		m_borderRectRightTop.z = m_baseRect.z;
+		m_borderRectRightTop.w = m_borderRectRightTop.y + m_borderSize + m_borderSize;
+		m_borderRectRightBottom.x = m_baseRect.z - m_borderSize - m_borderSize;
+		m_borderRectRightBottom.y = m_baseRect.w - m_borderSize - m_borderSize;
+		m_borderRectRightBottom.z = m_baseRect.z;
+		m_borderRectRightBottom.w = m_baseRect.w;
+
 		m_baseRect.y += m_titlebarHeight; // m_clipRect и m_activeRect зависят от m_baseRect
 		                                  // пусть m_clipRect m_activeRect находится выше данного блока
 	
@@ -226,9 +262,9 @@ void bqGUIWindow::Rebuild()
 			auto g = m_icons->GetGlyphMap()[(uint32_t)bqGUIDefaultIconID::CloseWindow];
 			if (g)
 			{
-				m_closeButtonRect.x = m_titlebarRect.z - g->m_width;
+				m_closeButtonRect.x = m_titlebarRect.z - g->m_width - m_borderSize;
 				m_closeButtonRect.z = m_closeButtonRect.x + g->m_width;
-				m_closeButtonRect.y = m_titlebarRect.y;
+				m_closeButtonRect.y = m_titlebarRect.y + m_borderSize;
 				m_closeButtonRect.w = m_closeButtonRect.y + g->m_height;
 			}
 
@@ -242,13 +278,14 @@ void bqGUIWindow::Rebuild()
 			g = m_icons->GetGlyphMap()[iconid];
 			if(g)
 			{
-				m_collapseButtonRect.x = m_titlebarRect.x;
+				m_collapseButtonRect.x = m_titlebarRect.x + m_borderSize;
 				m_collapseButtonRect.z = m_collapseButtonRect.x + g->m_width;
-				m_collapseButtonRect.y = m_titlebarRect.y;
+				m_collapseButtonRect.y = m_titlebarRect.y + m_borderSize;
 				m_collapseButtonRect.w = m_collapseButtonRect.y + g->m_height;
 			}
-
 		}
+
+		
 	}
 
 	if (m_baseRect.x > m_baseRect.z)
@@ -298,6 +335,11 @@ void bqGUIWindow::Update()
 
 	// отступ сверху. Должен содержать высоту titlebar, возможно в будущем полосу меню и прочие вещи
 	int topIndent = 0;
+	if (m_windowFlags & windowFlag_withTitleBar)
+	{
+		// нужно чтобы topIndent определялся в том числе когда курсор вне m_activeRect
+		topIndent += (int)m_titlebarHeight;
+	}
 
 	if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_activeRect))
 	{	
@@ -310,8 +352,6 @@ void bqGUIWindow::Update()
 	// достаточно проверить по высоте
 	   if (m_windowFlags & windowFlag_withTitleBar)
 	   {
-		   topIndent += (int)m_titlebarHeight;
-
 		   if (g_framework->m_input.m_mousePosition.y < m_titlebarRect.w)
 		   {
 			   if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_closeButtonRect))
@@ -325,8 +365,43 @@ void bqGUIWindow::Update()
 			   else
 				   m_windowCursorInfo = CursorInfo_titlebar;
 		   }
+		
+		   // пусть рамка будет только когда включен titlebar
+		   if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectLeft))
+		   {
+			   m_windowCursorInfo = CursorInfo_resizeL;
+		   }
+		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectTop))
+		   {
+			   m_windowCursorInfo = CursorInfo_resizeT;
+		   }
+		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectRight))
+		   {
+			   m_windowCursorInfo = CursorInfo_resizeR;
+		   }
+		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectBottom))
+		   {
+			   m_windowCursorInfo = CursorInfo_resizeB;
+		   }
+		   
+		   // углы имеют приоритет. для этого отдельная группа if else
+		   if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectLeftTop))
+		   {
+			   m_windowCursorInfo = CursorInfo_resizeLT;
+		   }
+		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectRightTop))
+		   {
+			   m_windowCursorInfo = CursorInfo_resizeRT;
+		   }
+		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectLeftBottom))
+		   {
+			   m_windowCursorInfo = CursorInfo_resizeLB;
+		   }
+		   else if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_borderRectRightBottom))
+		   {
+			   m_windowCursorInfo = CursorInfo_resizeRB;
+		   }
 	   }
-	// остальные CursorInfo будут найдены позже 
 	}
 
 	static float posX = 0;
@@ -350,7 +425,6 @@ void bqGUIWindow::Update()
 				// устанавливаем флаг только если это окно можно перемещать
 				if(m_windowFlags & windowFlag_canMove)
 					m_windowFlagsInternal |= windowFlagInternal_isMove;
-
 
 				posX = (float)m_position.x;
 				posY = (float)m_position.y;
@@ -392,18 +466,7 @@ void bqGUIWindow::Update()
 
 	}
 
-	// надо передвинуть окно если оно за пределами системного окна
-	if (m_position.x + m_size.x < 30)
-		m_position.x += 30 - (m_position.x + m_size.x);
-
-	if (m_position.x > m_systemWindow->GetCurrentSize()->x - 30)
-		m_position.x = (float)(m_systemWindow->GetCurrentSize()->x - 30);
-
-	if (m_position.y < 0)
-		m_position.y = 0;
-
-	if (m_position.y > m_systemWindow->GetCurrentSize()->y - topIndent)
-		m_position.y = (float)(m_systemWindow->GetCurrentSize()->y - topIndent);
+	//printf("%f %f [%i]\n", m_position.x, m_position.y, topIndent);
 
 	// только если есть кнопка закрытия
 	if (m_windowFlags & windowFlag_withCloseButton)
@@ -454,13 +517,192 @@ void bqGUIWindow::Update()
 			}
 		}
 	}
+
+	if (m_windowFlags & windowFlag_canResize)
+	{
+		if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBDOWN)
+		{
+			if (m_windowCursorInfo == CursorInfo_resizeL)
+			{
+				m_windowFlagsInternal |= windowFlagInternal_resize;
+				m_windowFlagsInternal |= windowFlagInternal_resizeL;
+			}
+			else if (m_windowCursorInfo == CursorInfo_resizeT)
+			{
+				m_windowFlagsInternal |= windowFlagInternal_resize;
+				m_windowFlagsInternal |= windowFlagInternal_resizeT;
+			}
+			else if (m_windowCursorInfo == CursorInfo_resizeR)
+			{
+				m_windowFlagsInternal |= windowFlagInternal_resize;
+				m_windowFlagsInternal |= windowFlagInternal_resizeR;
+			}
+			else if (m_windowCursorInfo == CursorInfo_resizeB)
+			{
+				m_windowFlagsInternal |= windowFlagInternal_resize;
+				m_windowFlagsInternal |= windowFlagInternal_resizeB;
+			}
+			else if (m_windowCursorInfo == CursorInfo_resizeLT)
+			{
+				m_windowFlagsInternal |= windowFlagInternal_resize;
+				m_windowFlagsInternal |= windowFlagInternal_resizeLT;
+			}
+			else if (m_windowCursorInfo == CursorInfo_resizeRT)
+			{
+				m_windowFlagsInternal |= windowFlagInternal_resize;
+				m_windowFlagsInternal |= windowFlagInternal_resizeRT;
+			}
+			else if (m_windowCursorInfo == CursorInfo_resizeLB)
+			{
+				m_windowFlagsInternal |= windowFlagInternal_resize;
+				m_windowFlagsInternal |= windowFlagInternal_resizeLB;
+			}
+			else if (m_windowCursorInfo == CursorInfo_resizeRB)
+			{
+				m_windowFlagsInternal |= windowFlagInternal_resize;
+				m_windowFlagsInternal |= windowFlagInternal_resizeRB;
+			}
+		}
+		
+		if (m_windowFlagsInternal & windowFlagInternal_resize)
+		{
+			if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBHOLD)
+			{
+			//	posXlerp += g_framework->m_input.m_mouseMoveDelta.x;
+			
+				if (m_windowFlagsInternal & windowFlagInternal_resizeL)
+				{
+					_resizeL();
+				}
+
+				if (m_windowFlagsInternal & windowFlagInternal_resizeR)
+				{
+					_resizeR();
+				}
+
+				if (m_windowFlagsInternal & windowFlagInternal_resizeT)
+				{
+					_resizeT();
+				}
+
+				if (m_windowFlagsInternal & windowFlagInternal_resizeB)
+				{
+					_resizeB();
+				}
+
+				if (m_windowFlagsInternal & windowFlagInternal_resizeLT)
+				{
+					_resizeL();
+					_resizeT();
+				}
+
+				if (m_windowFlagsInternal & windowFlagInternal_resizeRT)
+				{
+					_resizeR();
+					_resizeT();
+				}
+
+				if (m_windowFlagsInternal & windowFlagInternal_resizeLB)
+				{
+					_resizeL();
+					_resizeB();
+				}
+
+				if (m_windowFlagsInternal & windowFlagInternal_resizeRB)
+				{
+					_resizeR();
+					_resizeB();
+				}
+
+				needRebuild = true;
+			}
+		}
+
+		if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBUP)
+		{
+			if (m_windowFlagsInternal & windowFlagInternal_resize)
+			{
+				// снять все resize флаги
+				m_windowFlagsInternal &= ~0xFF800000;
+			}
+		}
+	}
 	
+	// надо передвинуть окно если оно за пределами системного окна
+	if (m_position.x + m_size.x < 30)
+		m_position.x += 30 - (m_position.x + m_size.x);
+
+	if (m_position.x > m_systemWindow->GetCurrentSize()->x - 30)
+		m_position.x = (float)(m_systemWindow->GetCurrentSize()->x - 30);
+
+	if (m_position.y < 0)
+		m_position.y = 0;
+
+	if (m_position.y >= m_systemWindow->GetCurrentSize()->y - topIndent)
+		m_position.y = (float)(m_systemWindow->GetCurrentSize()->y - topIndent);
+
 	if(needRebuild)
 		Rebuild();
 
 	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
 	{	
 		_bqGUIWindow_UpdateElement(m_rootElement);
+	}
+}
+
+void bqGUIWindow::_resizeL()
+{
+	float oldPos = m_position.x;
+	float oldSz = m_size.x;
+
+	m_position.x += g_framework->m_input.m_mouseMoveDelta.x;
+	m_size.x -= g_framework->m_input.m_mouseMoveDelta.x;
+
+	if (m_size.x < 30.f)
+	{
+		m_position.x = oldPos;
+		m_size.x = oldSz;
+	}
+}
+
+void bqGUIWindow::_resizeT()
+{
+	float oldPos = m_position.y;
+	float oldSz = m_size.y;
+
+	m_position.y += g_framework->m_input.m_mouseMoveDelta.y;
+	m_size.y -= g_framework->m_input.m_mouseMoveDelta.y;
+
+	if (m_size.y < 30.f)
+	{
+		m_position.y = oldPos;
+		m_size.y = oldSz;
+	}
+	
+	if (m_position.y < 0)
+	{
+		m_position.y = oldPos;
+		m_size.y = oldSz;
+	}
+}
+
+void bqGUIWindow::_resizeR()
+{
+	float oldSz = m_size.x;
+	m_size.x += g_framework->m_input.m_mouseMoveDelta.x;
+	if (m_size.x < 30.f)
+	{
+		m_size.x = oldSz;
+	}
+}
+
+void bqGUIWindow::_resizeB()
+{
+	float oldSz = m_size.y;
+	m_size.y += g_framework->m_input.m_mouseMoveDelta.y;
+	if (m_size.y < 30.f)
+	{
+		m_size.y = oldSz;
 	}
 }
 
@@ -471,7 +713,7 @@ void _bqGUIWindow_DrawElement(bqGS* gs, bqGUIElement* e, float dt)
 {
 	if (e->IsVisible())
 	{
-		if ((e->m_clipRect.x < e->m_clipRect.z) && (e->m_clipRect.y < e->m_clipRect.w))
+		if ((e->m_clipRect.x < e->m_clipRect.z) && (e->m_clipRect.y < e->m_clipRect.w)) // непонимаю это
 			e->Draw(gs, dt);
 
 		if (e->GetChildren()->m_head)
@@ -495,8 +737,10 @@ void _bqGUIWindow_DrawElement(bqGS* gs, bqGUIElement* e, float dt)
 
 void bqGUIWindow::Draw(bqGS* gs, float dt)
 {
+	gs->SetScissorRect(m_clipRect);
+
 	if (IsDrawBG() && (m_windowFlagsInternal & windowFlagInternal_isExpand))
-{
+	{
 		gs->DrawGUIRectangle(m_baseRect, m_style->m_windowActiveBGColor1, m_style->m_windowActiveBGColor2, 0, 0);
 	}
 
@@ -558,13 +802,25 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 			}
 		}
 
-
+		gs->DrawGUIRectangle(m_borderRectLeft, bq::ColorBlue, bq::ColorBlue, 0, 0);
+		gs->DrawGUIRectangle(m_borderRectTop, bq::ColorRed, bq::ColorRed, 0, 0);
+		gs->DrawGUIRectangle(m_borderRectRight, bq::ColorGreenYellow, bq::ColorGreenYellow, 0, 0);
+		gs->DrawGUIRectangle(m_borderRectBottom, bq::ColorSeaGreen, bq::ColorSeaGreen, 0, 0);
+		gs->DrawGUIRectangle(m_borderRectLeftTop, bq::ColorDarkViolet, bq::ColorDarkViolet, 0, 0);
+		gs->DrawGUIRectangle(m_borderRectRightTop, bq::ColorFuchsia, bq::ColorFuchsia, 0, 0);
+		gs->DrawGUIRectangle(m_borderRectLeftBottom, bq::ColorGoldenRod, bq::ColorGoldenRod, 0, 0);
+		gs->DrawGUIRectangle(m_borderRectRightBottom, bq::ColorHotPink, bq::ColorHotPink, 0, 0);
 	}
 
 	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
 	{
 		_bqGUIWindow_DrawElement(gs, m_rootElement, dt);
 	}
+
+	bqVec4f cl;
+	cl.z = (float)m_systemWindow->GetCurrentSize()->x;
+	cl.w = (float)m_systemWindow->GetCurrentSize()->y;
+	gs->SetScissorRect(cl);
 }
 
 void bqGUIWindow::Expand()

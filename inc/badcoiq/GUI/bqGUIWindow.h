@@ -97,17 +97,68 @@ private:
 	bqString m_title;
 	bqVec4f m_titlebarRect;
 	bqVec4f m_closeButtonRect;
-bqVec4f m_collapseButtonRect;
+	bqVec4f m_collapseButtonRect;
 
 	enum
 	{
 		windowFlagInternal_isMove = 0x1,
 		windowFlagInternal_isExpand = 0x2,
 		windowFlagInternal_closeBtn = 0x4, // когда нажимается кнопка для закрытия, нужно запонить первый щёлк мышки
+		windowFlagInternal_reserved1 = 0x8,
+		windowFlagInternal_reserved2 = 0x10,
+		windowFlagInternal_reserved3 = 0x20,
+		windowFlagInternal_reserved4 = 0x40,
+		windowFlagInternal_reserved5 = 0x80,
+		windowFlagInternal_reserved6 = 0x100,
+		windowFlagInternal_reserved7 = 0x200,
+		windowFlagInternal_reserved8 = 0x400,
+		windowFlagInternal_reserved9 = 0x800,
+		windowFlagInternal_reserved10 = 0x1000,
+		windowFlagInternal_reserved11 = 0x2000,
+		windowFlagInternal_reserved12 = 0x4000,
+		windowFlagInternal_reserved13 = 0x8000,
+		windowFlagInternal_reserved14 = 0x10000,
+		windowFlagInternal_reserved15 = 0x20000,
+		windowFlagInternal_reserved16 = 0x40000,
+		windowFlagInternal_reserved17 = 0x80000,
+		windowFlagInternal_reserved18 = 0x100000,
+		windowFlagInternal_reserved19 = 0x200000,
+		windowFlagInternal_reserved20 = 0x400000,
+
+		windowFlagInternal_resize = 0x800000,
+		windowFlagInternal_resizeB = 0x1000000,   // пусть флаги будут с конца
+		windowFlagInternal_resizeR = 0x2000000,   // будет проще проверять if(m_windowFlagsInternal > windowFlagInternal_resize)
+		windowFlagInternal_resizeT = 0x4000000,
+		windowFlagInternal_resizeL = 0x8000000,
+		windowFlagInternal_resizeRB = 0x10000000,
+		windowFlagInternal_resizeRT = 0x20000000,
+		windowFlagInternal_resizeLB = 0x40000000,
+		windowFlagInternal_resizeLT = 0x80000000,
 	};
 	uint32_t m_windowFlagsInternal = 0;
 
+	void _resizeL();
+	void _resizeT();
+	void _resizeR();
+	void _resizeB();
+
 	bqWindow* m_systemWindow = 0;
+	
+	// пока лишь используется как отступ для иконок на titlebar
+	// и для определения попал ли курсор на рамку, которой нет.
+	float m_borderSize = 3.f;
+	// можно добавить прямоугольные области для рамки. почему бы и нет?
+	// так будет проще определять куда вошёл курсор
+	// + возможно можно будет использовать картинки для рисования рамки
+	bqVec4f m_borderRectLeft;
+	bqVec4f m_borderRectTop;
+	bqVec4f m_borderRectRight;
+	bqVec4f m_borderRectBottom;
+	bqVec4f m_borderRectLeftTop;
+	bqVec4f m_borderRectRightTop;
+	bqVec4f m_borderRectLeftBottom;
+	bqVec4f m_borderRectRightBottom;
+
 
 public:
 	bqGUIWindow(const bqVec2f& position, const bqVec2f& size);
