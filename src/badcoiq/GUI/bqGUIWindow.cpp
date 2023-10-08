@@ -851,7 +851,7 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 		gs->DrawGUIRectangle(m_borderRectLeftBottom, bq::ColorGoldenRod, bq::ColorGoldenRod, 0, 0);
 		gs->DrawGUIRectangle(m_borderRectRightBottom, bq::ColorHotPink, bq::ColorHotPink, 0, 0);*/
 	}
-
+	
 	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
 	{
 		_bqGUIWindow_DrawElement(gs, m_rootElement, dt);

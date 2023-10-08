@@ -30,9 +30,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_GUISCRLBAR_H__
 #define __BQ_GUISCRLBAR_H__
 
+// сам по себе этот элемент должен представлять ползунок, вертикальный или коризонтальный
+// как bqGUISlider. Но здесь я вижу bqGUIScrollbar чуть иначе чем слайдер.
+// У bqGUIScrollbar должно быть значение. Это значение будет брать окно для значения m_scroll
+//    таким образом можно будет прикрутить скролбар к окну.
 class bqGUIScrollbar : public bqGUIElement
 {
-//	bqVec4f m_
+	bqVec4f m_controlRect; // та самая часть за которую тянем
 public:
 	bqGUIScrollbar(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIScrollbar();
@@ -48,6 +52,25 @@ public:
 		//type_horizontal // реализуй меня
 	};
 	uint32_t m_type = type_vertical;
+
+	// Текущее значение и максимальное.
+	// Отрицательное быть не может (думаю что не нужно).
+	// При изменении этих значений надо перестроить m_controlRect
+	// Для этого надо вызвать Rebuild()
+	// Если прикрутить ползунок к текстовому редактору, то например
+	//   при увеличении количества строк, скорее всего нужно будет
+	//   увеличить значение m_maxValue. Так-же должны быть какие-то лимиты,
+	//    по крайней мере лимит на m_controlRect, чтобы он не стал слишком маленьким.
+	// 
+	// Если, сделать скролбар со значениями по умолчанию, то:
+	//   высоту m_buildRect надо поделить на m_maxValue
+	//   получим значение - на сколько "передвигать" ползунок за единицу в m_value
+	float m_value = 0.f;
+	float m_maxValue = 100.f;
+
+	// чтобы ползунок не занимал всю широту фона, надо его уменьшить
+	// отступы left top right
+	bqVec3f m_controlRectIndent = bqVec3f(1.f, 1.f, 1.f);
 };
 
 #endif

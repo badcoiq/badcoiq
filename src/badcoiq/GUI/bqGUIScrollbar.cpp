@@ -51,6 +51,30 @@ void bqGUIScrollbar::Rebuild()
 {
 	m_textDrawCallback->m_element = this;
 	bqGUIElement::Rebuild();
+
+	float size = 0.f;
+	
+	if(m_type == type_vertical)
+		size = m_buildRect.w - m_buildRect.y;
+
+	if (size == 0.f)
+		size = 1.f;
+
+	if (m_maxValue == 0.f)
+		m_maxValue = 1.f;
+
+	float v = size / m_maxValue;
+
+	bqGUIElement* p = (bqGUIElement*)m_parent;
+	//printf("%f p[%f]\n", m_buildRect.x, p->m_buildRect.x);
+
+	m_controlRect.x = m_buildRect.x + m_controlRectIndent.x;
+	m_controlRect.y = m_buildRect.y + m_controlRectIndent.y;
+	m_controlRect.z = m_buildRect.z - m_controlRectIndent.z;
+	m_controlRect.w = m_controlRect.y + 30.f;
+
+	m_controlRect.y += v * m_value;
+	m_controlRect.w += v * m_value;
 }
 
 void bqGUIScrollbar::Update()
@@ -62,8 +86,10 @@ void bqGUIScrollbar::Draw(bqGS* gs, float dt)
 {
 	gs->SetScissorRect(m_clipRect);
 	if (IsDrawBG())
-		gs->DrawGUIRectangle(m_buildRect, m_style->m_staticTextBGColor, m_style->m_staticTextBGColor, 0, 0);
+		gs->DrawGUIRectangle(m_buildRect, m_style->m_scrollbarBGColor, m_style->m_scrollbarBGColor, 0, 0);
 	m_textDrawCallback->m_element = this;
+
+	gs->DrawGUIRectangle(m_controlRect, m_style->m_scrollbarControlColor, m_style->m_scrollbarControlColor, 0, 0);
 }
 
 

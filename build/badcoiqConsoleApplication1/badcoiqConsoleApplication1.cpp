@@ -207,6 +207,17 @@ public:
     virtual ~MySlider() {}
 };
 
+class TestGUIScrollbar : public bqGUIScrollbar
+{
+public:
+    TestGUIScrollbar(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+        :
+        bqGUIScrollbar(w, position, size)
+    {}
+    virtual ~TestGUIScrollbar() {}
+    BQ_PLACEMENT_ALLOCATOR(TestGUIScrollbar);
+};
+
 int main()
 {
 
@@ -266,6 +277,9 @@ int main()
                 tdcb.SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
 
                 auto guiWindow = bqFramework::SummonGUIWindow(window, bqVec2f(100.f, 100.f), bqVec2f(300.f));
+                guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withTitleBar;
+                guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canMove;
+                guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canResize;
                 MyButton* btn = new MyButton(guiWindow, bqVec2f(0.f, 0.f), bqVec2f(50.f, 420.f));
                 MyCheckBox* chckbx = new MyCheckBox(guiWindow, bqVec2f(60.f, 0.f), bqVec2f(100.f, 20.f));
                 chckbx->SetText(U"Use thing");
@@ -309,6 +323,9 @@ int main()
                 lstbx->AddItem(U"Item1k", 0, 0);
                 MySlider* sld = new MySlider(guiWindow, bqVec2f(180.f, 100.f), bqVec2f(90.f, 30.f));
                 sld->m_morePrecise = true;
+                TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(guiWindow, bqVec2f(), bqVec2f(10.f, 40.f));
+                testScrollbar->m_alignment = bqGUIElement::Alignment::Left;
+                sld->m_alignment = bqGUIElement::Alignment::Center;
                 bqFramework::RebuildGUI();
 
                 while (g_run)

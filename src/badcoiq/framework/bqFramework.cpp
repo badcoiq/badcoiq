@@ -879,6 +879,9 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeLight.m_sliderAxisFillColor = bq::ColorBlue;
 	g_framework->m_themeLight.m_sliderControlColor = 0xD1D1D1;
 
+	g_framework->m_themeLight.m_scrollbarBGColor = bq::ColorBlue;
+	g_framework->m_themeLight.m_scrollbarControlColor = 0xD1D1D1;
+
 
 	g_framework->m_themeDark = g_framework->m_themeLight;
 }

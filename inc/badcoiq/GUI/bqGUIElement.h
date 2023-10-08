@@ -59,7 +59,7 @@ public:
 		RightBottom = Right | Bottom,
 		Center = Left | Top | Right | Bottom
 	};
-	Alignment m_alignment = Alignment::Center;
+	Alignment m_alignment = Alignment::LeftTop;
 
 	// Сделать этот элемент последним для рисования, первым в очереди на обработку мышкой.
 	// Типа переместить по верх остальных элементов

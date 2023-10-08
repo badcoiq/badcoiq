@@ -81,6 +81,16 @@ public:
 		return m_style;
 	}
 
+	virtual const bqVec2f& GetSize()
+	{
+		return m_size;
+	}
+
+	virtual const bqVec2f& GetPosition()
+	{
+		return m_position;
+	}
+
 	// Установить видимость. Если элемент не видим, то обработка и рисование потомков будет пропущено
 	virtual void SetVisible(bool v) {
 		if (v)

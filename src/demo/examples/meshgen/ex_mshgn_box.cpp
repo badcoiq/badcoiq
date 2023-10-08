@@ -28,6 +28,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../../DemoApp.h"
 
+class TestGUIScrollbar : public bqGUIScrollbar
+{
+public:
+	TestGUIScrollbar(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+		:
+		bqGUIScrollbar(w, position, size)
+	{}
+
+	virtual ~TestGUIScrollbar() {}
+	BQ_PLACEMENT_ALLOCATOR(TestGUIScrollbar);
+
+
+};
 
 ExampleMshGnBox::ExampleMshGnBox(DemoApp* app)
 	:
@@ -86,6 +99,11 @@ bool ExampleMshGnBox::Init()
 	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCloseButton;
 	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCollapseButton;
 	m_guiWindow->SetTitle(U"Parameters");
+
+	TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(m_guiWindow, bqVec2f(), bqVec2f(10.f, 40.f));
+//	testScrollbar->m_alignment = bqGUIElement::Alignment::Center;
+//	testScrollbar->m_alignment = bqGUIElement::Alignment::RightTop;
+
 	bqFramework::RebuildGUI();
 
 	return true;

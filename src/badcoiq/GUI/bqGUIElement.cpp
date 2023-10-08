@@ -67,19 +67,29 @@ void bqGUIElement::Rebuild()
 		bqVec2f parentSize(parent->m_baseRect.z - parent->m_baseRect.x, parent->m_baseRect.w - parent->m_baseRect.y);
 		if (parentSize.x && parentSize.y)
 		{
-			float parentRectSizeX_1 = 1.f / parentSize.x;
-			float parentRectSizeY_1 = 1.f / parentSize.y;
+			// Это вычисление не верное
+			// Достаточно брать высоту и длинну, центр искать не надо
+		//	bqVec2f parentCreationCenter;
+		//	parentCreationCenter.x = parent->m_buildRectOnCreation.x + ((parent->m_buildRectOnCreation.z - parent->m_buildRectOnCreation.x) * 0.5f);
+		//	parentCreationCenter.y = parent->m_buildRectOnCreation.y + ((parent->m_buildRectOnCreation.w - parent->m_buildRectOnCreation.y) * 0.5f);
+		//	bqVec2f parentCurrentCenter;
+		//	parentCurrentCenter.x = parent->m_buildRect.x + ((parent->m_buildRect.z - parent->m_buildRect.x) * 0.5f);
+		//	parentCurrentCenter.y = parent->m_buildRect.y + ((parent->m_buildRect.w - parent->m_buildRect.y) * 0.5f);
+			//parentCurrentCenter.x = parent->m_position.x + (parent->m_size.x * 0.5f);
+			//parentCurrentCenter.y = parent->m_position.y + (parent->m_size.y * 0.5f);
+		//	float parentRectSizeDiff_X = parentCurrentCenter.x - parentCreationCenter.x;
+		//	float parentRectSizeDiff_Y = parentCurrentCenter.y - parentCreationCenter.y;
 
-			bqVec2f parentCreationCenter;
-			parentCreationCenter.x = parent->m_buildRectOnCreation.x + ((parent->m_buildRectOnCreation.z - parent->m_buildRectOnCreation.x) * 0.5f);
-			parentCreationCenter.y = parent->m_buildRectOnCreation.y + ((parent->m_buildRectOnCreation.w - parent->m_buildRectOnCreation.y) * 0.5f);
+			bqVec2f parentCrSz;
+			parentCrSz.x = parent->m_buildRectOnCreation.z - parent->m_buildRectOnCreation.x;
+			parentCrSz.y = parent->m_buildRectOnCreation.w - parent->m_buildRectOnCreation.y;
 
-			bqVec2f parentCurrentCenter;
-			parentCurrentCenter.x = parent->m_baseRect.x + ((parent->m_baseRect.z - parent->m_baseRect.x) * 0.5f);
-			parentCurrentCenter.y = parent->m_baseRect.y + ((parent->m_baseRect.w - parent->m_baseRect.y) * 0.5f);
+			bqVec2f parentCurSz;
+			parentCurSz.x = parent->m_buildRect.z - parent->m_buildRect.x;
+			parentCurSz.y = parent->m_buildRect.w - parent->m_buildRect.y;
 
-			float parentRectSizeDiff_X = parentCurrentCenter.x - parentCreationCenter.x;
-			float parentRectSizeDiff_Y = parentCurrentCenter.y - parentCreationCenter.y;
+			float parentRectSizeDiff_X = (parentCurSz.x - parentCrSz.x) * 0.5f;
+			float parentRectSizeDiff_Y = (parentCurSz.y - parentCrSz.y) * 0.5f;
 
 			// выравнивание
 			switch (m_alignment)

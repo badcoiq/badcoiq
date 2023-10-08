@@ -89,7 +89,10 @@ struct bqGUIStyle
 	bqColor m_staticTextBGColor;
 	bqColor m_staticTextTextColor;
 	bqGUIFont* m_staticTextFont = 0;
-	
+
+	bqColor m_scrollbarBGColor;
+	bqColor m_scrollbarControlColor;
+
 	bqColor m_pictureBoxBGColor;
 
 	bqColor m_listboxBGColor;
