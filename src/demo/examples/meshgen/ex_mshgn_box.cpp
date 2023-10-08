@@ -38,9 +38,12 @@ public:
 
 	virtual ~TestGUIScrollbar() {}
 	BQ_PLACEMENT_ALLOCATOR(TestGUIScrollbar);
-
-
 };
+
+void ExampleMshGnBox_WindowCallback::OnSizeChange(bqGUIWindow* w)
+{
+	m_scrollbar->SetSize(m_scrollbar->GetSize().x, w->GetSize().y - w->m_titlebarHeight);
+}
 
 ExampleMshGnBox::ExampleMshGnBox(DemoApp* app)
 	:
@@ -99,10 +102,15 @@ bool ExampleMshGnBox::Init()
 	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCloseButton;
 	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCollapseButton;
 	m_guiWindow->SetTitle(U"Parameters");
+	m_guiWindow->SetCallback(&m_guiWindowCallback);
 
-	TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(m_guiWindow, bqVec2f(), bqVec2f(10.f, 40.f));
-//	testScrollbar->m_alignment = bqGUIElement::Alignment::Center;
+	TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(m_guiWindow, bqVec2f(), bqVec2f(20.f, 200.f));
+	
+	m_guiWindowCallback.m_scrollbar = testScrollbar;
+	//	testScrollbar->m_alignment = bqGUIElement::Alignment::Center;
 //	testScrollbar->m_alignment = bqGUIElement::Alignment::RightTop;
+	//testScrollbar->m_valueMax = 3000.f;
+	testScrollbar->m_value = 95.f;
 
 	bqFramework::RebuildGUI();
 

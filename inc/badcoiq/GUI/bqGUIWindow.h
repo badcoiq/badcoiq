@@ -30,6 +30,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_GUIWINDOW_H__
 #define __BQ_GUIWINDOW_H__
 
+class bqGUIWindowCallback
+{
+public:
+	bqGUIWindowCallback() {}
+	virtual ~bqGUIWindowCallback() {}
+	virtual void OnSizeChange(bqGUIWindow*) {}
+};
+
 class bqGUIWindow : public bqGUICommon
 {
 	friend class bqFramework;
@@ -186,13 +194,15 @@ public:
 public:
 	bqGUIFont* OnFont(uint32_t r, char32_t);
 	bqColor* OnColor(uint32_t r, char32_t);
-
+	
 	void Activate();
 	void Deactivate();
 	void Expand();
 	void Collapse();
 
 	bqGUIFont* m_icons = 0;
+
+	void SetCallback(bqGUIWindowCallback* cb) { m_windowCallback = cb; }
 
 private:
 	bqGUIFont* _OnFont_active(uint32_t r, char32_t);
@@ -202,6 +212,8 @@ private:
 	
 	bqGUIFont* (bqGUIWindow::* m_onFont)(uint32_t, char32_t) = 0;
 	bqColor* (bqGUIWindow::* m_onColor)(uint32_t, char32_t) = 0;
+
+	bqGUIWindowCallback* m_windowCallback = 0;
 };
 
 

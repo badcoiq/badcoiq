@@ -29,6 +29,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _EXmshgnbox_H_
 #define _EXmshgnbox_H_
 
+class TestGUIScrollbar;
+class ExampleMshGnBox_WindowCallback : public bqGUIWindowCallback
+{
+public:
+	ExampleMshGnBox_WindowCallback() {}
+	virtual ~ExampleMshGnBox_WindowCallback() {}
+	virtual void OnSizeChange(bqGUIWindow*) override;
+
+	TestGUIScrollbar* m_scrollbar = 0;
+};
+
 class DemoExample;
 class DemoApp;
 class ExampleMshGnBox : public DemoExample
@@ -37,6 +48,7 @@ class ExampleMshGnBox : public DemoExample
 	bqGPUMesh* m_meshBox = 0;
 	bqMat4 m_worldBox, m_wvp;
 
+	ExampleMshGnBox_WindowCallback m_guiWindowCallback;
 	bqGUIWindow* m_guiWindow = 0;
 public:
 	ExampleMshGnBox(DemoApp*);

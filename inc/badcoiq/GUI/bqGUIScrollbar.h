@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqGUIScrollbar : public bqGUIElement
 {
 	bqVec4f m_controlRect; // та самая часть за которую тянем
+	float m_remainingPixels = 0.f;
 public:
 	bqGUIScrollbar(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIScrollbar();
@@ -45,6 +46,8 @@ public:
 	virtual void Rebuild() final;
 	virtual void Update() final;
 	virtual void Draw(bqGS* gs, float dt) final;
+
+	virtual void OnScroll() {}
 
 	enum
 	{
@@ -61,16 +64,23 @@ public:
 	//   при увеличении количества строк, скорее всего нужно будет
 	//   увеличить значение m_maxValue. Так-же должны быть какие-то лимиты,
 	//    по крайней мере лимит на m_controlRect, чтобы он не стал слишком маленьким.
-	// 
-	// Если, сделать скролбар со значениями по умолчанию, то:
-	//   высоту m_buildRect надо поделить на m_maxValue
-	//   получим значение - на сколько "передвигать" ползунок за единицу в m_value
-	float m_value = 0.f;
-	float m_maxValue = 100.f;
+	float m_value = 0.f;         // например текущая строка
+	float m_valueMax = 100.f;    // например общее количество строк
+	// чтобы настроить размер ползунка например как в текстовых редакторах или как в проводнике Windows
+	// нужно знать ещё количество видимых элементов. Пусть это будет переменная m_valueVisible
+	float m_valueVisible = 50.f; // например количество видимых строк
 
 	// чтобы ползунок не занимал всю широту фона, надо его уменьшить
 	// отступы left top right
-	bqVec3f m_controlRectIndent = bqVec3f(1.f, 1.f, 1.f);
+	bqVec3f m_controlRectIndent = bqVec3f(2.f, 1.f, 2.f);
+	float m_controlSizeMinimum = 17.f;
+
+	enum
+	{
+		scrollbarFlag_cursorInControl = 0x1,
+		scrollbarFlag_drag = 0x2
+	};
+	uint32_t m_scrollbarFlags = 0;
 };
 
 #endif

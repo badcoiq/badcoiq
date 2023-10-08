@@ -66,6 +66,9 @@ public:
 	virtual ~bqGUICommon();
 	BQ_PLACEMENT_ALLOCATOR(bqGUICommon);
 
+	void SetPosition(float x, float y);
+	void SetSize(float x, float y);
+
 	const bqVec4f& GetBuildRectOnCreation() { return m_buildRectOnCreation; }
 	void SetBuildRectOnCreation(const bqVec4f& r) { m_buildRectOnCreation = r; }
 

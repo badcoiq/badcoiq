@@ -34,15 +34,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
+void bqGUICommon_buildRectOnCreation(bqVec4f& buildRectOnCreation, const bqVec2f& position, const bqVec2f& size)
+{
+	buildRectOnCreation.x = position.x;
+	buildRectOnCreation.y = position.y;
+	buildRectOnCreation.z = position.x + size.x;
+	buildRectOnCreation.w = position.y + size.y;
+}
+
 // усановка позиции, размера и создание m_buildRectOnCreation
 bqGUICommon::bqGUICommon(const bqVec2f& position, const bqVec2f& size)
 {
 	m_position = position;
 	m_size = size;
-	m_buildRectOnCreation.x = position.x;
-	m_buildRectOnCreation.y = position.y;
-	m_buildRectOnCreation.z = position.x + size.x;
-	m_buildRectOnCreation.w = position.y + size.y;
+	bqGUICommon_buildRectOnCreation(m_buildRectOnCreation, m_position, m_size);
+}
+
+void bqGUICommon::SetPosition(float x, float y)
+{
+	m_position.x = x;
+	m_position.y = y;
+	bqGUICommon_buildRectOnCreation(m_buildRectOnCreation, m_position, m_size);
+}
+
+void bqGUICommon::SetSize(float x, float y)
+{
+	m_size.x = x;
+	m_size.y = y;
+	bqGUICommon_buildRectOnCreation(m_buildRectOnCreation, m_position, m_size);
 }
 
 bqGUICommon::~bqGUICommon() {}

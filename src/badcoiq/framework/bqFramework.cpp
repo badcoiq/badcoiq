@@ -881,7 +881,8 @@ void bqFrameworkImpl::_initGUIThemes()
 
 	g_framework->m_themeLight.m_scrollbarBGColor = bq::ColorBlue;
 	g_framework->m_themeLight.m_scrollbarControlColor = 0xD1D1D1;
-
+	g_framework->m_themeLight.m_scrollbarControlMouseHoverColor = 0xE7E7E7;
+	g_framework->m_themeLight.m_scrollbarControlDragColor = 0xE7E7E7;
 
 	g_framework->m_themeDark = g_framework->m_themeLight;
 }

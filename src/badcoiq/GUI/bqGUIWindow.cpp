@@ -703,6 +703,7 @@ void bqGUIWindow::_resizeL()
 		m_position.x = oldPos;
 		m_size.x = oldSz;
 	}
+	if (m_windowCallback)m_windowCallback->OnSizeChange(this);
 }
 
 void bqGUIWindow::_resizeT()
@@ -724,6 +725,7 @@ void bqGUIWindow::_resizeT()
 		m_position.y = oldPos;
 		m_size.y = oldSz;
 	}
+	if (m_windowCallback)m_windowCallback->OnSizeChange(this);
 }
 
 void bqGUIWindow::_resizeR()
@@ -734,6 +736,7 @@ void bqGUIWindow::_resizeR()
 	{
 		m_size.x = oldSz;
 	}
+	if (m_windowCallback)m_windowCallback->OnSizeChange(this);
 }
 
 void bqGUIWindow::_resizeB()
@@ -744,6 +747,7 @@ void bqGUIWindow::_resizeB()
 	{
 		m_size.y = oldSz;
 	}
+	if(m_windowCallback)m_windowCallback->OnSizeChange(this);
 }
 
 // рисование
@@ -872,3 +876,4 @@ void bqGUIWindow::Collapse()
 {
 	m_windowFlagsInternal &= ~windowFlagInternal_isExpand;
 }
+

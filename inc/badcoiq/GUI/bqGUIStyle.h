@@ -92,6 +92,8 @@ struct bqGUIStyle
 
 	bqColor m_scrollbarBGColor;
 	bqColor m_scrollbarControlColor;
+	bqColor m_scrollbarControlMouseHoverColor;
+	bqColor m_scrollbarControlDragColor;
 
 	bqColor m_pictureBoxBGColor;
 
