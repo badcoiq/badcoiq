@@ -26,36 +26,44 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_GUI_H__
-#define __BQ_GUI_H__
+#include "badcoiq.h"
 
-#include "badcoiq/GUI/bqGUIFont.h"
-#include "badcoiq/GUI/bqGUIText.h"
-#include "badcoiq/GUI/bqGUIStyle.h"
-#include "badcoiq/GUI/bqGUICommon.h"
-#include "badcoiq/GUI/bqGUIElement.h"
-#include "badcoiq/GUI/bqGUIRootElement.h"
-#include "badcoiq/GUI/bqGUIWindow.h"
+#include "badcoiq/GUI/bqGUI.h"
+#include "badcoiq/gs/bqGS.h"
+#include "badcoiq/input/bqInputEx.h"
 
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
-struct bqGUIState
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
+#include "bqGUIDefaultTextDrawCallbacks.h"
+
+bqGUIScrollbar::bqGUIScrollbar(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+	:
+	bqGUIElement::bqGUIElement(w, position, size)
 {
-	bqGUIWindow* m_windowUnderCursor = 0;
-	bqGUIWindow* m_activeWindow = 0;
-	bqGUITextEditor* m_activeTextEditor = 0;
-	bool m_scrollBlock = false;
-};
+	m_textDrawCallback = g_framework->m_defaultTextDrawCallback_staticText;
+}
 
-#include "badcoiq/GUI/bqGUIButton.h"
-#include "badcoiq/GUI/bqGUICheckRadioBox.h"
-#include "badcoiq/GUI/bqGUITextEditor.h"
-#include "badcoiq/GUI/bqGUIListBox.h"
-#include "badcoiq/GUI/bqGUISlider.h"
-#include "badcoiq/GUI/bqGUIStaticText.h"
-#include "badcoiq/GUI/bqGUIPictureBox.h"
-#include "badcoiq/GUI/bqGUIScrollbar.h"
+bqGUIScrollbar::~bqGUIScrollbar()
+{
+}
 
-#endif
+void bqGUIScrollbar::Rebuild()
+{
+	m_textDrawCallback->m_element = this;
+	bqGUIElement::Rebuild();
+}
+
+void bqGUIScrollbar::Update()
+{
+	bqGUIElement::Update();
+}
+
+void bqGUIScrollbar::Draw(bqGS* gs, float dt)
+{
+	gs->SetScissorRect(m_clipRect);
+	if (IsDrawBG())
+		gs->DrawGUIRectangle(m_buildRect, m_style->m_staticTextBGColor, m_style->m_staticTextBGColor, 0, 0);
+	m_textDrawCallback->m_element = this;
+}
+
 
