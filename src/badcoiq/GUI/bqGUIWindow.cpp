@@ -102,8 +102,11 @@ bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
 	m_onFont = &bqGUIWindow::_OnFont_active;
 	m_onColor = &bqGUIWindow::_OnColor_active;
 
+// думаю, обновлять значения скролбара нужно в методе Rebuild.
+// там же устанавливать видимость
 bqGUIWindowScrollbar* scrlbr = new bqGUIWindowScrollbar(this, bqVec2f(), bqVec2f());
 m_scrollbar = scrlbr;
+m_scrollbar->SetVisible(false);
 	Expand();
 }
 
@@ -207,6 +210,7 @@ void bqGUIWindow::Rebuild()
 	m_baseRect.w = m_baseRect.y + m_size.y;
 	
 	// "перестраиваю" root здесь
+... надо проверить...
 	m_rootElement->m_baseRect.x = m_baseRect.x;
 	m_rootElement->m_baseRect.y = m_baseRect.y;
 	m_rootElement->m_baseRect.z = m_baseRect.x + m_size.x;
@@ -319,6 +323,19 @@ void bqGUIWindow::Rebuild()
 
 	// потом перестраиваю другие элементы
 	_bqGUIWindow_RebuildElement(m_rootElement);
+
+// наверное обновлять скролл бар нужно после обновления всех элементов.
+// для скроллбара нужно знать content size окна
+m_scrollbar->m_valueMax = m_contentSize.y;
+m_scrollbar->m_valueVisible = GetSize().y;
+if(m_scrollbar->m_valueMax > m_scrollbar->m_valueVisible)
+{
+m_scrollbar->SetVisible(true);
+}
+else
+{
+m_scrollbar->SetVisible(false);
+}
 }
 
 // действия с вводом\реакция на мышь
