@@ -76,8 +76,17 @@ public:
 		windowFlag_withTitleBar = 0x4,
 		windowFlag_canMove = 0x8,
 		windowFlag_canResize = 0x10,
-		windowFlag_canDock = 0x20,
-		windowFlag_canToTop = 0x40,
+		windowFlag_canDock = 0x20, // на будущее
+
+// если я правильно помню
+// я добавил это для того
+// чтобы окно можно было разместить в
+// качестве фона. и кликая по этому окну,
+// оно не должно становится самым верхним
+// не понимаю названия windowFlag_canToTop
+// надо изменить 
+		windowFlag_disableToTop = 0x40, // надо реализовать 
+windowFlag_disableScrollbar = 0x80,
 	};
 
 	// нужно знать, где находится курсор
@@ -214,6 +223,11 @@ private:
 	bqColor* (bqGUIWindow::* m_onColor)(uint32_t, char32_t) = 0;
 
 	bqGUIWindowCallback* m_windowCallback = 0;
+
+bqGUIScrollbar* m_scrollbar = 0;
+
+public:
+bqGUIScrollbar* GetScrollbar(){ return m_scrollbar; }
 };
 
 
