@@ -85,6 +85,7 @@ class bqSprite;
 class bqAabb;
 class bqCursor;
 enum class bqCursorType : uint32_t;
+class bqGUIScrollbar;
 
 #endif
 
