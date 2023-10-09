@@ -64,6 +64,18 @@ bqColor* bqGUIWindowTextDrawCallback::OnColor(uint32_t r, char32_t c)
 	return m_window->OnColor(r, c);
 }
 
+class bqGUIWindowScrollbar : public bqGUIScrollbar
+{
+public:
+	bqGUIWindowScrollbar(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+		:
+		bqGUIScrollbar(w, position, size)
+	{}
+
+	virtual ~bqGUIWindowScrollbar() {}
+	BQ_PLACEMENT_ALLOCATOR(bqGUIWindowScrollbar);
+};
+
 bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
 	:
 	bqGUICommon(position, size)
@@ -90,6 +102,8 @@ bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
 	m_onFont = &bqGUIWindow::_OnFont_active;
 	m_onColor = &bqGUIWindow::_OnColor_active;
 
+bqGUIWindowScrollbar* scrlbr = new bqGUIWindowScrollbar(this, bqVec2f(), bqVec2f());
+m_scrollbar = scrlbr;
 	Expand();
 }
 
