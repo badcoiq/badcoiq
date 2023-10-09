@@ -98,7 +98,7 @@ void bqGUIScrollbar::Rebuild()
 			if (m_remainingPixels <= 0.f)
 				m_remainingPixels = 1.f;
 
-			printf("%f\n", m_remainingPixels);
+		//	printf("%f\n", m_remainingPixels);
 		}
 		
 		// теперь надо передвинуть m_controlRect используя текущее значение

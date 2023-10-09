@@ -48,6 +48,7 @@ bqGUICommon::bqGUICommon(const bqVec2f& position, const bqVec2f& size)
 	m_position = position;
 	m_size = size;
 	bqGUICommon_buildRectOnCreation(m_buildRectOnCreation, m_position, m_size);
+	m_baseRect = m_buildRectOnCreation;
 }
 
 void bqGUICommon::SetPosition(float x, float y)
@@ -55,6 +56,7 @@ void bqGUICommon::SetPosition(float x, float y)
 	m_position.x = x;
 	m_position.y = y;
 	bqGUICommon_buildRectOnCreation(m_buildRectOnCreation, m_position, m_size);
+	m_baseRect = m_buildRectOnCreation;
 }
 
 void bqGUICommon::SetSize(float x, float y)
@@ -62,6 +64,7 @@ void bqGUICommon::SetSize(float x, float y)
 	m_size.x = x;
 	m_size.y = y;
 	bqGUICommon_buildRectOnCreation(m_buildRectOnCreation, m_position, m_size);
+	m_baseRect = m_buildRectOnCreation;
 }
 
 bqGUICommon::~bqGUICommon() {}

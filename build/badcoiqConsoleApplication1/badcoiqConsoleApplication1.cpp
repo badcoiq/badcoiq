@@ -323,8 +323,8 @@ int main()
                 lstbx->AddItem(U"Item1k", 0, 0);
                 MySlider* sld = new MySlider(guiWindow, bqVec2f(180.f, 100.f), bqVec2f(90.f, 30.f));
                 sld->m_morePrecise = true;
-                TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(guiWindow, bqVec2f(), bqVec2f(10.f, 40.f));
-                testScrollbar->m_alignment = bqGUIElement::Alignment::Left;
+              /*  TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(guiWindow, bqVec2f(), bqVec2f(10.f, 40.f));
+                testScrollbar->m_alignment = bqGUIElement::Alignment::Left;*/
                 sld->m_alignment = bqGUIElement::Alignment::Center;
                 bqFramework::RebuildGUI();
 

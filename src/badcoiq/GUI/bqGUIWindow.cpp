@@ -102,11 +102,11 @@ bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
 	m_onFont = &bqGUIWindow::_OnFont_active;
 	m_onColor = &bqGUIWindow::_OnColor_active;
 
-// думаю, обновлять значения скролбара нужно в методе Rebuild.
-// там же устанавливать видимость
-bqGUIWindowScrollbar* scrlbr = new bqGUIWindowScrollbar(this, bqVec2f(), bqVec2f());
-m_scrollbar = scrlbr;
-m_scrollbar->SetVisible(false);
+	// думаю, обновлять значения скролбара нужно в методе Rebuild.
+	// там же устанавливать видимость
+	bqGUIWindowScrollbar* scrlbr = new bqGUIWindowScrollbar(this, bqVec2f(), bqVec2f(20.f, 0.f));
+	m_scrollbar = scrlbr;
+	m_scrollbar->SetVisible(false);
 	Expand();
 }
 
@@ -210,7 +210,8 @@ void bqGUIWindow::Rebuild()
 	m_baseRect.w = m_baseRect.y + m_size.y;
 	
 	// "перестраиваю" root здесь
-... надо проверить...
+    // ... надо проверить...
+	// возможно тут ненадо, так как реализовал перестроение в bqGUIRootElement::Rebuild()
 	m_rootElement->m_baseRect.x = m_baseRect.x;
 	m_rootElement->m_baseRect.y = m_baseRect.y;
 	m_rootElement->m_baseRect.z = m_baseRect.x + m_size.x;
@@ -319,23 +320,37 @@ void bqGUIWindow::Rebuild()
 
 	m_rootElement->m_clipRect = m_rootElement->m_baseRect;
 	m_rootElement->m_activeRect = m_rootElement->m_clipRect;
-
+	
 
 	// потом перестраиваю другие элементы
 	_bqGUIWindow_RebuildElement(m_rootElement);
-
-// наверное обновлять скролл бар нужно после обновления всех элементов.
-// для скроллбара нужно знать content size окна
-m_scrollbar->m_valueMax = m_contentSize.y;
-m_scrollbar->m_valueVisible = GetSize().y;
-if(m_scrollbar->m_valueMax > m_scrollbar->m_valueVisible)
-{
-m_scrollbar->SetVisible(true);
-}
-else
-{
-m_scrollbar->SetVisible(false);
-}
+	
+	//if (!(m_windowFlags & windowFlag_disableScrollbar))
+	{
+		// наверное обновлять скролл бар нужно после обновления всех элементов.
+		// для скроллбара нужно знать content size окна
+		m_scrollbar->m_valueMax = m_rootElement->m_contentSize.y;
+		m_scrollbar->m_valueVisible = GetSize().y;
+		if (m_scrollbar->m_valueMax > m_scrollbar->m_valueVisible)
+		{
+			m_scrollbar->SetVisible(true);
+		}
+		else
+		{
+			m_scrollbar->SetVisible(false);
+		}
+		m_scrollbar->SetVisible(true);
+		// так-же надо установить rects
+		m_scrollbar->SetPosition(
+			(m_rootElement->m_baseRect.z - m_rootElement->m_baseRect.x) - m_scrollbar->GetSize().x, 0.f);
+		m_scrollbar->SetSize(m_scrollbar->GetSize().x, m_rootElement->m_baseRect.w - m_rootElement->m_baseRect.y);
+		m_scrollbar->Rebuild();
+		... проблема в том что скролбар перестраивается не правильно
+			controlRect не перестраивается
+			Если сунуть вызов m_scrollbar->Rebuild(); ниже в Update
+			то всё будет окей, но вызываться будет каждый кадр.
+			Надо понять, почему там всё окей, а тут нет.
+	}
 }
 
 // действия с вводом\реакция на мышь
@@ -511,8 +526,8 @@ void bqGUIWindow::Update()
 		{
 			m_windowFlagsInternal ^= windowFlagInternal_isMove;
 		}
-
 	}
+
 
 	//printf("%f %f [%i]\n", m_position.x, m_position.y, topIndent);
 
@@ -712,8 +727,10 @@ void bqGUIWindow::Update()
 	if (m_position.y >= m_systemWindow->GetCurrentSize()->y - topIndent)
 		m_position.y = (float)(m_systemWindow->GetCurrentSize()->y - topIndent);
 
-	if(needRebuild)
+	if (needRebuild)
+	{
 		Rebuild();
+	}
 
 	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
 	{	
