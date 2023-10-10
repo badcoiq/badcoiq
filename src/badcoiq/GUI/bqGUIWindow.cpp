@@ -325,12 +325,21 @@ void bqGUIWindow::Rebuild()
 	// потом перестраиваю другие элементы
 	_bqGUIWindow_RebuildElement(m_rootElement);
 	
-	//if (!(m_windowFlags & windowFlag_disableScrollbar))
+	if (!(m_windowFlags & windowFlag_disableScrollbar))
 	{
 		// наверное обновлять скролл бар нужно после обновления всех элементов.
 		// для скроллбара нужно знать content size окна
+
+		...// Всё равно вычисление control rect не правильно
+		// это видно по поведению в badcoiqConsoleApplication1.exe
 		m_scrollbar->m_valueMax = m_rootElement->m_contentSize.y;
 		m_scrollbar->m_valueVisible = GetSize().y;
+		
+		if (m_windowFlags & windowFlag_withTitleBar)
+		{
+			m_scrollbar->m_valueVisible -= m_titlebarHeight;
+		}
+
 		if (m_scrollbar->m_valueMax > m_scrollbar->m_valueVisible)
 		{
 			m_scrollbar->SetVisible(true);
@@ -339,17 +348,25 @@ void bqGUIWindow::Rebuild()
 		{
 			m_scrollbar->SetVisible(false);
 		}
-		m_scrollbar->SetVisible(true);
+		//m_scrollbar->SetVisible(true);
 		// так-же надо установить rects
 		m_scrollbar->SetPosition(
 			(m_rootElement->m_baseRect.z - m_rootElement->m_baseRect.x) - m_scrollbar->GetSize().x, 0.f);
 		m_scrollbar->SetSize(m_scrollbar->GetSize().x, m_rootElement->m_baseRect.w - m_rootElement->m_baseRect.y);
 		m_scrollbar->Rebuild();
-		... проблема в том что скролбар перестраивается не правильно
+		
+		/*... проблема в том что скролбар перестраивается не правильно
 			controlRect не перестраивается
 			Если сунуть вызов m_scrollbar->Rebuild(); ниже в Update
 			то всё будет окей, но вызываться будет каждый кадр.
-			Надо понять, почему там всё окей, а тут нет.
+			Надо понять, почему там всё окей, а тут нет.*/
+		// проблема была в том что окно скроллится благодоря скроллу root элемента
+		// root элемент не вызывал Rebuild() окна
+		// Добавил проверку на m_scrollDelta. если не 0 то нужен Rebuild
+		// Думаю что так и нужно оставить, делать отдельный скроллинг для окна бесмысленно
+		//  изначально скроллинг был добавлен в GUI элемент из за идеи что многие элементы
+		//   скроллят свои "внутренности" сами. Если элемент нужно перестраивать в зависимости от скроллинга,
+		//   надо делать проверку, есть ли у родителя m_scrollDelta. Я не уверен на счёт прадедов и т.д..
 	}
 }
 
@@ -473,6 +490,9 @@ void bqGUIWindow::Update()
 	static float posYlerp = 0;
 
 	bool needRebuild = false;
+
+	if (m_rootElement->m_scrollDelta != 0.f)
+		needRebuild = true;
 
 	// перемещение окна
 	// если курсор на titlebar

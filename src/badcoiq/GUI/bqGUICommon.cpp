@@ -133,11 +133,15 @@ void bqGUICommon::UpdateScroll()
 
 	m_scrollOld = m_scroll;
 
-	m_scroll.y = bqMath::Lerp1(m_scroll.y, m_scrollTarget.y, 0.1f);
+	if(m_scroll.y != m_scrollTarget.y)
+		m_scroll.y = bqMath::Lerp1(m_scroll.y, m_scrollTarget.y, 0.111111f);
 
 	m_scrollDelta = m_scroll - m_scrollOld;
 	if (m_scrollDelta.y < 0.0001f && m_scrollDelta.y > -0.0001f)
+	{
 		m_scrollDelta.y = 0.f;
+		m_scroll.y = m_scrollTarget.y;
+	}
 }
 
 // Работа с мышкой

@@ -51,6 +51,7 @@ void bqGUIScrollbar::Rebuild()
 {
 	m_textDrawCallback->m_element = this;
 	bqGUIElement::Rebuild();
+	bqGUIElement::Update();
 
 	float size = 0.f;
 	
@@ -157,9 +158,11 @@ void bqGUIScrollbar::Update()
 
 void bqGUIScrollbar::Draw(bqGS* gs, float dt)
 {
+
+
 	gs->SetScissorRect(m_clipRect);
 	if (IsDrawBG())
-		gs->DrawGUIRectangle(m_buildRect, m_style->m_scrollbarBGColor, m_style->m_scrollbarBGColor, 0, 0);
+		gs->DrawGUIRectangle(m_buildRect, m_style->m_scrollbarBGColor, bq::ColorAqua, 0, 0);
 	m_textDrawCallback->m_element = this;
 
 	bqColor controlColor = m_style->m_scrollbarControlColor;

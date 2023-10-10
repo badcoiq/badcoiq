@@ -175,6 +175,8 @@ void bqGUIElement::Update()
 {
 	bqGUICommon::Update();
 
+	// m_buildRect строится каждый раз заного на основе m_baseRect
+
 	m_buildRect = m_baseRect;
 	// обычно m_clipRect это == m_baseRect;
 	m_clipRect = m_buildRect;

@@ -62,6 +62,8 @@ void bqGUIRootElement::Rebuild()
 	m_buildRect = m_baseRect;
 	m_activeRect = m_baseRect;
 	m_clipRect = m_baseRect;
+
+	bqGUIElement::Update();
 }
 void bqGUIRootElement::Update()
 {
