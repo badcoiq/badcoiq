@@ -85,9 +85,13 @@ public:
 	uint32_t m_dataSize = 0;
 	bqImageInfo m_info;
 
+// быстрое создание 
 	// fast creating
 	void Create(uint32_t x, uint32_t y);
 
+// все методы ниже должны вызываться только когда image создан.
+// проверок нет
+// только для r8g8b8a8
 	// All methods below is for created image. Image must be created.
 	// And only for r8g8b8a8.
 	void FlipVertical();
@@ -95,8 +99,16 @@ public:
 	void Fill(bqImageFillType, const bqColor& color1, const bqColor& color2,
 		const char* params = 0, bqRect* rect = 0);
 
+// реализовано не всё. ДОЛЖНА быть реализована конвертация в r8g8b8a8
 	// not all implemented. at least must be implemented conversion into r8g8b8a8
 	void ConvertTo(bqImageFormat);
+
+// заполнить m_data используя палитру
+// значения палитры 8битные
+// ширина и высота w h
+// проверок нет. проход по data в соответствии с шириной и высотой
+// where... указывает в какое место копировать данные. перехода на строку ниже нет
+ void Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint32_t whereX, uint32_t whereY);
 };
 
 #endif
