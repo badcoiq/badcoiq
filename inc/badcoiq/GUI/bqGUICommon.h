@@ -42,6 +42,7 @@ public:
 		flag_drawBG = 0x4,
 
 		// для внутреннего использования. можно читать.
+		flag_disableParentScroll = 0x1000000,
 		flag_wheelScroll = 0x2000000,
 		flag_clickedX2MB = 0x4000000,
 		flag_clickedX1MB = 0x8000000,

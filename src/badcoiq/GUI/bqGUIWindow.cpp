@@ -70,10 +70,22 @@ public:
 	bqGUIWindowScrollbar(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
 		:
 		bqGUIScrollbar(w, position, size)
-	{}
+	{
+		m_flags |= flag_disableParentScroll;
+	}
 
 	virtual ~bqGUIWindowScrollbar() {}
 	BQ_PLACEMENT_ALLOCATOR(bqGUIWindowScrollbar);
+	
+	virtual void OnScroll() override
+	{
+		m_window->m_rootElement->m_scroll.y = m_value;
+		m_window->m_rootElement->m_scrollTarget.y = m_value;
+		
+		m_window->m_rootElement->m_scrollLimit.y = m_valueMax;
+		m_window->m_rootElement->m_scrollDelta.y = 0.f;
+		m_window->Rebuild();
+	}
 };
 
 bqGUIWindow::bqGUIWindow(const bqVec2f& position, const bqVec2f& size)
@@ -330,11 +342,10 @@ void bqGUIWindow::Rebuild()
 		// наверное обновлять скролл бар нужно после обновления всех элементов.
 		// для скроллбара нужно знать content size окна
 
-		...// Всё равно вычисление control rect не правильно
+		// Всё равно вычисление control rect не правильно
 		// это видно по поведению в badcoiqConsoleApplication1.exe
-		m_scrollbar->m_valueMax = m_rootElement->m_contentSize.y;
 		m_scrollbar->m_valueVisible = GetSize().y;
-		
+		m_scrollbar->m_valueMax = m_rootElement->m_contentSize.y;
 		if (m_windowFlags & windowFlag_withTitleBar)
 		{
 			m_scrollbar->m_valueVisible -= m_titlebarHeight;

@@ -110,7 +110,9 @@ bool ExampleMshGnBox::Init()
 	//	testScrollbar->m_alignment = bqGUIElement::Alignment::Center;
 //	testScrollbar->m_alignment = bqGUIElement::Alignment::RightTop;
 	//testScrollbar->m_valueMax = 3000.f;
-	testScrollbar->m_value = 95.f;
+	testScrollbar->m_valueMax = 420.f;
+	testScrollbar->m_valueVisible = 280.f;
+	testScrollbar->m_value = 0.f;
 
 	bqFramework::RebuildGUI();
 

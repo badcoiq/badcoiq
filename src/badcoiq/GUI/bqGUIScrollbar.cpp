@@ -76,40 +76,64 @@ void bqGUIScrollbar::Rebuild()
 	// на примере текстового редактора
 	// если количество строк более видимых
 	// то появляется ползунок
-	if (m_valueMax > m_valueVisible)
+	if (m_valueMax > m_valueVisible)  //420 > 280
 	{
-		// напр 50/100=0.5
-		float D = m_valueVisible / m_valueMax;
+		float Dmax = 1.f / m_valueMax;    //0,0023809523809524
+		float Dvis = 1.f / m_valueVisible;//0,0035714285714286
+
+		// 280/420
+		float Dcontr = m_valueVisible / m_valueMax; //0,6666666666666667
 		// то есть получается это перевод в диапазон от 0 до 1
 		// таким образом можно перевести значение в пиксели для построения m_controlRect
 
-		float rectD = 1.f / size;
+		float rectD = Dcontr / Dvis;
 
 		if (m_type == type_vertical)
 		{
 			m_controlRect.x = m_buildRect.x + m_controlRectIndent.x;
 			m_controlRect.y = m_buildRect.y + m_controlRectIndent.y;
 			m_controlRect.z = m_buildRect.z - m_controlRectIndent.z;
-			m_controlRect.w = m_controlRect.y + (D / rectD);// +m_controlSizeMinimum;
+			m_controlRect.w = m_controlRect.y + rectD;// +m_controlSizeMinimum;
 
 			if ((m_controlRect.w - m_controlRect.y) < m_controlSizeMinimum)
 				m_controlRect.w = m_controlRect.y + m_controlSizeMinimum;
 			
+
+			// надо знать оставшиеся пиксели, между дном контрола и дном m_buildRect
 			m_remainingPixels = m_buildRect.w - m_controlRect.w;
 			if (m_remainingPixels <= 0.f)
 				m_remainingPixels = 1.f;
 
-		//	printf("%f\n", m_remainingPixels);
+			//printf("%f\n", m_remainingPixels);
 		}
 		
 		// теперь надо передвинуть m_controlRect используя текущее значение
-		// не знаю, правильно ли. но вроде всё окей.
-		float v = size / m_valueMax * 0.5f;
 
-		if (m_type == type_vertical)
+		if (m_value != 0.f)
 		{
-			m_controlRect.y += v * m_value;
-			m_controlRect.w += v * m_value;
+			// получаю магическое значение когда единичку делим на что-то
+			float Dv = 1.f / m_remainingPixels;
+
+			// m_value является частью m_valueMax, поэтому надо умножить на магическое значение Dmax
+			// получаем m_value от 0 до 1 в таких же пределах как и m_valueMax
+			// далее делится на магическое значение от m_remainingPixels - Dv
+			//  хз как это работает. всё работает благодаря переводам в диапазон от 0 до 1.
+			float v = (m_value * Dmax) / Dv;
+
+			// пока скроллит как в текстовых редакторах - когда всё уходит наверх, и экран остаётся пустым
+
+			// надо сделать как например в проводнике (в папках)
+		//	хз как float Dmax2 = 1.f / (m_valueMax - m_valueVisible);    //0,0023809523809524
+		//	v = (m_value * Dmax2) / Dv;
+
+
+		//	printf("%f %f\n", m_value, v);
+
+			if (m_type == type_vertical)
+			{
+				m_controlRect.y += v;
+				m_controlRect.w += v;
+			}
 		}
 	}
 }
@@ -158,11 +182,9 @@ void bqGUIScrollbar::Update()
 
 void bqGUIScrollbar::Draw(bqGS* gs, float dt)
 {
-
-
 	gs->SetScissorRect(m_clipRect);
 	if (IsDrawBG())
-		gs->DrawGUIRectangle(m_buildRect, m_style->m_scrollbarBGColor, bq::ColorAqua, 0, 0);
+		gs->DrawGUIRectangle(m_buildRect, m_style->m_scrollbarBGColor, m_style->m_scrollbarBGColor, 0, 0);
 	m_textDrawCallback->m_element = this;
 
 	bqColor controlColor = m_style->m_scrollbarControlColor;

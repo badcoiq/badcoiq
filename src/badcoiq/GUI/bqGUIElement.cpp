@@ -182,7 +182,7 @@ void bqGUIElement::Update()
 	m_clipRect = m_buildRect;
 
 	bqGUIElement* parent = dynamic_cast<bqGUIElement*>(GetParent());
-	if (parent)
+	if (parent && !(m_flags & flag_disableParentScroll))
 	{
 		m_buildRect.x -= parent->m_scroll.x;
 		m_buildRect.y -= parent->m_scroll.y;

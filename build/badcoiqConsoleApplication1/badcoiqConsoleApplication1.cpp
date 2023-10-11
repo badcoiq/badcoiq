@@ -280,6 +280,7 @@ int main()
                 guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withTitleBar;
                 guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canMove;
                 guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canResize;
+           //     guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_disableScrollbar;
                 MyButton* btn = new MyButton(guiWindow, bqVec2f(0.f, 0.f), bqVec2f(50.f, 420.f));
                 MyCheckBox* chckbx = new MyCheckBox(guiWindow, bqVec2f(60.f, 0.f), bqVec2f(100.f, 20.f));
                 chckbx->SetText(U"Use thing");
