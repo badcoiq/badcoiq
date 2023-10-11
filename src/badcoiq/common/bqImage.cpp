@@ -474,3 +474,13 @@ void bqImage::ConvertTo(bqImageFormat newFormat)
 
 	m_info.m_format = newFormat;
 }
+
+void bqImage::Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint32_t whereX, uint32_t whereY)
+{
+BQ_ASSERT_ST(palette);
+BQ_ASSERT_ST(data);
+BQ_ASSERT_ST(w);
+BQ_ASSERT_ST(h);
+BQ_ASSERT_ST(m_data);
+BQ_ASSERT_ST(m_info.m_format == bqImageFormat::r8g8b8a8);
+}
