@@ -483,4 +483,41 @@ BQ_ASSERT_ST(w);
 BQ_ASSERT_ST(h);
 BQ_ASSERT_ST(m_data);
 BQ_ASSERT_ST(m_info.m_format == bqImageFormat::r8g8b8a8);
+
+if(whereX >= m_info.m_width)
+{
+whereX = 0;
+}
+
+if(whereY >= m_info.m_height)
+{
+whereY = 0;
+}
+
+uint8_t* dptr = m_data + ((whereX * 4) + (m_info.m_pitch * whereY));
+
+// остаток
+uint32_t rx = m_info.m_width - whereX;
+uint32_t ry = m_info.m_height - whereY;
+
+uint32_t srci = 0;
+
+for(uint32_t ih = 0; ih < h; ++ih)
+{
+for(uint32_t iw = 0; iw < w; ++iw)
+{
+
+dptr[0] = palette[data[srci]].GetAsByteAlpha();
+dptr[1] = palette[data[srci + 1]].GetAsByteRed();
+dptr[2] = palette[data[srci + 2]].GetAsByteGreen();
+dptr[3] = palette[data[srci + 3]].GetAsByteblue();
+
+srci += 4;
+dptr += 4;
+
+короче хуй знает как, проверю потом
+
+}
+}
+
 }
