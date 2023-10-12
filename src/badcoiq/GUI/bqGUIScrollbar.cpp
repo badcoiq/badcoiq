@@ -73,11 +73,7 @@ void bqGUIScrollbar::Rebuild()
 
 	m_controlRect.Set(0.f);
 
-	// на примере текстового редактора
-	// если количество строк более видимых
-	// то появляется ползунок
-	if (m_valueMax > m_valueVisible)  //420 > 280
-	{
+	/*
 		float Dmax = 1.f / m_valueMax;    //0,0023809523809524
 		float Dvis = 1.f / m_valueVisible;//0,0035714285714286
 
@@ -87,6 +83,27 @@ void bqGUIScrollbar::Rebuild()
 		// таким образом можно перевести значение в пиксели для построения m_controlRect
 
 		float rectD = Dcontr / Dvis;
+	*/
+
+	// на примере текстового редактора
+	// если количество строк более видимых
+	// то появляется ползунок
+	if (m_valueMax > m_valueVisible)  //420 > 280
+	{
+		float m_valueLimit = m_valueMax - m_valueVisible; // 140
+
+		float Dlim = 1.f / m_valueLimit;    //0,0071428571428571
+		float Dmax = 1.f / m_valueMax;    //0,0023809523809524
+		float Dvis = 1.f / m_valueVisible;//0,0035714285714286
+
+		 
+		// 280/420  //0,6666666666666667
+		// 280/140  //2
+		float Dcontr = m_valueVisible / m_valueLimit;
+		// то есть получается это перевод в диапазон от 0 до 1
+		// таким образом можно перевести значение в пиксели для построения m_controlRect
+
+		float rectD = Dcontr / Dlim;
 
 		if (m_type == type_vertical)
 		{
