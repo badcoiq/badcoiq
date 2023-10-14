@@ -48,6 +48,8 @@ public:
 	virtual void Draw(bqGS* gs, float dt) final;
 
 	virtual void OnScroll() {}
+	
+	virtual void AddValue(float v);
 
 	enum
 	{
@@ -69,6 +71,10 @@ public:
 	// чтобы настроить размер ползунка например как в текстовых редакторах или как в проводнике Windows
 	// нужно знать ещё количество видимых элементов. Пусть это будет переменная m_valueVisible
 	float m_valueVisible = 50.f; // например количество видимых строк
+
+	// Если true то прокручивать будет полностью пока содержимое не уйдёт вверх за окно
+	// Если false то прокручивать будет лимитв виде float m_valueLimit = m_valueMax - m_valueVisible;
+	bool m_isFull = true;
 
 	// чтобы ползунок не занимал всю широту фона, надо его уменьшить
 	// отступы left top right

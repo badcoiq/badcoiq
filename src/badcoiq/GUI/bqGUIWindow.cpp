@@ -72,15 +72,32 @@ public:
 		bqGUIScrollbar(w, position, size)
 	{
 		m_flags |= flag_disableParentScroll;
+		m_isFull = false;
 	}
 
 	virtual ~bqGUIWindowScrollbar() {}
 	BQ_PLACEMENT_ALLOCATOR(bqGUIWindowScrollbar);
 	
+	virtual void OnClickLMB() override
+	{
+		m_window->m_rootElement->m_scrollTarget.y = m_value;
+		m_window->m_rootElement->m_scrollLimit.y = m_valueMax;
+	}
+
+	// из за работы lerp с m_scrollTarget при прокрутке через колесо мышки
+	// прокрутка происходит без lerp, так как каждый раз устанавливается
+	//  новый m_scrollTarget.
+	// Если код задокументировать то m_scrollTarget.y так и останется на нуле
+	//    но крутить мышкой будет ок.
+	// Решение - добавить m_newTarget
+	bool m_newTarget = true;
+
 	virtual void OnScroll() override
 	{
 		m_window->m_rootElement->m_scroll.y = m_value;
-		m_window->m_rootElement->m_scrollTarget.y = m_value;
+		
+		if(m_newTarget)
+			m_window->m_rootElement->m_scrollTarget.y = m_value;
 		
 		m_window->m_rootElement->m_scrollLimit.y = m_valueMax;
 		m_window->m_rootElement->m_scrollDelta.y = 0.f;
@@ -419,6 +436,17 @@ void bqGUIWindow::Update()
 	{
 		// нужно чтобы topIndent определялся в том числе когда курсор вне m_activeRect
 		topIndent += (int)m_titlebarHeight;
+
+		if (!(m_windowFlags & windowFlag_disableScrollbar))
+		{
+			if (m_rootElement->m_scrollDelta.y != 0.f)
+			{
+				//m_scrollbar->m_value += m_rootElement->m_scrollDelta.y;
+				((bqGUIWindowScrollbar*) m_scrollbar)->m_newTarget = false;
+				m_scrollbar->AddValue(m_rootElement->m_scrollDelta.y);
+				((bqGUIWindowScrollbar*)m_scrollbar)->m_newTarget = true;
+			}
+		}
 	}
 
 	bqFramework::SetActiveCursor(bqFramework::GetDefaultCursor(bqCursorType::Arrow));

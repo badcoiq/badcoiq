@@ -79,6 +79,7 @@ void bqGUIScrollbar::Rebuild()
 
 		// 280/420
 		float Dcontr = m_valueVisible / m_valueMax; //0,6666666666666667
+
 		// то есть получается это перевод в диапазон от 0 до 1
 		// таким образом можно перевести значение в пиксели для построения m_controlRect
 
@@ -99,11 +100,14 @@ void bqGUIScrollbar::Rebuild()
 		 
 		// 280/420  //0,6666666666666667
 		// 280/140  //2
-		float Dcontr = m_valueVisible / m_valueLimit;
+		float Dcontr = m_valueVisible / m_valueMax;
+
+
 		// то есть получается это перевод в диапазон от 0 до 1
 		// таким образом можно перевести значение в пиксели для построения m_controlRect
 
-		float rectD = Dcontr / Dlim;
+		float rectD = Dcontr / Dvis;
+		//rectD /= Dlim;
 
 		if (m_type == type_vertical)
 		{
@@ -131,17 +135,22 @@ void bqGUIScrollbar::Rebuild()
 			// получаю магическое значение когда единичку делим на что-то
 			float Dv = 1.f / m_remainingPixels;
 
+			//   ниже комментарии относятся к m_isFull когда используется Dmax
 			// m_value является частью m_valueMax, поэтому надо умножить на магическое значение Dmax
 			// получаем m_value от 0 до 1 в таких же пределах как и m_valueMax
 			// далее делится на магическое значение от m_remainingPixels - Dv
 			//  хз как это работает. всё работает благодаря переводам в диапазон от 0 до 1.
-			float v = (m_value * Dmax) / Dv;
+			float v = 0.f;
+			if(m_isFull)
+				v = (m_value * Dmax) / Dv;
+			else
+				v = (m_value * Dlim) / Dv;
 
 			// пока скроллит как в текстовых редакторах - когда всё уходит наверх, и экран остаётся пустым
-
 			// надо сделать как например в проводнике (в папках)
 		//	хз как float Dmax2 = 1.f / (m_valueMax - m_valueVisible);    //0,0023809523809524
 		//	v = (m_value * Dmax2) / Dv;
+			//  ... решил проблему используя m_valueLimit и Dlim
 
 
 		//	printf("%f %f\n", m_value, v);
@@ -180,21 +189,29 @@ void bqGUIScrollbar::Update()
 
 	if (m_scrollbarFlags & scrollbarFlag_drag)
 	{
-		float size = m_remainingPixels;
-
-		float v = m_valueMax / size;
-		if (m_type == type_vertical)
-			m_value += v * g_framework->m_input.m_mouseMoveDelta.y;
-
-		if (m_value < 0.f)
-			m_value = 0.f;
-		if (m_value > m_valueMax)
-			m_value = m_valueMax;
-
-		OnScroll();
+		AddValue(g_framework->m_input.m_mouseMoveDelta.y);
 
 		Rebuild();
 	}
+}
+
+void bqGUIScrollbar::AddValue(float val)
+{
+	float size = m_remainingPixels;
+
+	float m_valueLimit = m_valueMax - m_valueVisible;
+
+	float limitValue = m_isFull ? m_valueMax : m_valueLimit;
+
+	float v = limitValue / size;
+	if (m_type == type_vertical)
+		m_value += v * val;
+
+	if (m_value < 0.f)
+		m_value = 0.f;
+	if (m_value > limitValue)
+		m_value = limitValue;
+	OnScroll();
 }
 
 void bqGUIScrollbar::Draw(bqGS* gs, float dt)
