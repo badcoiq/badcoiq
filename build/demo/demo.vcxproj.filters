@@ -36,10 +36,16 @@
     <ClCompile Include="..\..\src\demo\examples\meshgen\ex_mshgn_box.cpp">
       <Filter>examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\games\mario\ex_g_mario.cpp">
+      <Filter>mario</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">
       <UniqueIdentifier>{36be6b63-6685-4289-9a49-ff5619cc8e5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mario">
+      <UniqueIdentifier>{58bcb126-0e70-4bee-8e12-cef87b6303e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

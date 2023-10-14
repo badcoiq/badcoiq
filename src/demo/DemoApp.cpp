@@ -164,27 +164,10 @@ bool DemoApp::Init()
 	
 	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
 	
+	AddExample(new ExampleGameMario(this), U"Mario", "games/", U"Тот самый Марио");
+	
 	// что-то не работает код хотя 99 процентов копипаста
 	//AddExample(new ExampleSceneCameraEdtr(this), U"Камера для 3D редактора", "scene/camera", U"Как в 3Ds Max");
-
-	/*AddExample(new ExampleBasicsMouseAndKeyboard(this), U"Mouse and keyboard", "basics/", U"Show information about keyboard and mouse.");
-	AddExample(new ExampleBasicsImageAndTexture(this), U"Image and texture", "basics/", U"Load image and create texture.");
-	AddExample(new ExampleBasics3DModel(this), U"Load model", "basics/", U"Load model data from file. File can contain many objects, need to use callback. Better to create special class for this.");
-	AddExample(new ExampleBasicsRenderTargetTexture(this), U"Render Target Texture", "basics/", U"...");
-	AddExample(new ExampleBasicsRayFromScreen(this), U"Ray from screen", "basics/", U"Click and move the camera (WASDQE)");
-	AddExample(new ExampleSkinnedMesh1(this), U"Skinned mesh", "basics/", U"Low level skining.");
-
-	AddExample(new ExampleSceneEditorCamera(this), U"Editor camera", "scene/", U"Camera like in 3D editor. Hold Alt and RMB for rotation");
-	AddExample(new ExampleSceneFrustumCulling(this), U"Frustum culling", "scene/culling", U"Draw only visible objects. Use QWEASD.");
-	AddExample(new ExampleSceneOcclusionCulling(this), U"Occlusion culling", "scene/culling", U"Frustum and Occlusion culling");
-	AddExample(new ExampleSceneSprite(this), U"Sprite/Billboard", "scene/sprite", U"Basic sprite");
-	AddExample(new ExampleSceneSprite10000(this), U"10000", "scene/sprite", U"10000 sprites");
-
-	AddExample(new ExampleBasicsScreenResolution(this), U"Screen Resolution", "other/", U"Change main target size. Use WASDQE");
-	AddExample(new ExamplePolygonMesh(this), U"Creating the mesh", "other/PolygonMesh", U"Create mesh by hands, generate some objects, generate UV coordinates for them.");
-	AddExample(new ExampleImageGeneration(this), U"Generate texture", "other/Image", U"Generate image and create texture");*/
-	//AddExample(new ExampleSprite, U"Physics", "physics/kinematic");
-	//AddExample(new ExampleSprite, U"Demo", "/");
 
 	m_rootCategory.findElements();
 
