@@ -53,11 +53,45 @@ bool ExampleGameMario::Init()
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
+	// генерация всей графики
+	// Думаю всё можно уместить в одну текстуру
+	bqImage img;
+	img.Create(256, 256);
+
+	bqColor palette[] =
+	{
+		0xFFFFFFFF,
+		0xFF0000FF,
+		0x00FF00FF,
+		0x0000FFFF,
+	};
+
+	uint8_t pic[] =
+	{
+		0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0,
+		0, 0, 1, 1, 0, 0,
+		0, 0, 1, 1, 0, 0,
+		0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0,
+	};
+
+	
+	img.Fill(bqImageFillType::Solid, bq::ColorTransparent, bq::ColorTransparent);
+	img.Fill(palette, pic, 6, 6, 0, 0);
+	/*for (uint32_t i = 0; i < (9 * 4); ++i)
+	{
+		printf("DATA: %i\n", img.m_data[i]);
+	}*/
+
+	m_texture = m_gs->SummonTexture(&img);
+
 	return true;
 }
 
 void ExampleGameMario::Shutdown()
 {
+	BQ_SAFEDESTROY(m_texture);
 	BQ_SAFEDESTROY(m_camera);
 }
 
@@ -73,6 +107,7 @@ void ExampleGameMario::OnDraw()
 	m_camera->m_viewProjectionMatrix = m_camera->m_projectionMatrix * m_camera->m_viewMatrix;
 	
 	m_gs->BeginGUI();
+	m_gs->DrawGUIRectangle(bqVec4f(10.f, 10.f, 512.f, 512.f), bq::ColorWhite, bq::ColorWhite, m_texture, 0);
 	m_gs->EndGUI();
 
 	m_gs->BeginDraw();

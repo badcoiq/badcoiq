@@ -110,6 +110,13 @@ public:
 
 	// Создать текстуру
 	virtual bqTexture* SummonTexture(bqImage*, const bqTextureInfo&) = 0;
+	virtual bqTexture* SummonTexture(bqImage* i)
+	{
+		bqTextureInfo ti;
+		return SummonTexture(i, ti);
+	}
+
+
 	// Создать Render Target Texture/Frame Buffer Object
 	virtual bqTexture* SummonRTT(const bqPoint& size, const bqTextureInfo&) = 0;
 	// Установить текстуру для рисования.

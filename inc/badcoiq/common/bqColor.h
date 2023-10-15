@@ -180,6 +180,8 @@ public:
 
 namespace bq
 {
+	const bqColor ColorTransparent = bqColor(0, 0, 0, 0);
+
 	//	HTML colors
 	const bqColor ColorAliceBlue = 0xffF0F8FF;
 	const bqColor ColorAntiqueWhite = 0xffFAEBD7;

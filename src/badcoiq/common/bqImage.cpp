@@ -497,26 +497,50 @@ void bqImage::Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint
 	uint8_t* dptr = m_data + ((whereX * 4) + (m_info.m_pitch * whereY));
 
 	// остаток
+	// rest
 	uint32_t rx = m_info.m_width - whereX;
 	uint32_t ry = m_info.m_height - whereY;
+	uint32_t rxi = 0; //index
+	uint32_t ryi = 0; //index
 
-	uint32_t srci = 0;
 
 	for(uint32_t ih = 0; ih < h; ++ih)
 	{
+		uint8_t* line = dptr;
+		uint8_t* srcLine = data;
+
 		for(uint32_t iw = 0; iw < w; ++iw)
 		{
+			// data это 8битные индексы
+			uint8_t palIndex = *data;
 
-		/*	dptr[0] = palette[data[srci]].GetAsByteAlpha();
-			dptr[1] = palette[data[srci + 1]].GetAsByteRed();
-			dptr[2] = palette[data[srci + 2]].GetAsByteGreen();
-			dptr[3] = palette[data[srci + 3]].GetAsByteblue();
+			dptr[0] = palette[palIndex].GetAsByteAlpha();
+			dptr[1] = palette[palIndex].GetAsByteRed();
+			dptr[2] = palette[palIndex].GetAsByteGreen();
+			dptr[3] = palette[palIndex].GetAsByteBlue();
 
-			srci += 4;
 			dptr += 4;
 
-			короче хуй знает как, проверю потом*/
+			++data;
 
+			++rxi;
+			if (rxi == rx)
+			{
+				break;
+			}
+		}
+		rxi = 0;
+
+		// data это 8битные индексы
+		data = srcLine + w;
+
+		dptr = line + m_info.m_pitch;
+
+		++ryi;
+		if (ryi == ry)
+		{
+			ryi = 0;
+			break;
 		}
 	}
 

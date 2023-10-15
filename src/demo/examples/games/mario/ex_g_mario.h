@@ -34,6 +34,17 @@ class DemoApp;
 class ExampleGameMario : public DemoExample
 {
 	bqCamera* m_camera = 0;
+
+	enum
+	{
+		gameState_black1, // чёрный фон и текст с номером мира и т.д.
+		gameState_black2, // просто чёрный фон
+		gameState_game,
+	};
+	uint32_t m_state = gameState_black1;
+
+	bqTexture* m_texture = 0;
+
 public:
 	ExampleGameMario(DemoApp*);
 	virtual ~ExampleGameMario();
