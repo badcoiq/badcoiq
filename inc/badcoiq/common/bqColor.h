@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqColor
 {
 public:
+	// RGBA
 	float	m_data[4];
 
 	bqColor()
@@ -80,17 +81,17 @@ public:
 	float Z() { return m_data[2]; }
 	float W() { return m_data[3]; }
 
-	const float* Data() const { return &m_data[0u]; }
+	const float* Data() const { return &m_data[0]; }
 
-	float GetRed() { return m_data[0u]; }
-	float GetGreen() { return m_data[1u]; }
-	float GetBlue() { return m_data[2u]; }
-	float GetAlpha() { return m_data[3u]; }
+	float GetRed() { return m_data[0]; }
+	float GetGreen() { return m_data[1]; }
+	float GetBlue() { return m_data[2]; }
+	float GetAlpha() { return m_data[3]; }
 
-	uint8_t GetAsByteRed() const { return static_cast<uint8_t>(m_data[0u] * 255.); }
-	uint8_t GetAsByteGreen() const { return static_cast<uint8_t>(m_data[1u] * 255.); }
-	uint8_t GetAsByteBlue() const { return static_cast<uint8_t>(m_data[2u] * 255.); }
-	uint8_t GetAsByteAlpha() const { return static_cast<uint8_t>(m_data[3u] * 255.); }
+	uint8_t GetAsByteRed() const { return (uint8_t)floor(m_data[0] * 255.); }
+	uint8_t GetAsByteGreen() const { return (uint8_t)floor(m_data[1] * 255.); }
+	uint8_t GetAsByteBlue() const { return (uint8_t)floor(m_data[2] * 255.); }
+	uint8_t GetAsByteAlpha() const { return (uint8_t)floor(m_data[3] * 255.); }
 
 	bool	operator==(const bqColor& v) const
 	{
@@ -190,7 +191,7 @@ namespace bq
 	const bqColor ColorAzure = 0xffF0FFFF;
 	const bqColor ColorBeige = 0xffF5F5DC;
 	const bqColor ColorBisque = 0xffFFE4C4;
-	const bqColor ColorBlack = 0xff000000;
+	const bqColor ColorBlack = bqColor(0.f, 0.f, 0.f, 1.f);
 	const bqColor ColorBlanchedAlmond = 0xffFFEBCD;
 	const bqColor ColorBlue = 0xff0000FF;
 	const bqColor ColorBlueViolet = 0xff8A2BE2;

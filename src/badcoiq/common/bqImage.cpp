@@ -514,10 +514,15 @@ void bqImage::Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint
 			// data это 8битные индексы
 			uint8_t palIndex = *data;
 
-			dptr[0] = palette[palIndex].GetAsByteAlpha();
-			dptr[1] = palette[palIndex].GetAsByteRed();
-			dptr[2] = palette[palIndex].GetAsByteGreen();
-			dptr[3] = palette[palIndex].GetAsByteBlue();
+			dptr[0] = palette[palIndex].GetAsByteRed();
+			dptr[1] = palette[palIndex].GetAsByteGreen();
+			dptr[2] = palette[palIndex].GetAsByteBlue();
+			dptr[3] = palette[palIndex].GetAsByteAlpha();
+
+			//dptr[0] = 0;  // R
+			//dptr[1] = 0;    // G
+			//dptr[2] = 127;    // B
+			//dptr[3] = 255;  // A
 
 			dptr += 4;
 
