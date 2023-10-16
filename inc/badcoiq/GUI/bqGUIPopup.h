@@ -27,25 +27,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_GUIPICBOX_H__
-#define __BQ_GUIPICBOX_H__
+#ifndef __BQ_GUIPopup_H__
+#define __BQ_GUIPopup_H__
 
-class bqGUIPictureBox : public bqGUIElement
+
+// например для раскрывающегося списка
+class bqGUIPopup : public bqGUIElement
 {
-	bqTexture* m_texture = 0;
-	bqVec4f m_uv = bqVec4f(0.f, 0.f, 1.f, 1.f);
+	
 public:
-	bqGUIPictureBox(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
-	virtual ~bqGUIPictureBox();
-	BQ_PLACEMENT_ALLOCATOR(bqGUIPictureBox);
+	bqGUIPopup(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	virtual ~bqGUIPopup();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIPopup);
 
 	virtual void Rebuild() final;
 	virtual void Update() final;
 	virtual void Draw(bqGS* gs, float dt) final;
-
-	void SetTexture(bqTexture* t);
-	void SetUV(const bqVec4f&);
-	void SetTCoords(float left, float top, float right, float bottom);
 };
 
 #endif
