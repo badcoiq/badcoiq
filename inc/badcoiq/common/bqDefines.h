@@ -39,11 +39,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ctype.h>  // isspace
 #include <utility>  // std::move
 
-// Возможно ненужная вещь. Пережиток прошлого и всё такое.
-// Многие библиотеки используют это.
-// `inline` не гарантирует что функция будет inline.
-// Предположу что "не гарантирует" если функция написана в .c .cpp файлах
-//   (или файл инклюдится в них), ведь такие функции не встраиваемые, по умолчанию.
+#define BQ_VERSION_MAJOR 0
+#define BQ_VERSION_MINOR 1
+#define BQ_VERSION_PATCH 0
+
 // Вместо inline теперь надо писать BQ_FORCEINLINE
 #ifdef _MSC_VER
 #define BQ_FORCEINLINE __forceinline
