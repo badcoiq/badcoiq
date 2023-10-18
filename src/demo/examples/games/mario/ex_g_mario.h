@@ -45,6 +45,42 @@ class ExampleGameMario : public DemoExample
 
 	bqTexture* m_texture = 0;
 
+	bqColor m_palette[10] =
+	{
+		bq::ColorWhite,
+		bq::ColorBlack,
+
+		// ground
+		0xFF994E00, // brown
+		0xFFFFCCC5, // like pink
+
+		bq::ColorTransparent,
+
+		0xFFEA9E22, // box bright
+		0xFF561D00, // box dark
+
+		0xFF64B0FF, // cloud blue
+		0xFF0D9300, // hill green
+		0xFF88D800, // pipe green
+	};
+
+	char m_colorMap[127];
+	void _initColorMap()
+	{
+		m_colorMap[' '] = 4; // transparent
+		m_colorMap['#'] = 0; // white
+		m_colorMap['`'] = 1; // black
+		m_colorMap['%'] = 2; // brown
+		m_colorMap['^'] = 3; // like pink
+		m_colorMap['@'] = 5; // box bright
+		m_colorMap['*'] = 6; // box dark
+		m_colorMap['['] = 7; // cloud blue
+		m_colorMap['+'] = 8; // hill green
+		m_colorMap['X'] = 9; // pipe green
+	}
+
+	void _imageFill(bqImage* img, bqStringA* str, uint32_t w, uint32_t h, uint32_t whereX, uint32_t whereY);
+
 public:
 	ExampleGameMario(DemoApp*);
 	virtual ~ExampleGameMario();
