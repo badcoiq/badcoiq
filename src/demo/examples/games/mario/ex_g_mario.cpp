@@ -260,6 +260,13 @@ bool ExampleGameMario::Init()
 			4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4,
 		};
 		//img.Fill(palette, pic, 32, 16, 112, 0);
+
+stra.clear();
+stra += "````````````````````````````````"; "`XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`";
+"`+++++XXXXXX+++++++++++++++++++`";
+"`XXX++XXXXXX+XX++++++++++X+X+XX`";
+		
+		_imageFill(&img, &stra, 16, 16, 96, 0);
 	}
 
 	// pipe
