@@ -30,4 +30,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQRIGIDBODY_H__
 #define __BQRIGIDBODY_H__
 
+struct bqMotionState
+{
+bqVec3f m_linearVelocity;
+bqVec3f m_angularVelocity;
+};
+
+class bqRigidBody : public bqUserData
+{
+public:
+bqRigidBody();
+virtual ~bqRigidBody();
+BQ_PLACEMENT_ALLOCATOR(bqRigidBody);
+
+bqMotionState m_motionState;
+};
+
 #endif
+
+
