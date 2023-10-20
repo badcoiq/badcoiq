@@ -56,7 +56,7 @@ bool ExampleGameMario::Init()
 	// генерация всей графики
 	// Думаю всё можно уместить в одну текстуру
 	bqImage img;
-	img.Create(256, 256);
+	img.Create(300, 300);
 	img.Fill(bqImageFillType::Solid, bq::ColorTransparent, bq::ColorTransparent);
 	
 	_initColorMap();
@@ -285,6 +285,173 @@ bool ExampleGameMario::Init()
 
 	}
 
+	// coin 1/4
+	{
+		stra.clear();
+		stra += "   @@   ";
+		stra += "  @@@@  ";
+		stra += " @@@@@@ ";
+		stra += " @@#E@@ ";
+		stra += "@@#@@E@@";
+		stra += "@@#@@E@@";
+		stra += "@@#@@E@@";
+		stra += "@@#@@E@@";
+		stra += "@@#@@E@@";
+		stra += "@@#@@E@@";
+		stra += " @@#E@@ ";
+		stra += " @@@@@@ ";
+		stra += "  @@@@  ";
+		stra += "   @@   ";
+		_imageFill(&img, &stra, 8, 14, 176, 0);
+	}
+
+	// coin 2/4
+	{
+		stra.clear();
+		stra += "   @E   ";
+		stra += "   @E   ";
+		stra += "  @EEE  ";
+		stra += "  @EEE  ";
+		stra += "  @EEE  ";
+		stra += "  @EEE  ";
+		stra += "  #EEE  ";
+		stra += "  #EEE  ";
+		stra += "  @EEE  ";
+		stra += "  @EEE  ";
+		stra += "  @EEE  ";
+		stra += "  @EEE  ";
+		stra += "   @E   ";
+		stra += "   @E   ";
+		_imageFill(&img, &stra, 8, 14, 184, 0);
+	}
+
+	// coin 3/4
+	{
+		stra.clear();
+		stra += "   @    ";
+		stra += "   @    ";
+		stra += "   @    ";
+		stra += "   @    ";
+		stra += "   @    ";
+		stra += "   @    ";
+		stra += "   #    ";
+		stra += "   #    ";
+		stra += "   @    ";
+		stra += "   @    ";
+		stra += "   @    ";
+		stra += "   @    ";
+		stra += "   @    ";
+		stra += "   @    ";
+		_imageFill(&img, &stra, 8, 14, 192, 0);
+	}
+
+	// coin 4/4
+	{
+		stra.clear();
+		stra += "   #E   ";
+		stra += "   #E   ";
+		stra += "  ###E  ";
+		stra += "  ###E  ";
+		stra += "  ###E  ";
+		stra += "  ###E  ";
+		stra += "  ###E  ";
+		stra += "  ###E  ";
+		stra += "  ###E  ";
+		stra += "  ###E  ";
+		stra += "  ###E  ";
+		stra += "  ###E  ";
+		stra += "   #E   ";
+		stra += "   #E   ";
+		_imageFill(&img, &stra, 8, 14, 200, 0);
+	}
+
+	// Mario small stand
+	{
+		stra.clear();
+		stra += "     EEEEE      ";
+		stra += "    EEEEEEEEE   ";
+		stra += "    ccc@@c@     ";
+		stra += "   c@c@@@c@@@   ";
+		stra += "   c@cc@@@c@@@  ";
+		stra += "   cc@@@@cccc   ";
+		stra += "     @@@@@@@    ";
+		stra += "    ccEccc      ";
+		stra += "   cccEccEccc   ";
+		stra += "  ccccEEEEcccc  ";
+		stra += "  @@cE@EE@Ec@@  ";
+		stra += "  @@@EEEEEE@@@  ";
+		stra += "  @@EEEEEEEE@@  ";
+		stra += "    EEE  EEE    ";
+		stra += "   ccc    ccc   ";
+		stra += "  cccc    cccc  ";
+		_imageFill(&img, &stra, 16, 16, 208, 0);
+	}
+
+	// Mario small walk 1/3
+	{
+		stra.clear();
+		stra += "                ";
+		stra += "      EEEEE     ";
+		stra += "     EEEEEEEEE  ";
+		stra += "     ccc@@c@    ";
+		stra += "    c@c@@@c@@@  ";
+		stra += "    c@cc@@@c@@@ ";
+		stra += "    cc@@@@cccc  ";
+		stra += "      @@@@@@@   ";
+		stra += "     ccccEc @   ";
+		stra += "    @cccccc@@@  ";
+		stra += "   @@Eccccc@@   ";
+		stra += "   ccEEEEEEE    ";
+		stra += "   cEEEEEEEE    ";
+		stra += "  ccEEE EEE     ";
+		stra += "  c    ccc      ";
+		stra += "       cccc     ";
+		_imageFill(&img, &stra, 16, 16, 224, 0);
+	}
+
+	// Mario small walk 2/3
+	{
+		stra.clear();
+		stra += "     EEEEE      ";
+		stra += "    EEEEEEEEE   ";
+		stra += "    ccc@@c@     ";
+		stra += "   c@c@@@c@@@   ";
+		stra += "   c@cc@@@c@@@  ";
+		stra += "   cc@@@@cccc   ";
+		stra += "     @@@@@@@    ";
+		stra += "    ccEccc      ";
+		stra += "   ccccEEcc     ";
+		stra += "   cccEE@EE@    ";
+		stra += "   ccccEEEEE    ";
+		stra += "   Ecc@@@EEE    ";
+		stra += "    Ec@@EEE     ";
+		stra += "     EEEccc     ";
+		stra += "     ccccccc    ";
+		stra += "     cccc       ";
+		_imageFill(&img, &stra, 16, 16, 240, 0);
+	}
+
+	// Mario small walk 3/3
+	{
+		stra.clear();
+		stra += "      EEEEE     ";
+		stra += "     EEEEEEEEE  ";
+		stra += "     ccc@@c@    ";
+		stra += "    c@c@@@c@@@  ";
+		stra += "    c@cc@@@c@@@ ";
+		stra += "    cc@@@@cccc  ";
+		stra += "      @@@@@@@   ";
+		stra += "   ccccEEcc     ";
+		stra += " @@ccccEEEccc@@@";
+		stra += " @@@ ccE@EEEcc@@";
+		stra += " @@  EEEEEEE  c ";
+		stra += "    EEEEEEEEEcc ";
+		stra += "   EEEEEEEEEEcc ";
+		stra += "  ccEEE   EEEcc ";
+		stra += "  ccc           ";
+		stra += "   ccc          ";
+		_imageFill(&img, &stra, 16, 16, 256, 0);
+	}
 
 	// cloud1
 	{

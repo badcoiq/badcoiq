@@ -45,7 +45,7 @@ class ExampleGameMario : public DemoExample
 
 	bqTexture* m_texture = 0;
 
-	bqColor m_palette[10] =
+	bqColor m_palette[12] =
 	{
 		bq::ColorWhite,
 		bq::ColorBlack,
@@ -56,12 +56,14 @@ class ExampleGameMario : public DemoExample
 
 		bq::ColorTransparent,
 
-		0xFFEA9E22, // box bright
+		0xFFEA9E22, // box bright // mario skin
 		0xFF561D00, // box dark
 
 		0xFF64B0FF, // cloud blue
 		0xFF0D9300, // hill green
 		0xFF88D800, // pipe green
+		0xFFB53120, // coin shadow/ mario cloth red
+		0xFF6B6D00, // mario cloth\hair\shoes
 	};
 
 	char m_colorMap[127];
@@ -72,11 +74,13 @@ class ExampleGameMario : public DemoExample
 		m_colorMap['`'] = 1; // black
 		m_colorMap['%'] = 2; // brown
 		m_colorMap['^'] = 3; // like pink
-		m_colorMap['@'] = 5; // box bright
+		m_colorMap['@'] = 5; // box bright // mario skin
 		m_colorMap['*'] = 6; // box dark
 		m_colorMap['['] = 7; // cloud blue
 		m_colorMap['+'] = 8; // hill green
 		m_colorMap['X'] = 9; // pipe green
+		m_colorMap['E'] = 10; // coin shadow/ mario cloth red
+		m_colorMap['c'] = 11; // mario cloth\hair\shoes green
 	}
 
 	void _imageFill(bqImage* img, bqStringA* str, uint32_t w, uint32_t h, uint32_t whereX, uint32_t whereY);
