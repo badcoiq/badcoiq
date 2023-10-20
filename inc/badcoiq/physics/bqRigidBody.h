@@ -30,11 +30,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQRIGIDBODY_H__
 #define __BQRIGIDBODY_H__
 
+// тело имеет изменяющиеся параметры
+// эти параметры изменяются под действием
+// сил, внешних и внутренних.
 struct bqMotionState
 {
+// линейная скорость. вектр указывающий куда переместится тело.
+// может перемещаться по дуге, если действует какая-то ещё сила
 bqVec3f m_linearVelocity;
+
+// угловая скорость. хз пока. нужно ли использовать кватернион?
 bqVec3f m_angularVelocity;
+
+// вес и масса не одно и тоже
+// вес - изменяющееся значение.
+// например чем больше скорость тем больше вес
+float m_weight = 0.f;
 };
+
 
 class bqRigidBody : public bqUserData
 {
@@ -44,6 +57,9 @@ virtual ~bqRigidBody();
 BQ_PLACEMENT_ALLOCATOR(bqRigidBody);
 
 bqMotionState m_motionState;
+
+// если масса равна нулю то тело не будет двигаться
+float m_mass = 0.f;
 };
 
 #endif
