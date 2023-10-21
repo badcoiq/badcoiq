@@ -21,3 +21,5 @@ build/libpng/Debug
 tools/bingen/Debug
 build/demo/Debug
 build/demo/Release
+build/badcoiq.xaudio/Debug
+build/badcoiq.xaudio/Release

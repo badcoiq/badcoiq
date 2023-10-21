@@ -1,4 +1,4 @@
-/*
+﻿/*
 BSD 2-Clause License
 
 Copyright (c) 2023, badcoiq
@@ -25,39 +25,48 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#pragma once
-#ifndef __BQ_Sound_H__
-#define __BQ_Sound_H__
 
-#include "badcoiq/containers/bqArray.h"
+#include "badcoiq.h"
 
-class bqSoundSource
+#include "badcoiq/sound/bqSoundSystem.h"
+
+extern "C"
 {
-public:
-	bqSoundSource();
-	~bqSoundSource();
-	BQ_PLACEMENT_ALLOCATOR(bqSoundSource);
+	bqSoundEngine* BQ_CDECL bqSoundEngine_createXAudio();
+}
 
-	uint8_t* m_data = 0;
-	uint32_t m_size = 0;
-	uint32_t m_sampleRate = 44100;
-	uint32_t m_channels = 1;
-	uint32_t m_bits = 16;
-};
+BQ_LINK_LIBRARY("badcoiq.xaudio");
 
-// звук загружается сюда
-class bqSound
+bqSoundSystem::bqSoundSystem()
 {
-public:
-	bqSound();
-	virtual ~bqSound();
-	BQ_PLACEMENT_ALLOCATOR(bqSound);
+	// добавить engines
+	m_engines.push_back(bqSoundEngine_createXAudio());
+}
 
-	void Generate();
+bqSoundSystem::~bqSoundSystem()
+{
+}
 
-	bqSoundSource* m_soundSource = 0;
-};
+uint32_t bqSoundSystem::GetNumOfEngines()
+{
+	return (uint32_t)m_engines.m_size;
+}
 
-#endif
+bqSoundEngine* bqSoundSystem::GetEngine(uint32_t in, const char* n)
+{
+	BQ_ASSERT_ST(m_engines.m_size);
+	if (n)
+	{
+		for (size_t i = 0; i < m_engines.m_size; ++i)
+		{
+			if (strcmp(m_engines.m_data[i]->Name(), n) == 0)
+			{
+				return m_engines.m_data[i];
+			}
+		}
+		in = 0;
+	}
 
+	return m_engines.m_data[in];
+}
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
 BSD 2-Clause License
 
 Copyright (c) 2023, badcoiq
@@ -25,39 +25,60 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#pragma once
-#ifndef __BQ_Sound_H__
-#define __BQ_Sound_H__
 
-#include "badcoiq/containers/bqArray.h"
+#include "badcoiq.h"
 
-class bqSoundSource
+#include "badcoiq/sound/bqSoundSystem.h"
+
+bqSoundSource::bqSoundSource()
 {
-public:
-	bqSoundSource();
-	~bqSoundSource();
-	BQ_PLACEMENT_ALLOCATOR(bqSoundSource);
+}
 
-	uint8_t* m_data = 0;
-	uint32_t m_size = 0;
-	uint32_t m_sampleRate = 44100;
-	uint32_t m_channels = 1;
-	uint32_t m_bits = 16;
-};
-
-// звук загружается сюда
-class bqSound
+bqSoundSource::~bqSoundSource()
 {
-public:
-	bqSound();
-	virtual ~bqSound();
-	BQ_PLACEMENT_ALLOCATOR(bqSound);
+	if (m_data)
+	{
+		bqMemory::free(m_data);
+		m_data = 0;
+	}
+}
 
-	void Generate();
+bqSound::bqSound()
+{
+}
 
-	bqSoundSource* m_soundSource = 0;
-};
+bqSound::~bqSound()
+{
+	if (m_soundSource)
+	{
+		delete m_soundSource;
+	}
+}
 
-#endif
+void bqSound::Generate()
+{
+	if (!m_soundSource)
+	{
+		int time = 1;
+		float channels = 2.f;
 
+		m_soundSource = new bqSoundSource;
+		m_soundSource->m_channels = 1;
+		m_soundSource->m_sampleRate = 44100;
+		m_soundSource->m_size = time * 2 * m_soundSource->m_sampleRate;
+		m_soundSource->m_data = (uint8_t*)bqMemory::malloc(m_soundSource->m_size);
 
+		for (int index = 0, second = 0; second < time; second++)
+		{
+			for (int cycle = 0; cycle < 441; cycle++)
+			{
+				for (int sample = 0; sample < 100; sample++)
+				{
+					short value = sample < 50 ? 32767 : -32768;
+					m_soundSource->m_data[index++] = value & 0xFF;
+					m_soundSource->m_data[index++] = (value >> 8) & 0xFF;
+				}
+			}
+		}
+	}
+}

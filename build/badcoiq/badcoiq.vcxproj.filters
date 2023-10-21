@@ -43,6 +43,9 @@
     <Filter Include="Source Files\scene">
       <UniqueIdentifier>{a60c8d54-d234-481c-bb36-940cecd3221d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\sound">
+      <UniqueIdentifier>{398bb03a-4bec-4844-ada1-e77ecf705713}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -149,6 +152,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIScrollbar.cpp">
       <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundSystem.cpp">
+      <Filter>Source Files\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSound.cpp">
+      <Filter>Source Files\sound</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

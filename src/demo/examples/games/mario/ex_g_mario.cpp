@@ -56,7 +56,7 @@ bool ExampleGameMario::Init()
 	// генерация всей графики
 	// Думаю всё можно уместить в одну текстуру
 	bqImage img;
-	img.Create(300, 300);
+	img.Create(320, 320);
 	img.Fill(bqImageFillType::Solid, bq::ColorTransparent, bq::ColorTransparent);
 	
 	_initColorMap();
@@ -453,6 +453,72 @@ bool ExampleGameMario::Init()
 		_imageFill(&img, &stra, 16, 16, 256, 0);
 	}
 
+	// Mario small jump
+	{
+		stra.clear();
+		stra += "             @@@";
+		stra += "      EEEEE  @@@";
+		stra += "     EEEEEEEEE@@";
+		stra += "     ccc@@c@ ccc";
+		stra += "    c@c@@@c@@ccc";
+		stra += "    c@cc@@@c@@@c";
+		stra += "    cc@@@@ccccc ";
+		stra += "      @@@@@@@c  ";
+		stra += "  cccccEcccEc   ";
+		stra += " cccccccEcccE  c";
+		stra += "@@ccccccEEEEE  c";
+		stra += "@@@ EEcEE@EE@Ecc";
+		stra += " @ cEEEEEEEEEEcc";
+		stra += "  cccEEEEEEEEEcc";
+		stra += " cccEEEEEEE     ";
+		stra += " c  EEEE        ";
+		_imageFill(&img, &stra, 16, 16, 272, 0);
+	}
+
+	// Mario cry
+	{
+		stra.clear();
+		stra += "                ";
+		stra += "      EEEE      ";
+		stra += "   @ EEEEEE @   ";
+		stra += " @@@c@c@@c@c@@@ ";
+		stra += " @@cc@c@@c@cc@@ ";
+		stra += " @@ccc@@@@ccc@@ ";
+		stra += "   cccc@@cccc   ";
+		stra += "    c@cccc@c    ";
+		stra += "    c@@@@@@c    ";
+		stra += "   EEE@@@@EEE   ";
+		stra += "  ccEEccccEEcc  ";
+		stra += "  cccEEccEEccc  ";
+		stra += "  cccE@EE@Eccc  ";
+		stra += "  cccEEEEEEccc  ";
+		stra += "   ccEEEEEEcc   ";
+		stra += "                ";
+		_imageFill(&img, &stra, 16, 16, 288, 0);
+	}
+
+	// Mario break
+	{
+		stra.clear();
+		stra += "      EEEEE     ";
+		stra += "    cEEEEEEEE   ";
+		stra += "   cccccc@c@    ";
+		stra += "  @@c@@c@@@@@@  ";
+		stra += "  @@c@@cc@@cc@@ ";
+		stra += "   @@c@@@@@@cc  ";
+		stra += "    EEEcccE@@   ";
+		stra += "   EE@@@cEEccc  ";
+		stra += "   Ec@@@cccccc  ";
+		stra += "   EEE@@cccccc  ";
+		stra += "    EEEEEcccc   ";
+		stra += "    EcccEEEE    ";
+		stra += "     ccccEEE    ";
+		stra += "  c cEEcccE     ";
+		stra += "  cccccE        ";
+		stra += "   cccc         ";
+		_imageFill(&img, &stra, 16, 16, 304, 0);
+	}
+
 	// cloud1
 	{
 		stra.clear();
@@ -545,6 +611,73 @@ bool ExampleGameMario::Init()
 
 		_imageFill(&img, &stra, 64, 24, 80, 16);
 	}
+
+	// Gumba walk 1/2
+	{
+		stra.clear();
+		stra += "      %%%%      ";
+		stra += "     %%%%%%     ";
+		stra += "    %%%%%%%%    ";
+		stra += "   %%%%%%%%%%   ";
+		stra += "  %``%%%%%%``%  ";
+		stra += " %%%^`%%%%`^%%% ";
+		stra += " %%%^``````^%%% ";
+		stra += "%%%%^`^%%^`^%%%%";
+		stra += "%%%%^^^%%^^^%%%%";
+		stra += "%%%%%%%%%%%%%%%%";
+		stra += " %%%%^^^^^^%%%% ";
+		stra += "    ^^^^^^^^    ";
+		stra += "    ^^^^^^^^``  ";
+		stra += "   ``^^^^^````` ";
+		stra += "   ```^^^`````` ";
+		stra += "    ```^^`````  ";
+		_imageFill(&img, &stra, 16, 16, 144, 16);
+	}
+
+	// Gumba walk 2/2
+	{
+		stra.clear();
+		stra += "      %%%%      ";
+		stra += "     %%%%%%     ";
+		stra += "    %%%%%%%%    ";
+		stra += "   %%%%%%%%%%   ";
+		stra += "  %``%%%%%%``%  ";
+		stra += " %%%^`%%%%`^%%% ";
+		stra += " %%%^``````^%%% ";
+		stra += "%%%%^`^%%^`^%%%%";
+		stra += "%%%%^^^%%^^^%%%%";
+		stra += "%%%%%%%%%%%%%%%%";
+		stra += " %%%%^^^^^^%%%% ";
+		stra += "    ^^^^^^^^    ";
+		stra += "  ``^^^^^^^^    ";
+		stra += " `````^^^^^``   ";
+		stra += " ``````^^^```   ";
+		stra += "  `````^^```    ";
+		_imageFill(&img, &stra, 16, 16, 160, 16);
+	}
+
+	// Gumba ground
+	{
+		stra.clear();
+		stra += "                ";
+		stra += "                ";
+		stra += "                ";
+		stra += "                ";
+		stra += "                ";
+		stra += "                ";
+		stra += "                ";
+		stra += "                ";
+		stra += "      %%%%      ";
+		stra += "   %%%%%%%%%%   ";
+		stra += " %%```%%%%```%% ";
+		stra += "%%^^^^````^^^^%%";
+		stra += "%%%%%%%%%%%%%%%%";
+		stra += "   ^^^^^^^^^^   ";
+		stra += "  ^^^^^^^^^^^^  ";
+		stra += " `````    ````` ";
+		_imageFill(&img, &stra, 16, 16, 176, 16);
+	}
+
 	// hill
 	{
 		stra.clear();

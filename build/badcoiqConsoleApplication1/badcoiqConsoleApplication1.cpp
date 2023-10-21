@@ -8,6 +8,7 @@
 
 #include "badcoiq/geometry/bqMeshLoader.h"
 #include "badcoiq/archive/bqArchive.h"
+#include "badcoiq/sound/bqSoundSystem.h"
 
 #include "badcoiq/GUI/bqGUI.h"
 
@@ -328,6 +329,15 @@ int main()
                 testScrollbar->m_alignment = bqGUIElement::Alignment::Left;*/
                 sld->m_alignment = bqGUIElement::Alignment::Center;
                 bqFramework::RebuildGUI();
+
+                auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
+                se->Init();
+
+                bqSound sound;
+                sound.Generate();
+
+                bqSoundObject* so = se->SummonSoundObject(&sound);
+                se->Play(so);
 
                 while (g_run)
                 {

@@ -95,6 +95,8 @@ public:
 	bqCursor* m_defaultCursors[(uint32_t)bqCursorType::_count];
 	bqCursor* m_activeCursor = 0;
 	void _initDefaultCursors();
+
+	bqSoundSystem* m_soundSystem = 0;
 };
 
 

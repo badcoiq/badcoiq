@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stddef.h> // NULL, size_t
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <assert.h> 
 #include <time.h>   // clock_t
 #include <stdint.h> // int32_t uint32_t и другие

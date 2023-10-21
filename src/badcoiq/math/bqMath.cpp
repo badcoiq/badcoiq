@@ -31,6 +31,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "math_private.h"
 
+
+//struct A
+//{
+//	1 - 10
+//	...
+//	20000 - 10
+//};
+//
+//A a[100];
+
+
 // Сгенерированные результаты функций:
 
 static float g_acosf[] = {

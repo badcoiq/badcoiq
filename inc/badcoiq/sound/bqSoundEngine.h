@@ -30,6 +30,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SE_H__
 #define __BQ_SE_H__
 
+// Создаётся энжином
+class bqSoundObject
+{
+public:
+	bqSoundObject() {}
+	virtual ~bqSoundObject() {}
+	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
+
+	bqSound* m_source = 0;
+};
+
 // то через что будет проигрываться звук
 // типа xaudio
 // реализация должна находиться в плагинах
@@ -37,10 +48,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqSoundEngine
 {
 public:
-bqSoundEngine(){}
-virtual ~bqSoundEngine(){}
+	bqSoundEngine(){}
+	virtual ~bqSoundEngine(){}
 
-virtual bqSound* SummonSound(const char*) = 0;
+	virtual bqSoundObject* SummonSoundObject(bqSound*) = 0;
+	virtual void Play(bqSoundObject*) = 0;
+
+	virtual const char* Name() = 0;
+
+	virtual bool Init() = 0;
+	virtual void Shutdown() = 0;
 };
 
 #endif

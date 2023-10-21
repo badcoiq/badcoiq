@@ -76,6 +76,7 @@ public:
 	//		bqDestroy(a);
 	//	}
 	//}
+
 };
 
 class bqMeshLoader

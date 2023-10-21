@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/common/bqImageLoader.h"
 #include "badcoiq/geometry/bqPolygonMesh.h"
 #include "badcoiq/geometry/bqMeshLoader.h"
+#include "badcoiq/sound/bqSoundSystem.h"
 
 #include "badcoiq/common/bqTextBufferReader.h"
 #include "badcoiq/archive/bqArchive.h"
@@ -157,6 +158,12 @@ void bqFramework::Stop()
 
 void bqFrameworkImpl::OnDestroy()
 {
+	if (m_soundSystem)
+	{
+		bqDestroy(m_soundSystem);
+		m_soundSystem = 0;
+	}
+
 	for (uint32_t i = 0; i < (uint32_t)bqCursorType::_count; ++i)
 	{
 		if (m_defaultCursors[i])
@@ -1092,4 +1099,14 @@ bqCursor* bqFramework::GetActiveCursor()
 void bqFramework::SetActiveCursor(bqCursor* c)
 {
 	g_framework->m_activeCursor = c;	
+}
+
+bqSoundSystem* bqFramework::GetSoundSystem()
+{
+	if (!g_framework->m_soundSystem)
+	{
+		g_framework->m_soundSystem = bqCreate<bqSoundSystem>();
+	}
+
+	return g_framework->m_soundSystem;
 }

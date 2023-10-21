@@ -1,4 +1,4 @@
-/*
+﻿/*
 BSD 2-Clause License
 
 Copyright (c) 2023, badcoiq
@@ -26,38 +26,42 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #pragma once
-#ifndef __BQ_Sound_H__
-#define __BQ_Sound_H__
+#ifndef __BQ_XAUDIO_H__
+#define __BQ_XAUDIO_H__
 
+#include "badcoiq.h"
 #include "badcoiq/containers/bqArray.h"
+#include "badcoiq/sound/bqSoundSystem.h"
 
-class bqSoundSource
+#include <xaudio2.h>
+#undef PlaySound
+
+class bqSoundObjectXAudio : public bqSoundObject
 {
 public:
-	bqSoundSource();
-	~bqSoundSource();
-	BQ_PLACEMENT_ALLOCATOR(bqSoundSource);
+	bqSoundObjectXAudio();
+	virtual ~bqSoundObjectXAudio();
+	BQ_PLACEMENT_ALLOCATOR(bqSoundObjectXAudio);
 
-	uint8_t* m_data = 0;
-	uint32_t m_size = 0;
-	uint32_t m_sampleRate = 44100;
-	uint32_t m_channels = 1;
-	uint32_t m_bits = 16;
+	IXAudio2SourceVoice* m_SourceVoice = 0;
 };
 
-// звук загружается сюда
-class bqSound
+class bqSoundEngineXAudio : public bqSoundEngine
 {
+	bool m_isInit = false;
+	IXAudio2* m_XAudio = 0;
+	IXAudio2MasteringVoice* m_MasteringVoice = 0;
+
 public:
-	bqSound();
-	virtual ~bqSound();
-	BQ_PLACEMENT_ALLOCATOR(bqSound);
+	bqSoundEngineXAudio();
+	virtual ~bqSoundEngineXAudio();
 
-	void Generate();
+	virtual bqSoundObject* SummonSoundObject(bqSound*) override;
+	virtual void Play(bqSoundObject*) override;
+	virtual const char* Name() override;
 
-	bqSoundSource* m_soundSource = 0;
+	virtual bool Init() override;
+	virtual void Shutdown() override;
 };
 
 #endif
-
-

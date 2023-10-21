@@ -152,6 +152,8 @@ public:
 	static bqCursor* GetDefaultCursor(bqCursorType);
 	static bqCursor* GetActiveCursor();
 	static void SetActiveCursor(bqCursor*);
+
+	static bqSoundSystem* GetSoundSystem();
 };
 
 #endif

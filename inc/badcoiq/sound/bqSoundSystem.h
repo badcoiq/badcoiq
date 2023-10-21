@@ -30,15 +30,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SS_H__
 #define __BQ_SS_H__
 
+#include "bqSound.h"
+#include "bqSoundEngine.h"
+
 // реализация должна быть во фреймворке
 // класс должен управлять всем что связано со звуком
 
 class bqSoundSystem
 {
+	bqArray<bqSoundEngine*> m_engines;
 public:
-bqSoundSystem(){}
-~bqSoundSystem(){}
+	bqSoundSystem();
+	~bqSoundSystem();
 
+	uint32_t GetNumOfEngines();
+
+	bqSoundEngine* GetEngine(uint32_t, const char*);
 };
 
 #endif
