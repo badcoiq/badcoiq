@@ -31,6 +31,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/sound/bqSoundSystem.h"
 #include "badcoiq/math/bqMath.h"
 
+bqSoundSource* bqSound_Generate_sin(float t, uint32_t f, float l);
+bqSoundSource* bqSound_Generate_square(float t, uint32_t f, float l);
+bqSoundSource* bqSound_Generate_triangle(float t, uint32_t f, float l);
+bqSoundSource* bqSound_Generate_saw(float t, uint32_t f, float l);
+
 bqSoundSource::bqSoundSource()
 {
 }
@@ -63,9 +68,34 @@ m_soundSource = 0;
 }
 
 
-void bqSound::Generate()
+void bqSound::Generate(
+bqSoundWaveType waveType,
+float time, 
+uint32_t frequency, 
+float loudness)
 {
-	if (!m_soundSource)
+Clear();
+
+switch(waveType)
+{
+default:
+case bqSoundWaveType::sin:
+m_soundSource = bqSound_Generate_sin(time, frequency, loudness);
+break;
+case bqSoundWaveType::square:
+m_soundSource = bqSound_Generate_square(time, frequency, loudness);
+break;
+case bqSoundWaveType::triangle:
+m_soundSource = bqSound_Generate_triangle(time, frequency, loudness);
+break;
+case bqSoundWaveType::saw:
+m_soundSource = bqSound_Generate_saw(time, frequency, loudness);
+break;
+
+
+}
+
+	/*if (!m_soundSource)
 	{
 		int time = 1;
 
@@ -135,4 +165,45 @@ void bqSound::Generate()
 			}
 		}
 	}
+*/
+}
+
+bqSoundSource* bqSound_Generate_sin(float t, uint32_t f, float l)
+{
+BQ_ASSERT_ST(t > 0.f);
+bqSoundSource* newSound = 0;
+if(t > 0.f)
+{
+}
+return newSound;
+}
+
+bqSoundSource* bqSound_Generate_square(float t, uint32_t f, float l)
+{
+BQ_ASSERT_ST(t > 0.f);
+bqSoundSource* newSound = 0;
+if(t > 0.f)
+{
+}
+return newSound;
+}
+
+bqSoundSource* bqSound_Generate_triangle(float t, uint32_t f, float l)
+{
+BQ_ASSERT_ST(t > 0.f);
+bqSoundSource* newSound = 0;
+if(t > 0.f)
+{
+}
+return newSound;
+}
+
+bqSoundSource* bqSound_Generate_saw(float t, uint32_t f, float l)
+{
+BQ_ASSERT_ST(t > 0.f);
+bqSoundSource* newSound = 0;
+if(t > 0.f)
+{
+}
+return newSound;
 }
