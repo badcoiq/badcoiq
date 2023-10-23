@@ -50,11 +50,18 @@ bqSound::bqSound()
 
 bqSound::~bqSound()
 {
-	if (m_soundSource)
+	Clear();
+}
+
+void bqSound::Clear()
+{
+if (m_soundSource)
 	{
 		delete m_soundSource;
+m_soundSource = 0;
 	}
 }
+
 
 void bqSound::Generate()
 {
