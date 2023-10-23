@@ -168,12 +168,31 @@ break;
 */
 }
 
+// 
+bqSoundSource* bqSound_createNew(float t)
+{
+bqSoundSource* newSound = new bqSoundSource;
+		newSound->m_channels = 1;
+		newSound->m_sampleRate = 44100;
+
+надо вычислить размер в соответствии с временем 
+newSound->m_sampleRate;
+
+		newSound->m_size = time * 2 * newSound->m_sampleRate;
+
+
+		newSound->m_data = (uint8_t*)bqMemory::malloc(newSound->m_size);
+
+return newSound;
+}
+
 bqSoundSource* bqSound_Generate_sin(float t, uint32_t f, float l)
 {
 BQ_ASSERT_ST(t > 0.f);
 bqSoundSource* newSound = 0;
 if(t > 0.f)
 {
+newSound = bqSound_createNew(t);
 }
 return newSound;
 }
