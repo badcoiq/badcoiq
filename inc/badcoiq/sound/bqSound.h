@@ -33,15 +33,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 enum class bqSoundFileType
 {
-wav
+	wav
 };
 
 enum class bqSoundWaveType
 {
-sin,
-square,
-triangle,
-saw
+	sin,
+	square,
+	triangle,
+	saw
 };
 
 // возможно лучше это сунуть в bqSound
@@ -69,13 +69,13 @@ public:
 	virtual ~bqSound();
 	BQ_PLACEMENT_ALLOCATOR(bqSound);
 
-// loudness - громкость, от 0 до 1
+	// loudness - громкость, от 0 до 1
 	void Generate(bqSoundWaveType, float time, uint32_t frequency, float loudness = 1.f);
 
-// расширение надо указывать в fn
-bool SaveToFile(bqSoundFileType, const char* fn);
+	// расширение надо указывать в fn
+	bool SaveToFile(bqSoundFileType, const char* fn);
 
-void Clear();
+	void Clear();
 
 	bqSoundSource* m_soundSource = 0;
 };

@@ -31,10 +31,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/sound/bqSoundSystem.h"
 #include "badcoiq/math/bqMath.h"
 
-bqSoundSource* bqSound_Generate_sin(float t, uint32_t f, float l);
-bqSoundSource* bqSound_Generate_square(float t, uint32_t f, float l);
-bqSoundSource* bqSound_Generate_triangle(float t, uint32_t f, float l);
-bqSoundSource* bqSound_Generate_saw(float t, uint32_t f, float l);
+void bqSound_Generate_sin(bqSoundSource* , float t, uint32_t f, float l);
+void bqSound_Generate_square(bqSoundSource*, float t, uint32_t f, float l);
+void bqSound_Generate_triangle(bqSoundSource*, float t, uint32_t f, float l);
+void bqSound_Generate_saw(bqSoundSource*, float t, uint32_t f, float l);
 
 bqSoundSource::bqSoundSource()
 {
@@ -60,40 +60,60 @@ bqSound::~bqSound()
 
 void bqSound::Clear()
 {
-if (m_soundSource)
+	if (m_soundSource)
 	{
 		delete m_soundSource;
-m_soundSource = 0;
+	m_soundSource = 0;
 	}
 }
 
+// 
+bqSoundSource* bqSound_createNew(float t)
+{
+	bqSoundSource* newSound = new bqSoundSource;
+	newSound->m_channels = 1;
+	newSound->m_sampleRate = 44100;
+
+	//	надо вычислить размер в соответствии с временем 
+	newSound->m_sampleRate;
+
+	newSound->m_size = time * 2 * newSound->m_sampleRate;
+
+
+	newSound->m_data = (uint8_t*)bqMemory::malloc(newSound->m_size);
+
+	return newSound;
+}
 
 void bqSound::Generate(
-bqSoundWaveType waveType,
-float time, 
-uint32_t frequency, 
-float loudness)
+	bqSoundWaveType waveType,
+	float time, 
+	uint32_t frequency, 
+	float loudness)
 {
-Clear();
+	Clear();
+	
+	if (time > 0.f)
+	{
+		m_soundSource = bqSound_createNew(time);
 
-switch(waveType)
-{
-default:
-case bqSoundWaveType::sin:
-m_soundSource = bqSound_Generate_sin(time, frequency, loudness);
-break;
-case bqSoundWaveType::square:
-m_soundSource = bqSound_Generate_square(time, frequency, loudness);
-break;
-case bqSoundWaveType::triangle:
-m_soundSource = bqSound_Generate_triangle(time, frequency, loudness);
-break;
-case bqSoundWaveType::saw:
-m_soundSource = bqSound_Generate_saw(time, frequency, loudness);
-break;
-
-
-}
+		switch (waveType)
+		{
+		default:
+		case bqSoundWaveType::sin:
+			bqSound_Generate_sin(m_soundSource, time, frequency, loudness);
+			break;
+		case bqSoundWaveType::square:
+			bqSound_Generate_square(m_soundSource, time, frequency, loudness);
+			break;
+		case bqSoundWaveType::triangle:
+			bqSound_Generate_triangle(m_soundSource, time, frequency, loudness);
+			break;
+		case bqSoundWaveType::saw:
+			bqSound_Generate_saw(m_soundSource, time, frequency, loudness);
+			break;
+		}
+	}
 
 	/*if (!m_soundSource)
 	{
@@ -168,61 +188,18 @@ break;
 */
 }
 
-// 
-bqSoundSource* bqSound_createNew(float t)
-{
-bqSoundSource* newSound = new bqSoundSource;
-		newSound->m_channels = 1;
-		newSound->m_sampleRate = 44100;
-
-надо вычислить размер в соответствии с временем 
-newSound->m_sampleRate;
-
-		newSound->m_size = time * 2 * newSound->m_sampleRate;
-
-
-		newSound->m_data = (uint8_t*)bqMemory::malloc(newSound->m_size);
-
-return newSound;
-}
-
-bqSoundSource* bqSound_Generate_sin(float t, uint32_t f, float l)
-{
-BQ_ASSERT_ST(t > 0.f);
-bqSoundSource* newSound = 0;
-if(t > 0.f)
-{
-newSound = bqSound_createNew(t);
-}
-return newSound;
-}
-
-bqSoundSource* bqSound_Generate_square(float t, uint32_t f, float l)
-{
-BQ_ASSERT_ST(t > 0.f);
-bqSoundSource* newSound = 0;
-if(t > 0.f)
+void bqSound_Generate_sin(bqSoundSource* ss, float t, uint32_t f, float l)
 {
 }
-return newSound;
+
+void bqSound_Generate_square(bqSoundSource* ss, float t, uint32_t f, float l)
+{
 }
 
-bqSoundSource* bqSound_Generate_triangle(float t, uint32_t f, float l)
+void bqSound_Generate_triangle(bqSoundSource* ss, float t, uint32_t f, float l)
 {
-BQ_ASSERT_ST(t > 0.f);
-bqSoundSource* newSound = 0;
-if(t > 0.f)
-{
-}
-return newSound;
 }
 
-bqSoundSource* bqSound_Generate_saw(float t, uint32_t f, float l)
+void bqSound_Generate_saw(bqSoundSource* ss, float t, uint32_t f, float l)
 {
-BQ_ASSERT_ST(t > 0.f);
-bqSoundSource* newSound = 0;
-if(t > 0.f)
-{
-}
-return newSound;
 }
