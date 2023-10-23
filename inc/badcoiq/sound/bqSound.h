@@ -31,6 +31,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/containers/bqArray.h"
 
+enum class bqSoundFileType
+{
+wav
+};
+
+enum class bqSoundWaveType
+{
+sin,
+square,
+triangle,
+saw
+};
+
+// возможно лучше это сунуть в bqSound
+// думал что bqSound будет выступать в качестве управляющего объекта
+// но теперь есть bqSoundObject
 class bqSoundSource
 {
 public:
@@ -53,7 +69,13 @@ public:
 	virtual ~bqSound();
 	BQ_PLACEMENT_ALLOCATOR(bqSound);
 
-	void Generate();
+// loudness - громкость, от 0 до 1
+	void Generate(bqSoundWaveType, float time, uint32_t frequency, float loudness = 1.f);
+
+// расширение надо указывать в fn
+bool SaveToFile(bqSoundFileType, const char* fn);
+
+void Clear();
 
 	bqSoundSource* m_soundSource = 0;
 };
