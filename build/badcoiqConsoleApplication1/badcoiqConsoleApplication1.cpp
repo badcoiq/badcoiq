@@ -333,16 +333,59 @@ int main()
                 auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
                 se->Init();
 
-                bqSound sound;
-                sound.Generate();
+                bqSound sound1;
+                bqSound sound2;
+                bqSound sound3;
+                bqSound sound4;
+                uint32_t Hz = 1100;
+                sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
+                sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
+                sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
+                sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
 
-                bqSoundObject* so = se->SummonSoundObject(&sound);
-                se->Play(so);
+                bqSoundObject* so1 = se->SummonSoundObject(&sound1);
+                bqSoundObject* so2 = se->SummonSoundObject(&sound2);
+                bqSoundObject* so3 = se->SummonSoundObject(&sound3);
+                bqSoundObject* so4 = se->SummonSoundObject(&sound4);
+                //se->Play(so);
 
                 while (g_run)
                 {
                     bqFramework::Update();
                     bqFramework::UpdateGUI();
+
+                    if (bqInput::IsKeyHit(bqInput::KEY_1))
+                        se->Play(so1);
+                    if (bqInput::IsKeyHit(bqInput::KEY_2))
+                        se->Play(so2);
+                    if (bqInput::IsKeyHit(bqInput::KEY_3))
+                        se->Play(so3);
+                    if (bqInput::IsKeyHit(bqInput::KEY_4))
+                        se->Play(so4);
+
+                    if (bqInput::IsKeyHit(bqInput::KEY_PGDOWN))
+                    {
+                        --Hz;
+                        if (Hz < 5)
+                            Hz = 5;
+                        printf("Hz: %u\n", Hz);
+                        sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
+                        sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
+                        sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
+                        sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
+                    }
+
+                    if (bqInput::IsKeyHit(bqInput::KEY_PGUP))
+                    {
+                        ++Hz;
+                        if (Hz > 20000)
+                            Hz = 20000;
+                        printf("Hz: %u\n", Hz);
+                        sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
+                        sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
+                        sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
+                        sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
+                    }
 
                     gs->BeginDraw();
                     gs->ClearAll();

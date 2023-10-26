@@ -101,13 +101,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef _MSC_VER
 
-#if _MSC_VER >= 1930 && _MSC_VER <= 1936
+#if _MSC_VER >= 1930 && _MSC_VER <= 1937
 #define BQ_LINK_LIBRARY_CMP "_v143"
 #elif _MSC_VER >= 1920 && _MSC_VER <= 1929
 #define BQ_LINK_LIBRARY_CMP "_v142"
 #elif _MSC_VER >= 1910 && _MSC_VER <= 1916
 #error Не проверено.
 #define BQ_LINK_LIBRARY_CMP "_v141"
+#else
+#error Need to update this section
 #endif
 
 #ifdef BQ_BIT_64

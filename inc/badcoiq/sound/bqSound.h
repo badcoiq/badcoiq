@@ -55,10 +55,20 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundSource);
 
 	uint8_t* m_data = 0;
-	uint32_t m_size = 0;
+	uint32_t m_dataSize = 0;
 	uint32_t m_sampleRate = 44100;
 	uint32_t m_channels = 1;
 	uint32_t m_bits = 16;
+
+	// for info
+	// далее данные чисто для информации
+	// всё должно устанавливаться методами типа при генерировании
+	float m_time = 0.f;
+	uint32_t m_numOfSamples = 0; // m_sampleRate * m_time;
+	uint32_t m_bitsPerSample = 16;
+	uint32_t m_bytesPerSample = 0; // m_bitsPerSample / 8;
+	// nBlockAlign
+	uint16_t m_blockSize = 0;// m_bytesPerSample * m_channels;
 };
 
 // звук загружается сюда

@@ -32,9 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/math/bqMath.h"
 
 
-float sin_tri(float rads)
+float bqSoundSource_sin_tri(float rads)
 {
-	float pi = M_PI;
+	float pi = PIf;
 	float halfPi = pi * 0.5f;
 	float _270 = halfPi + halfPi + halfPi;
 	float _180 = pi;
@@ -61,15 +61,15 @@ float sin_tri(float rads)
 		r = rads * M;
 		//printf("%f %f %f\n", rads, rads *M, r);
 	}
-	printf("\n");
+//	printf("\n");
 	return r;
 }
 
-float sin_saw(float rads)
+float bqSoundSource_sin_saw(float rads)
 {
 	float v = -1.f;
 	float r = 0.f;
-	float pi = M_PI;
+	float pi = PIf;
 	float halfPi = pi * 0.5f;
 	float _270 = halfPi + halfPi + halfPi;
 	float _180 = pi;
@@ -143,22 +143,16 @@ bqSoundSource* bqSound_createNew(float time)
 	bqSoundSource* newSound = new bqSoundSource;
 	newSound->m_channels = 1;
 	newSound->m_sampleRate = 44100;
+	newSound->m_bitsPerSample = 16;
+	newSound->m_bytesPerSample = newSound->m_bitsPerSample / 8;
+	newSound->m_blockSize = newSound->m_bytesPerSample * newSound->m_channels;
+	newSound->m_time = time;
+	newSound->m_numOfSamples = (uint32_t)ceil((float)newSound->m_sampleRate * time);
 
-int16_t bitsPerSample = 16;
-int bytesPerSample = bitsPerSample / 8;
+	newSound->m_dataSize = newSound->m_numOfSamples * newSound->m_bytesPerSample;
+	newSound->m_dataSize *= newSound->m_channels;
 
-// nBlockAlign
-		int16_t blockSize = bytesPerSample * newSound->m_channels;
-		
-int numOfSamples = (double)newSound->m_sampleRate * time;
-
-int dataSize = numOfSamples * bytesPerSample;
-		dataSize *= newSound->m_channels;
-
-	newSound->m_size = dataSize;
-
-
-	newSound->m_data = (uint8_t*)bqMemory::malloc(newSound->m_size);
+	newSound->m_data = (uint8_t*)bqMemory::malloc(newSound->m_dataSize);
 
 	return newSound;
 }
@@ -175,60 +169,73 @@ void bqSound::Generate(
 	{
 		m_soundSource = bqSound_createNew(time);
 
-// некоторые значения надо добавить в класс
-	int numOfSamples = (double)m_soundSource->m_sampleRate * time;
-		
-float samplesPerWave = (float)m_soundSource->m_sampleRate / Hz;
-	float angle = 0.f;
-		float angleStep = 360.f / samplesPerWave;
-		float loudness = 32767.f;
-		
-		
-			for(int i = 0, index = 0; i < numOfSamples; ++i)
-			{
-				auto rad = DegToRad(angle);
-				auto sn = sin(rad);
+		double samplesPerWave = (double)m_soundSource->m_sampleRate / Hz;
+		double angle = 0.f;
+		double angleStep = 360.0 / samplesPerWave;
+		int16_t loudness = 32767;
 
-				angle += angleStep;
-				if (angle > 360.f)
-				{
-					angle = 0.f;
-				}
+		// наверно лучше использовать это для сброса угла
+		uint32_t samplesPerWavei = (uint32_t)floor(samplesPerWave);
+		uint32_t samplesPerWaveindex = 0;
 
-				_short v;
-				
-				if(waveType == WaveType_sin)
-				{
-				
-					v._16 = (int16_t)(sn * loudness);
-			//		printf("%f %f %f %i\n", angle, rad, sn, v._16);
-				}
-				else if(waveType == WaveType_square)
-				{
-					if(sn >= 0.f)
-					{
-						v._16 = loudness;
-					}
-					else
-					{
-						v._16 = -loudness;
-					}
-				}
-				else if(waveType == WaveType_triangle)
-				{
-					auto sn2 = sin_tri(rad);
-					v._16 = (int16_t)(sn2 * loudness);
-				}
-				else if(waveType == WaveType_saw)
-				{
-					auto sn2 = sin_saw(rad);
-					v._16 = (int16_t)(sn2 * loudness);
-				}
 
-				data[index++] = v._8[0];
-				data[index++] = v._8[1];
+		for (uint32_t i = 0, index = 0; i < m_soundSource->m_numOfSamples; ++i)
+		{
+			auto rad = bqMath::DegToRad(angle);
+			auto sn = sin(rad);
+
+			++samplesPerWaveindex;
+			if(samplesPerWaveindex >= samplesPerWavei)
+			{ 
+				samplesPerWaveindex = 0;
+				angle = 0.;
 			}
 
+			angle += angleStep;
+			if (angle >= 360.)
+			{
+				angle = 0.;
+			}
+
+			union _short
+			{
+				int8_t _8[2];
+				int16_t _16;
+			};
+			_short v;
+
+			if (waveType == bqSoundWaveType::sin)
+			{
+
+				v._16 = (int16_t)(sn * loudness);
+				//		printf("%f %f %f %i\n", angle, rad, sn, v._16);
+			}
+			else if (waveType == bqSoundWaveType::square)
+			{
+				if (sn >= 0.f)
+				{
+					v._16 = loudness;
+				}
+				else
+				{
+					v._16 = -loudness;
+				}
+			}
+			else if (waveType == bqSoundWaveType::triangle)
+			{
+				auto sn2 = bqSoundSource_sin_tri(rad);
+				v._16 = (int16_t)(sn2 * loudness);
+			}
+			else if (waveType == bqSoundWaveType::saw)
+			{
+				auto sn2 = bqSoundSource_sin_saw(rad);
+				v._16 = (int16_t)(sn2 * loudness);
+			}
+
+			m_soundSource->m_data[index++] = v._8[0];
+			m_soundSource->m_data[index++] = v._8[1];
+		}
+	}
 	/*if (!m_soundSource)
 	{
 		int time = 1;

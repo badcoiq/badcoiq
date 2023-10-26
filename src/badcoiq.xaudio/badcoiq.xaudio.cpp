@@ -96,7 +96,7 @@ void bqSoundEngineXAudio::Play(bqSoundObject* sound)
 		XAUDIO2_BUFFER buffer = { 0 };
 		buffer.pAudioData = sound->m_source->m_soundSource->m_data;
 		buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
-		buffer.AudioBytes = sound->m_source->m_soundSource->m_size;
+		buffer.AudioBytes = sound->m_source->m_soundSource->m_dataSize;
 
 		HRESULT hr = S_OK;
 		if (FAILED(hr = _GetXAudioSoundObject(sound)->m_SourceVoice->SubmitSourceBuffer(&buffer)))
