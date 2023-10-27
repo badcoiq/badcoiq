@@ -138,12 +138,18 @@ void bqSound::Clear()
 }
 
 // 
-bqSoundSource* bqSound_createNew(float time)
+void bqSound::Create(float time,
+uint32_t channels,
+uint32_t sampleRate,
+uint32_t bitsPerSample,
+)
 {
+Clear();
+
 	bqSoundSource* newSound = new bqSoundSource;
-	newSound->m_channels = 1;
-	newSound->m_sampleRate = 44100;
-	newSound->m_bitsPerSample = 16;
+	newSound->m_channels = channels;
+	newSound->m_sampleRate = sampleRate;
+	newSound->m_bitsPerSample = bitsPerSample;
 	newSound->m_bytesPerSample = newSound->m_bitsPerSample / 8;
 	newSound->m_blockSize = newSound->m_bytesPerSample * newSound->m_channels;
 	newSound->m_time = time;
@@ -154,7 +160,7 @@ bqSoundSource* bqSound_createNew(float time)
 
 	newSound->m_data = (uint8_t*)bqMemory::malloc(newSound->m_dataSize);
 
-	return newSound;
+m_soundSource = newSound;
 }
 
 void bqSound::Generate(
@@ -167,7 +173,7 @@ void bqSound::Generate(
 	
 	if (time > 0.f)
 	{
-		m_soundSource = bqSound_createNew(time);
+		Create(time, 1, 44100, 16);
 
 		double samplesPerWave = (double)m_soundSource->m_sampleRate / Hz;
 		double angle = 0.f;
