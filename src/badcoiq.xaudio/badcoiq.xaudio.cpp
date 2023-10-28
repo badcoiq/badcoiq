@@ -57,6 +57,39 @@ bqSoundEngineXAudio::~bqSoundEngineXAudio()
 {
 }
 
+void bqIXAudio2VoiceCallback::OnVoiceProcessingPassStart(THIS_ UINT32 BytesRequired)
+{
+}
+
+void bqIXAudio2VoiceCallback::OnVoiceProcessingPassEnd()
+{
+}
+
+void bqIXAudio2VoiceCallback::OnStreamEnd()
+{
+}
+
+void bqIXAudio2VoiceCallback::OnBufferStart (THIS_ void* pBufferContext)
+{
+}
+
+void bqIXAudio2VoiceCallback::OnBufferEnd (THIS_ void* pBufferContext)
+{
+	m_so->m_state = m_so->state_notplaying;
+	if(m_so->m_callback)
+		m_so->m_callback->OnStop();
+}
+
+void bqIXAudio2VoiceCallback::OnLoopEnd (THIS_ void* pBufferContext)
+{
+}
+
+void bqIXAudio2VoiceCallback::OnVoiceError (THIS_ void* pBufferContext, HRESULT Error)
+{
+	bqLog::PrintError("XAudio: voice error %u\n", Error);
+}
+
+
 bqSoundObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
 {
 	HRESULT hr = S_OK;
@@ -73,9 +106,11 @@ bqSoundObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
 	wfx.wBitsPerSample = s->m_soundSource->m_bits;
 
 	IXAudio2SourceVoice* SourceVoice = 0;
+	bqIXAudio2VoiceCallback* callback = new bqIXAudio2VoiceCallback;
 
-	if (FAILED(hr = m_XAudio->CreateSourceVoice(&SourceVoice, &wfx)))
+	if (FAILED(hr = m_XAudio->CreateSourceVoice(&SourceVoice, &wfx, 0, 2.f, callback)))
 	{
+		delete callback;
 		bqLog::PrintError(L"Error %#X creating source voice\n", hr);
 		return 0;
 	}
@@ -83,30 +118,10 @@ bqSoundObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
 	bqSoundObjectXAudio* so = new bqSoundObjectXAudio;
 	so->m_SourceVoice = SourceVoice;
 	so->m_source = s;
+	so->m_xaudioCallback = callback;
+	callback->m_so = so;
 
 	return so;
-}
-
-void bqSoundEngineXAudio::Play(bqSoundObject* sound)
-{
-	BQ_ASSERT_ST(sound);
-
-	if (sound)
-	{
-		XAUDIO2_BUFFER buffer = { 0 };
-		buffer.pAudioData = sound->m_source->m_soundSource->m_data;
-		buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
-		buffer.AudioBytes = sound->m_source->m_soundSource->m_dataSize;
-
-		HRESULT hr = S_OK;
-		if (FAILED(hr = _GetXAudioSoundObject(sound)->m_SourceVoice->SubmitSourceBuffer(&buffer)))
-		{
-			bqLog::PrintError(L"Error %#X submitting source buffer\n", hr);
-			return;
-		}
-
-		hr = _GetXAudioSoundObject(sound)->m_SourceVoice->Start(0);
-	}
 }
 
 const char* bqSoundEngineXAudio::Name()
@@ -153,8 +168,6 @@ void bqSoundEngineXAudio::Shutdown()
 	{
 		m_isInit = false;
 
-		
-
 		if (m_MasteringVoice)
 		{
 			m_MasteringVoice->DestroyVoice();
@@ -175,5 +188,43 @@ bqSoundObjectXAudio::~bqSoundObjectXAudio()
 		m_SourceVoice->DestroyVoice();
 		m_SourceVoice = 0;
 	}
+
+	if (m_xaudioCallback)
+	{
+		delete m_xaudioCallback;
+		m_xaudioCallback = 0;
+	}
 }
 
+void bqSoundObjectXAudio::Start()
+{
+	if (m_state == state_notplaying)
+	{
+		XAUDIO2_BUFFER buffer = { 0 };
+		buffer.pAudioData = m_source->m_soundSource->m_data;
+		buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
+		buffer.AudioBytes = m_source->m_soundSource->m_dataSize;
+
+		HRESULT hr = S_OK;
+		if (FAILED(hr = m_SourceVoice->SubmitSourceBuffer(&buffer)))
+		{
+			bqLog::PrintError(L"Error %#X submitting source buffer\n", hr);
+			return;
+		}
+
+		if(m_callback)
+			m_callback->OnStart();
+
+		hr = m_SourceVoice->Start(0);
+		m_state = state_playing;
+	}
+}
+
+void bqSoundObjectXAudio::Stop()
+{
+	if (m_state == state_playing)
+	{
+		m_SourceVoice->Stop();
+		m_state = state_notplaying;
+	}
+}

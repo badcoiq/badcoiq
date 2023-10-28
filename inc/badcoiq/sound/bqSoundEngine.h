@@ -30,6 +30,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SE_H__
 #define __BQ_SE_H__
 
+class bqSoundObjectCallback
+{
+public:
+	bqSoundObjectCallback() {}
+	virtual ~bqSoundObjectCallback() {}
+
+	virtual void OnStart() {}
+	virtual void OnStop() {}
+};
+
 // Создаётся энжином
 class bqSoundObject
 {
@@ -39,6 +49,17 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
 
 	bqSound* m_source = 0;
+	bqSoundObjectCallback* m_callback = 0;
+
+	enum
+	{
+		state_notplaying,
+		state_playing,
+	};
+	uint32_t m_state = state_notplaying;
+
+	virtual void Start() = 0;
+	virtual void Stop() = 0;
 };
 
 // то через что будет проигрываться звук
@@ -52,7 +73,6 @@ public:
 	virtual ~bqSoundEngine(){}
 
 	virtual bqSoundObject* SummonSoundObject(bqSound*) = 0;
-	virtual void Play(bqSoundObject*) = 0;
 
 	virtual const char* Name() = 0;
 

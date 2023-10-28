@@ -368,15 +368,15 @@ int main()
                     bqFramework::UpdateGUI();
 
                     if (bqInput::IsKeyHit(bqInput::KEY_1))
-                        se->Play(so1);
+                        so1->Start();
                     if (bqInput::IsKeyHit(bqInput::KEY_2))
-                        se->Play(so2);
+                        so2->Start();
                     if (bqInput::IsKeyHit(bqInput::KEY_3))
-                        se->Play(so3);
+                        so3->Start();
                     if (bqInput::IsKeyHit(bqInput::KEY_4))
-                        se->Play(so4);
+                        so4->Start();
                     if (bqInput::IsKeyHit(bqInput::KEY_5))
-                        se->Play(so5);
+                        so5->Start();
 
                     if (bqInput::IsKeyHit(bqInput::KEY_PGDOWN))
                     {

@@ -186,7 +186,7 @@ void bqSound::Generate(
 
 		float lM = 1.f / 32767.f;
 		int16_t loudness = int16_t(_loudness / lM);
-		printf("%f %f %i\n", _loudness, lM, loudness);
+	//	printf("%f %f %i\n", _loudness, lM, loudness);
 
 		// наверно лучше использовать это для сброса угла
 		uint32_t samplesPerWavei = (uint32_t)floor(samplesPerWave);

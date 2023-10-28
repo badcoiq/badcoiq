@@ -36,6 +36,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <xaudio2.h>
 #undef PlaySound
 
+class bqSoundObjectXAudio;
+class bqIXAudio2VoiceCallback : public IXAudio2VoiceCallback
+{
+public:
+	bqIXAudio2VoiceCallback() {}
+	virtual ~bqIXAudio2VoiceCallback() {}
+
+	STDMETHOD_(void, OnVoiceProcessingPassStart) (THIS_ UINT32 BytesRequired);
+	STDMETHOD_(void, OnVoiceProcessingPassEnd) (THIS);
+	STDMETHOD_(void, OnStreamEnd) (THIS);
+	STDMETHOD_(void, OnBufferStart) (THIS_ void* pBufferContext);
+	STDMETHOD_(void, OnBufferEnd) (THIS_ void* pBufferContext);
+	STDMETHOD_(void, OnLoopEnd) (THIS_ void* pBufferContext);
+	STDMETHOD_(void, OnVoiceError) (THIS_ void* pBufferContext, HRESULT Error);
+
+	bqSoundObjectXAudio* m_so = 0;
+};
+
 class bqSoundObjectXAudio : public bqSoundObject
 {
 public:
@@ -44,6 +62,11 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundObjectXAudio);
 
 	IXAudio2SourceVoice* m_SourceVoice = 0;
+
+	bqIXAudio2VoiceCallback* m_xaudioCallback = 0;
+	virtual void Start() override;
+	virtual void Stop() override;
+
 };
 
 class bqSoundEngineXAudio : public bqSoundEngine
@@ -57,7 +80,6 @@ public:
 	virtual ~bqSoundEngineXAudio();
 
 	virtual bqSoundObject* SummonSoundObject(bqSound*) override;
-	virtual void Play(bqSoundObject*) override;
 	virtual const char* Name() override;
 
 	virtual bool Init() override;
