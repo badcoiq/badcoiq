@@ -337,6 +337,8 @@ int main()
                 bqSound sound2;
                 bqSound sound3;
                 bqSound sound4;
+                bqSound sound5;
+                bqSound sound6;
                 uint32_t Hz = 440;
 
                 float time = 0.5f;
@@ -345,16 +347,19 @@ int main()
                 sound2.Generate(bqSoundWaveType::square, time, Hz, loudness);
                 sound3.Generate(bqSoundWaveType::triangle, time, Hz, loudness);
                 sound4.Generate(bqSoundWaveType::saw, time, Hz, loudness);
-
+                sound5.Create(1.f, 2, 44100, 16);
                // sound1.SaveToFile(bqSoundFileType::wav, "sin.wav");
               //  sound2.SaveToFile(bqSoundFileType::wav, "square.wav");
               //  sound3.SaveToFile(bqSoundFileType::wav, "triangle.wav");
               //  sound4.SaveToFile(bqSoundFileType::wav, "saw.wav");
+              //  sound5.SaveToFile(bqSoundFileType::wav, "2channels.wav");
+                sound6.LoadFromFile("../data/sounds/song1.wav");
 
                 bqSoundObject* so1 = se->SummonSoundObject(&sound1);
                 bqSoundObject* so2 = se->SummonSoundObject(&sound2);
                 bqSoundObject* so3 = se->SummonSoundObject(&sound3);
                 bqSoundObject* so4 = se->SummonSoundObject(&sound4);
+                bqSoundObject* so5 = se->SummonSoundObject(&sound6);
                 //se->Play(so);
 
                 while (g_run)
@@ -370,6 +375,8 @@ int main()
                         se->Play(so3);
                     if (bqInput::IsKeyHit(bqInput::KEY_4))
                         se->Play(so4);
+                    if (bqInput::IsKeyHit(bqInput::KEY_5))
+                        se->Play(so5);
 
                     if (bqInput::IsKeyHit(bqInput::KEY_PGDOWN))
                     {

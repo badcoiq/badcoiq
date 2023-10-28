@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 #include "badcoiq/math/bqMath.h"
+#include "badcoiq/common/bqFileBuffer.h"
 
 
 float bqSoundSource_sin_tri(float rads)
@@ -133,7 +134,7 @@ void bqSound::Clear()
 	if (m_soundSource)
 	{
 		delete m_soundSource;
-	m_soundSource = 0;
+		m_soundSource = 0;
 	}
 }
 
@@ -152,7 +153,12 @@ void bqSound::Create(float time,
 	newSound->m_bytesPerSample = newSound->m_bitsPerSample / 8;
 	newSound->m_blockSize = newSound->m_bytesPerSample * newSound->m_channels;
 	newSound->m_time = time;
+
 	newSound->m_numOfSamples = (uint32_t)ceil((float)newSound->m_sampleRate * time);
+	// альтернативный способ получить m_numOfSamples
+	// для данного метода не подходит так как создание происходит на основе времени
+	//uint32_t numOfBlocks = m_soundSource->m_dataSize / m_soundSource->m_blockSize;
+	//m_soundSource->m_numOfSamples = numOfBlocks;
 
 	newSound->m_dataSize = newSound->m_numOfSamples * newSound->m_bytesPerSample;
 	newSound->m_dataSize *= newSound->m_channels;
@@ -372,4 +378,133 @@ bool bqSound::_saveWav(const char* fn)
 	}
 
 	return false;
+}
+
+bool bqSound::LoadFromFile(const char* fn)
+{
+	Clear();
+
+	bqString path(fn);
+
+	if (path.extension(".wav"))
+	{
+		return _loadWav(fn);
+	}
+
+	/*bqImage* img = 0;
+	uint32_t file_size = 0;
+	uint8_t* ptr = bqFramework::SummonFileBuffer(path, &file_size, false);
+	if (ptr)
+	{
+		img = LoadBMP(path, ptr, (uint32_t)file_size);
+		bqDestroy(ptr);
+	}
+	return img;*/
+
+	return false;
+}
+
+bool bqSound::_loadWav(const char* fn)
+{
+	uint32_t file_size = 0;
+	uint8_t* ptr = bqFramework::SummonFileBuffer(fn, &file_size, false);
+	if (ptr)
+	{
+		return _loadWav(ptr, (uint32_t)file_size);
+		bqDestroy(ptr);
+	}
+	return false;
+}
+
+bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
+{
+	bqFileBuffer file(buffer, bufferSz);
+
+	char riff[5] = { 0,0,0,0,0 };
+	file.Read(riff, 4);
+	if (strcmp(riff, "RIFF") == 0)
+	{
+		uint32_t RIFFChunkSize = 0;
+		file.Read(&RIFFChunkSize, 4);
+
+		char wave[5] = { 0,0,0,0,0 };
+		file.Read(wave, 4);
+		if (strcmp(wave, "WAVE") == 0)
+		{
+			char fmt[5] = { 0,0,0,0,0 };
+			file.Read(fmt, 4);
+			if (strcmp(fmt, "fmt ") == 0)
+			{
+				uint32_t FMTChunkSize = 0;
+				file.Read(&FMTChunkSize, 4);
+
+				uint16_t format = 0;
+				file.Read(&FMTChunkSize, 2);
+
+				uint16_t channels = 0;
+				file.Read(&channels, 2);
+
+				uint32_t sampleRate = 0;
+				file.Read(&sampleRate, 4);
+
+				uint32_t byteRate = 0;
+				file.Read(&byteRate, 4);
+
+				uint16_t blockAlign = 0;
+				file.Read(&blockAlign, 2);
+
+				uint16_t bitsPerSample = 0;
+				file.Read(&bitsPerSample, 2);
+
+				char data[5] = { 0,0,0,0,0 };
+				file.Read(data, 4);
+				if (strcmp(data, "data") == 0)
+				{
+					uint32_t dataSize = 0;
+					file.Read(&dataSize, 4);
+					if (dataSize)
+					{
+						Create(0.1f, channels, sampleRate, bitsPerSample);
+						if (m_soundSource->m_dataSize < dataSize)
+							_reallocate(dataSize);
+
+						file.Read(m_soundSource->m_data, m_soundSource->m_dataSize);
+						CalculateTime();
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+float bqSound::CalculateTime()
+{
+	float time = 0.f;
+	if (m_soundSource)
+	{
+		BQ_ASSERT_ST(m_soundSource->m_sampleRate > 0);
+
+		if (m_soundSource->m_sampleRate && m_soundSource->m_dataSize)
+		{
+			uint32_t numOfBlocks = m_soundSource->m_dataSize / m_soundSource->m_blockSize;
+			m_soundSource->m_numOfSamples = numOfBlocks;
+			m_soundSource->m_time = 1.f / m_soundSource->m_sampleRate;
+			m_soundSource->m_time *= m_soundSource->m_numOfSamples;
+		}
+	}
+
+	return time;
+}
+
+// если при чтении файла нужен будет буфер бОльшего размера
+// надо его увеличить.
+void bqSound::_reallocate(uint32_t newSz)
+{
+	uint8_t* newBuf = (uint8_t*)bqMemory::malloc(newSz);
+	memcpy(newBuf, m_soundSource->m_data, m_soundSource->m_dataSize);
+	bqMemory::free(m_soundSource->m_data);
+	m_soundSource->m_data = newBuf;
+	m_soundSource->m_dataSize = newSz;
 }

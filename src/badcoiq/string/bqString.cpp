@@ -1149,5 +1149,15 @@ bqString bqString::operator+(double v)
 	return s;
 }
 
+bool bqString::extension(const char* _ext)
+{
+	auto des_it = m_size;
+	auto zgz_it = strlen(_ext);
+	if (zgz_it > des_it) return false;
+	while (zgz_it != 0)
+		if (m_data[--des_it] != _ext[--zgz_it]) return false;
+	return true;
 
+	return false;
+}
 

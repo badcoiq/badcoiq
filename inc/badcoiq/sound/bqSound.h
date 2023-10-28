@@ -74,7 +74,10 @@ public:
 // звук загружается сюда
 class bqSound
 {
+	void _reallocate(uint32_t);
 	bool _saveWav(const char* fn);
+	bool _loadWav(const char* fn);
+	bool _loadWav(uint8_t* buffer, uint32_t bufferSz);
 public:
 	bqSound();
 	virtual ~bqSound();
@@ -95,8 +98,13 @@ public:
 
 	// расширение надо указывать в fn
 	bool SaveToFile(bqSoundFileType, const char* fn);
+	
+	bool LoadFromFile(const char* fn);
 
 	void Clear();
+
+	// Вычислить время по битрейту и прочим параметрам
+	float CalculateTime();
 
 	bqSoundSource* m_soundSource = 0;
 };

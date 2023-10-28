@@ -334,6 +334,16 @@ public:
 		return m_size;
 	}
 
+	bool extension(const char* _ext)
+	{
+		auto des_it = m_size;
+		auto zgz_it = strlen(_ext);
+		if (zgz_it > des_it) return false;
+		while (zgz_it != 0)
+			if (m_data[--des_it] != _ext[--zgz_it]) return false;
+		return true;
+	}
+
 	char_type* begin() const { return m_data; }
 	char_type* end() const { return (m_data + (m_size)); }
 	const char_type& operator[](size_t i) const { return m_data[i]; }
@@ -691,6 +701,8 @@ public:
 
 	void to_utf8(bqStringA&) const;
 	void to_utf16(bqStringW&) const;
+
+	bool extension(const char* _ext);
 };
 
 #endif

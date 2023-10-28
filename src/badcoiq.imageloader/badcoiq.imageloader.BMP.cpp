@@ -55,7 +55,7 @@ bqImage* bqImageLoaderImpl::LoadBMP(const char* path)
 // 16bit5551RGB
 bqImage* bqImageLoaderImpl::LoadBMP(const char* path, uint8_t* buffer, uint32_t bufferSz)
 {
-	BQ_ASSERT_ST(path);
+	BQ_ASSERT_ST(path);  // Нафига вообще нужен path? 
 	BQ_ASSERT_ST(buffer);
 	BQ_ASSERT_ST(bufferSz);
 
