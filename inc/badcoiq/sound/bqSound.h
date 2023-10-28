@@ -91,7 +91,7 @@ public:
 	void Create(float time, uint32_t channels, uint32_t sampleRate, uint32_t bitsPerSample);
 
 	// loudness - громкость, от 0 до 1
-	void Generate(bqSoundWaveType, float time, uint32_t frequency, float loudness = 1.f);
+	void Generate(bqSoundWaveType, float time, uint32_t frequency, float loudness = 0.5f);
 
 	// расширение надо указывать в fn
 	bool SaveToFile(bqSoundFileType, const char* fn);

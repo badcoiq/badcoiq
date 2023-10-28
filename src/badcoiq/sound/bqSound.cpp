@@ -177,7 +177,10 @@ void bqSound::Generate(
 		double samplesPerWave = (double)m_soundSource->m_sampleRate / Hz;
 		double angle = 0.f;
 		double angleStep = 360.0 / samplesPerWave;
-		int16_t loudness = 32767;
+
+		float lM = 1.f / 32767.f;
+		int16_t loudness = int16_t(_loudness / lM);
+		printf("%f %f %i\n", _loudness, lM, loudness);
 
 		// наверно лучше использовать это для сброса угла
 		uint32_t samplesPerWavei = (uint32_t)floor(samplesPerWave);
@@ -331,20 +334,20 @@ bool bqSound::SaveToFile(bqSoundFileType ft, const char* fn)
 bool bqSound::_saveWav(const char* fn)
 {
 	FILE * f =0;
-	fopen_s(&f, "sound.wav", "wb");
+	fopen_s(&f, fn, "wb");
 	if(f)
 	{
 		fwrite("RIFF", 4, 1, f);
 			
-		int32_t fileSz = m_soundSource->m_dataSize + 44;
-		fwrite(&fileSz, 4, 1, f);
+		int32_t chunkSz = m_soundSource->m_dataSize + 44 - 8;
+		fwrite(&chunkSz, 4, 1, f);
 			
 		fwrite("WAVE", 4, 1, f);
 		fwrite("fmt ", 4, 1, f);
 			
 //bits per sample?
-		int32_t chnkSz = 16;
-		fwrite(&chnkSz, sizeof(chnkSz), 1, f);
+		int32_t subchnkSz = 16;
+		fwrite(&subchnkSz, 4, 1, f);
 			
 		// pcm
 		int16_t TYPE = 1;
@@ -358,8 +361,8 @@ bool bqSound::_saveWav(const char* fn)
 		// byterate
 		fwrite(&nAvgBytesPerSec, 4, 1, f);
 			
-		fwrite(&m_soundSource->m_blockSize, sizeof(m_soundSource->m_blockSize), 1, f);
-		fwrite(&m_soundSource->m_bitsPerSample, sizeof(m_soundSource->m_bitsPerSample), 1, f);
+		fwrite(&m_soundSource->m_blockSize, 2, 1, f);
+		fwrite(&m_soundSource->m_bitsPerSample, 2, 1, f);
 			
 		fwrite("data", 4, 1, f);
 		fwrite(&m_soundSource->m_dataSize, 4, 1, f);

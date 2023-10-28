@@ -337,11 +337,19 @@ int main()
                 bqSound sound2;
                 bqSound sound3;
                 bqSound sound4;
-                uint32_t Hz = 1100;
-                sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
-                sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
-                sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
-                sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
+                uint32_t Hz = 440;
+
+                float time = 0.5f;
+                float loudness = 0.5f;
+                sound1.Generate(bqSoundWaveType::sin, time, Hz, loudness);
+                sound2.Generate(bqSoundWaveType::square, time, Hz, loudness);
+                sound3.Generate(bqSoundWaveType::triangle, time, Hz, loudness);
+                sound4.Generate(bqSoundWaveType::saw, time, Hz, loudness);
+
+               // sound1.SaveToFile(bqSoundFileType::wav, "sin.wav");
+              //  sound2.SaveToFile(bqSoundFileType::wav, "square.wav");
+              //  sound3.SaveToFile(bqSoundFileType::wav, "triangle.wav");
+              //  sound4.SaveToFile(bqSoundFileType::wav, "saw.wav");
 
                 bqSoundObject* so1 = se->SummonSoundObject(&sound1);
                 bqSoundObject* so2 = se->SummonSoundObject(&sound2);
