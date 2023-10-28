@@ -74,10 +74,21 @@ public:
 // звук загружается сюда
 class bqSound
 {
+	bool _saveWav(const char* fn);
 public:
 	bqSound();
 	virtual ~bqSound();
 	BQ_PLACEMENT_ALLOCATOR(bqSound);
+
+	// Создать пустой bqSoundSource
+	// time - время, должно быть больше 0
+	// channels - 1 моно, 2 стерео, но можно указывать и более, только тогда хрен это проиграть
+	// sampleRate - желательно 44100. тоже как channels, можно указать иное значение, но наверно не проиграть
+	// bitsPerSample - количество бит на сэмпл. 8, 16. можно указать иное значение
+	// метод просто выделяет память и вычисляет остальные значения для bqSoundSource
+	//       поэтому можно указывать почти любые значения, но для воспроизведения нужны правильные
+	//       значения. channels 1/2; sampleRate 44100; bitsPerSample 16
+	void Create(float time, uint32_t channels, uint32_t sampleRate, uint32_t bitsPerSample);
 
 	// loudness - громкость, от 0 до 1
 	void Generate(bqSoundWaveType, float time, uint32_t frequency, float loudness = 1.f);

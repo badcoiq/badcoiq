@@ -139,12 +139,11 @@ void bqSound::Clear()
 
 // 
 void bqSound::Create(float time,
-uint32_t channels,
-uint32_t sampleRate,
-uint32_t bitsPerSample,
-)
+	uint32_t channels,
+	uint32_t sampleRate,
+	uint32_t bitsPerSample)
 {
-Clear();
+	Clear();
 
 	bqSoundSource* newSound = new bqSoundSource;
 	newSound->m_channels = channels;
@@ -160,7 +159,7 @@ Clear();
 
 	newSound->m_data = (uint8_t*)bqMemory::malloc(newSound->m_dataSize);
 
-m_soundSource = newSound;
+	m_soundSource = newSound;
 }
 
 void bqSound::Generate(
@@ -229,12 +228,12 @@ void bqSound::Generate(
 			}
 			else if (waveType == bqSoundWaveType::triangle)
 			{
-				auto sn2 = bqSoundSource_sin_tri(rad);
+				auto sn2 = bqSoundSource_sin_tri((float)rad);
 				v._16 = (int16_t)(sn2 * loudness);
 			}
 			else if (waveType == bqSoundWaveType::saw)
 			{
-				auto sn2 = bqSoundSource_sin_saw(rad);
+				auto sn2 = bqSoundSource_sin_saw((float)rad);
 				v._16 = (int16_t)(sn2 * loudness);
 			}
 
@@ -317,54 +316,57 @@ void bqSound::Generate(
 
 bool bqSound::SaveToFile(bqSoundFileType ft, const char* fn)
 {
-switch(ft)
-{
-default:
-case bqSoundFileType::wav:
-return _saveWav(fn);
-}
-return false;
+	BQ_ASSERT_ST(fn);
+	BQ_ASSERT_ST(m_soundSource);
+
+	switch(ft)
+	{
+	default:
+	case bqSoundFileType::wav:
+	return _saveWav(fn);
+	}
+	return false;
 }
 
 bool bqSound::_saveWav(const char* fn)
 {
 	FILE * f =0;
-fopen_s(&f, "sound.wav", "wb");
+	fopen_s(&f, "sound.wav", "wb");
 	if(f)
 	{
-fwrite("RIFF", 4, 1, f);
+		fwrite("RIFF", 4, 1, f);
 			
-			int32_t fileSz = m_dataSize + 44;
-			fwrite(&fileSz, 4, 1, f);
+		int32_t fileSz = m_soundSource->m_dataSize + 44;
+		fwrite(&fileSz, 4, 1, f);
 			
-			fwrite("WAVE", 4, 1, f);
-			fwrite("fmt ", 4, 1, f);
+		fwrite("WAVE", 4, 1, f);
+		fwrite("fmt ", 4, 1, f);
 			
-bits per sample?
-			int32_t chnkSz = 16;
-			fwrite(&chnkSz, 4, 1, f);
+//bits per sample?
+		int32_t chnkSz = 16;
+		fwrite(&chnkSz, sizeof(chnkSz), 1, f);
 			
-			// pcm
-			int16_t TYPE = 1;
-			fwrite(&TYPE, 2, 1, f);
+		// pcm
+		int16_t TYPE = 1;
+		fwrite(&TYPE, sizeof(TYPE), 1, f);
 			
-			fwrite(&m_channels, 2, 1, f);
-			fwrite(&m_sampleRate, 4, 1, f);
+		fwrite(&m_soundSource->m_channels, 2, 1, f);
+		fwrite(&m_soundSource->m_sampleRate, 4, 1, f);
 			
-	int nAvgBytesPerSec = (m_sampleRate *
-		  m_bitsPerSample * m_channels)/8;
-			// byterate
-			fwrite(&nAvgBytesPerSec, 4, 1, f);
+		int nAvgBytesPerSec = (m_soundSource->m_sampleRate *
+			m_soundSource->m_bitsPerSample * m_soundSource->m_channels)/8;
+		// byterate
+		fwrite(&nAvgBytesPerSec, 4, 1, f);
 			
-			fwrite(&m_blockSize, sizeof(m_blockSize), 1, f);
-			fwrite(&m_bitsPerSample, sizeof(m_bitsPerSample), 1, f);
+		fwrite(&m_soundSource->m_blockSize, sizeof(m_soundSource->m_blockSize), 1, f);
+		fwrite(&m_soundSource->m_bitsPerSample, sizeof(m_soundSource->m_bitsPerSample), 1, f);
 			
-			fwrite("data", 4, 1, f);
-			fwrite(&m_dataSize, 4, 1, f);
-			fwrite(m_data, m_dataSize, 1, f)
-fclose(f);
-return true;
-}
+		fwrite("data", 4, 1, f);
+		fwrite(&m_soundSource->m_dataSize, 4, 1, f);
+		fwrite(m_soundSource->m_data, m_soundSource->m_dataSize, 1, f);
+		fclose(f);
+		return true;
+	}
 
-return false;
+	return false;
 }
