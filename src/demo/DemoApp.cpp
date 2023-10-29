@@ -159,6 +159,7 @@ bool DemoApp::Init()
 	AddExample(new ExampleBasicsRayTri2(this), U"Пересечение луча и треугольника / 2", "basics/", U"Почти тоже самое но модель грузится из файла, и треугольники берутся из bqMesh. Так же есть оптимизация, проверка на пересечение AABB");
 	AddExample(new ExampleBasicsSprite(this), U"Спрайты", "basics/", U"Создание спрайта, установка анимации.");
 	AddExample(new ExampleBasicsText3D(this), U"Текст в 3D", "basics/", U"Плоский текст в 3D. Просто рисуем спрайты.");
+	AddExample(new ExampleBasicsRotations(this), U"Вращение", "basics/", U"...");
 	
 	AddExample(new ExampleMshGnBox(this), U"Box", "generators/mesh", U"Всё о создании коробки");
 	

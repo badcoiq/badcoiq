@@ -114,7 +114,7 @@ bqSoundObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
 		bqLog::PrintError(L"Error %#X creating source voice\n", hr);
 		return 0;
 	}
-
+	
 	bqSoundObjectXAudio* so = new bqSoundObjectXAudio;
 	so->m_SourceVoice = SourceVoice;
 	so->m_source = s;
@@ -225,6 +225,12 @@ void bqSoundObjectXAudio::Stop()
 	if (m_state == state_playing)
 	{
 		m_SourceVoice->Stop();
+		m_SourceVoice->FlushSourceBuffers();
 		m_state = state_notplaying;
 	}
+}
+
+void bqSoundObjectXAudio::SetVolume(float v)
+{
+	m_SourceVoice->SetVolume(v);
 }

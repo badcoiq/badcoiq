@@ -377,6 +377,8 @@ int main()
                         so4->Start();
                     if (bqInput::IsKeyHit(bqInput::KEY_5))
                         so5->Start();
+                    if (bqInput::IsKeyHit(bqInput::KEY_6))
+                        so5->Stop();
 
                     if (bqInput::IsKeyHit(bqInput::KEY_PGDOWN))
                     {

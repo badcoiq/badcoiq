@@ -27,6 +27,7 @@
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_rayFromCursor.cpp" />
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_raytriangle.cpp" />
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_raytriangle2.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_rot.cpp" />
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_sprite.cpp" />
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_text3D.cpp" />
     <ClCompile Include="..\..\src\demo\examples\games\mario\ex_g_mario.cpp" />

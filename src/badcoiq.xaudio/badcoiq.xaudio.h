@@ -66,7 +66,7 @@ public:
 	bqIXAudio2VoiceCallback* m_xaudioCallback = 0;
 	virtual void Start() override;
 	virtual void Stop() override;
-
+	virtual void SetVolume(float) override;
 };
 
 class bqSoundEngineXAudio : public bqSoundEngine

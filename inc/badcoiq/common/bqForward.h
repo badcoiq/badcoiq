@@ -89,7 +89,7 @@ class bqGUIScrollbar;
 class bqSound;
 class bqSoundEngine;
 class bqSoundSystem;
-
+class bqSceneObject;
 
 #endif
 

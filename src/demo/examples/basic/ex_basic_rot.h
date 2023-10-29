@@ -1,4 +1,4 @@
-/*
+﻿/*
 BSD 2-Clause License
 
 Copyright (c) 2023, badcoiq
@@ -25,62 +25,29 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_SE_H__
-#define __BQ_SE_H__
+#ifndef _EXrot_H_
+#define _EXrot_H_
 
-class bqSoundObjectCallback
+class DemoExample;
+class DemoApp;
+class ExampleBasicsRotations : public DemoExample
 {
+	bqCamera* m_camera = 0;
+
+	bqGPUMesh* m_airplane = 0;
+	bqSceneObject* m_sceneObject1 = 0;
+	bqSceneObject* m_sceneObject2 = 0;
+
+    void _onCamera();
 public:
-	bqSoundObjectCallback() {}
-	virtual ~bqSoundObjectCallback() {}
+	ExampleBasicsRotations(DemoApp*);
+	virtual ~ExampleBasicsRotations();
+	BQ_PLACEMENT_ALLOCATOR(ExampleBasicsRotations);
 
-	virtual void OnStart() {}
-	virtual void OnStop() {}
-};
-
-// Создаётся энжином
-class bqSoundObject
-{
-public:
-	bqSoundObject() {}
-	virtual ~bqSoundObject() {}
-	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
-
-	bqSound* m_source = 0;
-	bqSoundObjectCallback* m_callback = 0;
-
-	enum
-	{
-		state_notplaying,
-		state_playing,
-	};
-	uint32_t m_state = state_notplaying;
-
-	virtual void Start() = 0;
-	virtual void Stop() = 0;
-	virtual void SetVolume(float) = 0;
-};
-
-// то через что будет проигрываться звук
-// типа xaudio
-// реализация должна находиться в плагинах
-
-class bqSoundEngine
-{
-public:
-	bqSoundEngine(){}
-	virtual ~bqSoundEngine(){}
-
-	virtual bqSoundObject* SummonSoundObject(bqSound*) = 0;
-
-	virtual const char* Name() = 0;
-
-	virtual bool Init() = 0;
-	virtual void Shutdown() = 0;
+	virtual bool Init() override;
+	virtual void Shutdown() override;
+	virtual void OnDraw() override;
 };
 
 #endif
-
-
