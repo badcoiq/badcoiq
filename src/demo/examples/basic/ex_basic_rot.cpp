@@ -106,7 +106,8 @@ bool ExampleBasicsRotations::Init()
 	m_sceneObject1 = new bqSceneObject;
 	m_sceneObject2 = new bqSceneObject;
 	m_sceneObject2->m_axisAlignedRotation = true;
-	
+	m_sceneObject3 = new bqSceneObject;
+
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
@@ -120,6 +121,7 @@ void ExampleBasicsRotations::Shutdown()
 	BQ_SAFEDESTROY(m_airplane);
 	BQ_SAFEDESTROY(m_sceneObject1);
 	BQ_SAFEDESTROY(m_sceneObject2);
+	BQ_SAFEDESTROY(m_sceneObject3);
 }
 
 void ExampleBasicsRotations::OnDraw()
@@ -214,7 +216,31 @@ void ExampleBasicsRotations::OnDraw()
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
 	m_gs->Draw();
 
+	m_sceneObject3->GetPosition().z = -5.f;
+	m_sceneObject3->RecalculateWorldMatrix();
+	W = m_sceneObject3->GetMatrixWorld();
+	bqFramework::SetMatrix(bqMatrixType::World, &W);
+	WVP = m_camera->m_projectionMatrix * m_camera->m_viewMatrix * W;
+	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
+	m_gs->Draw();
+
 	m_app->DrawGrid(14, (float)m_camera->m_position.y);
+
+	// рисую линию которая покажет направление куда смотрит модель
+	m_gs->DisableDepth();
+	bqVec4 point(0., 0., 2., 1.);
+	bqVec4 p;
+	p = m_sceneObject1->GetQuaternion().RotateVector(point);
+	m_gs->DrawLine3D(m_sceneObject1->GetPosition(), 
+		m_sceneObject1->GetPosition() + p, bq::ColorRed);
+
+	p = m_sceneObject2->GetQuaternion().RotateVector(point);
+	m_gs->DrawLine3D(m_sceneObject2->GetPosition(),
+		m_sceneObject2->GetPosition() + p, bq::ColorRed);
+
+	p = m_sceneObject3->GetQuaternion().RotateVector(point);
+	m_gs->DrawLine3D(m_sceneObject3->GetPosition(),
+		m_sceneObject3->GetPosition() + p, bq::ColorRed);
 
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();

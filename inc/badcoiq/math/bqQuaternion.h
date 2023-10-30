@@ -103,6 +103,26 @@ public:
 			w * q.w - x * q.x - y * q.y - z * q.z);
 	}
 
+	bqVec4 RotateVector(const bqVec4& v)const
+	{
+		bqVec4 qv;
+		qv.x = -x;
+		qv.y = -y;
+		qv.z = -z;
+		float _w = w;
+
+		auto _d1 = qv.Dot(v);
+		auto _d2 = qv.Dot();
+		bqVec4 cr;
+		qv.Cross(v, cr);
+
+		bqVec4 rv;
+		rv.x = 2.f * _d1 * qv.x + (_w * _w - _d2) * v.x + 2.f * _w * cr.x;
+		rv.y = 2.f * _d1 * qv.y + (_w * _w - _d2) * v.y + 2.f * _w * cr.y;
+		rv.z = 2.f * _d1 * qv.z + (_w * _w - _d2) * v.z + 2.f * _w * cr.z;
+		return rv;
+	}
+
 	bqQuaternion operator*(float s) const
 	{
 		return bqQuaternion(s * x, s * y, s * z, s * w);

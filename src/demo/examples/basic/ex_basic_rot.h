@@ -38,6 +38,7 @@ class ExampleBasicsRotations : public DemoExample
 	bqGPUMesh* m_airplane = 0;
 	bqSceneObject* m_sceneObject1 = 0;
 	bqSceneObject* m_sceneObject2 = 0;
+	bqSceneObject* m_sceneObject3 = 0;
 
     void _onCamera();
 public:
