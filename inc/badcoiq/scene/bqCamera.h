@@ -112,7 +112,7 @@ public:
 	bqVec3f m_rotationPlatform;
 	bqVec4 m_positionPlatform; // w = height, zoom, mouse wheel value
 	//bqVec4 m_positionCamera; // in world
-	Direction m_direction;
+	Direction m_direction = Direction::North;
 	CameraEditorType m_editorCameraType = CameraEditorType::Perspective;
 	bool m_forceOrtho = false;
 	void EditorPanMove(bqPointf* mouseDelta, float timeDelta);

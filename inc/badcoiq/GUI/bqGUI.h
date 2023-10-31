@@ -45,7 +45,7 @@ struct bqGUIState
 	bqGUIWindow* m_windowUnderCursor = 0;
 	bqGUIWindow* m_activeWindow = 0;
 	bqGUITextEditor* m_activeTextEditor = 0;
-	bool m_scrollBlock = false;
+	uint32_t m_scrollBlock = 0;
 };
 
 #include "badcoiq/GUI/bqGUIButton.h"

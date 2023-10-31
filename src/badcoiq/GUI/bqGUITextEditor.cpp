@@ -54,12 +54,12 @@ bqGUITextEditorTextDrawCallback::~bqGUITextEditorTextDrawCallback()
 {
 }
 
-bqGUIFont* bqGUITextEditorTextDrawCallback::OnFont(uint32_t r, char32_t)
+bqGUIFont* bqGUITextEditorTextDrawCallback::OnFont(uint32_t, char32_t)
 {
 	return m_font;
 }
 
-bqColor* bqGUITextEditorTextDrawCallback::OnColor(uint32_t r, char32_t)
+bqColor* bqGUITextEditorTextDrawCallback::OnColor(uint32_t, char32_t)
 {
 	return &m_color;
 }
@@ -1502,7 +1502,7 @@ void bqGUITextEditor::Paste()
 			if (len)
 			{
 				char32_t* utf32 = (char32_t*)malloc(len * sizeof(char32_t));
-				size_t utf32sz = 0;
+				//size_t utf32sz = 0;
 
 				bqString str;
 				str.assign(buffer);

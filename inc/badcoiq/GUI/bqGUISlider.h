@@ -65,6 +65,7 @@ protected:
 public:
 	bqGUISlider(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUISlider();
+	BQ_PLACEMENT_ALLOCATOR(bqGUISlider);
 
 	virtual void Rebuild() final;
 	virtual void Update() final;

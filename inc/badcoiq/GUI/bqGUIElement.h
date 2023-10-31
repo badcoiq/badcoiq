@@ -40,6 +40,7 @@ public:
 	bqGUIElement(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIElement();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIElement);
+	BQ_DELETED_METHODS(bqGUIElement);
 
 	bqGUIWindow* GetWindow() { return m_window; }
 

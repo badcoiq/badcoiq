@@ -44,12 +44,12 @@ bqGUIStaticTextTextDrawCallback::~bqGUIStaticTextTextDrawCallback()
 {
 }
 
-bqGUIFont* bqGUIStaticTextTextDrawCallback::OnFont(uint32_t r, char32_t c)
+bqGUIFont* bqGUIStaticTextTextDrawCallback::OnFont(uint32_t, char32_t)
 {
 	return m_element->GetStyle()->m_staticTextFont;
 }
 
-bqColor* bqGUIStaticTextTextDrawCallback::OnColor(uint32_t r, char32_t c)
+bqColor* bqGUIStaticTextTextDrawCallback::OnColor(uint32_t, char32_t)
 {
 	return &m_element->GetStyle()->m_staticTextTextColor;
 }
@@ -89,7 +89,7 @@ void bqGUIStaticText::Update()
 	bqGUIElement::Update();
 }
 
-void bqGUIStaticText::Draw(bqGS* gs, float dt)
+void bqGUIStaticText::Draw(bqGS* gs, float)
 {
 	gs->SetScissorRect(m_clipRect);
 	if (IsDrawBG())

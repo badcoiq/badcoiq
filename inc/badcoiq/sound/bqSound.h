@@ -68,7 +68,7 @@ public:
 	uint32_t m_bitsPerSample = 16;
 	uint32_t m_bytesPerSample = 0; // m_bitsPerSample / 8;
 	// nBlockAlign
-	uint16_t m_blockSize = 0;// m_bytesPerSample * m_channels;
+	uint32_t m_blockSize = 0;// m_bytesPerSample * m_channels;
 };
 
 // звук загружается сюда

@@ -360,7 +360,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             bqWindowWin32_findCurrentSize(pW, (bqWindowWin32*)pW->GetData()->m_implementation);
             bqWindowWin32_findPosition(pW, (bqWindowWin32*)pW->GetData()->m_implementation);
-            int wmId = LOWORD(wParam);
+            wmId = LOWORD(wParam);
             switch (wmId)
             {
             case SIZE_MINIMIZED:
@@ -419,13 +419,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             const RAWINPUT* raw = (const RAWINPUT*)dataBuf;
             if (raw->header.dwType == RIM_TYPEMOUSE)
             {
-                HANDLE deviceHandle = raw->header.hDevice;
+              //  HANDLE deviceHandle = raw->header.hDevice;
 
                 const RAWMOUSE& mouseData = raw->data.mouse;
 
                 USHORT flags = mouseData.usButtonFlags;
                 short wheelDelta = (short)mouseData.usButtonData;
-                LONG x = mouseData.lLastX, y = mouseData.lLastY;
+              //  LONG x = mouseData.lLastX, y = mouseData.lLastY;
 
                 /*wprintf(
                     L"Mouse: Device=0x%08X, Flags=%04x, WheelDelta=%d, X=%d, Y=%d\n",

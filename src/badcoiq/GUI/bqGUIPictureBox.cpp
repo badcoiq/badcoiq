@@ -55,7 +55,7 @@ void bqGUIPictureBox::Update()
 	bqGUIElement::Update();
 }
 
-void bqGUIPictureBox::Draw(bqGS* gs, float dt)
+void bqGUIPictureBox::Draw(bqGS* gs, float)
 {
 	gs->SetScissorRect(m_clipRect);
 	gs->DrawGUIRectangle(m_buildRect, 

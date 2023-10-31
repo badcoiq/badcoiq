@@ -48,6 +48,10 @@ class bqGUITextEditor : public bqGUIElement
 	float m_textCursorTimerLimit = 0.5f;
 	bqVec4f m_textCursorRect; // save it in Draw
 	bool m_drawTextCursor = false;
+	bool m_skipDraw = false;
+	bool m_isLMBHit = false;
+	bool m_useRN = false;
+
 	void drawTextCursor() { m_drawTextCursor = true; m_textCursorTimer = 0.f; }
 
 	size_t m_line = 1;
@@ -64,10 +68,6 @@ class bqGUITextEditor : public bqGUIElement
 	* 012[c]3
 	*/
 	size_t m_colFix = 1;
-
-	bool m_skipDraw = false;
-
-	bool m_isLMBHit = false;
 
 	void findColAndLineByTextCursor();
 
@@ -122,8 +122,9 @@ class bqGUITextEditor : public bqGUIElement
 public:
 	bqGUITextEditor(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUITextEditor();
+	BQ_PLACEMENT_ALLOCATOR(bqGUITextEditor);
+	BQ_DELETED_METHODS(bqGUITextEditor);
 
-	bool m_useRN = false; // \r\n on Enter
 
 	bool IsActivated() { return (m_textEditorFlags & textEditorFlag_isActivated); }
 	bool IsTextSelected() { return (m_textEditorFlags & textEditorFlag_isSelected); }
@@ -150,6 +151,8 @@ public:
 	virtual void Cut();
 
 	virtual bool OnChar(char32_t) { return true; }
+
+	void UseRN(bool v) { m_useRN = v; } // \r\n on Enter
 };
 
 #endif

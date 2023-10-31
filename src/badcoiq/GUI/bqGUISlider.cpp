@@ -45,12 +45,12 @@ bqGUISliderTextDrawCallback::~bqGUISliderTextDrawCallback()
 {
 }
 
-bqGUIFont* bqGUISliderTextDrawCallback::OnFont(uint32_t r, char32_t c)
+bqGUIFont* bqGUISliderTextDrawCallback::OnFont(uint32_t, char32_t)
 {
 	return m_font;
 }
 
-bqColor* bqGUISliderTextDrawCallback::OnColor(uint32_t r, char32_t c)
+bqColor* bqGUISliderTextDrawCallback::OnColor(uint32_t, char32_t)
 {
 	return &m_color;
 }
@@ -162,7 +162,7 @@ void bqGUISlider::Rebuild()
 	findAxisRectFill();
 }
 
-void bqGUISlider::Draw(bqGS* gs, float dt)
+void bqGUISlider::Draw(bqGS* gs, float)
 {
 	gs->SetScissorRect(m_clipRect);
 
@@ -220,13 +220,13 @@ void bqGUISlider::findAxisRectFill()
 	case bqGUISlider::ValueType::Uint:
 	{
 		m_text.append(m_valueUint);
-		uint32_t len = m_valueMaxUint - m_valueMinUint;
+		//uint32_t len = m_valueMaxUint - m_valueMinUint;
 
 	}break;
 	case bqGUISlider::ValueType::Int:
 	{
 		m_text.append(m_valueInt);
-		int32_t len = m_valueMaxInt - m_valueMinInt;
+		//int32_t len = m_valueMaxInt - m_valueMinInt;
 
 	}break;
 	}

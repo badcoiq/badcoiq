@@ -68,7 +68,7 @@ void bqGUIScrollbar::Rebuild()
 		m_valueVisible = 1.f;
 
 
-	bqGUIElement* p = (bqGUIElement*)m_parent;
+	//bqGUIElement* p = (bqGUIElement*)m_parent;
 	//printf("%f p[%f]\n", m_buildRect.x, p->m_buildRect.x);
 
 	m_controlRect.Set(0.f);
@@ -214,7 +214,7 @@ void bqGUIScrollbar::AddValue(float val)
 	OnScroll();
 }
 
-void bqGUIScrollbar::Draw(bqGS* gs, float dt)
+void bqGUIScrollbar::Draw(bqGS* gs, float)
 {
 	gs->SetScissorRect(m_clipRect);
 	if (IsDrawBG())

@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/gs/bqGS.h"
 
-#include "../framework/bqFrameworkImpl.h"
+#include "framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
 #include "bqGUIDefaultTextDrawCallbacks.h"
@@ -46,12 +46,12 @@ bqGUIButtonTextDrawCallback::~bqGUIButtonTextDrawCallback()
 }
 
 
-bqGUIFont* bqGUIButtonTextDrawCallback::OnFont(uint32_t r, char32_t)
+bqGUIFont* bqGUIButtonTextDrawCallback::OnFont(uint32_t, char32_t)
 {
 	return m_font;
 }
 
-bqColor* bqGUIButtonTextDrawCallback::OnColor(uint32_t r, char32_t)
+bqColor* bqGUIButtonTextDrawCallback::OnColor(uint32_t, char32_t)
 {
 	return &m_color;
 }
@@ -84,7 +84,7 @@ void bqGUIButton::Update()
 		bqGUIButton::Rebuild();
 }
 
-void bqGUIButton::Draw(bqGS* gs, float dt)
+void bqGUIButton::Draw(bqGS* gs, float /*dt*/)
 {
 	gs->SetScissorRect(m_clipRect.GetRect());
 	if (IsEnabled())

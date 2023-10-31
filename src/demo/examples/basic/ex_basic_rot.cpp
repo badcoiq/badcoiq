@@ -77,7 +77,7 @@ void ExampleBasicsRotations::_onCamera()
 bool ExampleBasicsRotations::Init()
 {
 	m_camera = new bqCamera();
-	m_camera->m_position = bqVec3(0.f, 10.f, 8.f);
+	m_camera->m_position = bqVec3(3.f, 10.f, 8.f);
 	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
 	m_camera->Rotate(0.f, -45.f, 0.f);
 	m_camera->SetType(bqCamera::Type::Perspective);
@@ -215,8 +215,19 @@ void ExampleBasicsRotations::OnDraw()
 	WVP = m_camera->m_projectionMatrix * m_camera->m_viewMatrix * W;
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
 	m_gs->Draw();
-
+	
+	
 	m_sceneObject3->GetPosition().z = -5.f;
+	bqQuaternion qq;
+	bqVec4 vv = m_camera->m_position - m_sceneObject3->GetPosition(); // direction
+	vv.w = 0.f;
+	vv.Normalize();
+	qq.FromVector(vv, bqVec4(0.f, 0.f, 1.f, 0.f));
+	m_sceneObject3->m_qOrientation = qq;
+	if (bqInput::IsKeyHold(bqInput::KEY_0))
+	{
+		m_sceneObject3->m_qOrientation.Identity();
+	}
 	m_sceneObject3->RecalculateWorldMatrix();
 	W = m_sceneObject3->GetMatrixWorld();
 	bqFramework::SetMatrix(bqMatrixType::World, &W);
@@ -230,15 +241,15 @@ void ExampleBasicsRotations::OnDraw()
 	m_gs->DisableDepth();
 	bqVec4 point(0., 0., 2., 1.);
 	bqVec4 p;
-	p = m_sceneObject1->GetQuaternion().RotateVector(point);
+	p = m_sceneObject1->m_qOrientation.RotateVector(point);
 	m_gs->DrawLine3D(m_sceneObject1->GetPosition(), 
 		m_sceneObject1->GetPosition() + p, bq::ColorRed);
 
-	p = m_sceneObject2->GetQuaternion().RotateVector(point);
+	p = m_sceneObject2->m_qOrientation.RotateVector(point);
 	m_gs->DrawLine3D(m_sceneObject2->GetPosition(),
 		m_sceneObject2->GetPosition() + p, bq::ColorRed);
 
-	p = m_sceneObject3->GetQuaternion().RotateVector(point);
+	p = m_sceneObject3->m_qOrientation.RotateVector(point);
 	m_gs->DrawLine3D(m_sceneObject3->GetPosition(),
 		m_sceneObject3->GetPosition() + p, bq::ColorRed);
 

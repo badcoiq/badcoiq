@@ -123,6 +123,61 @@ public:
 		return rv;
 	}
 
+	void FromVector(const bqVec4& v1, const bqVec4& v2)
+	{
+		bqVec4 a;
+		v1.Cross(v2, a);
+
+		x = (float)a.x;
+		y = (float)a.y;
+		z = (float)a.z;
+
+		// LOL
+		w = 1.f + (float)(v1.Dot(v2));
+
+		this->Normalize();
+	}
+
+	/*void FromMatrix(const bqMat4& m)
+	{
+		bqReal trace = m.m_data[0].x + m.m_data[1].y + m.m_data[2].z;
+		if (trace > 0)
+		{
+			bqReal s = 0.5 / sqrt(trace + 1.0);
+			w = 0.25 / s;
+			x = (m.m_data[2].y - m.m_data[1].z) * s;
+			y = (m.m_data[0].z - m.m_data[2].x) * s;
+			z = (m.m_data[1].x - m.m_data[0].y) * s;
+		}
+		else 
+		{
+			if (m.m_data[0].x > m.m_data[1].y && m.m_data[0].x > m.m_data[2].z)
+			{
+				bqReal s = 2.0 * sqrt(1.0 + m.m_data[0].x - m.m_data[1].y - m.m_data[2].z);
+				w = (m.m_data[2].y - m.m_data[1].z) / s;
+				x = 0.25 * s;
+				y = (m.m_data[0].y + m.m_data[1].x) / s;
+				z = (m.m_data[0].z + m.m_data[2].x) / s;
+			}
+			else if (m.m_data[1].y > m.m_data[2][2])
+			{
+				bqReal s = 2.0 * sqrt(1.0 + m.m_data[1].y - m.m_data[0].x - m.m_data[2].z);
+				w = (m.m_data[0].z - m.m_data[2].x) / s;
+				x = (m.m_data[0].y + m.m_data[1].x) / s;
+				y = 0.25 * s;
+				z = (m.m_data[1].z + m.m_data[2].y) / s;
+			}
+			else 
+			{
+				bqReal s = 2.0 * sqrt(1.0 + m.m_data[2].z - m.m_data[0].x - m.m_data[1].y);
+				w = (m.m_data[1].x - m.m_data[0].y) / s;
+				x = (m.m_data[0].z + m.m_data[2].x) / s;
+				y = (m.m_data[1].z + m.m_data[2].y) / s;
+				z = 0.25 * s;
+			}
+		}
+	}*/
+
 	bqQuaternion operator*(float s) const
 	{
 		return bqQuaternion(s * x, s * y, s * z, s * w);
@@ -182,17 +237,17 @@ public:
 
 	float operator[](uint32_t index) const
 	{
-		BQ_ASSERT_ST((index >= 0) && (index < 4));
+		BQ_ASSERT_ST((index < 4));
 		return (&x)[index];
 	}
 
 	float& operator[](uint32_t index)
 	{
-		BQ_ASSERT_ST((index >= 0) && (index < 4));
+		BQ_ASSERT_ST((index < 4));
 		return (&x)[index];
 	}
 
-	void normalize()
+	void Normalize()
 	{
 		float len = this->Length();
 		if (len) {

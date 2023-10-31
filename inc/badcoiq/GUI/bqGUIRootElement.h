@@ -35,6 +35,8 @@ class bqGUIRootElement : public bqGUIElement
 public:
 	bqGUIRootElement(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIRootElement();
+	BQ_DELETED_METHODS(bqGUIRootElement);
+
 	virtual void Rebuild() final;
 	virtual void Update() final;
 	virtual void Draw(bqGS* gs, float dt) final;

@@ -382,8 +382,8 @@ void bqImage::ConvertTo(bqImageFormat newFormat)
 			for (uint32_t i = 0; i < num_of_pixels; ++i)
 			{
 				rgba_data->r = ((data16->u16 & 0xF800) >> 11) * 8;
-				rgba_data->g = ((data16->u16 & 0x7E0) >> 6) * 8;
-				rgba_data->b = ((data16->u16 & 0x1F)) * 8;
+				rgba_data->g = uint8_t((data16->u16 & 0x7E0) >> 6) * 8;
+				rgba_data->b = uint8_t((data16->u16 & 0x1F)) * 8;
 				rgba_data->a = 255;
 
 				rgba_data++;
@@ -415,7 +415,7 @@ void bqImage::ConvertTo(bqImageFormat newFormat)
 			for (uint32_t i = 0; i < num_of_pixels; ++i)
 			{
 				rgba_data->r = ((data16->u16 & 0xFC00) >> 10) * 8;
-				rgba_data->g = ((data16->u16 & 0x3E0) >> 5) * 8;
+				rgba_data->g = uint8_t((data16->u16 & 0x3E0) >> 5) * 8;
 				rgba_data->b = ((data16->u16 & 0x1F)) * 8;
 				rgba_data->a = (data16->u16 & 0x8000) ? 255 : 0;
 
@@ -448,7 +448,7 @@ void bqImage::ConvertTo(bqImageFormat newFormat)
 			for (uint32_t i = 0; i < num_of_pixels; ++i)
 			{
 				rgba_data->r = ((data16->u16 & 0xFC00) >> 10) * 8;
-				rgba_data->g = ((data16->u16 & 0x3E0) >> 5) * 8;
+				rgba_data->g = uint8_t((data16->u16 & 0x3E0) >> 5) * 8;
 				rgba_data->b = ((data16->u16 & 0x1F)) * 8;
 				rgba_data->a = 255;
 

@@ -30,6 +30,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_BADCOIQ_H__
 #define __BQ_BADCOIQ_H__
 
+// если компилировать со всеми warnings и считать их ошибками
+// то решение некоторых warnings ухудшают код
+// некоторые выдаются внутри кода visual studio
+#pragma warning( disable : 4820 ) // <число> padding что-то там. например если добавлен bool в класс
+#pragma warning( disable : 4365 ) // выдаёт xmemory. conversion from 'long' to 'unsigned int', signed/unsigned mismatch
+
 #include "badcoiq/common/bqDefines.h"
 #include "badcoiq/common/bqUserData.h"
 #include "badcoiq/common/bqMemory.h"

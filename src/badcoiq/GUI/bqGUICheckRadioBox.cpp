@@ -47,7 +47,7 @@ bqGUICheckRadioBoxTextDrawCallback::~bqGUICheckRadioBoxTextDrawCallback()
 {
 }
 
-bqGUIFont* bqGUICheckRadioBoxTextDrawCallback::OnFont(uint32_t r, char32_t)
+bqGUIFont* bqGUICheckRadioBoxTextDrawCallback::OnFont(uint32_t, char32_t)
 {
 	return m_font;
 }
@@ -93,7 +93,7 @@ void bqGUICheckRadioBox::Update()
 		UpdateTextPosition();
 }
 
-void bqGUICheckRadioBox::Draw(bqGS* gs, float dt)
+void bqGUICheckRadioBox::Draw(bqGS* gs, float)
 {
 	gs->SetScissorRect(m_clipRect.GetRect());
 

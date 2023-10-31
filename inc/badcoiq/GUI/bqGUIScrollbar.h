@@ -42,6 +42,7 @@ public:
 	bqGUIScrollbar(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIScrollbar();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIScrollbar);
+	BQ_DELETED_METHODS(bqGUIScrollbar);
 
 	virtual void Rebuild() final;
 	virtual void Update() final;

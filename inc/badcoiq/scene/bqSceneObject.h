@@ -60,16 +60,17 @@ class bqSceneObject : public bqUserData, public bqHierarchy
 	bqVec4 m_position;
 	bqVec3 m_scale = bqVec3(1.0);
 
-	// Order for rotation will be X Y Z
-	bqQuaternion m_qX;
-	bqQuaternion m_qY;
-	bqQuaternion m_qZ;
-	bqQuaternion m_qOrientation;
 
 public:
 	bqSceneObject() {}
 	virtual ~bqSceneObject() {}
 	BQ_PLACEMENT_ALLOCATOR(bqSceneObject);
+
+	// Order for rotation will be X Y Z
+	bqQuaternion m_qX;
+	bqQuaternion m_qY;
+	bqQuaternion m_qZ;
+	bqQuaternion m_qOrientation;
 
 	bqVec4& GetPosition() { return m_position; }
 	bqVec3& GetScale() { return m_scale; }
@@ -77,7 +78,6 @@ public:
 	bqAabb& GetAabbTransformed() { return m_aabbTransformed; }
 	bqMat4& GetMatrixWorld() { return m_matrixWorld; }
 	bqMat4& GetMatrixRotation() { return m_matrixRotation; }
-	bqQuaternion& GetQuaternion() { return m_qOrientation; }
 
 	virtual void SetVisible(bool v) { v ? m_flags |= sceneObjectFlag_visible : m_flags &= ~sceneObjectFlag_visible; }
 	bool IsIvisible() { return m_flags & sceneObjectFlag_visible; }

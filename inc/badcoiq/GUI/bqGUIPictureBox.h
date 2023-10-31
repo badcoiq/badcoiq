@@ -38,6 +38,7 @@ public:
 	bqGUIPictureBox(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIPictureBox();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIPictureBox);
+	BQ_DELETED_METHODS(bqGUIPictureBox);
 
 	virtual void Rebuild() final;
 	virtual void Update() final;

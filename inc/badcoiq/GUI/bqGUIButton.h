@@ -48,6 +48,7 @@ public:
 	bqGUIButton(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIButton();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIButton);
+	BQ_DELETED_METHODS(bqGUIButton);
 
 
 	virtual void Rebuild() override;

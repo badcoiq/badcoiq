@@ -37,6 +37,7 @@ public:
 	bqGUICheckRadioBox(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUICheckRadioBox();
 	BQ_PLACEMENT_ALLOCATOR(bqGUICheckRadioBox);
+	BQ_DELETED_METHODS(bqGUICheckRadioBox);
 
 	virtual void Update() final;
 	virtual void Rebuild() final;
@@ -51,7 +52,10 @@ public:
 	virtual void OnUnCheck();
 
 	bool m_asRadioButton = false;
+
 	uint32_t m_radiouGroup = 0;
+
+	
 };
 
 #endif

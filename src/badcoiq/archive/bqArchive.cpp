@@ -253,7 +253,7 @@ bool bqFrameworkImpl::_compress_fastlz(bqCompressionInfo* info)
 
 bool bqFrameworkImpl::_decompress_fastlz(bqCompressionInfo* info)
 {
-	int decompressed_size = fastlz_decompress(
+	uint32_t decompressed_size = fastlz_decompress(
 		info->m_dataCompressed,
 		info->m_sizeCompressed,
 		info->m_dataUncompressed,

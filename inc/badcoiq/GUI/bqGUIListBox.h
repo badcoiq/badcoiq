@@ -49,6 +49,8 @@ class bqGUIListBox : public bqGUIElement
 public:
 	bqGUIListBox(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIListBox();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIListBox);
+	BQ_DELETED_METHODS(bqGUIListBox);
 
 	virtual void Rebuild() final;
 	virtual void Update() final;
@@ -63,6 +65,7 @@ public:
 
 	bool m_drawItemBG = true;
 	bool m_multiSelect = false;
+	bool m_reserved[2] = {  false, false };
 
 	// return true if need to select
 	virtual bool OnSelect(bqGUIListBoxItem*) { return true; }

@@ -143,22 +143,22 @@ bqGUIWindow::~bqGUIWindow()
 {
 }
 
-bqGUIFont* bqGUIWindow::_OnFont_active(uint32_t r, char32_t)
+bqGUIFont* bqGUIWindow::_OnFont_active(uint32_t, char32_t)
 {
 	return m_style->m_windowActiveTitleTextFont;
 }
 
-bqColor* bqGUIWindow::_OnColor_active(uint32_t r, char32_t)
+bqColor* bqGUIWindow::_OnColor_active(uint32_t, char32_t)
 {
 	return &m_style->m_windowActiveTitleTextColor;
 }
 
-bqGUIFont* bqGUIWindow::_OnFont_Nactive(uint32_t r, char32_t)
+bqGUIFont* bqGUIWindow::_OnFont_Nactive(uint32_t, char32_t)
 {
 	return m_style->m_windowNActiveTitleTextFont;
 }
 
-bqColor* bqGUIWindow::_OnColor_Nactive(uint32_t r, char32_t)
+bqColor* bqGUIWindow::_OnColor_Nactive(uint32_t, char32_t)
 {
 	return &m_style->m_windowNActiveTitleTextColor;
 }

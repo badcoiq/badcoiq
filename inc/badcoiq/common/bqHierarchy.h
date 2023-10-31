@@ -40,6 +40,7 @@ protected:
 public:
 	bqHierarchy() {}
 	virtual ~bqHierarchy() {}
+	BQ_DELETED_METHODS(bqHierarchy);
 
 	void SetParent(bqHierarchy* o)
 	{
@@ -54,6 +55,7 @@ public:
 
 	virtual bqHierarchy* GetParent() { return m_parent; }
 	virtual bqList<bqHierarchy*>* GetChildren() { return &m_children; }
+
 };
 
 #endif

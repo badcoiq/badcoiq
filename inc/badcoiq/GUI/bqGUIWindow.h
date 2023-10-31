@@ -181,6 +181,7 @@ public:
 	bqGUIWindow(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIWindow();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIWindow);
+	BQ_DELETED_METHODS(bqGUIWindow);
 
 	// Надо будет вызвать Rebuild
 	void SetPositionAndSize(const bqVec2f& p, const bqVec2f& sz);

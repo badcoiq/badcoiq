@@ -40,11 +40,11 @@ public:
 	virtual ~bqMeshLoaderCallback() {}
 	BQ_PLACEMENT_ALLOCATOR(bqMeshLoaderCallback);
 
-	virtual void OnMaterial(bqMaterial* m)
+	virtual void OnMaterial(bqMaterial*)
 	{
 	}
 
-	virtual void OnMesh(bqMesh* newMesh, bqString* name, bqString* materialName)
+	virtual void OnMesh(bqMesh* newMesh, bqString* /*name*/, bqString* /*materialName*/)
 	{
 		if (newMesh)
 		{

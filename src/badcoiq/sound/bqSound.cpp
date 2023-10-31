@@ -68,14 +68,14 @@ float bqSoundSource_sin_tri(float rads)
 
 float bqSoundSource_sin_saw(float rads)
 {
-	float v = -1.f;
+//	float v = -1.f;
 	float r = 0.f;
 	float pi = PIf;
 	float halfPi = pi * 0.5f;
 	float _270 = halfPi + halfPi + halfPi;
 	float _180 = pi;
 	float _90 = halfPi;
-	float halfHalfPi = pi * 0.25f;
+//	float halfHalfPi = pi * 0.25f;
 	float M = 1.f / pi;
 
 	if (rads >= _270)
@@ -334,7 +334,6 @@ bool bqSound::SaveToFile(bqSoundFileType ft, const char* fn)
 	case bqSoundFileType::wav:
 	return _saveWav(fn);
 	}
-	return false;
 }
 
 bool bqSound::_saveWav(const char* fn)
@@ -410,8 +409,9 @@ bool bqSound::_loadWav(const char* fn)
 	uint8_t* ptr = bqFramework::SummonFileBuffer(fn, &file_size, false);
 	if (ptr)
 	{
-		return _loadWav(ptr, (uint32_t)file_size);
+		bool b = _loadWav(ptr, (uint32_t)file_size);
 		bqDestroy(ptr);
+		return b;
 	}
 	return false;
 }
@@ -439,7 +439,7 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 				file.Read(&FMTChunkSize, 4);
 
 				uint16_t format = 0;
-				file.Read(&FMTChunkSize, 2);
+				file.Read(&format, 2);
 
 				uint16_t channels = 0;
 				file.Read(&channels, 2);

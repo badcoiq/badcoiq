@@ -137,5 +137,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define BQ_SAFEDESTROY(p) if(p){delete p;p=nullptr;}
 
+#define BQ_DELETED_METHODS(x) x(const x&) = delete; \
+	x& operator=(const x&) = delete;
+	
+
 #endif
 

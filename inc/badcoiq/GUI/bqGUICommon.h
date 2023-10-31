@@ -66,6 +66,7 @@ public:
 	bqGUICommon(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUICommon();
 	BQ_PLACEMENT_ALLOCATOR(bqGUICommon);
+	BQ_DELETED_METHODS(bqGUICommon);
 
 	void SetPosition(float x, float y);
 	void SetSize(float x, float y);

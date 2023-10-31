@@ -63,15 +63,15 @@ public:
 	bqArray()
 		:
 		m_allocated(0),
-		m_size(0),
-		m_data(0)
+		m_data(0),
+		m_size(0)
 	{}
 
 	bqArray(const bqArray& other)
 		:
 		m_allocated(0),
-		m_size(0),
-		m_data(0)
+		m_data(0),
+		m_size(0)
 	{
 		_reallocate(other.m_allocated);
 		for (size_t i = 0u; i < other.m_size; ++i)

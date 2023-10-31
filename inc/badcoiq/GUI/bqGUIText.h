@@ -75,28 +75,28 @@ public:
 					rct.x = position.x;
 					rct.y = position.y;
 
-					rct.z = rct.x + g->m_width;
-					rct.w = rct.y + g->m_height;
+					rct.z = rct.x + (float)g->m_width;
+					rct.w = rct.y + (float)g->m_height;
 
-					position.x += g->m_width + g->m_overhang + g->m_underhang + font->m_characterSpacing;
+					position.x += float(g->m_width + g->m_overhang + g->m_underhang + font->m_characterSpacing);
 
 					switch (*p)
 					{
 					case U' ':
-						position.x += font->m_spaceSize;
+						position.x += (float)font->m_spaceSize;
 						break;
 					case U'\t':
-						position.x += font->m_tabSize;
+						position.x += (float)font->m_tabSize;
 						break;
 					case U'\n':
-						position.y += font->GetMaxSize().y;
+						position.y += (float)font->GetMaxSize().y;
 						position.x = 0.f;
 						break;
 					}
 
 					if (position.x > sz.x) sz.x = position.x;
 					if (position.y > sz.y) sz.y = position.y;
-					if (g->m_height > sz.y) sz.y = (float)g->m_height;
+					if ((float)g->m_height > sz.y) sz.y = (float)g->m_height;
 
 					++p;
 				}

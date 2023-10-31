@@ -69,7 +69,7 @@ void bqGUIRootElement::Update()
 {
 	bqGUIElement::Update();
 }
-void bqGUIRootElement::Draw(bqGS* gs, float dt) {}
+void bqGUIRootElement::Draw(bqGS*, float) {}
 
 void bqGUIRootElement::UpdateContentSize()
 {

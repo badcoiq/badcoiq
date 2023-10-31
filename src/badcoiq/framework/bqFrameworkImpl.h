@@ -48,6 +48,7 @@ public:
 	}
 	~bqFrameworkImpl() {}
 	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
+	BQ_DELETED_METHODS(bqFrameworkImpl);
 
 	float m_deltaTime = 0.f;
 	bqFrameworkCallback* m_frameworkCallback = 0;
@@ -92,7 +93,7 @@ public:
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_staticText = 0;
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_window = 0;
 
-	bqCursor* m_defaultCursors[(uint32_t)bqCursorType::_count];
+	bqCursor* m_defaultCursors[(uint32_t)bqCursorType::_count] = {0};
 	bqCursor* m_activeCursor = 0;
 	void _initDefaultCursors();
 

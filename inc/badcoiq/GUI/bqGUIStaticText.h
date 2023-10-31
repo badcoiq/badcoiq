@@ -40,6 +40,7 @@ public:
 	bqGUIStaticText(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIStaticText();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIStaticText);
+	BQ_DELETED_METHODS(bqGUIStaticText);
 
 	virtual void Rebuild() final;
 	virtual void Update() final;

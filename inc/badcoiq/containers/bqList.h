@@ -45,7 +45,6 @@ struct bqListNode
 template<typename _type>
 class bqList
 {
-	bqList(const bqList& other) {};
 	bqList(bqList&& other) {};
 public:
 	bqList() :m_head(0) {}
@@ -53,6 +52,7 @@ public:
 	{
 		clear();
 	}
+	BQ_DELETED_METHODS(bqList);
 
 	// Найти ноду по объекту
 	bqListNode<_type>* find(const _type& data)
@@ -400,6 +400,7 @@ public:
 
 	Iterator begin() {return Iterator(this, m_head);}
 	Iterator end() {return Iterator(this, 0);}
+
 
 	bqListNode<_type>* m_head;
 };

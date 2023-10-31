@@ -45,12 +45,12 @@ bqGUIListBoxTextDrawCallback::~bqGUIListBoxTextDrawCallback()
 {
 }
 
-bqGUIFont* bqGUIListBoxTextDrawCallback::OnFont(uint32_t r, char32_t c)
+bqGUIFont* bqGUIListBoxTextDrawCallback::OnFont(uint32_t, char32_t)
 {
 	return m_font;
 }
 
-bqColor* bqGUIListBoxTextDrawCallback::OnColor(uint32_t r, char32_t c)
+bqColor* bqGUIListBoxTextDrawCallback::OnColor(uint32_t, char32_t)
 {
 	switch (m_reason)
 	{
@@ -150,7 +150,7 @@ void bqGUIListBox::Update()
 	//printf("m_firstItemIndexForDraw %i\n", m_firstItemIndexForDraw);
 }
 
-void bqGUIListBox::Draw(bqGS* gs, float dt)
+void bqGUIListBox::Draw(bqGS* gs, float)
 {
 	if (IsEnabled())
 	{
