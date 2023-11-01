@@ -71,7 +71,6 @@ class bqCamera
 
 	void _moveCamera(bqVec4& vel);
 
-	bqCameraFrustum m_frustum;
 public:
 	bqCamera();
 	~bqCamera();
@@ -161,6 +160,8 @@ public:
 	float m_orthoHeight = 600.f;
 
 	bqQuaternion m_rotation;
+	bqCameraFrustum m_frustum;
+	void UpdateFrustum();
 };
 
 #endif

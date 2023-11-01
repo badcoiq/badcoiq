@@ -43,8 +43,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "shader/badcoiq.d3d11.shader.Sprite.h"
 #include "shader/badcoiq.d3d11.shader.EndDraw.h"
 #include "shader/badcoiq.d3d11.shader.GUIRectangle.h"
+#include "shader/badcoiq.d3d11.shader.Occlusion.h"
 #include "badcoiq.d3d11.mesh.h"
 #include "badcoiq.d3d11.texture.h"
+#include "badcoiq.d3d11.occlusionObject.h"
 
 #define BQD3DSAFE_RELEASE(x) if(x){x->Release();x=0;}
 #define BQSAFE_DESTROY2(x) if(x){bqDestroy(x);x=0;}
@@ -56,6 +58,7 @@ class bqGSD3D11 : public bqGS
 	friend class bqD3D11ShaderEndDraw;
 	friend class bqD3D11ShaderGUIRectangle;
 	friend class bqD3D11ShaderSprite;
+	friend class bqD3D11ShaderOcclusion;
 
 	bqGSD3D11ShaderBase* m_activeShader = 0;
 	bqD3D11ShaderLine3D* m_shaderLine3D = 0;
@@ -63,6 +66,7 @@ class bqGSD3D11 : public bqGS
 	bqD3D11ShaderEndDraw* m_shaderEndDraw = 0;
 	bqD3D11ShaderGUIRectangle* m_shaderGUIRectangle = 0;
 	bqD3D11ShaderSprite* m_shaderSprite = 0;
+	bqD3D11ShaderOcclusion* m_shaderOcl = 0;
 
 	bqWindow* m_activeWindow = 0;
 	bqPoint* m_windowCurrentSize = 0;
@@ -165,6 +169,12 @@ public:
 	void _drawSprite(const bqColor& color, const bqVec4& corners, const bqVec4f& UVs, float alphaDiscard, bqGSD3D11Texture* t);
 	virtual void DrawText3D(const bqVec4& pos, const char32_t* text, size_t textLen,
 		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) final;
+	
+	virtual bqGPUOcclusionObject* SummonOcclusionObject() final;
+	virtual void OcclusionBegin() final;
+	virtual void OcclusionEnd() final;
+	virtual void OcclusionDraw(bqGPUOcclusionObject*) final;
+	virtual void OcclusionResult(bqGPUOcclusionObject*) final;
 
 	bool CreateShaders(
 		const char* vertexTarget,

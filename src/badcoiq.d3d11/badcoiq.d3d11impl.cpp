@@ -195,6 +195,7 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 		return false;
 	}
 
+
 	D3D11_RASTERIZER_DESC	rasterDesc;
 	ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterDesc.AntialiasedLineEnable = false;
@@ -260,6 +261,7 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 		return false;
 	}
 
+
 	float blendFactor[4];
 	blendFactor[0] = 0.0f;
 	blendFactor[1] = 0.0f;
@@ -314,6 +316,7 @@ void bqGSD3D11::Shutdown()
 	BQSAFE_DESTROY2(m_shaderEndDraw);
 	BQSAFE_DESTROY2(m_shaderGUIRectangle);
 	BQSAFE_DESTROY2(m_shaderSprite);
+	BQSAFE_DESTROY2(m_shaderOcl);
 
 	BQSAFE_DESTROY2(m_mainTargetRTT);
 	BQSAFE_DESTROY2(m_GUIRTT);
@@ -697,6 +700,10 @@ bool bqGSD3D11::CreateShaders()
 
 	m_shaderSprite = bqCreate<bqD3D11ShaderSprite>(this);
 	if (!m_shaderSprite->Init())
+		return false;
+
+	m_shaderOcl = bqCreate<bqD3D11ShaderOcclusion>(this);
+	if (!m_shaderOcl->Init())
 		return false;
 
 	return true;
@@ -1585,4 +1592,76 @@ void bqGSD3D11::DrawText3D(
 			break;
 		}
 	}
+}
+
+bqGPUOcclusionObject* bqGSD3D11::SummonOcclusionObject()
+{
+	bqGSD3D11OcclusionObject* newO = bqCreate<bqGSD3D11OcclusionObject>();
+
+	D3D11_QUERY_DESC qdesc;
+
+	// fro predicate
+	// do not use D3D10_QUERY_MISC_PREDICATEHINT;
+	// "Predication data cannot be returned to your application via 
+	//    ID3D11DeviceContext::GetData when using this flag."
+	qdesc.MiscFlags = 0;
+
+	qdesc.Query = D3D11_QUERY_OCCLUSION;
+	if (m_d3d11Device->CreateQuery(&qdesc, &newO->m_query) != S_OK)
+	{
+		bqLog::PrintError("Can't create Direct3D 11 query\n");
+		BQSAFE_DESTROY2(newO);
+	}
+
+	return newO;
+}
+
+void bqGSD3D11::OcclusionBegin()
+{
+	SetActiveShader(m_shaderOcl);
+	m_d3d11DevCon->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void bqGSD3D11::OcclusionEnd()
+{
+	EnableDepth();
+	EnableBlend();
+}
+
+void bqGSD3D11::OcclusionDraw(bqGPUOcclusionObject* o)
+{
+	BQ_ASSERT_ST(m_currMesh);
+	BQ_ASSERT_ST(o);
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::WorldViewProjection));
+
+	bqGSD3D11OcclusionObject* ocl = dynamic_cast<bqGSD3D11OcclusionObject*>(o);
+
+	m_shaderOcl->SetConstants(0);
+	uint32_t offset = 0u;
+	m_d3d11DevCon->IASetVertexBuffers(0, 1, &m_currMesh->m_vBuffer, &m_currMesh->m_meshInfo.m_stride, &offset);
+	m_d3d11DevCon->Begin(ocl->m_query);
+
+	switch (m_currMesh->m_meshInfo.m_vertexType)
+	{
+	default:
+	case bqMeshVertexType::Triangle:
+		m_d3d11DevCon->IASetIndexBuffer(m_currMesh->m_iBuffer, m_currMesh->m_indexType, 0);
+		m_d3d11DevCon->DrawIndexed(m_currMesh->m_meshInfo.m_iCount, 0, 0);
+		break;
+	}
+
+	m_d3d11DevCon->End(ocl->m_query);
+}
+
+void bqGSD3D11::OcclusionResult(bqGPUOcclusionObject* o)
+{
+	BQ_ASSERT_ST(m_currMesh);
+	BQ_ASSERT_ST(o);
+	BQ_ASSERT_ST(bqFramework::GetMatrix(bqMatrixType::WorldViewProjection));
+
+	bqGSD3D11OcclusionObject* ocl = dynamic_cast<bqGSD3D11OcclusionObject*>(o);
+
+	UINT64 vis = 0;
+	while (m_d3d11DevCon->GetData(ocl->m_query, (void*)&vis, sizeof(vis), 0) == S_FALSE);
+	ocl->m_visible = vis != 0;
 }

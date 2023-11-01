@@ -905,13 +905,13 @@ void bqPolygonMesh::AddCylinder(
 		bqMeshPolygonCreator pc;
 		for (uint32_t i = 0; i < segments; ++i)
 		{
-			for (uint32_t i = segments - 1; i >= 0; --i)
+			for (uint32_t o = segments - 1; o >= 0; --o)
 			{
-				pc.SetPosition(points[i] + bqVec3f(0.f, height, 0.f));
+				pc.SetPosition(points[o] + bqVec3f(0.f, height, 0.f));
 				//pc.SetUV(bqVec2f(UV.x, UV.y + UVstep));
 				pc.AddVertex();
 
-				if (i == 0)
+				if (o == 0)
 					break;
 			}
 		}

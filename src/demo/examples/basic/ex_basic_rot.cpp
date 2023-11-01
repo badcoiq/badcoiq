@@ -224,10 +224,6 @@ void ExampleBasicsRotations::OnDraw()
 	vv.Normalize();
 	qq.FromVector(vv, bqVec4(0.f, 0.f, 1.f, 0.f));
 	m_sceneObject3->m_qOrientation = qq;
-	if (bqInput::IsKeyHold(bqInput::KEY_0))
-	{
-		m_sceneObject3->m_qOrientation.Identity();
-	}
 	m_sceneObject3->RecalculateWorldMatrix();
 	W = m_sceneObject3->GetMatrixWorld();
 	bqFramework::SetMatrix(bqMatrixType::World, &W);

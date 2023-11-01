@@ -376,10 +376,10 @@ bool bqInput::IsX2MBHold() { return (g_framework->m_input.m_mouseButtonFlags & b
 bool bqInput::IsX2MBRelease() { return (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_X2MBUP) == bq::MouseFlag_X2MBUP; }
 
 
-static const uint64_t* GetKeyToBin()
-{
-	return g_keyToBin;
-}
+//static const uint64_t* GetKeyToBin()
+//{
+//	return g_keyToBin;
+//}
 
 void bqInput::SetMousePosition(bqWindow* w, int32_t x, int32_t y)
 {

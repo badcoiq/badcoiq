@@ -1157,7 +1157,5 @@ bool bqString::extension(const char* _ext)
 	while (zgz_it != 0)
 		if (m_data[--des_it] != _ext[--zgz_it]) return false;
 	return true;
-
-	return false;
 }
 

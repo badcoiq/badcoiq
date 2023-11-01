@@ -48,6 +48,17 @@ enum class bqGSRasterizerState
 	Wireframe
 };
 
+
+class bqGPUOcclusionObject
+{
+public:
+	bqGPUOcclusionObject() {}
+	virtual ~bqGPUOcclusionObject() {}
+	BQ_PLACEMENT_ALLOCATOR(bqGPUOcclusionObject);
+
+	bool m_visible = true;
+};
+
 // Графическая система
 class bqGS
 {
@@ -160,6 +171,18 @@ public:
 	//                    который вернёт длинну в пикселях. Если метода нет то его надо написать.
 	virtual void DrawText3D(const bqVec4& pos, const char32_t* text, size_t textLen,
 		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) = 0;
+
+	// 
+	virtual bqGPUOcclusionObject* SummonOcclusionObject() = 0;
+	
+	// Все действия связанные с Occlusion culling надо делать
+	//  между вызовами этих методов
+	virtual void OcclusionBegin() = 0;
+	virtual void OcclusionEnd() = 0;
+	// Перед рисованием надо установить модель используя SetMesh
+	virtual void OcclusionDraw(bqGPUOcclusionObject*) = 0;
+	virtual void OcclusionResult(bqGPUOcclusionObject*) = 0;
+
 };
 
 #endif

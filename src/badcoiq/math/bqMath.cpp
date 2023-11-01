@@ -900,7 +900,7 @@ void bqMath::Transpose(bqMat4& m)
 void bqMath::Invert(bqMat4& m)
 {
 	bqMat4 mat;
-	auto ptr = m.Data();
+	//auto ptr = m.Data();
 	for (unsigned column = 0; column < 4; ++column)
 	{
 		// Swap row in case our pivot point is not working

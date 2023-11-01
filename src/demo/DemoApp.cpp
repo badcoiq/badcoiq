@@ -160,6 +160,7 @@ bool DemoApp::Init()
 	AddExample(new ExampleBasicsSprite(this), U"Спрайты", "basics/", U"Создание спрайта, установка анимации.");
 	AddExample(new ExampleBasicsText3D(this), U"Текст в 3D", "basics/", U"Плоский текст в 3D. Просто рисуем спрайты.");
 	AddExample(new ExampleBasicsRotations(this), U"Вращение", "basics/", U"Работа вспомогательного класса bqSceneObject. Жми кнопки 1 2 3 4 5 6 для вращения");
+	AddExample(new ExampleBasicsOclCul(this), U"Occlusion Culling", "basics/", U"Создаём особый объект который будет использоваться GPU. Рисуем специальным способом с указанием этого объекта. Обязательно надо отсортировать объекты по дальности. ");
 	
 	AddExample(new ExampleMshGnBox(this), U"Box", "generators/mesh", U"Всё о создании коробки");
 	

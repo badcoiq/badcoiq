@@ -80,25 +80,25 @@ void bqCamera::_calculateView()
 	m_viewMatrix[3].w = 1.f;
 }
 
-void bqCamera::_updatePerspective(float dt)
+void bqCamera::_updatePerspective(float)
 {
 	_calculateView();
 	bqMath::PerspectiveRH(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
 }
 
-void bqCamera::_updatePerspectiveLookAt(float dt)
+void bqCamera::_updatePerspectiveLookAt(float)
 {
 	bqMath::LookAtRH(m_viewMatrix, m_position, m_lookAtTargett, m_upVector);
 	bqMath::PerspectiveRH(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
 }
 
-void bqCamera::_updateOrtho(float dt)
+void bqCamera::_updateOrtho(float)
 {
 	_calculateView();
 	bqMath::OrthoRH(m_projectionMatrix, m_orthoWidth, m_orthoHeight, m_near, m_far);
 }
 
-void bqCamera::_updateOrthoLookAt(float dt)
+void bqCamera::_updateOrthoLookAt(float)
 {
 	bqMath::LookAtRH(m_viewMatrix, m_position, m_lookAtTargett, m_upVector);
 	bqMath::OrthoRH(m_projectionMatrix, m_orthoWidth, m_orthoHeight, m_near, m_far);
@@ -184,7 +184,7 @@ void bqCamera::Rotate(float x, float y, float z)
 	m_rotationMatrix = RX * m_rotationMatrix * RY * RZ;
 }
 
-void bqCamera::_updateEditor(float dt)
+void bqCamera::_updateEditor(float)
 {
 	if ((m_editorCameraType != CameraEditorType::Perspective) || m_forceOrtho)
 	{
@@ -355,5 +355,10 @@ void bqCamera::EditorReset()
 
 	bqPointf rp;
 	EditorRotate(&rp, 1.f);
+}
+
+void bqCamera::UpdateFrustum()
+{
+	m_frustum.CalculateFrustum(m_projectionMatrix, m_viewMatrix);
 }
 

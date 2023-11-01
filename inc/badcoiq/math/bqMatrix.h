@@ -176,7 +176,7 @@ public:
 	bool Invert()
 	{
 		bqMatrix4_t<T> mat;
-		auto ptr = this->Data();
+		//auto ptr = this->Data();
 		for (unsigned column = 0; column < 4; ++column)
 		{
 			// Swap row in case our pivot point is not working

@@ -101,7 +101,7 @@ public:
 		if (m_axisAlignedRotation)
 			m_qOrientation = m_qOrientation * Q;
 		else
-			m_qOrientation = Q * m_qOrientation; // like a airplane
+			m_qOrientation = Q * m_qOrientation; // как самолёт
 
 		m_qX.Identity();
 		m_qY.Identity();

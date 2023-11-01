@@ -63,7 +63,6 @@ bqColor* bqGUICheckRadioBoxTextDrawCallback::OnColor(uint32_t r, char32_t)
 	default:
 		return &m_colorDefault;
 	}
-	return &m_colorDefault;
 }
 
 bqGUICheckRadioBox::bqGUICheckRadioBox(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
