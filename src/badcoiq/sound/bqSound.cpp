@@ -390,16 +390,6 @@ bool bqSound::LoadFromFile(const char* fn)
 		return _loadWav(fn);
 	}
 
-	/*bqImage* img = 0;
-	uint32_t file_size = 0;
-	uint8_t* ptr = bqFramework::SummonFileBuffer(path, &file_size, false);
-	if (ptr)
-	{
-		img = LoadBMP(path, ptr, (uint32_t)file_size);
-		bqDestroy(ptr);
-	}
-	return img;*/
-
 	return false;
 }
 
