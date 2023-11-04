@@ -315,9 +315,9 @@ bqMesh* bqPolygonMesh::SummonMesh()
 					switch (m->GetInfo().m_indexType)
 					{
 					case bqMeshIndexType::u16:
-						*ind16 = baseIndex; ++ind16;
-						*ind16 = index + 2; ++ind16;
-						*ind16 = index + 1; ++ind16;
+						*ind16 = (uint16_t)baseIndex; ++ind16;
+						*ind16 = (uint16_t)index + 2; ++ind16;
+						*ind16 = (uint16_t)index + 1; ++ind16;
 						break;
 					case bqMeshIndexType::u32:
 						*ind32 = baseIndex; ++ind32;
@@ -619,8 +619,8 @@ void bqPolygonMesh::AddSphere(float radius, uint32_t segments, const bqMat4& m)
 
 	if (segments < 3)
 		segments = 3;
-	if (segments > 30)
-		segments = 30;
+	if (segments > 32)
+		segments = 32;
 
 	// 1. Generate points in 2D.
 	//    Generate from 90 to 270 degrees
@@ -767,15 +767,17 @@ void bqPolygonMesh::GenerateUVPlanar(float scale)
 		return;
 
 	bqVec3f n;
-	auto cp = m_polygons.m_head;
-	auto lp = cp->m_left;
-	while (true)
 	{
-		n += cp->m_data->GetFaceNormal();
+		auto cp = m_polygons.m_head;
+		auto lp = cp->m_left;
+		while (true)
+		{
+			n += cp->m_data->GetFaceNormal();
 
-		if (cp == lp)
-			break;
-		cp = cp->m_right;
+			if (cp == lp)
+				break;
+			cp = cp->m_right;
+		}
 	}
 	n.Normalize();
 	if (n.x == 0.f) n.x = 0.0001f;

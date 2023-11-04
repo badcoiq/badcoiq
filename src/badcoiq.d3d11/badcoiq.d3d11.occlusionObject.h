@@ -38,7 +38,6 @@ public:
 	virtual ~bqGSD3D11OcclusionObject();
 	BQ_PLACEMENT_ALLOCATOR(bqGSD3D11OcclusionObject);
 
-	//ID3D11Predicate* m_predicate = 0;
 	ID3D11Query* m_query = 0;
 };
 

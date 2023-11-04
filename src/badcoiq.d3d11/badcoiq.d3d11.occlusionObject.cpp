@@ -33,6 +33,5 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 bqGSD3D11OcclusionObject::bqGSD3D11OcclusionObject() {}
 bqGSD3D11OcclusionObject::~bqGSD3D11OcclusionObject()
 {
-	//BQD3DSAFE_RELEASE(m_predicate);
 	BQD3DSAFE_RELEASE(m_query);
 }

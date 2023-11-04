@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq.h"
 
 #include "badcoiq/geometry/bqMeshCreator.h"
+#include "badcoiq/geometry/bqSkeleton.h"
 
 
 bqMesh::bqMesh() {}
@@ -216,6 +217,108 @@ void bqMesh::Free()
 	{
 		bqMemory::free(m_indices);
 		m_indices = 0;
+	}
+}
+
+void bqMesh::ToSkinned()
+{
+	BQ_ASSERT_ST(m_vertices);
+	BQ_ASSERT_ST(m_indices);
+	BQ_ASSERT_ST(m_info.m_iCount);
+	BQ_ASSERT_ST(m_info.m_vCount);
+	BQ_ASSERT_ST(m_info.m_skinned == false);
+	BQ_ASSERT_ST(m_info.m_stride == sizeof(bqVertexTriangle));
+
+	m_info.m_stride = sizeof(bqVertexTriangleSkinned);
+	bqVertexTriangleSkinned* newVertices = (bqVertexTriangleSkinned*)bqMemory::malloc(m_info.m_vCount * sizeof(bqVertexTriangleSkinned));
+
+	bqVertexTriangleSkinned* dst = newVertices;
+	bqVertexTriangle* src = (bqVertexTriangle*)m_vertices;
+	for (uint32_t i = 0; i < m_info.m_vCount; ++i)
+	{
+		dst->BaseData = *src; ++src;
+		dst->BoneInds.Set(0, 0, 0, 0);
+		dst->Weights.Set(0.f, 0.f, 0.f, 0.f);
+		++dst;
+	}
+
+	bqMemory::free(m_vertices);
+	m_vertices = (uint8_t*)newVertices;
+	m_info.m_skinned = true;
+}
+
+void bqMesh::ApplySkeleton(bqSkeleton* skeleton)
+{
+	BQ_ASSERT_ST(skeleton);
+	BQ_ASSERT_ST(m_vertices);
+	BQ_ASSERT_ST(m_indices);
+	BQ_ASSERT_ST(m_info.m_iCount);
+	BQ_ASSERT_ST(m_info.m_vCount);
+	BQ_ASSERT_ST(m_info.m_skinned == true);
+	BQ_ASSERT_ST(m_info.m_stride == sizeof(bqVertexTriangleSkinned));
+
+	skeleton->Update();
+
+	auto& joints = skeleton->GetJoints();
+	size_t jointsSz = joints.size();
+	if (jointsSz)
+	{
+		struct help
+		{
+			help(bqVertexTriangleSkinned* V) :v(V), d(999999.f), j(0) {}
+
+			bqVertexTriangleSkinned* v = 0;
+			float d = 999999.f;
+			bqJoint* j = 0;
+			uint32_t i = 0;
+		};
+		bqArray<help> verts;
+		verts.reserve(m_info.m_vCount);
+
+		bqVertexTriangleSkinned* src = (bqVertexTriangleSkinned*)m_vertices;
+		for (uint32_t i = 0; i < m_info.m_vCount; ++i)
+		{
+			src->BoneInds.Set(0, 0, 0, 0);
+			src->Weights.Set(0.f, 0.f, 0.f, 0.f);
+			verts.push_back(help(src));
+
+			++src;
+		}
+
+		src = (bqVertexTriangleSkinned*)m_vertices;
+		for (uint32_t k = 0; k < m_info.m_vCount; ++k)
+		{
+			for (size_t i = 0; i < jointsSz; ++i)
+			{
+				bqMat4 mI2 = joints[i].m_data.m_matrixBindInverse;
+				mI2.Invert();
+				bqMat4 mI = joints[i].m_data.m_matrixFinal * mI2;
+
+				auto dist = bqMath::Distance(
+					bqVec3f(
+						(float)mI.m_data[3].x,
+						(float)mI.m_data[3].y,
+						(float)mI.m_data[3].z),
+					src->BaseData.Position);
+				if (dist < verts.m_data[k].d)
+				{
+					verts.m_data[k].d = dist;
+					verts.m_data[k].j = &joints[i];
+					verts.m_data[k].i = i;
+				}
+			}
+
+			++src;
+		}
+
+		for (uint32_t k = 0; k < m_info.m_vCount; ++k)
+		{
+			if (verts.m_data[k].j)
+			{
+				verts.m_data[k].v->BoneInds.x = verts.m_data[k].i;
+				verts.m_data[k].v->Weights.x = 1.f;
+			}
+		}
 	}
 }
 

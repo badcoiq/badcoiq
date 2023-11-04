@@ -1600,7 +1600,7 @@ bqGPUOcclusionObject* bqGSD3D11::SummonOcclusionObject()
 
 	D3D11_QUERY_DESC qdesc;
 
-	// fro predicate
+	// for predicate
 	// do not use D3D10_QUERY_MISC_PREDICATEHINT;
 	// "Predication data cannot be returned to your application via 
 	//    ID3D11DeviceContext::GetData when using this flag."

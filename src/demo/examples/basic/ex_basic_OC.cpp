@@ -282,12 +282,9 @@ void ExampleBasicsOclCul::OnDraw()
 		auto& W = m_objectsVisible.m_data[i]->GetMatrixWorld();
 		bqFramework::SetMatrix(bqMatrixType::World, &W);
 		bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &m_objectsVisible.m_data[i]->WVP);
-
 		m_gs->SetMesh(m_objectsVisible.m_data[i]->m_drawMesh);
 		m_gs->Draw();
 	}
-
-	
 
 	m_app->DrawGrid(14, (float)m_camera->m_position.y);
 
