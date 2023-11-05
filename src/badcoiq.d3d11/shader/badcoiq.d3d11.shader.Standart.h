@@ -61,4 +61,40 @@ public:
 	bool Init();
 };
 
+class bqD3D11ShaderStandartSkinned : public bqGSD3D11ShaderBase
+{
+public:
+	bqD3D11ShaderStandartSkinned(bqGSD3D11* gs);
+	virtual ~bqD3D11ShaderStandartSkinned();
+
+	bqGSD3D11* m_gs = 0;
+
+	ID3D11Buffer* m_cbV = 0;
+	ID3D11Buffer* m_cbP = 0;
+	ID3D11Buffer* m_cbSk = 0;
+
+	struct cbSk
+	{
+		bqMat4 M[255];
+	}m_cbDataSk;
+
+	struct cbV
+	{
+		bqMat4 WVP;
+		bqMat4 W;
+	}m_cbDataV;
+	struct cbP
+	{
+		bqVec4 SunPosition;
+		bqColor BaseColor;
+		bqColor AmbientColor;
+		float alphaDiscard = 0.5f;
+		float paddingf[3];
+	}m_cbDataP;
+
+	virtual void SetConstants(bqMaterial* material) final;
+
+	bool Init();
+};
+
 #endif

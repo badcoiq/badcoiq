@@ -31,9 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_SKELETON_H__
 
 #include "badcoiq/containers/bqArray.h"
-#include "badcoiq/math/bqVector.h"
-#include "badcoiq/math/bqMatrix.h"
-#include "badcoiq/math/bqQuaternion.h"
+#include "badcoiq/math/bqMath.h"
 
 // Трансформация джоинтов происходит изменяя эти значения.
 // Надо будет вызвать CalculateMatrix() после изменения.
@@ -47,7 +45,7 @@ struct bqJointTransformation
 	void CalculateMatrix();
 };
 
-// В некоторых случаях нужна базовая информация о джоинте.
+// В некоторых случаях нужна только базовая информация о джоинте.
 struct bqJointBase
 {
 	// джоинты должны распологаться в массиве, в правильном порядке, от корня к листьям.

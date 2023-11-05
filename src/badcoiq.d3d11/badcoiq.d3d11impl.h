@@ -55,6 +55,7 @@ class bqGSD3D11 : public bqGS
 {
 	friend class bqD3D11ShaderLine3D;
 	friend class bqD3D11ShaderStandart;
+	friend class bqD3D11ShaderStandartSkinned;
 	friend class bqD3D11ShaderEndDraw;
 	friend class bqD3D11ShaderGUIRectangle;
 	friend class bqD3D11ShaderSprite;
@@ -62,7 +63,8 @@ class bqGSD3D11 : public bqGS
 
 	bqGSD3D11ShaderBase* m_activeShader = 0;
 	bqD3D11ShaderLine3D* m_shaderLine3D = 0;
-	bqD3D11ShaderStandart* m_shaderStandart = 0; 
+	bqD3D11ShaderStandart* m_shaderStandart = 0;
+	bqD3D11ShaderStandartSkinned* m_shaderStandartSk = 0;
 	bqD3D11ShaderEndDraw* m_shaderEndDraw = 0;
 	bqD3D11ShaderGUIRectangle* m_shaderGUIRectangle = 0;
 	bqD3D11ShaderSprite* m_shaderSprite = 0;

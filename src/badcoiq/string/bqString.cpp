@@ -308,10 +308,10 @@ void bqString::append(const bqString& s)
 	}
 }
 
-void bqString::append(int8_t i)
+void bqString::append(int8_t v)
 {
 	char buf[32u];
-	int nob = sprintf_s(buf, 32, "%i", i);
+	int nob = sprintf_s(buf, 32, "%i", v);
 	if (nob)
 	{
 		for (int i = 0; i < nob; ++i)
@@ -321,10 +321,10 @@ void bqString::append(int8_t i)
 	}
 }
 
-void bqString::append(int16_t i)
+void bqString::append(int16_t v)
 {
 	char buf[32u];
-	int nob = sprintf_s(buf, 32, "%i", i);
+	int nob = sprintf_s(buf, 32, "%i", v);
 	if (nob)
 	{
 		for (int i = 0; i < nob; ++i)
@@ -334,10 +334,10 @@ void bqString::append(int16_t i)
 	}
 }
 
-void bqString::append(int32_t i)
+void bqString::append(int32_t v)
 {
 	char buf[32u];
-	int nob = sprintf_s(buf, 32, "%i", i);
+	int nob = sprintf_s(buf, 32, "%i", v);
 	if (nob)
 	{
 		for (int i = 0; i < nob; ++i)
@@ -347,10 +347,10 @@ void bqString::append(int32_t i)
 	}
 }
 
-void bqString::append(int64_t i)
+void bqString::append(int64_t v)
 {
 	char buf[32u];
-	int nob = sprintf_s(buf, 32, "%lli", i);
+	int nob = sprintf_s(buf, 32, "%lli", v);
 	if (nob)
 	{
 		for (int i = 0; i < nob; ++i)
@@ -360,10 +360,10 @@ void bqString::append(int64_t i)
 	}
 }
 
-void bqString::append(uint8_t i)
+void bqString::append(uint8_t v)
 {
 	char buf[32u];
-	int nob = sprintf_s(buf, 32, "%u", i);
+	int nob = sprintf_s(buf, 32, "%u", v);
 	if (nob)
 	{
 		for (int i = 0; i < nob; ++i)
@@ -373,10 +373,10 @@ void bqString::append(uint8_t i)
 	}
 }
 
-void bqString::append(uint16_t i)
+void bqString::append(uint16_t v)
 {
 	char buf[32u];
-	int nob = sprintf_s(buf, 32, "%u", i);
+	int nob = sprintf_s(buf, 32, "%u", v);
 	if (nob)
 	{
 		for (int i = 0; i < nob; ++i)
@@ -385,10 +385,10 @@ void bqString::append(uint16_t i)
 		}
 	}
 }
-void bqString::append(uint32_t i)
+void bqString::append(uint32_t v)
 {
 	char buf[32u];
-	int nob = sprintf_s(buf, 32, "%u", i);
+	int nob = sprintf_s(buf, 32, "%u", v);
 	if (nob)
 	{
 		for (int i = 0; i < nob; ++i)
@@ -397,10 +397,10 @@ void bqString::append(uint32_t i)
 		}
 	}
 }
-void bqString::append(uint64_t i)
+void bqString::append(uint64_t v)
 {
 	char buf[32u];
-	int nob = sprintf_s(buf, 32, "%llu", i);
+	int nob = sprintf_s(buf, 32, "%llu", v);
 	if (nob)
 	{
 		for (int i = 0; i < nob; ++i)
@@ -410,10 +410,10 @@ void bqString::append(uint64_t i)
 	}
 }
 
-void bqString::append_hex(uint64_t i)
+void bqString::append_hex(uint64_t v)
 {
 	char buf[32u];
-	int nob = sprintf_s(buf, 32, "%jx", i);
+	int nob = sprintf_s(buf, 32, "%jx", v);
 	if (nob)
 	{
 		for (int i = 0; i < nob; ++i)
@@ -576,7 +576,7 @@ void bqString::insert(const char32_t* str, size_t where)
 			break;
 		--i;
 	}
-	for (size_t i = 0; i < str_len; ++i)
+	for (i = 0; i < str_len; ++i)
 	{
 		m_data[i + where] = str[i];
 	}
@@ -711,7 +711,7 @@ uint32_t bqString::to_uint()
 	size_t len = m_size;
 	uint32_t result = 0;
 	int mul_val = 1;
-	bool is_neg = m_data[0] == U'-';
+//	bool is_neg = m_data[0] == U'-';
 	for (size_t i = 0, last = len - 1; i < len; ++i)
 	{
 		int char_value = (int)m_data[last] - 0x30;
@@ -730,7 +730,7 @@ uint64_t bqString::to_uintll()
 	size_t len = m_size;
 	uint64_t result = 0;
 	int mul_val = 1;
-	bool is_neg = m_data[0] == U'-';
+//	bool is_neg = m_data[0] == U'-';
 	for (size_t i = 0, last = len - 1; i < len; ++i)
 	{
 		int char_value = (int)m_data[last] - 0x30;
@@ -1155,7 +1155,7 @@ bool bqString::extension(const char* _ext)
 	auto zgz_it = strlen(_ext);
 	if (zgz_it > des_it) return false;
 	while (zgz_it != 0)
-		if (m_data[--des_it] != _ext[--zgz_it]) return false;
+		if (m_data[--des_it] != (char32_t)_ext[--zgz_it]) return false;
 	return true;
 }
 

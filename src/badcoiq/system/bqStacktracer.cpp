@@ -174,10 +174,10 @@ void bqStackTracerImpl::DumpStackTrace(const size_t* trace, int maxtrace)
 			&displacement,
 			&line);
 
-		char trace[2048];
-		_snprintf_s(trace, 2048, "%s(%i):'%s'\n", line.FileName, line.LineNumber, sym.si.Name);
+		char tr[2048];
+		_snprintf_s(tr, 2048, "%s(%i):'%s'\n", line.FileName, line.LineNumber, sym.si.Name);
 		//printf(trace);
-		bqLog::Print("%s\n", trace);
+		bqLog::Print("%s\n", tr);
 	}
 }
 

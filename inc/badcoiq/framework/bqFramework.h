@@ -109,6 +109,9 @@ public:
 	// Получить указатель на матрицу
 	static bqMat4* GetMatrix(bqMatrixType);
 
+	// Получить указатель на первую из 255 матриц для скелета
+	static bqMat4* GetMatrixSkinned();
+
 	// Установить указатель на матрицу
 	static void SetMatrix(bqMatrixType, bqMat4*);
 

@@ -27,28 +27,53 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_BADCOIQ_H__
-#define __BQ_BADCOIQ_H__
+#ifndef __BQ_PTR_H__
+#define __BQ_PTR_H__
 
-// если компилировать со всеми warnings и считать их ошибками
-// то решение некоторых warnings ухудшают код
-// некоторые выдаются внутри кода visual studio
-#pragma warning( disable : 4820 ) // <число> padding что-то там. например если добавлен bool в класс
-#pragma warning( disable : 4365 ) // выдаёт xmemory. conversion from 'long' to 'unsigned int', signed/unsigned mismatch
+class bqPtr
+{
+	using delete_method_type = void(bqPtr::*)();
+	delete_method_type m_delete = 0;
 
-#include "badcoiq/common/bqDefines.h"
-#include "badcoiq/common/bqUserData.h"
-#include "badcoiq/common/bqMemory.h"
-#include "badcoiq/common/bqPtr.h"
-#include "badcoiq/common/bqLog.h"
-#include "badcoiq/common/bqForward.h"
-#include "badcoiq/string/bqString.h"
-#include "badcoiq/system/bqStacktracer.h"
-#include "badcoiq/common/bqAssert.h"
-#include "badcoiq/system/bqDLL.h"
-#include "badcoiq/common/bqBasicTypes.h"
-#include "badcoiq/common/bqHierarchy.h"
-#include "badcoiq/framework/bqFramework.h"
+	void* m_ptr = 0;
+
+	void _deleteFree()
+	{
+		bqMemory::free(m_ptr);
+	}
+
+	void _deleteDestroy()
+	{
+		bqDestroy(m_ptr);
+	}
+
+public:
+	template<typename Type>
+	bqPtr(Type* p, delete_method_type delete_method)
+		:
+		m_ptr(p)
+	{
+		m_delete = delete_method;
+	}
+
+	~bqPtr()
+	{
+		if (m_ptr)
+			(this->*m_delete)();
+	}
+
+	static delete_method_type Free()
+	{
+		return &bqPtr::_deleteFree;
+	}
+
+	static delete_method_type Destroy()
+	{
+		return &bqPtr::_deleteDestroy;
+	}
+
+	void* Ptr() { return m_ptr; }
+};
 
 #endif
 

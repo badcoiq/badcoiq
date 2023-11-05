@@ -36,7 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 enum class bqMeshVertexType : uint32_t
 {
 	Null, // 0
-	Triangle
+	Triangle,
+	// TriangleSkinned, // пока лишнее. всё работает норм благодоря m_stride
 };
 
 // Тип индекса

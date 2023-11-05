@@ -68,6 +68,7 @@ public:
 	bqStringA m_fileSizeString;
 
 	bqMat4* m_matrixPtrs[(uint32_t)bqMatrixType::_count];
+	bqMat4 m_matrixSkinned[255];
 
 	// Архивы, сжатие
 	bool _compress_fastlz(bqCompressionInfo* info);

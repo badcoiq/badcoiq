@@ -690,6 +690,10 @@ bool bqGSD3D11::CreateShaders()
 	if (!m_shaderStandart->Init())
 		return false;
 
+	m_shaderStandartSk = bqCreate<bqD3D11ShaderStandartSkinned>(this);
+	if (!m_shaderStandartSk->Init())
+		return false;
+
 	m_shaderEndDraw = bqCreate<bqD3D11ShaderEndDraw>(this);
 	if (!m_shaderEndDraw->Init())
 		return false;

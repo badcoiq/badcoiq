@@ -366,6 +366,11 @@ void bqFramework::SetMatrix(bqMatrixType t, bqMat4* m)
 	g_framework->m_matrixPtrs[(uint32_t)t] = m;
 }
 
+bqMat4* bqFramework::GetMatrixSkinned()
+{
+	return &g_framework->m_matrixSkinned[0];
+}
+
 uint8_t* bqFramework::SummonFileBuffer(const char* path, uint32_t* szOut, bool isText)
 {
 	BQ_ASSERT_ST(path);
