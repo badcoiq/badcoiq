@@ -75,30 +75,19 @@ VSOut VSMain(VSIn input)
 	output.uv.x    = input.uv.x;
 	output.uv.y    = input.uv.y;
 	output.vColor    = input.color;
+	output.vColor.w    = 1.f;
 	output.normal    = normalize(mul((double3x3)W, input.normal));
 	return output;
 }
 
 #define MAX_BONE_MATRICES 255
 
-struct VSInSk
-{
-   float3 position : POSITION;
-	float2 uv : TEXCOORD;
-   float3 normal : NORMAL;
-   float3 binormal : BINORMAL;
-   float3 tangent : TANGENT;
-   float4 color : COLOR;
-   uint4 boneInds : BONES;
-   float4 boneWeights : WEIGHTS;
-};
-
 cbuffer cbAnimMatrices
 {
 	double4x4 g_mConstBoneWorld[MAX_BONE_MATRICES];
 };
 
-VSOut VSMainSk(VSInSk input)
+VSOut VSMainSk(VSIn input)
 {
 	VSOut output;
 
@@ -147,7 +136,6 @@ PSOut PSMain(VSOut input)
    output.color = AmbientColor;
 
    float4 textureColor = tex2d_1.Sample(tex2D_sampler_1, input.uv) * BaseColor;
-//   float4 textureColor = float4(1.f,1.f,1.f,1.f) * BaseColor;
 
 	if(diff>1.f)
 		diff = 1.f;
@@ -155,8 +143,8 @@ PSOut PSMain(VSOut input)
 	output.color +=  BaseColor * diff;
 	output.color *=  textureColor;
 
-	if(output.color.w < alphaDiscard)
-		discard;
+	//if(output.color.w < alphaDiscard)
+	//	discard;
 		
     return output;
 }

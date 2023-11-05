@@ -37,6 +37,7 @@ class ExampleBasicsSkeletalAnimation : public DemoExample
 
 	bqGPUMesh* m_mesh = 0;
 	bqSceneObject* m_sceneObject = 0;
+	bqSkeleton* m_skeleton = 0;
 
     void _onCamera();
 public:

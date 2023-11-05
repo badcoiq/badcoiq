@@ -735,9 +735,9 @@ void bqGSD3D11::SetShader(bqShaderType t, uint32_t userShaderIndex)
 		m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		break;
 	case bqShaderType::StandartSkinned:
-		//SetActiveShader(m_shaderStandartSkinned);
-		//m_d3d11DevCon->IASetInputLayout(m_shaderStandartSkinned->m_vLayout);
-		//m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		SetActiveShader(m_shaderStandartSk);
+		m_d3d11DevCon->IASetInputLayout(m_shaderStandartSk->m_vLayout);
+		m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		break;
 	case bqShaderType::Sprite:
 		SetActiveShader(m_shaderSprite);

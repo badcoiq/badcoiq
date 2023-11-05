@@ -84,6 +84,7 @@ class bqSkeleton
 public:
 	bqSkeleton();
 	~bqSkeleton();
+	BQ_PLACEMENT_ALLOCATOR(bqSkeleton);
 
 	bqJoint* AddJoint(const bqQuaternion& rotation, const bqVec4& position, const bqVec4& scale,
 		const char* name, int32_t parentIndex);

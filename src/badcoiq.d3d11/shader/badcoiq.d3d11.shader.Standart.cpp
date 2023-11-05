@@ -193,6 +193,17 @@ void bqD3D11ShaderStandartSkinned::SetConstants(bqMaterial* material)
 		m_gs->m_d3d11DevCon->VSSetConstantBuffers(0, 1, &m_cbV);
 	}
 
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		D3D11_BUFFER_DESC d;
+		m_gs->m_d3d11DevCon->Map(m_cbSk, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		m_cbSk->GetDesc(&d);
+		memcpy(mappedResource.pData, &m_cbDataSk, d.ByteWidth);
+		m_gs->m_d3d11DevCon->Unmap(m_cbSk, 0);
+		m_gs->m_d3d11DevCon->VSSetConstantBuffers(1, 1, &m_cbSk);
+	}
+
+
 	m_cbDataP.alphaDiscard = material->m_alphaDiscard;
 
 	m_cbDataP.BaseColor = material->m_colorDiffuse;
