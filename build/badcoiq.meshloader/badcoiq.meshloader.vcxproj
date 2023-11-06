@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq.meshloader\badcoiq.meshloader.cpp" />
     <ClCompile Include="..\..\src\badcoiq.meshloader\badcoiq.meshloader.OBJ.cpp" />
+    <ClCompile Include="..\..\src\badcoiq.meshloader\badcoiq.meshloader.SMD.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

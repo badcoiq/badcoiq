@@ -34,12 +34,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/math/bqMath.h"
 
 // Трансформация джоинтов происходит изменяя эти значения.
+struct bqJointTransformationBase
+{
+	bqVec4 m_position;
+	bqVec4 m_scale = bqVec4(1.f, 1.f, 1.f, 0.f);
+	bqQuaternion m_rotation;
+};
+
 // Надо будет вызвать CalculateMatrix() после изменения.
 struct bqJointTransformation
 {
-	bqVec4 m_position;
-	bqQuaternion m_rotation;
-	bqVec4 m_scale = bqVec4(1.f, 1.f, 1.f, 0.f);
+	bqJointTransformationBase m_base;
 	bqMat4 m_matrix;
 
 	void CalculateMatrix();
@@ -102,6 +107,75 @@ public:
 	// m_preRotation.SetRotation(slQuaternion(PI * 0.5f, 0.f, 0.f));
 	bqMat4 m_preRotation;
 };
+
+// По сути - поза
+// Массив хранит данные описывающие позицию джоинтов.
+struct bqSkeletonAnimationFrame
+{
+	bqArray<bqJointTransformationBase> m_transformations;
+};
+
+// Содержит массив имён джоинтов которые будут анимироваться.
+//      Почему имён а не указателей? 
+//      Потому что объект этого класса он один для всех.
+//      Скелеты у каждого объекта свой, так как все могут иметь свою уникальную позу.
+//      А для хранения анимации достаточно одного объекта.
+//      Для воспроизведения анимации нужно будет добавить ещё один класс
+//       который будет на основе имён делать поиск указателей на конкретные джоинты.
+//       
+// И массив с фреймами.
+// Каждый фрейм должен содержать массив трансформаций. 
+//     Трансформации на каждый джоинт. Размер этих массивов должен быть
+//     равен размеру массива с именами джоинтов.
+// 
+// Всё должно быть удобным для использования в программе. Удобно использовать
+//     в программе, но не удобно использовать в загрузчике модели. Поэтому
+//     нужно будет добавить методы для удобного добавления джоинтов и фреймов.
+class bqSkeletonAnimation
+{
+	bqArray<bqJointBase> m_joints; // те джоинты которых нужно анимировать
+	bqArray<bqSkeletonAnimationFrame*> m_frames; // "кадры"
+public:
+	// При создании объекта надо указать количество джоинтов и количество фреймов.
+	// Должна произойти инициализация чтобы потом не возникли ошибки.
+	// Инициализация такая: заполнить массив с джоинтами, и фреймы со всеми массивами.
+	bqSkeletonAnimation(uint32_t jtNum, uint32_t frNum, const char* name);
+	~bqSkeletonAnimation();
+	BQ_PLACEMENT_ALLOCATOR(bqSkeletonAnimation);
+
+	bqJointBase* GetJoint(size_t i) { return &m_joints.m_data[i]; }
+	void SetJoint(bqJointBase* j, size_t i) { m_joints.m_data[i] = *j; }
+
+	size_t GetJointsNumber() { return m_joints.m_size; }
+
+	bqSkeletonAnimationFrame* GetFrame(size_t i) { return m_frames.m_data[i]; }
+	size_t GetFramesNumber() { return m_frames.m_size; }
+
+	void SetTransformation(uint32_t joint, uint32_t frame, const bqJointTransformationBase&);
+
+	char m_name[100];
+	float m_fps = 30.f;
+};
+
+// Для проигрывания анимации надо получить указатели на джоинты
+class bqSkeletonAnimationObject
+{
+	bqArray<bqJoint*> m_joints;
+	bqSkeletonAnimation* m_animation = 0;
+	//bqSkeleton* m_skeleton = 0;
+	float m_frameCurr = 0.f;
+	float m_frameMax = 0.f;
+public:
+	bqSkeletonAnimationObject();
+	~bqSkeletonAnimationObject();
+	BQ_PLACEMENT_ALLOCATOR(bqSkeletonAnimationObject);
+
+	void Init(bqSkeletonAnimation*, bqSkeleton*);
+
+	void Animate(float dt);
+	void AnimateInterpolate(float dt);
+};
+
 
 #endif
 

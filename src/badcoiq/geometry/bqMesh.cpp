@@ -170,7 +170,7 @@ void bqMesh::GenerateTangents()
 	}
 }
 
-void bqMesh::GenerateNormals(bool smooth)
+void bqMesh::GenerateNormals(bool)
 {
 }
 
@@ -315,7 +315,7 @@ void bqMesh::ApplySkeleton(bqSkeleton* skeleton)
 		{
 			if (verts.m_data[k].j)
 			{
-				verts.m_data[k].v->BoneInds.x = verts.m_data[k].i;
+				verts.m_data[k].v->BoneInds.x = (uint8_t)verts.m_data[k].i;
 				verts.m_data[k].v->Weights.x = 1.f;
 			}
 		}

@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_MESHLOADER_H__
 
 #include "badcoiq/geometry/bqMesh.h"
+#include "badcoiq/geometry/bqSkeleton.h"
 #include "badcoiq/gs/bqMaterial.h"
 
 class bqMeshLoaderCallback
@@ -54,28 +55,28 @@ public:
 	}
 
 	// Будет вызван по окончании чтения файла.
-	// Неизвестно что юудет прочитано первым, материал или модель.
+	// Неизвестно что будет прочитано первым, материал или модель.
 	// После чтения, можно будет в данном методе найти нужный материал для нужной модели.
 	virtual void Finale()
 	{
 
 	}
 
-	//virtual void OnSkeleton(bqSkeleton* s)
-	//{
-	//	if (s)
-	//	{
-	//		// if don't need then destroy
-	//		bqDestroy(s);
-	//	}
-	//}
-	//virtual void OnAnimation(bqSkeletonAnimation* a)
-	//{
-	//	if (a)
-	//	{
-	//		bqDestroy(a);
-	//	}
-	//}
+	virtual void OnSkeleton(bqSkeleton* s)
+	{
+		if (s)
+		{
+			// if don't need then destroy
+			bqDestroy(s);
+		}
+	}
+	virtual void OnAnimation(bqSkeletonAnimation* a)
+	{
+		if (a)
+		{
+			bqDestroy(a);
+		}
+	}
 
 };
 

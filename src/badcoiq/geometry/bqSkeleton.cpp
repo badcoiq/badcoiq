@@ -33,18 +33,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 void bqJointTransformation::CalculateMatrix()
 {
 	bqMat4 sM;
-	sM.m_data[0].x = m_scale.x;
-	sM.m_data[1].y = m_scale.y;
-	sM.m_data[2].z = m_scale.z;
+	sM.m_data[0].x = m_base.m_scale.x;
+	sM.m_data[1].y = m_base.m_scale.y;
+	sM.m_data[2].z = m_base.m_scale.z;
 
 	m_matrix.Identity();
-	m_matrix.SetRotation(m_rotation);
+	m_matrix.SetRotation(m_base.m_rotation);
 
 	m_matrix = m_matrix * sM;
 
-	m_matrix.m_data[3].x = m_position.x;
-	m_matrix.m_data[3].y = m_position.y;
-	m_matrix.m_data[3].z = m_position.z;
+	m_matrix.m_data[3].x = m_base.m_position.x;
+	m_matrix.m_data[3].y = m_base.m_position.y;
+	m_matrix.m_data[3].z = m_base.m_position.z;
 }
 
 bqSkeleton::bqSkeleton()
@@ -64,15 +64,9 @@ bqJoint* bqSkeleton::AddJoint(const bqQuaternion& rotation, const bqVec4& positi
 	bqJoint joint;
 	memset(&joint.m_base.m_name, 0, sizeof(joint.m_base.m_name));
 
-	//joint.m_matrixBind = m;
-	//joint.m_matrixBind.m_data[3].x = position.x;
-	//joint.m_matrixBind.m_data[3].y = position.y;
-	//joint.m_matrixBind.m_data[3].z = position.z;
-
-	//joint.m_transformation.m_matrix = m;
-	joint.m_data.m_transformation.m_position = position;
-	joint.m_data.m_transformation.m_rotation = rotation;
-	joint.m_data.m_transformation.m_scale = scale;
+	joint.m_data.m_transformation.m_base.m_position = position;
+	joint.m_data.m_transformation.m_base.m_rotation = rotation;
+	joint.m_data.m_transformation.m_base.m_scale = scale;
 	joint.m_data.m_transformation.CalculateMatrix();
 
 	joint.m_base.m_parentIndex = parentIndex;
@@ -107,6 +101,17 @@ void bqSkeleton::CalculateBind()
 	}
 }
 
+bqJoint* bqSkeleton::GetJoint(const char* name)
+{
+	BQ_ASSERT_ST(name);
+	for (size_t i = 0; i < m_joints.m_size; ++i)
+	{
+		if (strcmp(m_joints.m_data[i].m_base.m_name, name) == 0)
+			return &m_joints.m_data[i];
+	}
+	return 0;
+}
+
 void bqSkeleton::Update()
 {
 	if (m_joints.m_size)
@@ -137,3 +142,154 @@ void bqSkeleton::Update()
 		}
 	}
 }
+
+bqSkeleton* bqSkeleton::Duplicate()
+{
+	bqSkeleton* newSkeleton = new bqSkeleton;
+
+	newSkeleton->m_joints.reserve(m_joints.m_size);
+	for (size_t i = 0; i < m_joints.m_size; ++i)
+	{
+		newSkeleton->m_joints.push_back(m_joints.m_data[i]);
+	}
+	newSkeleton->m_preRotation = m_preRotation;
+	return newSkeleton;
+}
+
+// инициализация джоинтов и фреймов
+bqSkeletonAnimation::bqSkeletonAnimation(uint32_t jtNum, uint32_t frNum, const char* name)
+{
+	BQ_ASSERT_ST(jtNum);
+	BQ_ASSERT_ST(frNum);
+
+	strcpy_s(m_name, sizeof(m_name), name);
+
+	m_joints.reserve(jtNum);
+	for (uint32_t i = 0; i < jtNum; ++i)
+	{
+		bqJointBase jb;
+		strcpy_s(jb.m_name, sizeof(jb.m_name), "-");
+		m_joints.push_back(jb);
+	}
+
+	m_frames.reserve(frNum);
+	for (uint32_t i = 0; i < frNum; ++i)
+	{
+		bqSkeletonAnimationFrame* newFrame = bqCreate<bqSkeletonAnimationFrame>();
+		m_frames.push_back(newFrame);
+		newFrame->m_transformations.reserve(jtNum);
+		for (uint32_t o = 0; o < jtNum; ++o)
+		{
+			newFrame->m_transformations.push_back(bqJointTransformationBase());
+		}
+	}
+}
+
+bqSkeletonAnimation::~bqSkeletonAnimation()
+{
+	for (size_t i = 0; i < m_frames.m_size; ++i)
+	{
+		bqDestroy(m_frames.m_data[i]);
+	}
+}
+
+void bqSkeletonAnimation::SetTransformation(uint32_t joint, uint32_t frame, const bqJointTransformationBase& jt)
+{
+	BQ_ASSERT_ST(joint < m_joints.m_size);
+	BQ_ASSERT_ST(frame < m_frames.m_size);
+
+	bqSkeletonAnimationFrame* F = m_frames.m_data[frame];
+	F->m_transformations.m_data[joint] = jt;
+}
+
+bqSkeletonAnimationObject::bqSkeletonAnimationObject()
+{
+}
+
+bqSkeletonAnimationObject::~bqSkeletonAnimationObject()
+{
+}
+
+void bqSkeletonAnimationObject::Init(bqSkeletonAnimation* a, bqSkeleton* s)
+{
+	BQ_ASSERT_ST(a);
+	BQ_ASSERT_ST(s);
+
+	m_joints.clear();
+//	m_skeleton = s;
+	m_animation = a;
+	m_frameMax = (float)a->GetFramesNumber();
+	m_frameCurr = 0.f;
+
+	for (size_t i = 0, sz = a->GetJointsNumber(); i < sz; ++i)
+	{
+		auto J = a->GetJoint(i);
+		bqJoint* joint = s->GetJoint(J->m_name);
+		if (joint)
+		{
+			m_joints.push_back(joint);
+		}
+	}
+}
+
+void bqSkeletonAnimationObject::Animate(float dt)
+{
+	uint32_t currFrameIndex = (uint32_t)floor(m_frameCurr);
+
+	bqSkeletonAnimationFrame* frame = m_animation->GetFrame(currFrameIndex);
+	for (size_t i = 0; i < frame->m_transformations.m_size; ++i)
+	{
+		m_joints.m_data[i]->m_data.m_transformation.m_base.m_position = frame->m_transformations.m_data[i].m_position;
+		m_joints.m_data[i]->m_data.m_transformation.m_base.m_rotation = frame->m_transformations.m_data[i].m_rotation;
+		m_joints.m_data[i]->m_data.m_transformation.m_base.m_scale = frame->m_transformations.m_data[i].m_scale;
+		m_joints.m_data[i]->m_data.m_transformation.CalculateMatrix();
+	}
+
+	m_frameCurr += (dt * m_animation->m_fps);
+
+	if (m_frameCurr >= m_frameMax)
+		m_frameCurr = 0.f;
+}
+
+void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
+{
+	uint32_t currFrameIndex = (uint32_t)floor(m_frameCurr);
+	float t = m_frameCurr - (float)currFrameIndex;
+
+	bqSkeletonAnimationFrame* frame = m_animation->GetFrame(currFrameIndex);
+
+	uint32_t prevFrameIndex = currFrameIndex;
+	if (prevFrameIndex == 0)
+		prevFrameIndex = (uint32_t)floor(m_frameMax) - 1;
+	else
+		--prevFrameIndex;
+	bqSkeletonAnimationFrame* prevFrame = m_animation->GetFrame(prevFrameIndex);
+
+	for (size_t i = 0; i < frame->m_transformations.m_size; ++i)
+	{
+		bqVec4 P;
+		bqMath::Lerp1(prevFrame->m_transformations.m_data[i].m_position,
+			frame->m_transformations.m_data[i].m_position, t, P);
+
+		m_joints.m_data[i]->m_data.m_transformation.m_base.m_position = P;
+
+		bqQuaternion Q;
+		bqMath::Slerp(prevFrame->m_transformations.m_data[i].m_rotation,
+			frame->m_transformations.m_data[i].m_rotation,
+			t, 1.f, Q);
+		m_joints.m_data[i]->m_data.m_transformation.m_base.m_rotation = Q;
+
+		bqVec4 S;
+		bqMath::Lerp1(prevFrame->m_transformations.m_data[i].m_scale,
+			frame->m_transformations.m_data[i].m_scale, t, S);
+		m_joints.m_data[i]->m_data.m_transformation.m_base.m_scale = S;
+
+		m_joints.m_data[i]->m_data.m_transformation.CalculateMatrix();
+	}
+
+	m_frameCurr += (dt * m_animation->m_fps);
+
+	if (m_frameCurr >= m_frameMax)
+		m_frameCurr = 0.f;
+}
+

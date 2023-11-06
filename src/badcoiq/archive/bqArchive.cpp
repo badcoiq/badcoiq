@@ -83,6 +83,21 @@ bqArchiveZipFile* bqArchiveSystem::ZipAdd(const char* fn)
 	return zp;
 }
 
+void bqArchiveSystem::ZipRemove(bqArchiveZipFile* a)
+{
+	BQ_ASSERT_ST(a);
+
+	for (size_t i = 0; i < g_framework->m_zipFiles.size(); ++i)
+	{
+		if (g_framework->m_zipFiles[i] == a)
+		{
+			g_framework->m_zipFiles.erase(g_framework->m_zipFiles.begin() + i);
+			return;
+		}
+	}
+
+}
+
 uint8_t* bqArchiveSystem::ZipUnzip(const char* fileInZip, uint32_t* size, bqArchiveZipFile* a)
 {
 	BQ_ASSERT_ST(fileInZip);

@@ -50,4 +50,23 @@ public:
 	virtual void OnDraw() override;
 };
 
+class ExampleBasicsSkeletalAnimation2 : public DemoExample
+{
+	bqCamera* m_camera = 0;
+
+	bqGPUMesh* m_mesh = 0;
+	bqSceneObject* m_sceneObject = 0;
+	bqSkeleton* m_skeleton = 0;
+
+	void _onCamera();
+public:
+	ExampleBasicsSkeletalAnimation2(DemoApp*);
+	virtual ~ExampleBasicsSkeletalAnimation2();
+	BQ_PLACEMENT_ALLOCATOR(ExampleBasicsSkeletalAnimation2);
+
+	virtual bool Init() override;
+	virtual void Shutdown() override;
+	virtual void OnDraw() override;
+};
+
 #endif

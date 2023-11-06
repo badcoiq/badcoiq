@@ -91,6 +91,7 @@ class bqSoundEngine;
 class bqSoundSystem;
 class bqSceneObject;
 class bqSkeleton;
+class bqSkeletonAnimation;
 
 #endif
 

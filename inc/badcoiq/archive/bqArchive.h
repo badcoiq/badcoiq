@@ -85,6 +85,7 @@ class bqArchiveSystem
 public:
     // Добавить файл из которого будет происходить распаковка
     static bqArchiveZipFile* ZipAdd(const char* zipFile);
+    static void ZipRemove(bqArchiveZipFile*);
 
     // Распаковать файл. Если `a` NULL первый найденный файл будет распакован.
     // Установи `a` если используешь много zip файлов которые содержат файлы с одинаковым именем.
