@@ -160,9 +160,11 @@ public:
 // Для проигрывания анимации надо получить указатели на джоинты
 class bqSkeletonAnimationObject
 {
+	// можно дать только определённые джоинты
 	bqArray<bqJoint*> m_joints;
+
 	bqSkeletonAnimation* m_animation = 0;
-	//bqSkeleton* m_skeleton = 0;
+	//bqSkeleton* m_skeleton = 0; // пока лишнее
 	float m_frameCurr = 0.f;
 	float m_frameMax = 0.f;
 public:

@@ -249,7 +249,7 @@ uint32_t bqPolygonMeshPolygon::GetVerticesNumber()
 }
 
 
-bqMesh* bqPolygonMesh::SummonMesh()
+bqMesh* bqPolygonMesh::SummonMesh(bool skinned)
 {
 	bqMesh* m = 0;
 
@@ -282,10 +282,12 @@ bqMesh* bqPolygonMesh::SummonMesh()
 
 		// создание и настройка bqMesh
 		m = new bqMesh;
-		m->Allocate(numV, numI);
+		m->Allocate(numV, numI, skinned);
 		m->GetInfo().m_aabb = m_aabb;
 
 		bqVertexTriangle* vertex = (bqVertexTriangle*)m->GetVBuffer();
+		bqVertexTriangleSkinned* vertexSkinned = (bqVertexTriangleSkinned*)m->GetVBuffer();
+
 		uint32_t* ind32 = (uint32_t*)m->GetIBuffer();
 		uint16_t* ind16 = (uint16_t*)m->GetIBuffer();
 
@@ -300,8 +302,16 @@ bqMesh* bqPolygonMesh::SummonMesh()
 				// надо просто передать данные
 				for (auto v : o->m_vertices)
 				{
-					*vertex = v->m_data.BaseData;
-					++vertex;
+					if (skinned)
+					{
+						*vertexSkinned = v->m_data;
+						++vertexSkinned;
+					}
+					else
+					{
+						*vertex = v->m_data.BaseData;
+						++vertex;
+					}
 				}
 
 				// теперь индексы

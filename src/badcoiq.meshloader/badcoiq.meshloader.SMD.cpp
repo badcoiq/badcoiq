@@ -242,7 +242,8 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 					// create mesh here
 					Model* model = &models.m_data[i];
 
-					bqPolygonMesh* polygonMesh = bqFramework::SummonPolygonMesh();
+					//bqPolygonMesh* polygonMesh = bqFramework::SummonPolygonMesh();
+					BQ_PTR_D(bqPolygonMesh, polygonMesh, bqFramework::SummonPolygonMesh());
 					
 					//for (auto& tri : model->triangles)
 					for(size_t o = 0; o < model->triangles.m_size; ++o)
@@ -272,10 +273,10 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 						polygonCreator.SetBoneWeights(bqVec4f(1.f, 0.f, 0.f, 0.f));
 						polygonCreator.AddVertex();
 
-						polygonMesh->AddPolygon(&polygonCreator, false);
+						polygonMesh.Ptr()->AddPolygon(&polygonCreator, false);
 					}
 
-					if (polygonMesh->m_polygons.m_head)
+					if (polygonMesh.Ptr()->m_polygons.m_head)
 					{
 						bqString name;
 						name.assign(model->textureName.c_str());
@@ -284,10 +285,10 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 						memcpy_s(mat.m_maps[0].m_filePath, 0x1000, model->textureName.c_str(), model->textureName.size());
 						mat.m_name = name;
 						cb->OnMaterial(&mat);
-						cb->OnMesh(polygonMesh->SummonMesh(), &name, &name);
+						cb->OnMesh(polygonMesh.Ptr()->SummonMesh(true), &name, &name);
 					}
 
-					bqDestroy(polygonMesh);
+					//bqDestroy(polygonMesh);
 				}
 
 				bqVec4 P;
@@ -377,6 +378,10 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 		errcode = 1;
 		goto error;
 	}
+
+	// НЕ надо
+	// скорее всего нужно вызывать вручную
+	//cb->Finale();
 
 	return;
 

@@ -74,10 +74,13 @@ public:
 	}
 
 	Type* Ptr() { return m_ptr; }
+
+	void Drop() { m_ptr = 0; }
 };
 
-#define BQ_PTR_D(t,n,x) bqPtr<t> (n)((x), bqPtr<t>::Destroy());
-#define BQ_PTR_F(t,n,x) bqPtr<t> (n)((x), bqPtr<t>::Free());
+// для ускорения создания bqPtr
+#define BQ_PTR_D(t,n,x) bqPtr<t> (n)((t*)(x), bqPtr<t>::Destroy());
+#define BQ_PTR_F(t,n,x) bqPtr<t> (n)((t*)(x), bqPtr<t>::Free());
 
 #endif
 

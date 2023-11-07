@@ -56,9 +56,7 @@ class ExampleBasicsSkeletalAnimation2 : public DemoExample
 	MyMegaModelClass* m_model = 0;
 	bqCamera* m_camera = 0;
 
-	bqGPUMesh* m_mesh = 0;
 	bqSceneObject* m_sceneObject = 0;
-	bqSkeleton* m_skeleton = 0;
 
 	bqArchiveZipFile* m_zipFile = 0;
 

@@ -174,15 +174,19 @@ void bqMesh::GenerateNormals(bool)
 {
 }
 
-void bqMesh::Allocate(uint32_t numV, uint32_t numI)
+void bqMesh::Allocate(uint32_t numV, uint32_t numI, bool skinned)
 {
 	BQ_ASSERT_ST(numV > 2);
 	BQ_ASSERT_ST(numI > 2);
 	Free();
 
+	m_info.m_skinned = skinned;
 	m_info.m_iCount = numI;
 	m_info.m_vCount = numV;
-	m_info.m_stride = sizeof(bqVertexTriangle);
+	
+	m_info.m_stride = m_info.m_skinned ? sizeof(bqVertexTriangleSkinned) : sizeof(bqVertexTriangle);
+
+
 	m_info.m_vertexType = bqMeshVertexType::Triangle;
 	m_info.m_indexType = bqMeshIndexType::u32;
 
@@ -197,10 +201,10 @@ void bqMesh::Allocate(uint32_t numV, uint32_t numI)
 		m_indices = (uint8_t*)bqMemory::malloc(m_info.m_iCount * sizeof(uint16_t));
 }
 
-void bqMesh::Allocate(uint32_t triangles)
+void bqMesh::Allocate(uint32_t triangles, bool skinned)
 {
 	BQ_ASSERT_STC(triangles, "value must be > 0");
-	Allocate(triangles * 3, triangles * 3);
+	Allocate(triangles * 3, triangles * 3, skinned);
 }
 
 void bqMesh::Free()

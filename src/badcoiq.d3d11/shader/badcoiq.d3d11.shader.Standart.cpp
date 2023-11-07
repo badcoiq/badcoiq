@@ -52,14 +52,15 @@ bool bqD3D11ShaderStandart::Init()
 	bqStringA shaderPathA;
 	shaderPath.to_utf8(shaderPathA);
 
-	char* text = (char*)bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true);
-	bqPtr pText(text, bqPtr::Free());
+	//char* text = (char*)bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true);
+	//bqPtr pText(text, bqPtr::Free());
+	BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
 
 	if (!m_gs->CreateShaders(
 		"vs_5_0",
 		"ps_5_0",
-		text,
-		text,
+		text.Ptr(),
+		text.Ptr(),
 		"VSMain",
 		"PSMain",
 		bqMeshVertexType::Triangle,
@@ -139,14 +140,15 @@ bool bqD3D11ShaderStandartSkinned::Init()
 	bqStringA shaderPathA;
 	shaderPath.to_utf8(shaderPathA);
 
-	char* text = (char*)bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true);
-	bqPtr pText(text, bqPtr::Free());
+	//char* text = (char*)bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true);
+	//bqPtr pText(text, bqPtr::Free());
+	BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
 
 	if (!m_gs->CreateShaders(
 		"vs_5_0",
 		"ps_5_0",
-		text,
-		text,
+		text.Ptr(),
+		text.Ptr(),
 		"VSMainSk",
 		"PSMain",
 		bqMeshVertexType::Triangle,

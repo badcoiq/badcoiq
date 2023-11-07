@@ -88,11 +88,15 @@ public:
 
 	const bqMeshInfo& GetInfo() const { return m_info; }
 	bqMeshInfo& GetInfo(){ return m_info; }
+	
 	uint8_t* GetVBuffer() const { return m_vertices; }
 	uint8_t* GetIBuffer() const { return m_indices; }
 
-	void Allocate(uint32_t triangles);
-	void Allocate(uint32_t numV, uint32_t numI);
+	void SetVBuffer(uint8_t* b) { m_vertices = b; }
+	void SetIBuffer(uint8_t* b) { m_indices = b; }
+
+	void Allocate(uint32_t triangles, bool skinned = false);
+	void Allocate(uint32_t numV, uint32_t numI, bool skinned = false);
 	void Free();
 
 	void GenerateNormals(bool smooth);
