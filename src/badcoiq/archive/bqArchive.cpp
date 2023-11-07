@@ -44,6 +44,7 @@ BQ_LINK_LIBRARY("fastlz");
 BQ_LINK_LIBRARY("zlib");
 BQ_LINK_LIBRARY("bzip2");
 
+
 void bqFrameworkImpl::_onDestroy_archive()
 {
 	for (size_t i = 0; i < m_zipFiles.size(); ++i)
@@ -66,12 +67,36 @@ bqArchiveZipFile* bqArchiveSystem::ZipAdd(const char* fn)
 		bqLog::PrintWarning("AddZip: Unable to find zip file [%s]\n", fn);
 		return 0;
 	}
-
+	
 	unzFile uf = unzOpen64(fn);
 	if (uf == NULL)
 	{
 		bqLog::PrintWarning("AddZip: unzOpen64 failed [%s]\n", fn);
 		return 0;
+	}
+
+//	unz_global_info64 gi;
+//	unzGetGlobalInfo64(uf, &gi);
+	
+	if (unzGoToFirstFile(uf) == UNZ_OK)
+	{
+		char* fileName = (char*)bqMemory::calloc(0xffff);
+
+		while (true)
+		{
+			unz_file_info64 info;
+			unzGetCurrentFileInfo64(uf, &info, fileName, 0xffff, 0, 0, 0, 0);
+
+			if(info.uncompressed_size)
+				bqLog::Print("AddZip: + %s\n", fileName);
+
+			if (unzGoToNextFile(uf) != UNZ_OK)
+			{
+				break;
+			}
+		}
+
+		bqMemory::free(fileName);
 	}
 
 	bqArchiveZipFile* zp = bqCreate<bqArchiveZipFile>();
@@ -92,6 +117,7 @@ void bqArchiveSystem::ZipRemove(bqArchiveZipFile* a)
 		if (g_framework->m_zipFiles[i] == a)
 		{
 			g_framework->m_zipFiles.erase(g_framework->m_zipFiles.begin() + i);
+			bqLog::Print("Remove Zip: %s\n", a->m_fileName.data());
 			return;
 		}
 	}
@@ -287,4 +313,28 @@ bool bqFrameworkImpl::_decompress_fastlz(bqCompressionInfo* info)
 	return true;
 }
 
+void bqArchiveSystem::GetFileList(bqArchiveZipFile* f, bqArray<bqStringA>& a)
+{
+	BQ_ASSERT_ST(f);
 
+	if (unzGoToFirstFile(f->m_implementation) == UNZ_OK)
+	{
+		char* fileName = (char*)bqMemory::calloc(0xffff);
+
+		while (true)
+		{
+			unz_file_info64 info;
+			unzGetCurrentFileInfo64(f->m_implementation, &info, fileName, 0xffff, 0, 0, 0, 0);
+
+			if (info.uncompressed_size)
+				a.push_back(fileName);
+
+			if (unzGoToNextFile(f->m_implementation) != UNZ_OK)
+			{
+				break;
+			}
+		}
+
+		bqMemory::free(fileName);
+	}
+}

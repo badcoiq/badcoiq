@@ -271,6 +271,28 @@ void ExampleBasicsSkeletalAnimation2::_onCamera()
 
 bool ExampleBasicsSkeletalAnimation2::Init()
 {
+	const char* zipFileName = "../data/models/JillGlass.zip";
+	m_zipFile = bqArchiveSystem::ZipAdd(zipFileName);
+	if (!m_zipFile)
+	{
+		bqLog::PrintError("Can't add zip file [%s]\n", zipFileName);
+		return false;
+	}
+
+	bqArray<bqStringA> files;
+	bqArchiveSystem::GetFileList(m_zipFile, files);
+
+	if (!files.m_size)
+	{
+		bqLog::PrintError("Zip file is empty or corrupted [%s]\n", zipFileName);
+		return false;
+	}
+
+	for (size_t i = 0; i < files.m_size; ++i)
+	{
+		bqLog::PrintInfo("File: %s\n", files.m_data[i].c_str());
+	}
+
 	m_camera = new bqCamera();
 	m_camera->m_position = bqVec3(0.f, 10.f, 8.f);
 	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
@@ -306,6 +328,7 @@ bool ExampleBasicsSkeletalAnimation2::Init()
 
 	m_sceneObject = new bqSceneObject;
 
+
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
@@ -315,6 +338,12 @@ bool ExampleBasicsSkeletalAnimation2::Init()
 
 void ExampleBasicsSkeletalAnimation2::Shutdown()
 {
+	if (m_zipFile)
+	{
+		bqArchiveSystem::ZipRemove(m_zipFile);
+		m_zipFile = 0;
+	}
+
 	BQ_SAFEDESTROY(m_skeleton);
 	BQ_SAFEDESTROY(m_camera);
 	BQ_SAFEDESTROY(m_mesh);

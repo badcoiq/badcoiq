@@ -87,6 +87,9 @@ public:
     static bqArchiveZipFile* ZipAdd(const char* zipFile);
     static void ZipRemove(bqArchiveZipFile*);
 
+    // Получить список файлов в указанном архиве
+    static void GetFileList(bqArchiveZipFile*, bqArray<bqStringA>&);
+
     // Распаковать файл. Если `a` NULL первый найденный файл будет распакован.
     // Установи `a` если используешь много zip файлов которые содержат файлы с одинаковым именем.
     // Функция выделит память используя bqMemory::malloc, и запишет размер в size

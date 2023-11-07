@@ -25,50 +25,24 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#pragma once
-#ifndef _EXskan_H_
-#define _EXskan_H_
 
-class DemoExample;
-class DemoApp;
-class ExampleBasicsSkeletalAnimation : public DemoExample
-{
-	bqCamera* m_camera = 0;
+// Copyright (C) 2007-2012 Nikolaus Gebhardt
+// This file is part of the "Irrlicht Engine".
+// For conditions of distribution and use, see copyright notice in irrlicht.h
 
-	bqGPUMesh* m_mesh = 0;
-	bqSceneObject* m_sceneObject = 0;
-	bqSkeleton* m_skeleton = 0;
+// include this file to switch back to default alignment
+// file belongs to irrpack.h, see there for more info
 
-    void _onCamera();
-public:
-	ExampleBasicsSkeletalAnimation(DemoApp*);
-	virtual ~ExampleBasicsSkeletalAnimation();
-	BQ_PLACEMENT_ALLOCATOR(ExampleBasicsSkeletalAnimation);
-
-	virtual bool Init() override;
-	virtual void Shutdown() override;
-	virtual void OnDraw() override;
-};
-
-class ExampleBasicsSkeletalAnimation2 : public DemoExample
-{
-	bqCamera* m_camera = 0;
-
-	bqGPUMesh* m_mesh = 0;
-	bqSceneObject* m_sceneObject = 0;
-	bqSkeleton* m_skeleton = 0;
-
-	bqArchiveZipFile* m_zipFile = 0;
-
-	void _onCamera();
-public:
-	ExampleBasicsSkeletalAnimation2(DemoApp*);
-	virtual ~ExampleBasicsSkeletalAnimation2();
-	BQ_PLACEMENT_ALLOCATOR(ExampleBasicsSkeletalAnimation2);
-
-	virtual bool Init() override;
-	virtual void Shutdown() override;
-	virtual void OnDraw() override;
-};
-
+// Default alignment
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
+#	pragma pack( pop, packing )
+#elif defined (__DMC__)
+#	pragma pack( pop )
+#elif defined( __GNUC__ )
+#   if (__GNUC__ > 4 ) || ((__GNUC__ == 4 ) && (__GNUC_MINOR__ >= 7))
+#	    pragma pack( pop, packing )
+#   endif
 #endif
+
+#undef PACK_STRUCT
+
