@@ -64,7 +64,7 @@ bqString bqMeshLoaderImpl::GetSupportedFileName(uint32_t i)
 	case 0:
 		return "Wavefront OBJ";
 	case 1:
-		return "Valve Studiomdl Data";
+		return "Studiomdl Data";
 	}
 	return "-";
 }
@@ -103,7 +103,7 @@ void bqMeshLoaderImpl::Load(const char* path, bqMeshLoaderCallback* cb)
 		LoadOBJ(path, cb);
 		break;
 	case bqMeshLoaderImpl::extension::smd:
-	//	LoadSMD(path, cb);
+		LoadSMD(path, cb);
 		break;
 	}
 }
@@ -119,7 +119,7 @@ void bqMeshLoaderImpl::Load(const char* path, bqMeshLoaderCallback* cb, uint8_t*
 		LoadOBJ(path, cb, buffer, bufferSz);
 		break;
 	case bqMeshLoaderImpl::extension::smd:
-		//LoadSMD(path, cb, buffer, bufferSz);
+		LoadSMD(path, cb, buffer, bufferSz);
 		break;
 	}
 }

@@ -30,12 +30,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_PTR_H__
 #define __BQ_PTR_H__
 
+template<typename Type>
 class bqPtr
 {
 	using delete_method_type = void(bqPtr::*)();
 	delete_method_type m_delete = 0;
 
-	void* m_ptr = 0;
+	Type* m_ptr = 0;
 
 	void _deleteFree()
 	{
@@ -48,7 +49,7 @@ class bqPtr
 	}
 
 public:
-	template<typename Type>
+
 	bqPtr(Type* p, delete_method_type delete_method)
 		:
 		m_ptr(p)
@@ -72,8 +73,11 @@ public:
 		return &bqPtr::_deleteDestroy;
 	}
 
-	void* Ptr() { return m_ptr; }
+	Type* Ptr() { return m_ptr; }
 };
+
+#define BQ_PTR_D(t,n,x) bqPtr<t> (n)((x), bqPtr<t>::Destroy());
+#define BQ_PTR_F(t,n,x) bqPtr<t> (n)((x), bqPtr<t>::Free());
 
 #endif
 

@@ -224,7 +224,141 @@ void ExampleBasicsSkeletalAnimation::OnDraw()
 	m_gs->SwapBuffers();
 }
 
-// ================================
+// ================================ ================================
+// ================================ ================================
+// ================================ ================================
+// ================================ ================================
+
+class MyMegaModelClass
+{
+	class mesh_buffer
+	{
+	public:
+		mesh_buffer() {}
+		~mesh_buffer()
+		{
+			if (m_mesh)
+				delete m_mesh;
+		}
+
+		bqGPUMesh* m_mesh = 0;
+		bqTexture* m_texture = 0;
+		bqString m_materialName;
+	};
+
+	class MyMeshLoaderCallback : public bqMeshLoaderCallback, public bqUserData
+	{
+	public:
+		MyMeshLoaderCallback() {}
+		virtual ~MyMeshLoaderCallback() {}
+
+		virtual void OnMaterial(bqMaterial* m) override
+		{
+			if (m)
+			{
+				bqStringA stra;
+				m->m_name.to_utf8(stra);
+				bqLog::Print("MATERIAL %s\n", stra.c_str());
+
+				MyMegaModelClass* mesh = (MyMegaModelClass*)GetUserData();
+
+				mesh->m_materials.push_back(*m);
+			}
+		}
+
+		virtual void OnMesh(bqMesh* newMesh, bqString* name, bqString* materialName) override
+		{
+			if (newMesh)
+			{
+				if (name)
+				{
+					bqStringA stra;
+					name->to_utf8(stra);
+					bqLog::Print("MESH %s\n", stra.c_str());
+				}
+
+				MyMegaModelClass* m = (MyMegaModelClass*)GetUserData();
+				mesh_buffer* mb = new mesh_buffer;
+				mb->m_mesh = m->m_gs->SummonMesh(newMesh);
+				m->m_meshBuffers.push_back(mb);
+				mb->m_materialName = *materialName;
+
+				bqDestroy(newMesh);
+			}
+		}
+
+		virtual void Finale() override
+		{
+			MyMegaModelClass* m = (MyMegaModelClass*)GetUserData();
+			m->OnFinale();
+		}
+	};
+	MyMeshLoaderCallback m_cb;
+
+public:
+	MyMegaModelClass(bqGS* gs) :m_gs(gs)
+	{
+		m_cb.SetUserData(this);
+	}
+	~MyMegaModelClass() 
+	{
+		for (size_t i = 0; i < m_loadedTextures.m_size; ++i)
+		{
+			delete m_loadedTextures.m_data[i];
+		}
+
+		for (size_t i = 0; i < m_meshBuffers.m_size; ++i)
+		{
+			delete m_meshBuffers.m_data[i];
+		}
+	}
+
+	void Load(const char* f)
+	{
+		bqFramework::SummonMesh(f, &m_cb);
+	}
+
+	void OnFinale()
+	{
+		// надо найти материалы по имени, и загрузить текстуры.
+		for (size_t i = 0; i < m_meshBuffers.m_size; ++i)
+		{
+			mesh_buffer* mb = m_meshBuffers.m_data[i];
+
+			bqMaterial* material = GetMaterial(m_meshBuffers.m_data[i]->m_materialName);
+			if (material)
+			{
+				if (material->m_maps[0].m_filePath)
+				{
+					bqImage* img = bqFramework::SummonImage((const char*)material->m_maps[0].m_filePath);
+					if (img)
+					{
+						bqTextureInfo ti;
+						mb->m_texture = m_gs->SummonTexture(img, ti);
+						m_loadedTextures.push_back(mb->m_texture);
+						delete img;
+					}
+				}
+			}
+		}
+	}
+
+	bqMaterial* GetMaterial(const bqString& name)
+	{
+		for (size_t i = 0; i < m_materials.m_size; ++i)
+		{
+			if (m_materials.m_data[i].m_name == name)
+				return &m_materials.m_data[i];
+		}
+
+		return 0;
+	}
+
+	bqArray<bqMaterial> m_materials;
+	bqArray<mesh_buffer*> m_meshBuffers;
+	bqArray<bqTexture*> m_loadedTextures;
+	bqGS* m_gs = 0;
+};
 
 ExampleBasicsSkeletalAnimation2::ExampleBasicsSkeletalAnimation2(DemoApp* app)
 	:
@@ -272,7 +406,15 @@ void ExampleBasicsSkeletalAnimation2::_onCamera()
 bool ExampleBasicsSkeletalAnimation2::Init()
 {
 	const char* zipFileName = "../data/models/JillGlass.zip";
-	m_zipFile = bqArchiveSystem::ZipAdd(zipFileName);
+	
+	bqString appPath = bqFramework::GetAppPath();
+	bqString zipPath = appPath;
+	zipPath.append(zipFileName);
+
+	bqStringA strutf8;
+	zipPath.to_utf8(strutf8);
+
+	m_zipFile = bqArchiveSystem::ZipAdd(strutf8.c_str());
 	if (!m_zipFile)
 	{
 		bqLog::PrintError("Can't add zip file [%s]\n", zipFileName);
@@ -288,10 +430,7 @@ bool ExampleBasicsSkeletalAnimation2::Init()
 		return false;
 	}
 
-	for (size_t i = 0; i < files.m_size; ++i)
-	{
-		bqLog::PrintInfo("File: %s\n", files.m_data[i].c_str());
-	}
+	
 
 	m_camera = new bqCamera();
 	m_camera->m_position = bqVec3(0.f, 10.f, 8.f);
@@ -328,6 +467,12 @@ bool ExampleBasicsSkeletalAnimation2::Init()
 
 	m_sceneObject = new bqSceneObject;
 
+	m_model = new MyMegaModelClass(m_gs);
+
+	for (size_t i = 0; i < files.m_size; ++i)
+	{
+		m_model->Load(files.m_data[i].c_str());
+	}
 
 	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
@@ -342,6 +487,12 @@ void ExampleBasicsSkeletalAnimation2::Shutdown()
 	{
 		bqArchiveSystem::ZipRemove(m_zipFile);
 		m_zipFile = 0;
+	}
+
+	if (m_model)
+	{
+		delete m_model;
+		m_model = 0;
 	}
 
 	BQ_SAFEDESTROY(m_skeleton);

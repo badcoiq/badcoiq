@@ -40,11 +40,16 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb)
 	BQ_ASSERT_ST(cb);
 
 	uint32_t file_size = 0;
-	uint8_t* ptr = bqFramework::SummonFileBuffer(path, &file_size, true);
-	if (ptr)
+	
+	//uint8_t* ptr = bqFramework::SummonFileBuffer(path, &file_size, true);
+	//if (ptr)
+	//bqPtr<uint8_t> ptr(bqFramework::SummonFileBuffer(path, &file_size, true), bqPtr<uint8_t>::Destroy());
+	BQ_PTR_D(uint8_t, ptr, bqFramework::SummonFileBuffer(path, &file_size, true));
+	if (ptr.Ptr())
 	{
-		LoadSMD(path, cb, ptr, (uint32_t)file_size);
-		bqDestroy(ptr);
+		//LoadSMD(path, cb, ptr, (uint32_t)file_size);
+		LoadSMD(path, cb, ptr.Ptr(), (uint32_t)file_size);
+		//bqDestroy(ptr);
 	}
 }
 
@@ -176,8 +181,11 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 						if (strcmp(line.c_str(), "end") == 0)
 							break;
 
-						// here 'line' must have texture name
+						// здесь 'line' должна иметь имя текстуры
 
+						// ищу model по имени текстуры
+						// если ранее не было создано
+						// то создаю
 						Model* model = 0;
 						for (size_t i = 0; i < models.m_size; ++i)
 						{

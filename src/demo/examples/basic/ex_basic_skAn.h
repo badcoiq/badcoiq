@@ -52,6 +52,8 @@ public:
 
 class ExampleBasicsSkeletalAnimation2 : public DemoExample
 {
+	friend class MyMegaModelClass;
+	MyMegaModelClass* m_model = 0;
 	bqCamera* m_camera = 0;
 
 	bqGPUMesh* m_mesh = 0;
