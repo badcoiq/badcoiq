@@ -44,18 +44,14 @@ enum class bqSoundWaveType
 	saw
 };
 
-// возможно лучше это сунуть в bqSound
-// думал что bqSound будет выступать в качестве управляющего объекта
-// но теперь есть bqSoundObject
-class bqSoundSource
+struct bqSoundSourceData
 {
-public:
-	bqSoundSource();
-	~bqSoundSource();
-	BQ_PLACEMENT_ALLOCATOR(bqSoundSource);
-
 	uint8_t* m_data = 0;
 	uint32_t m_dataSize = 0;
+};
+
+struct bqSoundSourceInfo
+{
 	uint32_t m_sampleRate = 44100;
 	uint32_t m_channels = 1;
 	uint32_t m_bits = 16;
@@ -69,6 +65,20 @@ public:
 	uint32_t m_bytesPerSample = 0; // m_bitsPerSample / 8;
 	// nBlockAlign
 	uint32_t m_blockSize = 0;// m_bytesPerSample * m_channels;
+};
+
+// возможно лучше это сунуть в bqSound
+// думал что bqSound будет выступать в качестве управляющего объекта
+// но теперь есть bqSoundObject
+class bqSoundSource
+{
+public:
+	bqSoundSource();
+	~bqSoundSource();
+	BQ_PLACEMENT_ALLOCATOR(bqSoundSource);
+
+	bqSoundSourceData m_sourceData;
+	bqSoundSourceInfo m_sourceInfo;
 };
 
 // звук загружается сюда

@@ -1,4 +1,4 @@
-/*
+﻿/*
 BSD 2-Clause License
 
 Copyright (c) 2023, badcoiq
@@ -25,57 +25,25 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_SS_H__
-#define __BQ_SS_H__
+#ifndef _EXsound_H_
+#define _EXsound_H_
 
-#include "bqSound.h"
-#include "bqSoundEngine.h"
-
-// реализация должна быть во фреймворке
-// класс должен управлять всем что связано со звуком
-
-
-namespace std
+class DemoExample;
+class DemoApp;
+class ExampleBasicsSound : public DemoExample
 {
-	class thread;
-}
+	bqCamera* m_camera = 0;
 
-class bqSoundEngineObject;
-class bqSoundObject
-{
+    void _onCamera();
 public:
-	bqSoundObject();
-	~bqSoundObject();
-	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
+	ExampleBasicsSound(DemoApp*);
+	virtual ~ExampleBasicsSound();
+	BQ_PLACEMENT_ALLOCATOR(ExampleBasicsSound);
 
-	//uint8_t* m_buffer = 0;
-	bqSoundSourceData m_sourceData;
-
-	bqSoundEngineObject* m_engineObject = 0;
-	bqSoundEngine* m_engine = 0;
-};
-
-class bqSoundSystem
-{
-	friend void bqSoundSystem_thread(bqSoundSystem* ss);
-
-	bqArray<bqSoundEngine*> m_engines;
-
-	std::thread* m_thread = 0;
-	bool m_threadRun = false;
-public:
-	bqSoundSystem();
-	~bqSoundSystem();
-
-	uint32_t GetNumOfEngines();
-
-	bqSoundEngine* GetEngine(uint32_t, const char*);
-
-	bqSoundObject* SummonSoundObject(bqSoundEngine*, bqSound*);
+	virtual bool Init() override;
+	virtual void Shutdown() override;
+	virtual void OnDraw() override;
 };
 
 #endif
-
-

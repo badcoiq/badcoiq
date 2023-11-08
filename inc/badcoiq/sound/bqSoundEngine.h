@@ -40,15 +40,15 @@ public:
 	virtual void OnStop() {}
 };
 
-// Создаётся энжином
-class bqSoundObject
+
+
+class bqSoundEngineObject
 {
 public:
-	bqSoundObject() {}
-	virtual ~bqSoundObject() {}
-	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
+	bqSoundEngineObject() {}
+	virtual ~bqSoundEngineObject() {}
+	BQ_PLACEMENT_ALLOCATOR(bqSoundEngineObject);
 
-	bqSound* m_source = 0;
 	bqSoundObjectCallback* m_callback = 0;
 
 	enum
@@ -57,11 +57,16 @@ public:
 		state_playing,
 	};
 	uint32_t m_state = state_notplaying;
+	
+	//bqSound* m_source = 0;
+	bqSoundSourceData* m_sourceData = 0;
 
 	virtual void Start() = 0;
 	virtual void Stop() = 0;
 	virtual void SetVolume(float) = 0;
 };
+
+
 
 // то через что будет проигрываться звук
 // типа xaudio
@@ -73,7 +78,7 @@ public:
 	bqSoundEngine(){}
 	virtual ~bqSoundEngine(){}
 
-	virtual bqSoundObject* SummonSoundObject(bqSound*) = 0;
+	virtual bqSoundEngineObject* SummonSoundObject(bqSound*) = 0;
 
 	virtual const char* Name() = 0;
 

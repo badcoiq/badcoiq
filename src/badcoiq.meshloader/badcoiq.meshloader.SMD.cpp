@@ -242,10 +242,8 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 					// create mesh here
 					Model* model = &models.m_data[i];
 
-					//bqPolygonMesh* polygonMesh = bqFramework::SummonPolygonMesh();
 					BQ_PTR_D(bqPolygonMesh, polygonMesh, bqFramework::SummonPolygonMesh());
 					
-					//for (auto& tri : model->triangles)
 					for(size_t o = 0; o < model->triangles.m_size; ++o)
 					{
 						auto & tri = model->triangles.m_data[o];
@@ -287,8 +285,6 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 						cb->OnMaterial(&mat);
 						cb->OnMesh(polygonMesh.Ptr()->SummonMesh(true), &name, &name);
 					}
-
-					//bqDestroy(polygonMesh);
 				}
 
 				bqVec4 P;

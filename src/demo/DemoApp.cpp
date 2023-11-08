@@ -163,6 +163,7 @@ bool DemoApp::Init()
 	AddExample(new ExampleBasicsOclCul(this), U"Occlusion Culling", "basics/", U"Создаём особый объект который будет использоваться GPU. Рисуем специальным способом с указанием этого объекта. Обязательно надо отсортировать объекты по дальности. ");
 	AddExample(new ExampleBasicsSkeletalAnimation(this), U"Скелетная анимация 1/2", "basics/", U"Всё создаём вручную, и анимируем тоже.");
 	AddExample(new ExampleBasicsSkeletalAnimation2(this), U"Скелетная анимация 2/2", "basics/", U"Загрузка SMD. Множество файлов, отдельно геометрия отдельно анимации.");
+	AddExample(new ExampleBasicsSound(this), U"Звук", "basics/", U"...");
 	
 	AddExample(new ExampleMshGnBox(this), U"Box", "generators/mesh", U"Всё о создании коробки");
 	

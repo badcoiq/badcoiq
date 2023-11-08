@@ -23,3 +23,13 @@ build/demo/Debug
 build/demo/Release
 build/badcoiq.xaudio/Debug
 build/badcoiq.xaudio/Release
+build/badcoiq.imageloader/Release
+build/badcoiq.meshloader/Release
+build/badcoiqConsoleApplication1/Release
+build/bzip2/Release
+build/jpeglib/Release
+build/minizip/Release
+build/libpng/Release
+tools/bingen/Release
+build/zlib/Release
+build/fastlz/Release

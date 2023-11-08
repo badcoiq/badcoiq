@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
+#include <thread>
+
 extern "C"
 {
 	bqSoundEngine* BQ_CDECL bqSoundEngine_createXAudio();
@@ -37,14 +39,44 @@ extern "C"
 
 BQ_LINK_LIBRARY("badcoiq.xaudio");
 
+void bqSoundSystem_thread(bqSoundSystem* ss)
+{
+	bqLog::PrintInfo("Init sound thread\n");
+
+	// добавить engines
+	ss->m_engines.push_back(bqSoundEngine_createXAudio());
+
+	ss->m_threadRun = true;
+	while (ss->m_threadRun)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
+
+	for (size_t i = 0; i < ss->m_engines.m_size; ++i)
+	{
+		ss->m_engines.m_data[i]->Shutdown();
+	}
+}
+
 bqSoundSystem::bqSoundSystem()
 {
-	// добавить engines
-	m_engines.push_back(bqSoundEngine_createXAudio());
+	m_thread = new std::thread(bqSoundSystem_thread, this);
+	while (true)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		if (m_threadRun)
+			break;
+	}
 }
 
 bqSoundSystem::~bqSoundSystem()
 {
+	if (m_thread)
+	{
+		m_threadRun = false;
+		m_thread->join();
+		delete m_thread;
+	}
 }
 
 uint32_t bqSoundSystem::GetNumOfEngines()
@@ -70,3 +102,21 @@ bqSoundEngine* bqSoundSystem::GetEngine(uint32_t in, const char* n)
 	return m_engines.m_data[in];
 }
 
+bqSoundObject* bqSoundSystem::SummonSoundObject(bqSoundEngine* e, bqSound* s)
+{
+	BQ_ASSERT_ST(e);
+	BQ_ASSERT_ST(s);
+
+	BQ_PTR_D(bqSoundObject, so, new bqSoundObject());
+	
+	so->m_engineObject = e->SummonSoundObject(s);
+	if (!so->m_engineObject)
+	{
+		bqLog::PrintError("Can't create sound engine object\n");
+		return 0;
+	}
+
+	so->m_engine = e;
+
+	return so.Drop();
+}

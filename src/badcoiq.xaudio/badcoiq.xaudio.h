@@ -54,7 +54,7 @@ public:
 	bqSoundObjectXAudio* m_so = 0;
 };
 
-class bqSoundObjectXAudio : public bqSoundObject
+class bqSoundObjectXAudio : public bqSoundEngineObject
 {
 public:
 	bqSoundObjectXAudio();
@@ -79,7 +79,7 @@ public:
 	bqSoundEngineXAudio();
 	virtual ~bqSoundEngineXAudio();
 
-	virtual bqSoundObject* SummonSoundObject(bqSound*) override;
+	virtual bqSoundEngineObject* SummonSoundObject(bqSound*) override;
 	virtual const char* Name() override;
 
 	virtual bool Init() override;

@@ -671,9 +671,6 @@ void ExampleBasicsSkeletalAnimation2::OnDraw()
 		}
 
 		bqSkeleton* s = m_model->m_skeletonForAnimation;
-
-		//m_model->m_skeleton->GetJoints().m_data[0].m_data.m_transformation.m_base.m_scale.Set(0.1f, 0.1f, 0.1f, 0.f);
-
 		auto& joints = s->GetJoints();
 		if (joints.m_size)
 		{

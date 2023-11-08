@@ -75,7 +75,9 @@ public:
 
 	Type* Ptr() { return m_ptr; }
 
-	void Drop() { m_ptr = 0; }
+	Type* Drop() { Type* p = m_ptr; m_ptr = 0; return p; }
+
+	Type* operator->() const { return m_ptr; }
 };
 
 // для ускорения создания bqPtr

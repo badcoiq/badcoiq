@@ -355,97 +355,100 @@ int main()
               //  sound5.SaveToFile(bqSoundFileType::wav, "2channels.wav");
                 sound6.LoadFromFile("../data/sounds/song1.wav");
 
-                bqSoundObject* so1 = se->SummonSoundObject(&sound1);
-                bqSoundObject* so2 = se->SummonSoundObject(&sound2);
-                bqSoundObject* so3 = se->SummonSoundObject(&sound3);
-                bqSoundObject* so4 = se->SummonSoundObject(&sound4);
-                bqSoundObject* so5 = se->SummonSoundObject(&sound6);
-                //se->Play(so);
-
-                while (g_run)
                 {
-                    bqFramework::Update();
-                    bqFramework::UpdateGUI();
-
-                    if (bqInput::IsKeyHit(bqInput::KEY_1))
-                        so1->Start();
-                    if (bqInput::IsKeyHit(bqInput::KEY_2))
-                        so2->Start();
-                    if (bqInput::IsKeyHit(bqInput::KEY_3))
-                        so3->Start();
-                    if (bqInput::IsKeyHit(bqInput::KEY_4))
                         so4->Start();
-                    if (bqInput::IsKeyHit(bqInput::KEY_5))
-                        so5->Start();
-                    if (bqInput::IsKeyHit(bqInput::KEY_6))
-                        so5->Stop();
+                    BQ_PTR_D(bqSoundEngineObject, so1, se->SummonSoundObject(&sound1));
+                    BQ_PTR_D(bqSoundEngineObject, so2, se->SummonSoundObject(&sound2));
+                    BQ_PTR_D(bqSoundEngineObject, so3, se->SummonSoundObject(&sound3));
+                    BQ_PTR_D(bqSoundEngineObject, so4, se->SummonSoundObject(&sound4));
+                    BQ_PTR_D(bqSoundEngineObject, so5, se->SummonSoundObject(&sound6));
 
-                    if (bqInput::IsKeyHit(bqInput::KEY_PGDOWN))
+
+                    while (g_run)
                     {
-                        --Hz;
-                        if (Hz < 5)
-                            Hz = 5;
-                        printf("Hz: %u\n", Hz);
-                        sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
-                        sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
-                        sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
-                        sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
+                        bqFramework::Update();
+                        bqFramework::UpdateGUI();
+
+                        if (bqInput::IsKeyHit(bqInput::KEY_1))
+                            so1->Start();
+                        if (bqInput::IsKeyHit(bqInput::KEY_2))
+                            so2->Start();
+                        if (bqInput::IsKeyHit(bqInput::KEY_3))
+                            so3->Start();
+                        if (bqInput::IsKeyHit(bqInput::KEY_4))
+                            so4->Start();
+                        if (bqInput::IsKeyHit(bqInput::KEY_5))
+                            so5->Start();
+                        if (bqInput::IsKeyHit(bqInput::KEY_6))
+                            so5->Stop();
+
+                        if (bqInput::IsKeyHit(bqInput::KEY_PGDOWN))
+                        {
+                            --Hz;
+                            if (Hz < 5)
+                                Hz = 5;
+                            printf("Hz: %u\n", Hz);
+                            sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
+                            sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
+                            sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
+                            sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
+                        }
+
+                        if (bqInput::IsKeyHit(bqInput::KEY_PGUP))
+                        {
+                            ++Hz;
+                            if (Hz > 20000)
+                                Hz = 20000;
+                            printf("Hz: %u\n", Hz);
+                            sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
+                            sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
+                            sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
+                            sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
+                        }
+
+                        gs->BeginDraw();
+                        gs->ClearAll();
+
+                        gs->SetShader(bqShaderType::Line3D, 0);
+                        gs->DrawLine3D(
+                            bqVec4(10.f, 0.f, 0.f, 0.f),
+                            bqVec4(-10.f, 0.f, 0.f, 0.f),
+                            bqColor(1.f, 0.f, 0.f, 1.f));
+
+                        gs->DrawLine3D(
+                            bqVec4(0.f, 0.f, 10.f, 0.f),
+                            bqVec4(0.f, 0.f, -10.f, 0.f),
+                            bqColor(0.f, 1.f, 0.f, 1.f));
+
+                        gs->SetShader(bqShaderType::Standart, 0);
+
+                        bqMat4 WorldViewProjection;
+                        bqMat4 World;
+
+                        static float angle = 0.f;
+                        World.SetRotation(bqQuaternion(0.f, angle, 0.f));
+                        angle += 0.01f;
+                        if (angle > PIPI)
+                            angle = 0.f;
+                        WorldViewProjection = camera.GetMatrixProjection() * camera.GetMatrixView() * World;
+                        bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WorldViewProjection);
+                        bqFramework::SetMatrix(bqMatrixType::World, &World);
+
+                        for (size_t i = 0; i < model->m_gpuModels.m_size; ++i)
+                        {
+                            gs->SetMesh(model->m_gpuModels.m_data[i]);
+                            gs->Draw();
+                        }
+
+                        gs->BeginGUI();
+                        gs->DrawGUIRectangle(bqVec4f(0.f, 0.f, 100.f, 20.f), bq::ColorRed, bq::ColorYellow, 0, 0);
+                        gs->DrawGUIText(U"Hello!!!", 9, bqVec2f(10.f), &tdcb);
+                        bqFramework::DrawGUI(gs);
+                        gs->EndGUI();
+
+                        gs->EndDraw();
+                        gs->SwapBuffers();
                     }
-
-                    if (bqInput::IsKeyHit(bqInput::KEY_PGUP))
-                    {
-                        ++Hz;
-                        if (Hz > 20000)
-                            Hz = 20000;
-                        printf("Hz: %u\n", Hz);
-                        sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
-                        sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
-                        sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
-                        sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
-                    }
-
-                    gs->BeginDraw();
-                    gs->ClearAll();
-
-                    gs->SetShader(bqShaderType::Line3D, 0);
-                    gs->DrawLine3D(
-                        bqVec4(10.f, 0.f, 0.f, 0.f), 
-                        bqVec4(-10.f, 0.f, 0.f, 0.f), 
-                        bqColor(1.f, 0.f, 0.f, 1.f));
-
-                    gs->DrawLine3D(
-                        bqVec4(0.f, 0.f, 10.f, 0.f),
-                        bqVec4(0.f, 0.f, -10.f, 0.f),
-                        bqColor(0.f, 1.f, 0.f, 1.f));
-
-                    gs->SetShader(bqShaderType::Standart, 0);
-                    
-                    bqMat4 WorldViewProjection;
-                    bqMat4 World;
-
-                    static float angle = 0.f;
-                    World.SetRotation(bqQuaternion(0.f, angle, 0.f));
-                    angle += 0.01f;
-                    if (angle > PIPI)
-                        angle = 0.f;
-                    WorldViewProjection = camera.GetMatrixProjection() * camera.GetMatrixView() * World;
-                    bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WorldViewProjection);
-                    bqFramework::SetMatrix(bqMatrixType::World, &World);
-
-                    for (size_t i = 0; i < model->m_gpuModels.m_size; ++i)
-                    {
-                        gs->SetMesh(model->m_gpuModels.m_data[i]);
-                        gs->Draw();
-                    }
-
-                    gs->BeginGUI();
-                    gs->DrawGUIRectangle(bqVec4f(0.f, 0.f, 100.f, 20.f), bq::ColorRed, bq::ColorYellow, 0, 0);
-                    gs->DrawGUIText(U"Hello!!!", 9, bqVec2f(10.f), &tdcb);
-                    bqFramework::DrawGUI(gs);
-                    gs->EndGUI();
-
-                    gs->EndDraw();
-                    gs->SwapBuffers();
                 }
                 delete model;
                 delete texture;

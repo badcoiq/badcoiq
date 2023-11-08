@@ -113,10 +113,10 @@ bqSoundSource::bqSoundSource()
 
 bqSoundSource::~bqSoundSource()
 {
-	if (m_data)
+	if (m_sourceData.m_data)
 	{
-		bqMemory::free(m_data);
-		m_data = 0;
+		bqMemory::free(m_sourceData.m_data);
+		m_sourceData.m_data = 0;
 	}
 }
 
@@ -147,23 +147,23 @@ void bqSound::Create(float time,
 	Clear();
 
 	bqSoundSource* newSound = new bqSoundSource;
-	newSound->m_channels = channels;
-	newSound->m_sampleRate = sampleRate;
-	newSound->m_bitsPerSample = bitsPerSample;
-	newSound->m_bytesPerSample = newSound->m_bitsPerSample / 8;
-	newSound->m_blockSize = newSound->m_bytesPerSample * newSound->m_channels;
-	newSound->m_time = time;
+	newSound->m_sourceInfo.m_channels = channels;
+	newSound->m_sourceInfo.m_sampleRate = sampleRate;
+	newSound->m_sourceInfo.m_bitsPerSample = bitsPerSample;
+	newSound->m_sourceInfo.m_bytesPerSample = newSound->m_sourceInfo.m_bitsPerSample / 8;
+	newSound->m_sourceInfo.m_blockSize = newSound->m_sourceInfo.m_bytesPerSample * newSound->m_sourceInfo.m_channels;
+	newSound->m_sourceInfo.m_time = time;
 
-	newSound->m_numOfSamples = (uint32_t)ceil((float)newSound->m_sampleRate * time);
+	newSound->m_sourceInfo.m_numOfSamples = (uint32_t)ceil((float)newSound->m_sourceInfo.m_sampleRate * time);
 	// альтернативный способ получить m_numOfSamples
 	// для данного метода не подходит так как создание происходит на основе времени
 	//uint32_t numOfBlocks = m_soundSource->m_dataSize / m_soundSource->m_blockSize;
 	//m_soundSource->m_numOfSamples = numOfBlocks;
 
-	newSound->m_dataSize = newSound->m_numOfSamples * newSound->m_bytesPerSample;
-	newSound->m_dataSize *= newSound->m_channels;
+	newSound->m_sourceData.m_dataSize = newSound->m_sourceInfo.m_numOfSamples * newSound->m_sourceInfo.m_bytesPerSample;
+	newSound->m_sourceData.m_dataSize *= newSound->m_sourceInfo.m_channels;
 
-	newSound->m_data = (uint8_t*)bqMemory::malloc(newSound->m_dataSize);
+	newSound->m_sourceData.m_data = (uint8_t*)bqMemory::malloc(newSound->m_sourceData.m_dataSize);
 
 	m_soundSource = newSound;
 }
@@ -180,7 +180,7 @@ void bqSound::Generate(
 	{
 		Create(time, 1, 44100, 16);
 
-		double samplesPerWave = (double)m_soundSource->m_sampleRate / Hz;
+		double samplesPerWave = (double)m_soundSource->m_sourceInfo.m_sampleRate / Hz;
 		double angle = 0.f;
 		double angleStep = 360.0 / samplesPerWave;
 
@@ -193,7 +193,7 @@ void bqSound::Generate(
 		uint32_t samplesPerWaveindex = 0;
 
 
-		for (uint32_t i = 0, index = 0; i < m_soundSource->m_numOfSamples; ++i)
+		for (uint32_t i = 0, index = 0; i < m_soundSource->m_sourceInfo.m_numOfSamples; ++i)
 		{
 			auto rad = bqMath::DegToRad(angle);
 			auto sn = sin(rad);
@@ -246,8 +246,8 @@ void bqSound::Generate(
 				v._16 = (int16_t)(sn2 * loudness);
 			}
 
-			m_soundSource->m_data[index++] = v._8[0];
-			m_soundSource->m_data[index++] = v._8[1];
+			m_soundSource->m_sourceData.m_data[index++] = v._8[0];
+			m_soundSource->m_sourceData.m_data[index++] = v._8[1];
 		}
 	}
 	/*if (!m_soundSource)
@@ -344,7 +344,7 @@ bool bqSound::_saveWav(const char* fn)
 	{
 		fwrite("RIFF", 4, 1, f);
 			
-		int32_t chunkSz = m_soundSource->m_dataSize + 44 - 8;
+		int32_t chunkSz = m_soundSource->m_sourceData.m_dataSize + 44 - 8;
 		fwrite(&chunkSz, 4, 1, f);
 			
 		fwrite("WAVE", 4, 1, f);
@@ -358,20 +358,20 @@ bool bqSound::_saveWav(const char* fn)
 		int16_t TYPE = 1;
 		fwrite(&TYPE, sizeof(TYPE), 1, f);
 			
-		fwrite(&m_soundSource->m_channels, 2, 1, f);
-		fwrite(&m_soundSource->m_sampleRate, 4, 1, f);
+		fwrite(&m_soundSource->m_sourceInfo.m_channels, 2, 1, f);
+		fwrite(&m_soundSource->m_sourceInfo.m_sampleRate, 4, 1, f);
 			
-		int nAvgBytesPerSec = (m_soundSource->m_sampleRate *
-			m_soundSource->m_bitsPerSample * m_soundSource->m_channels)/8;
+		int nAvgBytesPerSec = (m_soundSource->m_sourceInfo.m_sampleRate *
+			m_soundSource->m_sourceInfo.m_bitsPerSample * m_soundSource->m_sourceInfo.m_channels)/8;
 		// byterate
 		fwrite(&nAvgBytesPerSec, 4, 1, f);
 			
-		fwrite(&m_soundSource->m_blockSize, 2, 1, f);
-		fwrite(&m_soundSource->m_bitsPerSample, 2, 1, f);
+		fwrite(&m_soundSource->m_sourceInfo.m_blockSize, 2, 1, f);
+		fwrite(&m_soundSource->m_sourceInfo.m_bitsPerSample, 2, 1, f);
 			
 		fwrite("data", 4, 1, f);
-		fwrite(&m_soundSource->m_dataSize, 4, 1, f);
-		fwrite(m_soundSource->m_data, m_soundSource->m_dataSize, 1, f);
+		fwrite(&m_soundSource->m_sourceData.m_dataSize, 4, 1, f);
+		fwrite(m_soundSource->m_sourceData.m_data, m_soundSource->m_sourceData.m_dataSize, 1, f);
 		fclose(f);
 		return true;
 	}
@@ -455,10 +455,10 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 					if (dataSize)
 					{
 						Create(0.1f, channels, sampleRate, bitsPerSample);
-						if (m_soundSource->m_dataSize < dataSize)
+						if (m_soundSource->m_sourceData.m_dataSize < dataSize)
 							_reallocate(dataSize);
 
-						file.Read(m_soundSource->m_data, m_soundSource->m_dataSize);
+						file.Read(m_soundSource->m_sourceData.m_data, m_soundSource->m_sourceData.m_dataSize);
 						CalculateTime();
 					}
 				}
@@ -474,14 +474,14 @@ float bqSound::CalculateTime()
 	float time = 0.f;
 	if (m_soundSource)
 	{
-		BQ_ASSERT_ST(m_soundSource->m_sampleRate > 0);
+		BQ_ASSERT_ST(m_soundSource->m_sourceInfo.m_sampleRate > 0);
 
-		if (m_soundSource->m_sampleRate && m_soundSource->m_dataSize)
+		if (m_soundSource->m_sourceInfo.m_sampleRate && m_soundSource->m_sourceData.m_dataSize)
 		{
-			uint32_t numOfBlocks = m_soundSource->m_dataSize / m_soundSource->m_blockSize;
-			m_soundSource->m_numOfSamples = numOfBlocks;
-			m_soundSource->m_time = 1.f / m_soundSource->m_sampleRate;
-			m_soundSource->m_time *= m_soundSource->m_numOfSamples;
+			uint32_t numOfBlocks = m_soundSource->m_sourceData.m_dataSize / m_soundSource->m_sourceInfo.m_blockSize;
+			m_soundSource->m_sourceInfo.m_numOfSamples = numOfBlocks;
+			m_soundSource->m_sourceInfo.m_time = 1.f / m_soundSource->m_sourceInfo.m_sampleRate;
+			m_soundSource->m_sourceInfo.m_time *= m_soundSource->m_sourceInfo.m_numOfSamples;
 		}
 	}
 
@@ -493,8 +493,21 @@ float bqSound::CalculateTime()
 void bqSound::_reallocate(uint32_t newSz)
 {
 	uint8_t* newBuf = (uint8_t*)bqMemory::malloc(newSz);
-	memcpy(newBuf, m_soundSource->m_data, m_soundSource->m_dataSize);
-	bqMemory::free(m_soundSource->m_data);
-	m_soundSource->m_data = newBuf;
-	m_soundSource->m_dataSize = newSz;
+	memcpy(newBuf, m_soundSource->m_sourceData.m_data, m_soundSource->m_sourceData.m_dataSize);
+	bqMemory::free(m_soundSource->m_sourceData.m_data);
+	m_soundSource->m_sourceData.m_data = newBuf;
+	m_soundSource->m_sourceData.m_dataSize = newSz;
 }
+
+bqSoundObject::bqSoundObject()
+{
+	m_sourceData.m_dataSize = 0xffff;
+	m_sourceData.m_data = new uint8_t[m_sourceData.m_dataSize];
+}
+
+bqSoundObject::~bqSoundObject()
+{
+	if (m_sourceData.m_data)
+		delete[] m_sourceData.m_data;
+}
+

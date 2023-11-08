@@ -90,20 +90,20 @@ void bqIXAudio2VoiceCallback::OnVoiceError (THIS_ void* pBufferContext, HRESULT 
 }
 
 
-bqSoundObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
+bqSoundEngineObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
 {
 	HRESULT hr = S_OK;
 
 	WAVEFORMATEX wfx;
 	memset(&wfx, 0, sizeof(wfx));
 	wfx.wFormatTag = WAVE_FORMAT_PCM;
-	wfx.nChannels = s->m_soundSource->m_channels;
+	wfx.nChannels = s->m_soundSource->m_sourceInfo.m_channels;
 	wfx.cbSize = 0;
 
-	wfx.nSamplesPerSec = s->m_soundSource->m_sampleRate;
+	wfx.nSamplesPerSec = s->m_soundSource->m_sourceInfo.m_sampleRate;
 	wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * 2;
 	wfx.nBlockAlign = 2;
-	wfx.wBitsPerSample = s->m_soundSource->m_bits;
+	wfx.wBitsPerSample = s->m_soundSource->m_sourceInfo.m_bits;
 
 	IXAudio2SourceVoice* SourceVoice = 0;
 	bqIXAudio2VoiceCallback* callback = new bqIXAudio2VoiceCallback;
@@ -117,7 +117,7 @@ bqSoundObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
 	
 	bqSoundObjectXAudio* so = new bqSoundObjectXAudio;
 	so->m_SourceVoice = SourceVoice;
-	so->m_source = s;
+	so->m_sourceData = &s->m_soundSource->m_sourceData;
 	so->m_xaudioCallback = callback;
 	callback->m_so = so;
 
@@ -201,9 +201,9 @@ void bqSoundObjectXAudio::Start()
 	if (m_state == state_notplaying)
 	{
 		XAUDIO2_BUFFER buffer = { 0 };
-		buffer.pAudioData = m_source->m_soundSource->m_data;
+		buffer.pAudioData = m_sourceData->m_data;
 		buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
-		buffer.AudioBytes = m_source->m_soundSource->m_dataSize;
+		buffer.AudioBytes = m_sourceData->m_dataSize;
 
 		HRESULT hr = S_OK;
 		if (FAILED(hr = m_SourceVoice->SubmitSourceBuffer(&buffer)))
