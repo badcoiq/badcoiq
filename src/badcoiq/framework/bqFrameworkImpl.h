@@ -32,9 +32,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/input/bqInput.h"
 #include "badcoiq/containers/bqArray.h"
+#include "badcoiq/containers/bqQueue.h"
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/system/bqCursor.h"
 #include <vector>
+#include <thread>
 
 class bqFrameworkImpl
 {
@@ -99,6 +101,8 @@ public:
 	void _initDefaultCursors();
 
 	bqSoundSystem* m_soundSystem = 0;
+	std::thread* m_threadSound = 0;
+	bool m_threadSoundRun = false;
 };
 
 

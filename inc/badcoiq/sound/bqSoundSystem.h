@@ -33,14 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bqSound.h"
 #include "bqSoundEngine.h"
 
-// реализация должна быть во фреймворке
-// класс должен управлять всем что связано со звуком
-
-
-namespace std
-{
-	class thread;
-}
+// Если нужно воспроизвести звук напрямую вне bqSoundSystem::m_thread
+// то надо использовать bqSoundEngineObject
 
 class bqSoundEngineObject;
 class bqSoundObject
@@ -63,8 +57,7 @@ class bqSoundSystem
 
 	bqArray<bqSoundEngine*> m_engines;
 
-	std::thread* m_thread = 0;
-	bool m_threadRun = false;
+	
 public:
 	bqSoundSystem();
 	~bqSoundSystem();
@@ -74,6 +67,8 @@ public:
 	bqSoundEngine* GetEngine(uint32_t, const char*);
 
 	bqSoundObject* SummonSoundObject(bqSoundEngine*, bqSound*);
+
+	void Play(bqSoundObject*);
 };
 
 #endif

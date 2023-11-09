@@ -356,7 +356,6 @@ int main()
                 sound6.LoadFromFile("../data/sounds/song1.wav");
 
                 {
-                        so4->Start();
                     BQ_PTR_D(bqSoundEngineObject, so1, se->SummonSoundObject(&sound1));
                     BQ_PTR_D(bqSoundEngineObject, so2, se->SummonSoundObject(&sound2));
                     BQ_PTR_D(bqSoundEngineObject, so3, se->SummonSoundObject(&sound3));

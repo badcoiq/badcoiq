@@ -32,6 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <thread>
 
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
+
 extern "C"
 {
 	bqSoundEngine* BQ_CDECL bqSoundEngine_createXAudio();
@@ -46,8 +49,8 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 	// добавить engines
 	ss->m_engines.push_back(bqSoundEngine_createXAudio());
 
-	ss->m_threadRun = true;
-	while (ss->m_threadRun)
+	g_framework->m_threadSoundRun = true;
+	while (g_framework->m_threadSoundRun)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
@@ -60,22 +63,23 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 
 bqSoundSystem::bqSoundSystem()
 {
-	m_thread = new std::thread(bqSoundSystem_thread, this);
+	g_framework->m_threadSound = new std::thread(bqSoundSystem_thread, this);
 	while (true)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		if (m_threadRun)
+		if (g_framework->m_threadSoundRun)
 			break;
 	}
 }
 
 bqSoundSystem::~bqSoundSystem()
 {
-	if (m_thread)
+	if (g_framework->m_threadSoundRun)
 	{
-		m_threadRun = false;
-		m_thread->join();
-		delete m_thread;
+		g_framework->m_threadSoundRun = false;
+		g_framework->m_threadSound->join();
+		delete g_framework->m_threadSound;
+		g_framework->m_threadSound = 0;
 	}
 }
 
@@ -96,6 +100,8 @@ bqSoundEngine* bqSoundSystem::GetEngine(uint32_t in, const char* n)
 				return m_engines.m_data[i];
 			}
 		}
+
+		// если не нашлось то вернётся самый первый bqSoundEngine
 		in = 0;
 	}
 
@@ -116,7 +122,16 @@ bqSoundObject* bqSoundSystem::SummonSoundObject(bqSoundEngine* e, bqSound* s)
 		return 0;
 	}
 
+	// Engine Object должен иметь указатель на source data из sound object
+	//  
+	so->m_engineObject->m_sourceData = &so->m_sourceData;	
 	so->m_engine = e;
 
 	return so.Drop();
+}
+
+void bqSoundSystem::Play(bqSoundObject* so)
+{
+	BQ_ASSERT_ST(so);
+
 }
