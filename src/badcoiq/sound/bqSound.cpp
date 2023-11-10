@@ -379,6 +379,11 @@ bool bqSound::_saveWav(const char* fn)
 	return false;
 }
 
+bool bqSound::LoadFromFile(const bqStringA& fn)
+{
+	return LoadFromFile(fn.c_str());
+}
+
 bool bqSound::LoadFromFile(const char* fn)
 {
 	Clear();

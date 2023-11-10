@@ -312,6 +312,14 @@ public:
 		return *this;
 	}
 
+	bqString_base<char_type> operator+(const char_type* s)
+	{
+		bqString_base<char_type> r;
+		r.assign(*this);
+		r.append(s);
+		return r;
+	}
+
 	template<typename other_type>
 	char_type& operator=(other_type* str)
 	{

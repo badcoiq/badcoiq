@@ -110,6 +110,7 @@ public:
 	bool SaveToFile(bqSoundFileType, const char* fn);
 	
 	bool LoadFromFile(const char* fn);
+	bool LoadFromFile(const bqStringA& fn);
 
 	void Clear();
 

@@ -28,7 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../../DemoApp.h"
 
-#include "badcoiq/scene/bqSprite.h"
+//#include "badcoiq/scene/bqSprite.h"
+#include "badcoiq/sound/bqSoundSystem.h"
 
 
 
@@ -85,8 +86,19 @@ bool ExampleBasicsSound::Init()
 	m_camera->Update(0.f);
 	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
-	// для 3D линии
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
+
+	m_sound1 = new bqSound();
+	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1.wav");
+
+	auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
+	if(!se->IsReady())
+		se->Init();
+	
+	m_soundObjectE = se->SummonSoundObject(m_sound1);
+	m_soundObjectEloop = se->SummonSoundObject(m_sound1);
+	m_soundObjectEloop->EnableLoop();
+	
 
 	m_gs->DisableBackFaceCulling();
 	return true;
@@ -94,6 +106,9 @@ bool ExampleBasicsSound::Init()
 
 void ExampleBasicsSound::Shutdown()
 {
+	BQ_SAFEDESTROY(m_soundObjectEloop);
+	BQ_SAFEDESTROY(m_soundObjectE);
+	BQ_SAFEDESTROY(m_sound1);
 	BQ_SAFEDESTROY(m_camera);
 }
 
@@ -106,6 +121,19 @@ void ExampleBasicsSound::OnDraw()
 	}
 
 	_onCamera();
+	
+	if (bqInput::IsKeyHit(bqInput::KEY_1))
+	{
+		m_soundObjectE->Start();
+	}
+	if (bqInput::IsKeyHit(bqInput::KEY_2))
+	{
+		m_soundObjectEloop->Start();
+	}
+	if (bqInput::IsKeyHit(bqInput::KEY_3))
+	{
+		m_soundObjectEloop->Stop();
+	}
 
 
 	m_gs->BeginGUI();

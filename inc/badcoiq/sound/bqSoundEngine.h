@@ -64,6 +64,10 @@ public:
 	virtual void Start() = 0;
 	virtual void Stop() = 0;
 	virtual void SetVolume(float) = 0;
+
+	// придётся перезапустить проигрывание
+	virtual void EnableLoop() = 0;
+	virtual void DisableLoop() = 0;
 };
 
 
@@ -84,6 +88,7 @@ public:
 
 	virtual bool Init() = 0;
 	virtual void Shutdown() = 0;
+	virtual bool IsReady() = 0;
 };
 
 #endif

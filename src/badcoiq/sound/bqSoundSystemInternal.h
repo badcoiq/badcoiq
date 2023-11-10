@@ -26,28 +26,18 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #pragma once
-#ifndef _EXsound_H_
-#define _EXsound_H_
+#ifndef _BQ_SNDSSTMINT_H_
+#define _BQ_SNDSSTMINT_H_
 
-class DemoExample;
-class DemoApp;
-class ExampleBasicsSound : public DemoExample
+#include <thread>
+#include <mutex>
+
+namespace bq
 {
-	bqCamera* m_camera = 0;
-
-	bqSound* m_sound1 = 0;
-	bqSoundEngineObject* m_soundObjectE = 0;
-	bqSoundEngineObject* m_soundObjectEloop = 0;
-
-    void _onCamera();
-public:
-	ExampleBasicsSound(DemoApp*);
-	virtual ~ExampleBasicsSound();
-	BQ_PLACEMENT_ALLOCATOR(ExampleBasicsSound);
-
-	virtual bool Init() override;
-	virtual void Shutdown() override;
-	virtual void OnDraw() override;
-};
+	struct SoundInputThreadData
+	{
+		bqSoundObject* m_soundObject = 0;
+	};
+}
 
 #endif

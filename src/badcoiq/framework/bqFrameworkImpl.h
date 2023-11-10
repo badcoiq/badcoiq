@@ -38,6 +38,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <thread>
 
+#include "../sound/bqSoundSystemInternal.h"
+
 class bqFrameworkImpl
 {
 public:
@@ -50,7 +52,6 @@ public:
 	}
 	~bqFrameworkImpl() {}
 	BQ_PLACEMENT_ALLOCATOR(bqFrameworkImpl);
-	BQ_DELETED_METHODS(bqFrameworkImpl);
 
 	float m_deltaTime = 0.f;
 	bqFrameworkCallback* m_frameworkCallback = 0;
@@ -58,6 +59,7 @@ public:
 	bqInputData m_input;
 
 	bqString m_appPath;
+	bqStringA m_appPathA;
 
 	std::vector<bqGS*> m_gss;
 	std::vector<bqImageLoader*> m_imageLoaders;
@@ -102,7 +104,10 @@ public:
 
 	bqSoundSystem* m_soundSystem = 0;
 	std::thread* m_threadSound = 0;
+	std::mutex m_threadSoundInputQueueMutex;
 	bool m_threadSoundRun = false;
+	bqQueue<bq::SoundInputThreadData>* m_threadSoundInputQueue = 0;
+	void _threadSoundInputQueue(bool set, bq::SoundInputThreadData*);
 };
 
 

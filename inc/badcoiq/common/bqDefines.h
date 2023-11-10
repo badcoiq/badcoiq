@@ -135,8 +135,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BQ_LO32(l) ((uint16_t)(((uint32_t)(l)) & 0xffff))
 #define BQ_HI32(l) ((uint16_t)((((uint32_t)(l)) >> 16) & 0xffff))
 
+// вызывать только если объект был создан с помощью new
+// в том числе если у класса указано BQ_PLACEMENT_ALLOCATOR
 #define BQ_SAFEDESTROY(p) if(p){delete p;p=nullptr;}
 
+// наверно надо удалить
 #define BQ_DELETED_METHODS(x) x(const x&) = delete; \
 	x& operator=(const x&) = delete;
 	

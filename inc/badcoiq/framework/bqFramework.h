@@ -137,6 +137,7 @@ public:
 	static void SummonMesh(const char*, bqMeshLoaderCallback*);
 
 	static bqString GetAppPath();
+	static bqStringA GetAppPathA();
 	static bqStringA GetPath(const bqString& v);
 
 	static void InitDefaultFonts(bqGS* gs);

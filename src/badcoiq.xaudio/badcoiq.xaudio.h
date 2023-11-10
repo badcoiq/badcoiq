@@ -64,9 +64,14 @@ public:
 	IXAudio2SourceVoice* m_SourceVoice = 0;
 
 	bqIXAudio2VoiceCallback* m_xaudioCallback = 0;
+
+	UINT32 m_loopCount = 0;
+
 	virtual void Start() override;
 	virtual void Stop() override;
 	virtual void SetVolume(float) override;
+	virtual void EnableLoop() override;
+	virtual void DisableLoop() override;
 };
 
 class bqSoundEngineXAudio : public bqSoundEngine
@@ -84,6 +89,7 @@ public:
 
 	virtual bool Init() override;
 	virtual void Shutdown() override;
+	virtual bool IsReady() override;
 };
 
 #endif

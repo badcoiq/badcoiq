@@ -163,7 +163,6 @@ bool bqSoundEngineXAudio::Init()
 
 void bqSoundEngineXAudio::Shutdown()
 {
-	BQ_ASSERT_ST(m_isInit == true);
 	if (m_isInit)
 	{
 		m_isInit = false;
@@ -177,6 +176,17 @@ void bqSoundEngineXAudio::Shutdown()
 	}
 }
 
+bool bqSoundEngineXAudio::IsReady()
+{
+	return m_isInit;
+}
+
+// =====================================================
+// 
+// 
+// 
+// 
+// =====================================================
 bqSoundObjectXAudio::bqSoundObjectXAudio()
 {
 }
@@ -204,6 +214,7 @@ void bqSoundObjectXAudio::Start()
 		buffer.pAudioData = m_sourceData->m_data;
 		buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
 		buffer.AudioBytes = m_sourceData->m_dataSize;
+		buffer.LoopCount = m_loopCount;
 
 		HRESULT hr = S_OK;
 		if (FAILED(hr = m_SourceVoice->SubmitSourceBuffer(&buffer)))
@@ -234,3 +245,14 @@ void bqSoundObjectXAudio::SetVolume(float v)
 {
 	m_SourceVoice->SetVolume(v);
 }
+
+void bqSoundObjectXAudio::EnableLoop()
+{
+	m_loopCount = XAUDIO2_LOOP_INFINITE;
+}
+
+void bqSoundObjectXAudio::DisableLoop()
+{
+	m_loopCount = 0;
+}
+

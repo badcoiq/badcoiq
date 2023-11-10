@@ -30,7 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
-#include <thread>
+#include "bqSoundSystemInternal.h"
+
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
@@ -53,6 +54,18 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 	while (g_framework->m_threadSoundRun)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+
+		if (g_framework->m_threadSoundInputQueue->Size())
+		{
+			auto sz = g_framework->m_threadSoundInputQueue->Size();
+			for (uint32_t i = 0; i < sz; ++i)
+			{
+				printf("GET\n");
+				bq::SoundInputThreadData d;
+				g_framework->_threadSoundInputQueue(false, &d);
+			}
+		}
 	}
 
 	for (size_t i = 0; i < ss->m_engines.m_size; ++i)
@@ -80,6 +93,11 @@ bqSoundSystem::~bqSoundSystem()
 		g_framework->m_threadSound->join();
 		delete g_framework->m_threadSound;
 		g_framework->m_threadSound = 0;
+	}
+
+	for (size_t i = 0; i < m_engines.m_size; ++i)
+	{
+		m_engines.m_data[i]->Shutdown();
 	}
 }
 
@@ -133,5 +151,25 @@ bqSoundObject* bqSoundSystem::SummonSoundObject(bqSoundEngine* e, bqSound* s)
 void bqSoundSystem::Play(bqSoundObject* so)
 {
 	BQ_ASSERT_ST(so);
+	bq::SoundInputThreadData d;
+	d.m_soundObject = so;
+	g_framework->_threadSoundInputQueue(true, &d);
+}
 
+void bqFrameworkImpl::_threadSoundInputQueue(bool set, bq::SoundInputThreadData* d)
+{
+	std::lock_guard<std::mutex> guard(m_threadSoundInputQueueMutex);
+
+	if (set)
+	{
+		m_threadSoundInputQueue->Push(*d);
+	}
+	else
+	{
+		if (m_threadSoundInputQueue->Size() && d)
+		{
+			*d = m_threadSoundInputQueue->Front();
+			m_threadSoundInputQueue->Pop();
+		}			
+	}
 }

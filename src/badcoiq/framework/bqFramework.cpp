@@ -117,6 +117,8 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		g_framework->_initGUIThemes();
 		g_framework->_initGUITextDrawCallbacks();
 
+		g_framework->m_threadSoundInputQueue = new bqQueue<bq::SoundInputThreadData>(3);
+
 #ifdef BQ_PLATFORM_WINDOWS
 		wchar_t pth[1000];
 		GetModuleFileName(0, pth, 1000);
@@ -133,6 +135,9 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 
 		
 #endif
+
+		g_framework->m_appPath.to_utf8(g_framework->m_appPathA);
+
 		g_framework->_initDefaultCursors();
 
 		g_framework->m_gss.push_back(bqGSD3D11_create());
@@ -162,6 +167,15 @@ void bqFrameworkImpl::OnDestroy()
 	{
 		bqDestroy(m_soundSystem);
 		m_soundSystem = 0;
+	}
+
+	// это нужно удалять после m_soundSystem
+	// так как bqSoundSystem имеет m_threadSound
+	// его сперва нужно завершить потом удалять очередь
+	if (g_framework->m_threadSoundInputQueue)
+	{
+		delete g_framework->m_threadSoundInputQueue;
+		g_framework->m_threadSoundInputQueue = 0;
 	}
 
 	for (uint32_t i = 0; i < (uint32_t)bqCursorType::_count; ++i)
@@ -521,6 +535,12 @@ bqString bqFramework::GetAppPath()
 {
 	return g_framework->m_appPath;
 }
+
+bqStringA bqFramework::GetAppPathA()
+{
+	return g_framework->m_appPathA;
+}
+
 
 bqStringA bqFramework::GetPath(const bqString& v)
 {
