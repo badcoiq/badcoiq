@@ -89,7 +89,7 @@ bool ExampleBasicsSound::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_sound1 = new bqSound();
-	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1.wav");
+	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/death2.wav");
 
 	auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
 	if(!se->IsReady())

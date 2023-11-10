@@ -55,12 +55,59 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
+		if (g_framework->m_threadSoundList->m_size)
+		{
+			auto soundNode = g_framework->m_threadSoundList->m_head;
+			for (size_t i = 0; i < g_framework->m_threadSoundList->m_size; ++i)
+			{
+				auto so = soundNode->m_data.m_soundObject;
+				
+				// копирую часть звука
+				uint8_t* src = so->m_engineObject->m_sourceData->m_data;
+				uint8_t* dst = so->m_sourceData.m_data;
+				for (size_t o = 0, srci = 0; o < so->m_sourceData.m_dataSize; ++o, ++srci)
+				{
+					if (srci >= so->m_engineObject->m_sourceData->m_dataSize)
+						*dst = 0;
+					else
+						*dst = *src;
+
+					++dst;
+					++src;
+				}
+
+				so->m_engineObject->SetSource(so->m_sourceData.m_data,
+					so->m_sourceData.m_dataSize);
+
+				so->m_engineObject->PlaySource();
+				std::this_thread::sleep_for(std::chrono::milliseconds(11110));
+
+				soundNode = soundNode->m_right;
+			}
+		}
+
 
 		if (g_framework->m_threadSoundInputQueue->Size())
 		{
-			printf("GET\n");
+			//printf("GET\n");
 			bq::SoundInputThreadData d;
 			g_framework->_threadSoundInputQueue(false, &d);
+
+			switch (d.m_command)
+			{
+			case bq::SoundInputThreadData::command_play:
+			{
+				if (g_framework->m_threadSoundList->size() < g_framework->m_threadSoundSoundLimit)
+				{
+					//printf("Add\n");
+					g_framework->m_threadSoundList->push_back(d);
+				}
+			}break;
+			case bq::SoundInputThreadData::command_stopAll:
+			{
+				g_framework->m_threadSoundList->clear();
+			}break;
+			}
 		}
 	}
 
@@ -137,9 +184,7 @@ bqSoundObject* bqSoundSystem::SummonSoundObject(bqSoundEngine* e, bqSound* s)
 		return 0;
 	}
 
-	// Engine Object должен иметь указатель на source data из sound object
-	//  
-	so->m_engineObject->m_sourceData = &so->m_sourceData;	
+	// Engine Object должен иметь указатель на source data из sound object	
 	so->m_engine = e;
 
 	return so.Drop();
@@ -149,8 +194,8 @@ void bqSoundSystem::Play(bqSoundObject* so)
 {
 	BQ_ASSERT_ST(so);
 	bq::SoundInputThreadData d;
-	bq::SoundInputThreadData d2;
 	d.m_soundObject = so;
+	d.m_command = d.command_play;
 	g_framework->_threadSoundInputQueue(true, &d);
 }
 
@@ -170,4 +215,12 @@ void bqFrameworkImpl::_threadSoundInputQueue(bool set, bq::SoundInputThreadData*
 			m_threadSoundInputQueue->Pop();
 		}			
 	}
+}
+
+void bqSoundSystem::StopAll()
+{
+	bq::SoundInputThreadData d;
+	d.m_soundObject = 0;
+	d.m_command = d.command_stopAll;
+	g_framework->_threadSoundInputQueue(true, &d);
 }

@@ -506,13 +506,14 @@ void bqSound::_reallocate(uint32_t newSz)
 
 bqSoundObject::bqSoundObject()
 {
-	m_sourceData.m_dataSize = 0xffff;
-	m_sourceData.m_data = new uint8_t[m_sourceData.m_dataSize];
+	m_sourceData.m_dataSize = 0xffff+1;
+	m_sourceData.m_data = (uint8_t*)bqMemory::calloc(m_sourceData.m_dataSize);// new uint8_t[m_sourceData.m_dataSize];
 }
 
 bqSoundObject::~bqSoundObject()
 {
 	if (m_sourceData.m_data)
-		delete[] m_sourceData.m_data;
+		bqMemory::free(m_sourceData.m_data);
+		//delete[] m_sourceData.m_data;
 }
 

@@ -68,6 +68,13 @@ public:
 	// придётся перезапустить проигрывание
 	virtual void EnableLoop() = 0;
 	virtual void DisableLoop() = 0;
+
+	// Воспроизводить будет без учёта играет ли уже или нет.
+	// Нет проверок.
+	// Нет вызовов коллбэка.
+	virtual void SetSource(void* data, uint32_t dataSize) = 0;
+	virtual void PlaySource() = 0;
+	virtual void StopSource() = 0;
 };
 
 

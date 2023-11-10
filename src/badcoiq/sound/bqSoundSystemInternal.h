@@ -38,7 +38,20 @@ namespace bq
 	{
 		bqSoundObject* m_soundObject = 0;
 
-		char bbb[234];
+		enum
+		{
+			command_null = 0,
+			command_play,
+			command_stopAll,
+		};
+		uint32_t m_command = 0;
+
+		enum
+		{
+			state_null = 0,
+			state_play
+		};
+		uint32_t m_state = 0;
 	};
 }
 

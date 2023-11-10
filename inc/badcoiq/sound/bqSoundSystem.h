@@ -69,6 +69,7 @@ public:
 	bqSoundObject* SummonSoundObject(bqSoundEngine*, bqSound*);
 
 	void Play(bqSoundObject*);
+	void StopAll();
 };
 
 #endif

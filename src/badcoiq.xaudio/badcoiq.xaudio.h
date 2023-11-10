@@ -72,6 +72,10 @@ public:
 	virtual void SetVolume(float) override;
 	virtual void EnableLoop() override;
 	virtual void DisableLoop() override;
+
+	virtual void SetSource(void* data, uint32_t dataSize) override;
+	virtual void PlaySource() override;
+	virtual void StopSource() override;
 };
 
 class bqSoundEngineXAudio : public bqSoundEngine

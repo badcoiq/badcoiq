@@ -80,6 +80,8 @@ public:
 	// Удалить все ноды
 	void clear()
 	{
+		m_size = 0;
+
 		if (!m_head)
 			return;
 		auto last = m_head->m_left;
@@ -104,6 +106,7 @@ public:
 		new(node)bqListNode<_type>();
 
 		node->m_data = data;
+		++m_size;
 
 		if (!m_head)
 		{
@@ -152,6 +155,7 @@ public:
 		new(node)bqListNode<_type>();
 
 		node->m_data = data;
+		++m_size;
 
 		if (!m_head)
 		{
@@ -197,6 +201,7 @@ public:
 	{
 		bqListNode<_type>* node = (bqListNode<_type>*)bqMemory::malloc(sizeof(bqListNode<_type>));
 		new(node)bqListNode<_type>();
+		++m_size;
 
 		node->m_data = data;
 
@@ -222,6 +227,7 @@ public:
 	{
 		bqListNode<_type>* node = (bqListNode<_type>*)bqMemory::malloc(sizeof(bqListNode<_type>));
 		new(node)bqListNode<_type>();
+		++m_size;
 
 		node->m_data = data;
 
@@ -247,6 +253,9 @@ public:
 	{
 		if (!m_head)
 			return;
+		
+		--m_size;
+
 		auto next = m_head->m_right;
 		auto last = m_head->m_left;
 		m_head->~bqListNode();
@@ -267,6 +276,8 @@ public:
 	{
 		if (!m_head)
 			return;
+
+		--m_size;
 
 		auto lastNode = m_head->m_left;
 		lastNode->m_left->m_right = m_head;
@@ -302,6 +313,7 @@ public:
 					node->m_right->m_left = node->m_left;
 					node->~bqListNode();
 					bqMemory::free(node);
+					--m_size;
 
 					// ???
 					if (node == m_head)
@@ -375,6 +387,8 @@ public:
 		if (object == m_head)
 			m_head = 0;
 
+		--m_size;
+
 		object->~bqListNode();
 		bqMemory::free(object);
 	}
@@ -406,6 +420,9 @@ public:
 
 
 	bqListNode<_type>* m_head;
+
+	size_t m_size = 0;
+	size_t size() const { return m_size; }
 };
 
 

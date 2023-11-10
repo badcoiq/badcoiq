@@ -210,23 +210,26 @@ void bqSoundObjectXAudio::Start()
 {
 	if (m_state == state_notplaying)
 	{
-		XAUDIO2_BUFFER buffer = { 0 };
-		buffer.pAudioData = m_sourceData->m_data;
-		buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
-		buffer.AudioBytes = m_sourceData->m_dataSize;
-		buffer.LoopCount = m_loopCount;
+		SetSource(m_sourceData->m_data, m_sourceData->m_dataSize);
+		//XAUDIO2_BUFFER buffer = { 0 };
+		//buffer.pAudioData = m_sourceData->m_data;
+		//buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
+		//buffer.AudioBytes = m_sourceData->m_dataSize;
+		//buffer.LoopCount = m_loopCount;
 
-		HRESULT hr = S_OK;
-		if (FAILED(hr = m_SourceVoice->SubmitSourceBuffer(&buffer)))
-		{
-			bqLog::PrintError(L"Error %#X submitting source buffer\n", hr);
-			return;
-		}
+		//HRESULT hr = S_OK;
+		//if (FAILED(hr = m_SourceVoice->SubmitSourceBuffer(&buffer)))
+		//{
+		//	bqLog::PrintError(L"Error %#X submitting source buffer\n", hr);
+		//	return;
+		//}
 
 		if(m_callback)
 			m_callback->OnStart();
 
-		hr = m_SourceVoice->Start(0);
+		PlaySource();
+		//m_SourceVoice->Start(0);
+
 		m_state = state_playing;
 	}
 }
@@ -235,8 +238,9 @@ void bqSoundObjectXAudio::Stop()
 {
 	if (m_state == state_playing)
 	{
-		m_SourceVoice->Stop();
-		m_SourceVoice->FlushSourceBuffers();
+		StopSource();
+		/*m_SourceVoice->Stop();
+		m_SourceVoice->FlushSourceBuffers();*/
 		m_state = state_notplaying;
 	}
 }
@@ -256,3 +260,26 @@ void bqSoundObjectXAudio::DisableLoop()
 	m_loopCount = 0;
 }
 
+void bqSoundObjectXAudio::SetSource(void* data, uint32_t dataSize)
+{
+	XAUDIO2_BUFFER buffer = { 0 };
+	buffer.pAudioData = (uint8_t*)data;
+	buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
+	buffer.AudioBytes = dataSize;
+	buffer.LoopCount = m_loopCount;
+
+	HRESULT hr = S_OK;
+	if (FAILED(hr = m_SourceVoice->SubmitSourceBuffer(&buffer)))
+		bqLog::PrintError(L"Error %#X submitting source buffer\n", hr);
+}
+
+void bqSoundObjectXAudio::PlaySource()
+{
+	m_SourceVoice->Start(0);
+}
+
+void bqSoundObjectXAudio::StopSource()
+{
+	m_SourceVoice->Stop();
+	m_SourceVoice->FlushSourceBuffers();
+}

@@ -108,6 +108,7 @@ public:
 	bool m_threadSoundRun = false;
 	bqQueue<bq::SoundInputThreadData>* m_threadSoundInputQueue = 0;
 	bqList<bq::SoundInputThreadData>* m_threadSoundList = 0;
+	uint32_t m_threadSoundSoundLimit = 100;
 	void _threadSoundInputQueue(bool set, bq::SoundInputThreadData*);
 };
 
