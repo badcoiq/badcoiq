@@ -35,7 +35,7 @@ struct bqListNode
 {
 	bqListNode() {}
 	~bqListNode() {}
-	_type m_data = 0;
+	_type m_data;
 	bqListNode* m_left = 0;
 	bqListNode* m_right = 0;
 };
@@ -45,14 +45,17 @@ struct bqListNode
 template<typename _type>
 class bqList
 {
-	bqList(bqList&& other) {};
+	bqList(const bqList& other) = delete;
+	bqList(bqList&& other) = delete;
+	bqList& operator=(const bqList&) = delete;
+	bqList& operator=(bqList&&) = delete;
+
 public:
 	bqList() :m_head(0) {}
 	~bqList() 
 	{
 		clear();
 	}
-	BQ_DELETED_METHODS(bqList);
 
 	// Найти ноду по объекту
 	bqListNode<_type>* find(const _type& data)

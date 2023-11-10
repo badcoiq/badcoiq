@@ -28,8 +28,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "DemoApp.h"
 
+#include "badcoiq/containers/bqQueue.h"
+
 int main()
 {
+	bqQueue<bqMat4> q(3);
+	bqMat4 m1, m2, m3;
+	m1.m_data[0].x = 2.f;
+	m2.m_data[0].x = 3.f;
+	m3.m_data[0].x = 4.f;
+
+	q.Push(m1);
+	q.Pop();
+	q.Push(m2);
+	q.Pop();
+	q.Push(m3);
+	q.Pop();
+
 	DemoApp app;
 	if (app.Init())
 	{

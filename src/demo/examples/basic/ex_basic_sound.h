@@ -38,6 +38,8 @@ class ExampleBasicsSound : public DemoExample
 	bqSound* m_sound1 = 0;
 	bqSoundEngineObject* m_soundObjectE = 0;
 	bqSoundEngineObject* m_soundObjectEloop = 0;
+	
+	bqSoundObject* m_soundObjectStream = 0;
 
     void _onCamera();
 public:

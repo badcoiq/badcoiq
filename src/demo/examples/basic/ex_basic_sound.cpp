@@ -98,6 +98,8 @@ bool ExampleBasicsSound::Init()
 	m_soundObjectE = se->SummonSoundObject(m_sound1);
 	m_soundObjectEloop = se->SummonSoundObject(m_sound1);
 	m_soundObjectEloop->EnableLoop();
+
+	m_soundObjectStream = bqFramework::GetSoundSystem()->SummonSoundObject(se, m_sound1);
 	
 
 	m_gs->DisableBackFaceCulling();
@@ -106,6 +108,7 @@ bool ExampleBasicsSound::Init()
 
 void ExampleBasicsSound::Shutdown()
 {
+	BQ_SAFEDESTROY(m_soundObjectStream);
 	BQ_SAFEDESTROY(m_soundObjectEloop);
 	BQ_SAFEDESTROY(m_soundObjectE);
 	BQ_SAFEDESTROY(m_sound1);
@@ -135,6 +138,14 @@ void ExampleBasicsSound::OnDraw()
 		m_soundObjectEloop->Stop();
 	}
 
+	if (bqInput::IsKeyHit(bqInput::KEY_Z))
+	{
+		bqFramework::GetSoundSystem()->Play(m_soundObjectStream);
+	}
+	if (bqInput::IsKeyHold(bqInput::KEY_X))
+	{
+		bqFramework::GetSoundSystem()->Play(m_soundObjectStream);
+	}
 
 	m_gs->BeginGUI();
 	m_gs->EndGUI();

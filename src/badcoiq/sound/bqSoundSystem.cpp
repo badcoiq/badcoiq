@@ -58,13 +58,9 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 
 		if (g_framework->m_threadSoundInputQueue->Size())
 		{
-			auto sz = g_framework->m_threadSoundInputQueue->Size();
-			for (uint32_t i = 0; i < sz; ++i)
-			{
-				printf("GET\n");
-				bq::SoundInputThreadData d;
-				g_framework->_threadSoundInputQueue(false, &d);
-			}
+			printf("GET\n");
+			bq::SoundInputThreadData d;
+			g_framework->_threadSoundInputQueue(false, &d);
 		}
 	}
 
@@ -95,10 +91,11 @@ bqSoundSystem::~bqSoundSystem()
 		g_framework->m_threadSound = 0;
 	}
 
-	for (size_t i = 0; i < m_engines.m_size; ++i)
-	{
-		m_engines.m_data[i]->Shutdown();
-	}
+	// внутри m_threadSound
+	//for (size_t i = 0; i < m_engines.m_size; ++i)
+	//{
+	//	m_engines.m_data[i]->Shutdown();
+	//}
 }
 
 uint32_t bqSoundSystem::GetNumOfEngines()
@@ -152,6 +149,7 @@ void bqSoundSystem::Play(bqSoundObject* so)
 {
 	BQ_ASSERT_ST(so);
 	bq::SoundInputThreadData d;
+	bq::SoundInputThreadData d2;
 	d.m_soundObject = so;
 	g_framework->_threadSoundInputQueue(true, &d);
 }

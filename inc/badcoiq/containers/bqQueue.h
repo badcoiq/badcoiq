@@ -37,7 +37,7 @@ class bqQueue
 {
 	struct _Node
 	{
-		Type m_data = 0;
+		Type m_data;
 		_Node* m_next = 0;
 	};
 	_Node* m_head = 0;
@@ -100,7 +100,9 @@ public:
 	{
 		if (m_memory->GetFreeCount())
 		{
-			_Node* newNode = reinterpret_cast<_Node*>(m_memory->Allocate(1));
+			_Node* newNode = (_Node*)m_memory->Allocate(1);
+			::new(newNode) _Node();
+
 			newNode->m_data = value;
 
 			if (m_head)

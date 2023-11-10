@@ -107,6 +107,7 @@ public:
 	std::mutex m_threadSoundInputQueueMutex;
 	bool m_threadSoundRun = false;
 	bqQueue<bq::SoundInputThreadData>* m_threadSoundInputQueue = 0;
+	bqList<bq::SoundInputThreadData>* m_threadSoundList = 0;
 	void _threadSoundInputQueue(bool set, bq::SoundInputThreadData*);
 };
 

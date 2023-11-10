@@ -37,6 +37,8 @@ namespace bq
 	struct SoundInputThreadData
 	{
 		bqSoundObject* m_soundObject = 0;
+
+		char bbb[234];
 	};
 }
 
