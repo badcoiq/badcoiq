@@ -89,7 +89,7 @@ bool ExampleBasicsSound::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_sound1 = new bqSound();
-	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/death2.wav");
+	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/signalgear1.wav");
 
 	auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
 	if(!se->IsReady())
@@ -108,6 +108,8 @@ bool ExampleBasicsSound::Init()
 
 void ExampleBasicsSound::Shutdown()
 {
+	bqFramework::GetSoundSystem()->StopAll();
+
 	BQ_SAFEDESTROY(m_soundObjectStream);
 	BQ_SAFEDESTROY(m_soundObjectEloop);
 	BQ_SAFEDESTROY(m_soundObjectE);

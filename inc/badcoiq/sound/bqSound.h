@@ -114,6 +114,16 @@ public:
 
 	void Clear();
 
+	// Всё не поддерживаемое должно конвертироваться в поддерживаемое
+	enum class Type
+	{
+		uint8_mono,
+		uint8_stereo,
+		uint16_mono_44100,   // поддерживаемое
+		uint16_stereo_44100,   // поддерживаемое
+	};
+	void Convert(Type);
+
 	// Вычислить время по битрейту и прочим параметрам
 	float CalculateTime();
 

@@ -38,6 +38,8 @@ public:
 
 	virtual void OnStart() {}
 	virtual void OnStop() {}
+
+	void* m_context = 0;
 };
 
 

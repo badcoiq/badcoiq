@@ -75,9 +75,15 @@ void bqIXAudio2VoiceCallback::OnBufferStart (THIS_ void* pBufferContext)
 
 void bqIXAudio2VoiceCallback::OnBufferEnd (THIS_ void* pBufferContext)
 {
+	IXAudio2SourceVoice* voice = (IXAudio2SourceVoice*)pBufferContext;
+	//voice->Stop();
+	//voice->FlushSourceBuffers();
+
 	m_so->m_state = m_so->state_notplaying;
-	if(m_so->m_callback)
+	if (m_so->m_callback)
+	{
 		m_so->m_callback->OnStop();
+	}
 }
 
 void bqIXAudio2VoiceCallback::OnLoopEnd (THIS_ void* pBufferContext)
@@ -240,7 +246,8 @@ void bqSoundObjectXAudio::Stop()
 	{
 		StopSource();
 		/*m_SourceVoice->Stop();
-		m_SourceVoice->FlushSourceBuffers();*/
+		m_SourceVoice->FlushSourceBuffers();
+		*/
 		m_state = state_notplaying;
 	}
 }
@@ -267,6 +274,7 @@ void bqSoundObjectXAudio::SetSource(void* data, uint32_t dataSize)
 	buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
 	buffer.AudioBytes = dataSize;
 	buffer.LoopCount = m_loopCount;
+	buffer.pContext = m_SourceVoice;
 
 	HRESULT hr = S_OK;
 	if (FAILED(hr = m_SourceVoice->SubmitSourceBuffer(&buffer)))
@@ -280,6 +288,7 @@ void bqSoundObjectXAudio::PlaySource()
 
 void bqSoundObjectXAudio::StopSource()
 {
+	printf("STOPPED\n");
 	m_SourceVoice->Stop();
 	m_SourceVoice->FlushSourceBuffers();
 }

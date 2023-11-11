@@ -44,11 +44,11 @@ public:
 	~bqSoundObject();
 	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
 
-	//uint8_t* m_buffer = 0;
-	bqSoundSourceData m_sourceData;
+	bqSoundSourceData m_sourceData[2];
 
 	bqSoundEngineObject* m_engineObject = 0;
 	bqSoundEngine* m_engine = 0;
+	bqSoundObjectCallback* m_userCallback = 0;
 };
 
 class bqSoundSystem
@@ -56,7 +56,6 @@ class bqSoundSystem
 	friend void bqSoundSystem_thread(bqSoundSystem* ss);
 
 	bqArray<bqSoundEngine*> m_engines;
-
 	
 public:
 	bqSoundSystem();
@@ -69,7 +68,12 @@ public:
 	bqSoundObject* SummonSoundObject(bqSoundEngine*, bqSound*);
 
 	void Play(bqSoundObject*);
+
 	void StopAll();
+
+	// если активно воспроизведение то true
+	// StopAll() должен всё остановить у поставить false
+	bool m_isActive = false;
 };
 
 #endif

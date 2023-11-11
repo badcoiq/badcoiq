@@ -32,8 +32,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <thread>
 #include <mutex>
 
+#include "badcoiq/sound/bqSoundSystem.h"
+
 namespace bq
 {
+	class SoundObjectCallback : public bqSoundObjectCallback
+	{
+	public:
+		SoundObjectCallback();
+		virtual ~SoundObjectCallback();
+
+		virtual void OnStart() override;
+		virtual void OnStop() override;
+	};
+
 	struct SoundInputThreadData
 	{
 		bqSoundObject* m_soundObject = 0;
@@ -48,10 +60,20 @@ namespace bq
 
 		enum
 		{
-			state_null = 0,
-			state_play
+			playState_stop,
+			playState_play,
 		};
-		uint32_t m_state = 0;
+		uint32_t m_playState = playState_stop; // воспроизведение начинается с подготовки буфера
+
+		enum
+		{
+			bufferState_prepare,
+			bufferState_ready,
+		};
+		uint32_t m_bufferState = bufferState_prepare;
+
+		uint32_t m_currentBuffer = 0;
+		SoundObjectCallback m_internalCallback;
 	};
 }
 

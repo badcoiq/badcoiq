@@ -368,7 +368,13 @@ bool bqSound::_saveWav(const char* fn)
 			
 		fwrite(&m_soundSource->m_sourceInfo.m_blockSize, 2, 1, f);
 		fwrite(&m_soundSource->m_sourceInfo.m_bitsPerSample, 2, 1, f);
-			
+		
+		// Где запись этого???
+		//uint16_t extraFormatInfoSz = 0;
+		// FMTChunkSize он же subchnkSz должен быть больше 16 для записи этого
+		// подробности я не знаю.
+		//fwrite(&extraFormatInfoSz, 2, 1, f);
+
 		fwrite("data", 4, 1, f);
 		fwrite(&m_soundSource->m_sourceData.m_dataSize, 4, 1, f);
 		fwrite(m_soundSource->m_sourceData.m_data, m_soundSource->m_sourceData.m_dataSize, 1, f);
@@ -411,6 +417,10 @@ bool bqSound::_loadWav(const char* fn)
 	return false;
 }
 
+void bqSound::Convert(Type type)
+{
+}
+
 bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 {
 	bqFileBuffer file(buffer, bufferSz);
@@ -451,6 +461,12 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 				uint16_t bitsPerSample = 0;
 				file.Read(&bitsPerSample, 2);
 
+				if (FMTChunkSize > 16)
+				{
+					uint16_t extraFormatInfoSz = 0;
+					file.Read(&extraFormatInfoSz, 2);
+				}
+
 				char data[5] = { 0,0,0,0,0 };
 				file.Read(data, 4);
 				if (strcmp(data, "data") == 0)
@@ -464,7 +480,11 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 							_reallocate(dataSize);
 
 						file.Read(m_soundSource->m_sourceData.m_data, m_soundSource->m_sourceData.m_dataSize);
+
+						//Convert();
+
 						CalculateTime();
+						return true;
 					}
 				}
 			}
@@ -506,14 +526,17 @@ void bqSound::_reallocate(uint32_t newSz)
 
 bqSoundObject::bqSoundObject()
 {
-	m_sourceData.m_dataSize = 0xffff+1;
-	m_sourceData.m_data = (uint8_t*)bqMemory::calloc(m_sourceData.m_dataSize);// new uint8_t[m_sourceData.m_dataSize];
+	m_sourceData[0].m_dataSize = 0xffff + 1;
+	m_sourceData[1].m_dataSize = 0xffff + 1;
+	m_sourceData[0].m_dataSize = 73950;
+	m_sourceData[1].m_dataSize = 73950;
+	m_sourceData[0].m_data = (uint8_t*)bqMemory::calloc(m_sourceData[0].m_dataSize);
+	m_sourceData[1].m_data = (uint8_t*)bqMemory::calloc(m_sourceData[0].m_dataSize);
 }
 
 bqSoundObject::~bqSoundObject()
 {
-	if (m_sourceData.m_data)
-		bqMemory::free(m_sourceData.m_data);
-		//delete[] m_sourceData.m_data;
+	if (m_sourceData[0].m_data) bqMemory::free(m_sourceData[0].m_data);
+	if (m_sourceData[1].m_data) bqMemory::free(m_sourceData[1].m_data);
 }
 

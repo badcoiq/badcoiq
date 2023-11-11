@@ -40,6 +40,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../sound/bqSoundSystemInternal.h"
 
+class bqFrameworkCallbackDefault : public bqFrameworkCallback
+{
+public:
+	bqFrameworkCallbackDefault() {}
+	virtual ~bqFrameworkCallbackDefault() {}
+	virtual void OnMessage() {}
+};
+
 class bqFrameworkImpl
 {
 public:

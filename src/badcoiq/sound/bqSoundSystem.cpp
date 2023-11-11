@@ -53,35 +53,75 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 	g_framework->m_threadSoundRun = true;
 	while (g_framework->m_threadSoundRun)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 		if (g_framework->m_threadSoundList->m_size)
 		{
 			auto soundNode = g_framework->m_threadSoundList->m_head;
 			for (size_t i = 0; i < g_framework->m_threadSoundList->m_size; ++i)
 			{
-				auto so = soundNode->m_data.m_soundObject;
-				
-				// копирую часть звука
-				uint8_t* src = so->m_engineObject->m_sourceData->m_data;
-				uint8_t* dst = so->m_sourceData.m_data;
-				for (size_t o = 0, srci = 0; o < so->m_sourceData.m_dataSize; ++o, ++srci)
-				{
-					if (srci >= so->m_engineObject->m_sourceData->m_dataSize)
-						*dst = 0;
-					else
-						*dst = *src;
+				bq::SoundInputThreadData* td = &soundNode->m_data;
+				bqSoundObject* so = td->m_soundObject;
+				bqSoundSourceData* dataSource = &so->m_sourceData[td->m_currentBuffer];
 
-					++dst;
-					++src;
+				switch (td->m_bufferState)
+				{
+					case bq::SoundInputThreadData::bufferState_prepare:
+					{
+						// копирую часть звука
+						uint8_t* src = so->m_engineObject->m_sourceData->m_data;
+						uint8_t* dst = dataSource->m_data;
+						for (size_t o = 0, srci = 0; o < dataSource->m_dataSize; ++o, ++srci)
+						{
+							if (srci >= so->m_engineObject->m_sourceData->m_dataSize)
+								*dst = 0;
+							else
+								*dst = *src;
+
+							++dst;
+							++src;
+						}
+
+						td->m_bufferState = bq::SoundInputThreadData::bufferState_ready;
+					}break;
+					case bq::SoundInputThreadData::bufferState_ready:
+					{
+						//so->m_engineObject->SetSource(dataSource->m_data, dataSource->m_dataSize);
+						////so->m_engineObject->PlaySource();
+						//td->m_state = bq::SoundInputThreadData::state_bufferPlay;
+					}break;
+					//case bq::SoundInputThreadData::state_bufferStop:
+					//{
+					//	//printf("play again\n");
+					//	//so->m_engineObject->SetSource(so->m_engineObject->m_sourceData->m_data,
+					//	//	so->m_engineObject->m_sourceData->m_dataSize);
+
+					//	////so->m_engineObject->PlaySource();
+
+					//	//td->m_state = bq::SoundInputThreadData::state_bufferPlay;
+					//}break;
 				}
 
-				so->m_engineObject->SetSource(so->m_sourceData.m_data,
-					so->m_sourceData.m_dataSize);
-
-				so->m_engineObject->PlaySource();
-				std::this_thread::sleep_for(std::chrono::milliseconds(11110));
-
+				switch (td->m_playState)
+				{
+				case bq::SoundInputThreadData::playState_stop:
+				{
+					if (td->m_bufferState == bq::SoundInputThreadData::bufferState_ready)
+					{
+						so->m_engineObject->SetSource(dataSource->m_data, dataSource->m_dataSize);
+						so->m_engineObject->m_state = bqSoundEngineObject::state_playing;
+						td->m_playState = bq::SoundInputThreadData::playState_play;
+						++td->m_currentBuffer;
+						if (td->m_currentBuffer > 1)
+							td->m_currentBuffer = 0;
+						td->m_bufferState = bq::SoundInputThreadData::bufferState_prepare;
+					}
+				}break;
+				case bq::SoundInputThreadData::playState_play:
+				{
+				}break;
+				}
+				
 				soundNode = soundNode->m_right;
 			}
 		}
@@ -99,13 +139,26 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 			{
 				if (g_framework->m_threadSoundList->size() < g_framework->m_threadSoundSoundLimit)
 				{
-					//printf("Add\n");
-					g_framework->m_threadSoundList->push_back(d);
+					auto _n = g_framework->m_threadSoundList->push_back(d);
+					d.m_soundObject->m_engineObject->m_callback = &_n->m_data.m_internalCallback;
+					d.m_soundObject->m_engineObject->m_callback->m_context = &_n->m_data;
+					ss->m_isActive = true;
 				}
 			}break;
 			case bq::SoundInputThreadData::command_stopAll:
 			{
+				auto soundNode = g_framework->m_threadSoundList->m_head;
+				for (size_t i = 0; i < g_framework->m_threadSoundList->m_size; ++i)
+				{
+					bq::SoundInputThreadData* td = &soundNode->m_data;
+					bqSoundObject* so = td->m_soundObject;
+
+					so->m_engineObject->Stop();
+					soundNode = soundNode->m_right;
+				}
 				g_framework->m_threadSoundList->clear();
+				
+				ss->m_isActive = false;
 			}break;
 			}
 		}
@@ -132,6 +185,8 @@ bqSoundSystem::~bqSoundSystem()
 {
 	if (g_framework->m_threadSoundRun)
 	{
+		StopAll();
+
 		g_framework->m_threadSoundRun = false;
 		g_framework->m_threadSound->join();
 		delete g_framework->m_threadSound;
@@ -187,6 +242,9 @@ bqSoundObject* bqSoundSystem::SummonSoundObject(bqSoundEngine* e, bqSound* s)
 	// Engine Object должен иметь указатель на source data из sound object	
 	so->m_engine = e;
 
+	//so->m_engineObject->SetSource(so->m_sourceData.m_data, so->m_sourceData.m_dataSize);
+	so->m_engineObject->PlaySource();
+
 	return so.Drop();
 }
 
@@ -223,4 +281,26 @@ void bqSoundSystem::StopAll()
 	d.m_soundObject = 0;
 	d.m_command = d.command_stopAll;
 	g_framework->_threadSoundInputQueue(true, &d);
+	
+	for (; m_isActive;) {}
+}
+
+namespace bq
+{
+	SoundObjectCallback::SoundObjectCallback() {}
+	SoundObjectCallback::~SoundObjectCallback() {}
+	void SoundObjectCallback::OnStart() 
+	{
+		SoundInputThreadData* data = (SoundInputThreadData*)m_context;
+		if (data->m_soundObject->m_userCallback)
+			data->m_soundObject->m_userCallback->OnStart();
+	}
+	void SoundObjectCallback::OnStop() 
+	{
+		SoundInputThreadData* data = (SoundInputThreadData*)m_context;
+		if (data->m_soundObject->m_userCallback)
+			data->m_soundObject->m_userCallback->OnStop();
+
+		data->m_playState = data->playState_stop;
+	}
 }
