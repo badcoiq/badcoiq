@@ -108,13 +108,23 @@ public:
 	//  to_upper нет так как он пока не нужен.
 	void to_lower()
 	{
-		if (!m_size)
-			return;
-		for (size_t i = 0; i < m_size; ++i)
+		/*for (size_t i = 0; i < m_size; ++i)
 		{
 			auto c = m_data[i];
 			if (c <= 'Z' && c >= 'A')
 				m_data[i] += 32;
+		}*/
+		for (size_t i = 0; i < m_size; ++i)
+		{
+			m_data[i] += 32 * (m_data[i] >= 'A' && m_data[i] <= 'Z');
+		}
+	}
+
+	void to_upper()
+	{
+		for (size_t i = 0; i < m_size; ++i)
+		{
+			m_data[i] -= 32 * (m_data[i] >= 'a' && m_data[i] <= 'z');
 		}
 	}
 
@@ -321,7 +331,7 @@ public:
 	}
 
 	template<typename other_type>
-	char_type& operator=(other_type* str)
+	bqString_base<char_type>& operator=(other_type* str)
 	{
 		assign(str);
 		return *this;
