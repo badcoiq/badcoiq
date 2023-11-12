@@ -74,6 +74,7 @@ namespace bq
 		{
 			bufferState_prepare,
 			bufferState_ready,
+			bufferState_skip,
 		};
 		uint32_t m_bufferState = bufferState_prepare;
 

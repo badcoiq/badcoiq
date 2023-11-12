@@ -76,13 +76,22 @@ void bqIXAudio2VoiceCallback::OnBufferStart (THIS_ void* pBufferContext)
 void bqIXAudio2VoiceCallback::OnBufferEnd (THIS_ void* pBufferContext)
 {
 	IXAudio2SourceVoice* voice = (IXAudio2SourceVoice*)pBufferContext;
-	//voice->Stop();
+//	voice->Stop();
 	//voice->FlushSourceBuffers();
-
-	m_so->m_state = m_so->state_notplaying;
-	if (m_so->m_callback)
+	
+	// после остановки в thread в playState_remove
+	// xaudio всё вызывает OnBufferEnd
+	// Проблема была такая. При окончании воспроизведения
+	// был вызван OnBufferEnd, потом отсюда OnStop();
+	// Всё окей, как и предпологалось. Но, почему-то 
+	// xaudio опять вызывает OnBufferEnd
+	if (m_so->m_state == m_so->state_playing)
 	{
-		m_so->m_callback->OnStop();
+		m_so->m_state = m_so->state_notplaying;
+		if (m_so->m_callback)
+		{
+			m_so->m_callback->OnStop();
+		}
 	}
 }
 
@@ -242,13 +251,12 @@ void bqSoundObjectXAudio::Start()
 
 void bqSoundObjectXAudio::Stop()
 {
-	if (m_state == state_playing)
+	switch (m_state)
 	{
+	case state_playing:
 		StopSource();
-		/*m_SourceVoice->Stop();
-		m_SourceVoice->FlushSourceBuffers();
-		*/
 		m_state = state_notplaying;
+		break;
 	}
 }
 
@@ -269,6 +277,8 @@ void bqSoundObjectXAudio::DisableLoop()
 
 void bqSoundObjectXAudio::SetSource(void* data, uint32_t dataSize)
 {
+//	printf("%s\n", __FUNCTION__);
+
 	XAUDIO2_BUFFER buffer = { 0 };
 	buffer.pAudioData = (uint8_t*)data;
 	buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer

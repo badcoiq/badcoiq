@@ -540,3 +540,12 @@ bqSoundObject::~bqSoundObject()
 	if (m_sourceData[1].m_data) bqMemory::free(m_sourceData[1].m_data);
 }
 
+void bqSoundObject::SetVolume(float v)
+{
+	if (v < 0.f)
+		v = 0.f;
+	if (v > 1.f)
+		v = 1.f;
+
+	m_volume = v;
+}

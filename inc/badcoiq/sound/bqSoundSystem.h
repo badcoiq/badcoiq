@@ -41,11 +41,16 @@ class bqSoundObject
 {
 	friend void bqSoundSystem_thread(bqSoundSystem* ss);
 	bool m_inThread = false; // смотри комментарий в bqSoundSystem_thread где std::map
+	
+	float m_volume = 0.8f;
 
 public:
 	bqSoundObject();
 	~bqSoundObject();
 	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
+
+	// значение от 0 до 1
+	void SetVolume(float);
 
 	bqSoundSourceData m_sourceData[2];
 
@@ -60,6 +65,7 @@ public:
 	// Если указано более 0, то будет проигрываться на 1 больше.
 	// Например если m_loopCount = 3; то проиграется 4 раза.
 	uint32_t m_loopCount = 0;
+
 };
 
 class bqSoundSystem

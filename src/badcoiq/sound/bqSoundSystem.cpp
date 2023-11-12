@@ -97,6 +97,9 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 					case bq::SoundInputThreadData::bufferState_ready:
 					{
 					}break;
+					case bq::SoundInputThreadData::bufferState_skip:
+					{
+					}break;
 				}
 
 				switch (td->m_playState)
@@ -132,6 +135,9 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 				}break;
 				case bq::SoundInputThreadData::playState_remove:
 				{
+		//			printf("playState_remove\n");
+					so->m_engineObject->m_state = bqSoundEngineObject::state_playing;
+					so->m_engineObject->Stop();
 					soundNode->m_data.m_soundObject->m_inThread = false;
 					g_framework->m_threadSoundList->erase_by_node(soundNode);
 				}break;
@@ -415,13 +421,16 @@ namespace bq
 		if (data->m_soundObject->m_loopCount)
 		{
 			data->m_playState = data->playState_stop;
+			data->m_soundObject->m_engineObject->m_state = bqSoundEngineObject::state_playing;
 
 			if (data->m_soundObject->m_loopCount != 0xFFFFFFFF)
 				--data->m_soundObject->m_loopCount;
 		}
 		else
 		{
+			printf("REMOVE\n");
 			data->m_playState = data->playState_remove;
+			data->m_bufferState = data->bufferState_skip;
 		}
 	}
 }
