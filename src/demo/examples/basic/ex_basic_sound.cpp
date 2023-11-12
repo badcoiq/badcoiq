@@ -95,12 +95,21 @@ bool ExampleBasicsSound::Init()
 	if(!se->IsReady())
 		se->Init();
 	
+	// Звуковые объекты созданные напрямую звуковым движком
+	// играются напрямую этим движком
 	m_soundObjectE = se->SummonSoundObject(m_sound1);
 	m_soundObjectEloop = se->SummonSoundObject(m_sound1);
 	m_soundObjectEloop->EnableLoop();
 
+	// Эти объекты играются через отдельный поток.
+	// Пока реализован стриминг из уже загруженного файла.
+	// Вся эта система создана для ручной реализации эффектов,
+	// типа 3D звука, реверберации и т.д.
+	// Эти эффекты реализованы в XAudio2, но я хочу независимую
+	// систему. Чтобы эти эффекты работали с другими звуковыми API.
+	// Для этого нужно всё делать самому.
 	m_soundObjectStream = bqFramework::GetSoundSystem()->SummonSoundObject(se, m_sound1);
-	
+	m_soundObjectStream->m_loopCount = 3;
 
 	m_gs->DisableBackFaceCulling();
 	return true;
@@ -144,9 +153,9 @@ void ExampleBasicsSound::OnDraw()
 	{
 		bqFramework::GetSoundSystem()->Play(m_soundObjectStream);
 	}
-	if (bqInput::IsKeyHold(bqInput::KEY_X))
+	if (bqInput::IsKeyHit(bqInput::KEY_X))
 	{
-		bqFramework::GetSoundSystem()->Play(m_soundObjectStream);
+		bqFramework::GetSoundSystem()->Stop(m_soundObjectStream);
 	}
 
 	m_gs->BeginGUI();

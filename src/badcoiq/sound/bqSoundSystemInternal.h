@@ -54,6 +54,7 @@ namespace bq
 		{
 			command_null = 0,
 			command_play,
+			command_stop,
 			command_stopAll,
 		};
 		uint32_t m_command = 0;
@@ -62,6 +63,7 @@ namespace bq
 		{
 			playState_stop,
 			playState_play,
+			playState_remove,
 		};
 		uint32_t m_playState = playState_stop; // воспроизведение начинается с подготовки буфера
 

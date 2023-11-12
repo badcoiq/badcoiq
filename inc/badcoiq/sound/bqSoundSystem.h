@@ -39,6 +39,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqSoundEngineObject;
 class bqSoundObject
 {
+	friend void bqSoundSystem_thread(bqSoundSystem* ss);
+	bool m_inThread = false; // смотри комментарий в bqSoundSystem_thread где std::map
+
 public:
 	bqSoundObject();
 	~bqSoundObject();
@@ -49,6 +52,14 @@ public:
 	bqSoundEngineObject* m_engineObject = 0;
 	bqSoundEngine* m_engine = 0;
 	bqSoundObjectCallback* m_userCallback = 0;
+
+	// 0 - нет повтора
+	// -1 или 0xFFFFFFFF - бесконечный повтор
+	// иное значение есть количество повторов.
+	// Когда есть повторы но не бесконечные то значение уменьшается до 0.
+	// Если указано более 0, то будет проигрываться на 1 больше.
+	// Например если m_loopCount = 3; то проиграется 4 раза.
+	uint32_t m_loopCount = 0;
 };
 
 class bqSoundSystem
@@ -68,6 +79,7 @@ public:
 	bqSoundObject* SummonSoundObject(bqSoundEngine*, bqSound*);
 
 	void Play(bqSoundObject*);
+	void Stop(bqSoundObject*);
 
 	void StopAll();
 

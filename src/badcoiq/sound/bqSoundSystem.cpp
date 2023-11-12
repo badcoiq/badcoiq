@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bqSoundSystemInternal.h"
 
+#include <map>
+
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
@@ -47,6 +49,11 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 {
 	bqLog::PrintInfo("Init sound thread\n");
 
+	// нелтзя допустить повторного добавления bqSoundObject
+	//std::map<std::string, bqSoundObject*> map;
+	// возможно достаточно добавить внутрь bqSoundObject индекс, или просто bool
+	// который покажет что bqSoundObject находится в обработке.
+
 	// добавить engines
 	ss->m_engines.push_back(bqSoundEngine_createXAudio());
 
@@ -58,8 +65,10 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 		if (g_framework->m_threadSoundList->m_size)
 		{
 			auto soundNode = g_framework->m_threadSoundList->m_head;
-			for (size_t i = 0; i < g_framework->m_threadSoundList->m_size; ++i)
+			for (size_t i = 0, sz = g_framework->m_threadSoundList->m_size; i < sz; ++i)
 			{
+				auto nextNode = soundNode->m_right;
+
 				bq::SoundInputThreadData* td = &soundNode->m_data;
 				bqSoundObject* so = td->m_soundObject;
 				bqSoundSourceData* dataSource = &so->m_sourceData[td->m_currentBuffer];
@@ -83,23 +92,11 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 						}
 
 						td->m_bufferState = bq::SoundInputThreadData::bufferState_ready;
+			//			printf("bufferState_ready\n");
 					}break;
 					case bq::SoundInputThreadData::bufferState_ready:
 					{
-						//so->m_engineObject->SetSource(dataSource->m_data, dataSource->m_dataSize);
-						////so->m_engineObject->PlaySource();
-						//td->m_state = bq::SoundInputThreadData::state_bufferPlay;
 					}break;
-					//case bq::SoundInputThreadData::state_bufferStop:
-					//{
-					//	//printf("play again\n");
-					//	//so->m_engineObject->SetSource(so->m_engineObject->m_sourceData->m_data,
-					//	//	so->m_engineObject->m_sourceData->m_dataSize);
-
-					//	////so->m_engineObject->PlaySource();
-
-					//	//td->m_state = bq::SoundInputThreadData::state_bufferPlay;
-					//}break;
 				}
 
 				switch (td->m_playState)
@@ -108,6 +105,7 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 				{
 					if (td->m_bufferState == bq::SoundInputThreadData::bufferState_ready)
 					{
+				//		printf("PLAY\n");
 						so->m_engineObject->SetSource(dataSource->m_data, dataSource->m_dataSize);
 						so->m_engineObject->m_state = bqSoundEngineObject::state_playing;
 						td->m_playState = bq::SoundInputThreadData::playState_play;
@@ -120,16 +118,20 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 				case bq::SoundInputThreadData::playState_play:
 				{
 				}break;
+				case bq::SoundInputThreadData::playState_remove:
+				{
+					soundNode->m_data.m_soundObject->m_inThread = false;
+					g_framework->m_threadSoundList->erase_by_node(soundNode);
+				}break;
 				}
 				
-				soundNode = soundNode->m_right;
+				soundNode = nextNode;
 			}
 		}
 
 
 		if (g_framework->m_threadSoundInputQueue->Size())
 		{
-			//printf("GET\n");
 			bq::SoundInputThreadData d;
 			g_framework->_threadSoundInputQueue(false, &d);
 
@@ -139,10 +141,42 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 			{
 				if (g_framework->m_threadSoundList->size() < g_framework->m_threadSoundSoundLimit)
 				{
-					auto _n = g_framework->m_threadSoundList->push_back(d);
-					d.m_soundObject->m_engineObject->m_callback = &_n->m_data.m_internalCallback;
-					d.m_soundObject->m_engineObject->m_callback->m_context = &_n->m_data;
-					ss->m_isActive = true;
+					if (!d.m_soundObject->m_inThread)
+					{
+						auto _n = g_framework->m_threadSoundList->push_back(d);
+						d.m_soundObject->m_engineObject->m_callback = &_n->m_data.m_internalCallback;
+						d.m_soundObject->m_engineObject->m_callback->m_context = &_n->m_data;
+						d.m_soundObject->m_engineObject->Start();
+						ss->m_isActive = true;
+						d.m_soundObject->m_inThread = true;
+					}
+				}
+			}break;
+			case bq::SoundInputThreadData::command_stop:
+			{
+				if (g_framework->m_threadSoundList->size() < g_framework->m_threadSoundSoundLimit)
+				{
+					if (d.m_soundObject->m_inThread)
+					{
+						auto currNode = g_framework->m_threadSoundList->m_head;
+						for (size_t i = 0; i < g_framework->m_threadSoundList->m_size; ++i)
+						{
+							auto nextNode = currNode->m_right;
+
+							if (currNode->m_data.m_soundObject == d.m_soundObject)
+							{
+								currNode->m_data.m_soundObject->m_inThread = false;
+								currNode->m_data.m_soundObject->m_engineObject->Stop();
+								g_framework->m_threadSoundList->erase_by_node(currNode);
+								break;
+							}
+
+							currNode = nextNode;
+						}
+
+						if(!g_framework->m_threadSoundList->m_size)
+							ss->m_isActive = false;
+					}
 				}
 			}break;
 			case bq::SoundInputThreadData::command_stopAll:
@@ -152,7 +186,7 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 				{
 					bq::SoundInputThreadData* td = &soundNode->m_data;
 					bqSoundObject* so = td->m_soundObject;
-
+					so->m_inThread = false;
 					so->m_engineObject->Stop();
 					soundNode = soundNode->m_right;
 				}
@@ -257,6 +291,15 @@ void bqSoundSystem::Play(bqSoundObject* so)
 	g_framework->_threadSoundInputQueue(true, &d);
 }
 
+void bqSoundSystem::Stop(bqSoundObject* so)
+{
+	BQ_ASSERT_ST(so);
+	bq::SoundInputThreadData d;
+	d.m_soundObject = so;
+	d.m_command = d.command_stop;
+	g_framework->_threadSoundInputQueue(true, &d);
+}
+
 void bqFrameworkImpl::_threadSoundInputQueue(bool set, bq::SoundInputThreadData* d)
 {
 	std::lock_guard<std::mutex> guard(m_threadSoundInputQueueMutex);
@@ -301,6 +344,16 @@ namespace bq
 		if (data->m_soundObject->m_userCallback)
 			data->m_soundObject->m_userCallback->OnStop();
 
-		data->m_playState = data->playState_stop;
+		if (data->m_soundObject->m_loopCount)
+		{
+			data->m_playState = data->playState_stop;
+
+			if (data->m_soundObject->m_loopCount != 0xFFFFFFFF)
+				--data->m_soundObject->m_loopCount;
+		}
+		else
+		{
+			data->m_playState = data->playState_remove;
+		}
 	}
 }
