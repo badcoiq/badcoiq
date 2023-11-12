@@ -80,6 +80,7 @@ public:
 
 	void Play(bqSoundObject*);
 	void Stop(bqSoundObject*);
+	void Pause(bqSoundObject*);
 
 	void StopAll();
 

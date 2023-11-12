@@ -288,7 +288,12 @@ void bqSoundObjectXAudio::PlaySource()
 
 void bqSoundObjectXAudio::StopSource()
 {
-	printf("STOPPED\n");
+	//printf("STOPPED\n");
 	m_SourceVoice->Stop();
 	m_SourceVoice->FlushSourceBuffers();
+}
+
+void bqSoundObjectXAudio::Pause()
+{
+	m_SourceVoice->Stop();
 }

@@ -157,6 +157,10 @@ void ExampleBasicsSound::OnDraw()
 	{
 		bqFramework::GetSoundSystem()->Stop(m_soundObjectStream);
 	}
+	if (bqInput::IsKeyHit(bqInput::KEY_C))
+	{
+		bqFramework::GetSoundSystem()->Pause(m_soundObjectStream);
+	}
 
 	m_gs->BeginGUI();
 	m_gs->EndGUI();

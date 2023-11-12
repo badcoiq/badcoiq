@@ -118,6 +118,18 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 				case bq::SoundInputThreadData::playState_play:
 				{
 				}break;
+				case bq::SoundInputThreadData::playState_pause:
+				{
+				//	printf("PAUSE\n");
+				}break;
+				case bq::SoundInputThreadData::playState_unpause:
+				{
+			//		printf("UNPAUSE\n");
+					so->m_engineObject->SetSource(dataSource->m_data, dataSource->m_dataSize);
+					so->m_engineObject->PlaySource();
+					so->m_engineObject->m_state = bqSoundEngineObject::state_playing;
+					td->m_playState = bq::SoundInputThreadData::playState_play;
+				}break;
 				case bq::SoundInputThreadData::playState_remove:
 				{
 					soundNode->m_data.m_soundObject->m_inThread = false;
@@ -150,6 +162,29 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 						ss->m_isActive = true;
 						d.m_soundObject->m_inThread = true;
 					}
+					else
+					{
+						// нужно быстро найти ноду
+						// наверно таки надо добавить map
+						auto currNode = g_framework->m_threadSoundList->m_head;
+						for (size_t i = 0; i < g_framework->m_threadSoundList->m_size; ++i)
+						{
+							auto nextNode = currNode->m_right;
+							if (currNode->m_data.m_soundObject == d.m_soundObject)
+							{
+								// если например на паузе
+								if (currNode->m_data.m_playState == currNode->m_data.playState_pause)
+								{
+					//				printf("try unpause\n");
+									currNode->m_data.m_playState = currNode->m_data.playState_unpause;
+									break;
+								}
+							}
+							currNode = nextNode;
+						}
+
+						
+					}
 				}
 			}break;
 			case bq::SoundInputThreadData::command_stop:
@@ -176,6 +211,30 @@ void bqSoundSystem_thread(bqSoundSystem* ss)
 
 						if(!g_framework->m_threadSoundList->m_size)
 							ss->m_isActive = false;
+					}
+				}
+			}break;
+			case bq::SoundInputThreadData::command_pause:
+			{
+				if (g_framework->m_threadSoundList->size() < g_framework->m_threadSoundSoundLimit)
+				{
+					if (d.m_soundObject->m_inThread)
+					{
+						auto currNode = g_framework->m_threadSoundList->m_head;
+						for (size_t i = 0; i < g_framework->m_threadSoundList->m_size; ++i)
+						{
+							auto nextNode = currNode->m_right;
+
+							if (currNode->m_data.m_soundObject == d.m_soundObject)
+							{
+								currNode->m_data.m_playState = currNode->m_data.playState_pause;
+								currNode->m_data.m_soundObject->m_engineObject->m_state = bqSoundEngineObject::state_notplaying;
+								currNode->m_data.m_soundObject->m_engineObject->Pause();
+								break;
+							}
+
+							currNode = nextNode;
+						}
 					}
 				}
 			}break;
@@ -297,6 +356,15 @@ void bqSoundSystem::Stop(bqSoundObject* so)
 	bq::SoundInputThreadData d;
 	d.m_soundObject = so;
 	d.m_command = d.command_stop;
+	g_framework->_threadSoundInputQueue(true, &d);
+}
+
+void bqSoundSystem::Pause(bqSoundObject* so)
+{
+	BQ_ASSERT_ST(so);
+	bq::SoundInputThreadData d;
+	d.m_soundObject = so;
+	d.m_command = d.command_pause;
 	g_framework->_threadSoundInputQueue(true, &d);
 }
 
