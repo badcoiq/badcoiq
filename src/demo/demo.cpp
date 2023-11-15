@@ -28,39 +28,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "DemoApp.h"
 
-#include "badcoiq/containers/bqThreadFIFO.h"
-#include <deque>
+//#include "badcoiq/containers/bqList.h"
 
 int main()
 {
-	struct SS
-	{
-		int a = 0;
-		bqMat4 m;
-	};
-
-	bqThreadFIFO<SS, std::deque<SS>> fifo;
-
-	SS s;
-	s.a = 1;
-
-	fifo.Push(s);
-
-	s.a = 2;
-	fifo.Push(s);
-
-	s.a = 3;
-	fifo.Push(s);
-
-	auto obj = fifo.Front();
-	fifo.Pop();
-
-	obj = fifo.Front();
-	fifo.Pop();
-
-	obj = fifo.Front();
-	fifo.Pop();
-
 	DemoApp app;
 	if (app.Init())
 	{

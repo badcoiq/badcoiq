@@ -120,7 +120,7 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		g_framework->_initGUITextDrawCallbacks();
 
 //		g_framework->m_threadSoundInputQueue = new bqQueue<bq::SoundInputThreadData>(3);
-		g_framework->m_threadSoundList = new bqList<bqSoundObjectImpl*>;
+		g_framework->m_threadSounds = new bqThreadList<bqSoundObjectImpl*>;
 
 #ifdef BQ_PLATFORM_WINDOWS
 		wchar_t pth[1000];
@@ -180,10 +180,10 @@ void bqFrameworkImpl::OnDestroy()
 		delete g_framework->m_threadSoundInputQueue;
 		g_framework->m_threadSoundInputQueue = 0;
 	}*/
-	if (g_framework->m_threadSoundList)
+	if (g_framework->m_threadSounds)
 	{
-		delete g_framework->m_threadSoundList;
-		g_framework->m_threadSoundList = 0;
+		delete g_framework->m_threadSounds;
+		g_framework->m_threadSounds = 0;
 	}
 
 	for (uint32_t i = 0; i < (uint32_t)bqCursorType::_count; ++i)

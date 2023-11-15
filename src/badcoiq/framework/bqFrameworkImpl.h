@@ -33,10 +33,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/input/bqInput.h"
 #include "badcoiq/containers/bqArray.h"
 #include "badcoiq/containers/bqQueue.h"
+#include "badcoiq/containers/bqThreadFIFO.h"
+#include "badcoiq/containers/bqList.h"
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/system/bqCursor.h"
 #include <vector>
 #include <thread>
+#include <deque>
 
 #include "../sound/bqSoundSystemInternal.h"
 
@@ -118,7 +121,9 @@ public:
 	bool m_threadSoundPlayRun = false;
 	//bqQueue<bq::SoundInputThreadData>* m_threadSoundInputQueue = 0;
 	friend class bqSoundObjectImpl;
-	bqList<bqSoundObjectImpl*>* m_threadSoundList = 0;
+	
+	bqThreadList<bqSoundObjectImpl*>* m_threadSounds = 0;
+
 	//uint32_t m_threadSoundSoundLimit = 100;
 	//void _threadSoundInputQueue(bool set, bq::SoundInputThreadData*);
 };

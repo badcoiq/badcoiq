@@ -45,6 +45,8 @@ class bqSoundObjectImpl : public bqSoundObject
 	bqSoundSource* m_soundSource = 0;
 	bqSoundEngineObject* m_soundEngineObject = 0;
 	bqSoundEngine* m_soundEngine = 0;
+
+	bqListNode<bqSoundObjectImpl*>* m_listNodeInThreadListSounds = 0;
 public:
 	bqSoundObjectImpl(bqSound*);
 	virtual ~bqSoundObjectImpl();

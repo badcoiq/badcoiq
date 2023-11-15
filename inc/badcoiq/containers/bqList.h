@@ -433,6 +433,121 @@ public:
 	size_t size() const { return m_size; }
 };
 
+#include <mutex>
+template<typename _type>
+class bqThreadList
+{
+	bqList<_type> m_container;
+	std::mutex m_mutex;
+public:
+	bqThreadList() {}
+	~bqThreadList()
+	{
+		clear();
+		if (m_mutex.try_lock())
+			m_mutex.unlock();
+	}
+
+	bqListNode<_type>* find(const _type& data) 
+	{
+		m_mutex.lock();
+		bqListNode<_type>* r = m_container.find(data);
+		m_mutex.unlock();
+		return r;
+	}
+
+	void clear()
+	{
+		m_mutex.lock();
+		m_container.clear();
+		m_mutex.unlock();
+	}
+
+	bqListNode<_type>* insert_after(const _type& after_this, const _type& data)
+	{
+		m_mutex.lock();
+		bqListNode<_type>* r = m_container.insert_after(after_this, data);
+		m_mutex.unlock();
+		return r;
+	}
+
+	bqListNode<_type>* insert_before(const _type& before_this, const _type& data)
+	{
+		m_mutex.lock();
+		bqListNode<_type>* r = m_container.insert_before(before_this, data);
+		m_mutex.unlock();
+		return r;
+	}
+
+	bqListNode<_type>* push_back(const _type& data)
+	{
+		m_mutex.lock();
+		bqListNode<_type>* r = m_container.push_back(data);
+		m_mutex.unlock();
+		return r;
+	}
+
+	bqListNode<_type>* push_front(const _type& data)
+	{
+		m_mutex.lock();
+		bqListNode<_type>* r = m_container.push_front(data);
+		m_mutex.unlock();
+		return r;
+	}
+
+	void pop_front()
+	{
+		m_mutex.lock();
+		m_container.pop_front();
+		m_mutex.unlock();
+	}
+
+	void pop_back()
+	{
+		m_mutex.lock();
+		m_container.pop_back();
+		m_mutex.unlock();
+	}
+
+	bool erase_first(const _type& object)
+	{
+		m_mutex.lock();
+		bool r = m_container.erase_first(object);
+		m_mutex.unlock();
+		return r;
+	}
+
+	void replace(const _type& oldObject, const _type& newObject)
+	{
+		m_mutex.lock();
+		m_container.replace(oldObject, newObject);
+		m_mutex.unlock();
+	}
+
+	void replace()
+	{
+		m_mutex.lock();
+		m_container.reverse();
+		m_mutex.unlock();
+	}
+
+	void erase_by_node(bqListNode<_type>* object)
+	{
+		m_mutex.lock();
+		m_container.erase_by_node(object);
+		m_mutex.unlock();
+	}
+
+	_type& front()
+	{
+		m_mutex.lock();
+		_type& r = m_container.front();
+		m_mutex.unlock();
+		return r;
+	}
+
+	size_t size() const { return m_container.m_size; }
+};
 
 #endif
 

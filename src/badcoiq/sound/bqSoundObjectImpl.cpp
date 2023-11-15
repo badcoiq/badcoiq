@@ -42,7 +42,7 @@ bqSoundObjectImpl::bqSoundObjectImpl(bqSound* s)
 	m_sound = s;
 	m_soundSource = s->m_soundSource;
 
-	g_framework->m_threadSoundList->push_back(this);
+	m_listNodeInThreadListSounds = g_framework->m_threadSounds->push_back(this);
 }
 
 bqSoundObjectImpl::~bqSoundObjectImpl()
@@ -52,8 +52,8 @@ bqSoundObjectImpl::~bqSoundObjectImpl()
 		m_threadObject.m_delete = m_threadObject.Delete_request;
 		while (m_threadObject.m_delete == m_threadObject.Delete_request)
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
+		g_framework->m_threadSounds->erase_by_node(m_listNodeInThreadListSounds);
 	}
 
 }
