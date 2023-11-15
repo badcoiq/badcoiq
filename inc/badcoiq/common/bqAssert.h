@@ -59,7 +59,7 @@ namespace bq
 #else
 #define BQ_ASSERT(expression) ((void)0)
 #define BQ_ASSERT_ST(expression) ((void)0)
-#define BQ_ASSERT_STC(expression) ((void)0)
+#define BQ_ASSERT_STC(expression,x) ((void)0)
 #endif
 
 

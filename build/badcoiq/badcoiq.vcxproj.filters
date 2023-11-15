@@ -162,5 +162,8 @@
     <ClCompile Include="..\..\src\badcoiq\geometry\bqSkeleton.cpp">
       <Filter>Source Files\geometry</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundObjectImpl.cpp">
+      <Filter>Source Files\sound</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

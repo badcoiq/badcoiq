@@ -251,24 +251,27 @@ public:
 	// Удалить начало.
 	void pop_front()
 	{
-		if (!m_head)
-			return;
-		
-		--m_size;
-
-		auto next = m_head->m_right;
-		auto last = m_head->m_left;
-		m_head->~bqListNode();
-		bqMemory::free(m_head);
-
-		if (next == m_head)
+		if (m_head)
 		{
-			m_head = nullptr;
-			return;
+
+			--m_size;
+
+			auto next = m_head->m_right;
+			auto last = m_head->m_left;
+			m_head->~bqListNode();
+			bqMemory::free(m_head);
+
+			if (next == m_head)
+			{
+				m_head = nullptr;
+			}
+			else
+			{
+				m_head = next;
+				next->m_left = last;
+				last->m_right = next;
+			}
 		}
-		m_head = next;
-		next->m_left = last;
-		last->m_right = next;
 	}
 
 	// Удалить конец
@@ -391,6 +394,11 @@ public:
 
 		object->~bqListNode();
 		bqMemory::free(object);
+	}
+
+	_type& front()
+	{
+		return m_head->m_data;
 	}
 
 	class Iterator{

@@ -55,6 +55,8 @@ static uint8_t g_defaultIconsPNG[] = {
 	#include "../_data/defaultIcons.inl"
 };
 
+class bqSoundObjectImpl;
+
 //
 //  Lowercases string
 //
@@ -117,8 +119,8 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		g_framework->_initGUIThemes();
 		g_framework->_initGUITextDrawCallbacks();
 
-		g_framework->m_threadSoundInputQueue = new bqQueue<bq::SoundInputThreadData>(3);
-		g_framework->m_threadSoundList = new bqList<bq::SoundInputThreadData>;
+//		g_framework->m_threadSoundInputQueue = new bqQueue<bq::SoundInputThreadData>(3);
+		g_framework->m_threadSoundList = new bqList<bqSoundObjectImpl*>;
 
 #ifdef BQ_PLATFORM_WINDOWS
 		wchar_t pth[1000];
@@ -173,11 +175,11 @@ void bqFrameworkImpl::OnDestroy()
 	// это нужно удалять после m_soundSystem
 	// так как bqSoundSystem имеет m_threadSound
 	// его сперва нужно завершить потом удалять очередь (и список)
-	if (g_framework->m_threadSoundInputQueue)
+	/*if (g_framework->m_threadSoundInputQueue)
 	{
 		delete g_framework->m_threadSoundInputQueue;
 		g_framework->m_threadSoundInputQueue = 0;
-	}
+	}*/
 	if (g_framework->m_threadSoundList)
 	{
 		delete g_framework->m_threadSoundList;

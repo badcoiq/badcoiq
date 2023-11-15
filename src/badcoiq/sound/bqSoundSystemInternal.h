@@ -66,6 +66,7 @@ namespace bq
 			playState_play,
 			playState_pause,
 			playState_unpause,
+		//	playState_res,
 			playState_remove,
 		};
 		uint32_t m_playState = playState_stop; // воспроизведение начинается с подготовки буфера
@@ -75,11 +76,25 @@ namespace bq
 			bufferState_prepare,
 			bufferState_ready,
 			bufferState_skip,
+			//bufferState_last,
 		};
 		uint32_t m_bufferState = bufferState_prepare;
 
 		uint32_t m_currentBuffer = 0;
 		SoundObjectCallback m_internalCallback;
+
+		// Копирование буфера начинается с места куда указывает m_sourceOffset.
+		uint32_t m_sourceOffset = 0;
+		// размер того буфера который идёт на воспроизведение
+		uint32_t m_bufferSize = 0;
+		uint32_t m_bufferSizeAdd = 0;
+
+		// если воспроизводится последний буфер то должно быть true
+		// или если достаточно только 1го буфера
+		bool m_lastBuffer = false;
+
+
+		void Effects();
 	};
 }
 

@@ -118,7 +118,7 @@ bqSoundEngineObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
 	wfx.nSamplesPerSec = s->m_soundSource->m_sourceInfo.m_sampleRate;
 	wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * 2;
 	wfx.nBlockAlign = 2;
-	wfx.wBitsPerSample = s->m_soundSource->m_sourceInfo.m_bits;
+	wfx.wBitsPerSample = s->m_soundSource->m_sourceInfo.m_bitsPerSample;
 
 	IXAudio2SourceVoice* SourceVoice = 0;
 	bqIXAudio2VoiceCallback* callback = new bqIXAudio2VoiceCallback;

@@ -89,7 +89,7 @@ bool ExampleBasicsSound::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_sound1 = new bqSound();
-	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/signalgear1.wav");
+	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1.wav");
 
 	auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
 	if(!se->IsReady())
@@ -109,7 +109,8 @@ bool ExampleBasicsSound::Init()
 	// систему. Чтобы эти эффекты работали с другими звуковыми API.
 	// Для этого нужно всё делать самому.
 	m_soundObjectStream = bqFramework::GetSoundSystem()->SummonSoundObject(se, m_sound1);
-	m_soundObjectStream->m_loopCount = 3;
+	m_soundObjectStream->SetLoop(3);
+	m_soundObjectStream->SetVolume(0.19);
 
 	m_gs->DisableBackFaceCulling();
 	return true;
@@ -117,8 +118,6 @@ bool ExampleBasicsSound::Init()
 
 void ExampleBasicsSound::Shutdown()
 {
-	bqFramework::GetSoundSystem()->StopAll();
-
 	BQ_SAFEDESTROY(m_soundObjectStream);
 	BQ_SAFEDESTROY(m_soundObjectEloop);
 	BQ_SAFEDESTROY(m_soundObjectE);
@@ -151,16 +150,26 @@ void ExampleBasicsSound::OnDraw()
 
 	if (bqInput::IsKeyHit(bqInput::KEY_Z))
 	{
-		bqFramework::GetSoundSystem()->Play(m_soundObjectStream);
+		m_soundObjectStream->Start();
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_X))
 	{
-		bqFramework::GetSoundSystem()->Stop(m_soundObjectStream);
+		m_soundObjectStream->Stop();
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_C))
 	{
-		bqFramework::GetSoundSystem()->Pause(m_soundObjectStream);
+		m_soundObjectStream->Pause();
 	}
+
+	if (bqInput::IsKeyHold(bqInput::KEY_NUM_ADD))
+	{
+		m_soundObjectStream->SetVolume(m_soundObjectStream->GetVolume() + 0.01f);
+	}
+	if (bqInput::IsKeyHold(bqInput::KEY_NUM_SUB))
+	{
+		m_soundObjectStream->SetVolume(m_soundObjectStream->GetVolume() - 0.01f);
+	}
+
 
 	m_gs->BeginGUI();
 	m_gs->EndGUI();

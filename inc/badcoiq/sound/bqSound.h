@@ -54,14 +54,13 @@ struct bqSoundSourceInfo
 {
 	uint32_t m_sampleRate = 44100;
 	uint32_t m_channels = 1;
-	uint32_t m_bits = 16;
+	uint32_t m_bitsPerSample = 16;
 
 	// for info
 	// далее данные чисто для информации
 	// всё должно устанавливаться методами типа при генерировании
 	float m_time = 0.f;
 	uint32_t m_numOfSamples = 0; // m_sampleRate * m_time;
-	uint32_t m_bitsPerSample = 16;
 	uint32_t m_bytesPerSample = 0; // m_bitsPerSample / 8;
 	// nBlockAlign
 	uint32_t m_blockSize = 0;// m_bytesPerSample * m_channels;
@@ -79,6 +78,16 @@ public:
 
 	bqSoundSourceData m_sourceData;
 	bqSoundSourceInfo m_sourceInfo;
+	
+	// Всё не поддерживаемое должно конвертироваться в поддерживаемое
+	enum class Type
+	{
+		uint8_mono,
+		uint8_stereo,
+		uint16_mono_44100,   // поддерживаемое
+		uint16_stereo_44100,   // поддерживаемое
+	};
+	Type m_type = Type::uint16_mono_44100;
 };
 
 // звук загружается сюда
@@ -114,18 +123,12 @@ public:
 
 	void Clear();
 
-	// Всё не поддерживаемое должно конвертироваться в поддерживаемое
-	enum class Type
-	{
-		uint8_mono,
-		uint8_stereo,
-		uint16_mono_44100,   // поддерживаемое
-		uint16_stereo_44100,   // поддерживаемое
-	};
-	void Convert(Type);
+	void Convert(bqSoundSource::Type);
 
 	// Вычислить время по битрейту и прочим параметрам
 	float CalculateTime();
+
+//	bqSoundSource* DropSource();
 
 	bqSoundSource* m_soundSource = 0;
 };

@@ -417,7 +417,7 @@ bool bqSound::_loadWav(const char* fn)
 	return false;
 }
 
-void bqSound::Convert(Type type)
+void bqSound::Convert(bqSoundSource::Type type)
 {
 }
 
@@ -524,28 +524,9 @@ void bqSound::_reallocate(uint32_t newSz)
 	m_soundSource->m_sourceData.m_dataSize = newSz;
 }
 
-bqSoundObject::bqSoundObject()
-{
-	m_sourceData[0].m_dataSize = 0xffff + 1;
-	m_sourceData[1].m_dataSize = 0xffff + 1;
-	m_sourceData[0].m_dataSize = 73950;
-	m_sourceData[1].m_dataSize = 73950;
-	m_sourceData[0].m_data = (uint8_t*)bqMemory::calloc(m_sourceData[0].m_dataSize);
-	m_sourceData[1].m_data = (uint8_t*)bqMemory::calloc(m_sourceData[0].m_dataSize);
-}
-
-bqSoundObject::~bqSoundObject()
-{
-	if (m_sourceData[0].m_data) bqMemory::free(m_sourceData[0].m_data);
-	if (m_sourceData[1].m_data) bqMemory::free(m_sourceData[1].m_data);
-}
-
-void bqSoundObject::SetVolume(float v)
-{
-	if (v < 0.f)
-		v = 0.f;
-	if (v > 1.f)
-		v = 1.f;
-
-	m_volume = v;
-}
+//bqSoundSource* bqSound::DropSource()
+//{
+//	bqSoundSource* tmp = m_soundSource;
+//	m_soundSource = 0;
+//	return tmp;
+//}

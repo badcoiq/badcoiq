@@ -26,46 +26,84 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "DemoApp.h"
+#include "badcoiq.h"
 
-#include "badcoiq/containers/bqThreadFIFO.h"
-#include <deque>
+#include "badcoiq/sound/bqSoundSystem.h"
+#include "bqSoundObjectImpl.h"
 
-int main()
+//#include "bqSoundSystemInternal.h"
+#include <thread>
+
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
+
+bqSoundObjectImpl::bqSoundObjectImpl(bqSound* s)
 {
-	struct SS
+	m_sound = s;
+	m_soundSource = s->m_soundSource;
+
+	g_framework->m_threadSoundList->push_back(this);
+}
+
+bqSoundObjectImpl::~bqSoundObjectImpl()
+{
+	if (m_threadObject.m_threadReady)
 	{
-		int a = 0;
-		bqMat4 m;
-	};
-
-	bqThreadFIFO<SS, std::deque<SS>> fifo;
-
-	SS s;
-	s.a = 1;
-
-	fifo.Push(s);
-
-	s.a = 2;
-	fifo.Push(s);
-
-	s.a = 3;
-	fifo.Push(s);
-
-	auto obj = fifo.Front();
-	fifo.Pop();
-
-	obj = fifo.Front();
-	fifo.Pop();
-
-	obj = fifo.Front();
-	fifo.Pop();
-
-	DemoApp app;
-	if (app.Init())
-	{
-		app.Run();
+		m_threadObject.m_delete = m_threadObject.Delete_request;
+		while (m_threadObject.m_delete == m_threadObject.Delete_request)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
 	}
 
-	return EXIT_SUCCESS;
+}
+
+void bqSoundObjectImpl::SetVolume(float v)
+{
+	if (v < 0.f)
+		v = 0.f;
+	if (v > 1.f)
+		v = 1.f;
+
+	m_volume = v;
+}
+
+float bqSoundObjectImpl::GetVolume()
+{
+	return m_volume;
+}
+
+void bqSoundObjectImpl::SetLoop(uint32_t v)
+{
+	m_loop = v;
+}
+
+uint32_t bqSoundObjectImpl::GetLoop()
+{
+	return m_loop;
+}
+
+void bqSoundObjectImpl::SetCallback(bqSoundObjectCallback* v)
+{
+	m_callback = v;
+}
+
+void bqSoundObjectImpl::Start()
+{
+	m_state = State::Start;
+}
+
+void bqSoundObjectImpl::Stop()
+{
+	m_state = State::Stop;
+}
+
+void bqSoundObjectImpl::Pause()
+{
+	m_state = State::Pause;
+}
+
+bqSound* bqSoundObjectImpl::GetSound()
+{
+	return m_sound;
 }

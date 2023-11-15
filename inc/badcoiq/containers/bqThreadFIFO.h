@@ -26,46 +26,49 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "DemoApp.h"
+#pragma once
+#ifndef __bqThreadFIFO_H__
+#define __bqThreadFIFO_H__
 
-#include "badcoiq/containers/bqThreadFIFO.h"
-#include <deque>
+#include "badcoiq/containers/bqList.h"
 
-int main()
+#include <mutex>
+template<typename Type, typename ContainerType = bqList<Type>>
+class bqThreadFIFO
 {
-	struct SS
+	ContainerType m_container;
+	std::mutex m_mutex;
+public:
+	bqThreadFIFO() {}
+	~bqThreadFIFO()
 	{
-		int a = 0;
-		bqMat4 m;
-	};
-
-	bqThreadFIFO<SS, std::deque<SS>> fifo;
-
-	SS s;
-	s.a = 1;
-
-	fifo.Push(s);
-
-	s.a = 2;
-	fifo.Push(s);
-
-	s.a = 3;
-	fifo.Push(s);
-
-	auto obj = fifo.Front();
-	fifo.Pop();
-
-	obj = fifo.Front();
-	fifo.Pop();
-
-	obj = fifo.Front();
-	fifo.Pop();
-
-	DemoApp app;
-	if (app.Init())
-	{
-		app.Run();
+		if (m_mutex.try_lock())
+			m_mutex.unlock();
 	}
 
-	return EXIT_SUCCESS;
-}
+	void Push(const Type& v)
+	{
+		m_mutex.lock();
+		m_container.push_back(v);
+		m_mutex.unlock();
+	}
+
+	void Pop()
+	{
+		m_mutex.lock();
+		m_container.pop_front();
+		m_mutex.unlock();
+	}
+
+	Type& Front()
+	{
+		m_mutex.lock();
+		Type& r = m_container.front();
+		m_mutex.unlock();
+		return r;
+	}
+};
+
+
+#endif
+
