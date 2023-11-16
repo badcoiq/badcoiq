@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqSoundObjectImpl : public bqSoundObject
 {
 	friend class bqSoundSystem;
+	friend void bqSoundObjectImpl_thread(bqSoundObjectImpl* so);
 
 	float m_volume = 0.7f;
 	uint32_t m_loop = 0;
@@ -46,11 +47,17 @@ class bqSoundObjectImpl : public bqSoundObject
 	bqSoundEngineObject* m_soundEngineObject = 0;
 	bqSoundEngine* m_soundEngine = 0;
 
+	//std::thread* m_thread = 0;
+	//bool m_threadRun = true;
+
 	bqListNode<bqSoundObjectImpl*>* m_listNodeInThreadListSounds = 0;
 public:
 	bqSoundObjectImpl(bqSound*);
 	virtual ~bqSoundObjectImpl();
 	BQ_PLACEMENT_ALLOCATOR(bqSoundObjectImpl);
+
+	//void Init();
+	//void Shutdown();
 
 	virtual void SetVolume(float) override;
 	virtual float GetVolume() override;
@@ -73,23 +80,23 @@ public:
 	// надо обнулить данный указатель в определённый момент,
 	// потом дождаться определённого момента в ните, и продолжить
 	// выполнение программы.
-	struct ThreadObject
-	{
-		bqSoundObjectImpl* m_so = 0;
+	//struct ThreadObject
+	//{
+	//	bqSoundObjectImpl* m_so = 0;
 
 
-		enum
-		{
-			Delete_null,
-			Delete_request,
-			Delete_ok
-		};
-		// вызывается в деструкторе. нужно указать Delete_request и дождаться
-		// когда будет Delete_ok
-		uint8_t m_delete = Delete_null;
-		bool m_threadReady = false;
-	}
-	m_threadObject;
+	//	//enum
+	//	//{
+	//	//	Delete_null,
+	//	//	Delete_request,
+	//	//	Delete_ok
+	//	//};
+	//	//// вызывается в деструкторе. нужно указать Delete_request и дождаться
+	//	//// когда будет Delete_ok
+	//	//uint8_t m_delete = Delete_null;
+	//	//bool m_threadReady = false;
+	//}
+	//m_threadObject;
 };
 
 #endif

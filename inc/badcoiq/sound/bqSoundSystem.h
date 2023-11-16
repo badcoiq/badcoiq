@@ -95,8 +95,7 @@ public:
 
 class bqSoundSystem
 {
-	friend void bqSoundSystem_threadPrepare(bqSoundSystem* ss);
-	friend void bqSoundSystem_threadPlay(bqSoundSystem* ss);
+	friend void bqSoundSystem_thread(bqSoundSystem* ss);
 
 	bqArray<bqSoundEngine*> m_engines;
 	

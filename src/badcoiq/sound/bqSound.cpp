@@ -165,8 +165,193 @@ void bqSound::Create(float time,
 
 	newSound->m_sourceData.m_data = (uint8_t*)bqMemory::malloc(newSound->m_sourceData.m_dataSize);
 
+	newSound->m_type = bqSoundSource::FindType(newSound->m_sourceInfo);
+
 	m_soundSource = newSound;
 }
+
+bqSoundSource::Type bqSoundSource::FindType(const bqSoundSourceInfo& info)
+{
+	bqSoundSource::Type r = bqSoundSource::Type::unsupported;
+
+	if (info.m_channels == 1)
+	{
+		if (info.m_sampleRate == 44100)
+		{
+			if(info.m_bitsPerSample == 8)
+				r = bqSoundSource::Type::uint8_mono_44100;
+			else if (info.m_bitsPerSample == 16)
+				r = bqSoundSource::Type::uint16_mono_44100;
+		}
+	}
+	else if (info.m_channels == 2)
+	{
+		if (info.m_sampleRate == 44100)
+		{
+			if (info.m_bitsPerSample == 8)
+				r = bqSoundSource::Type::uint8_stereo_44100;
+			else if (info.m_bitsPerSample == 16)
+				r = bqSoundSource::Type::uint16_stereo_44100;
+		}
+	}
+	return r;
+}
+
+void bqSoundSource::MakeMono(uint32_t how)
+{
+	auto type = bqSoundSource::FindType(m_sourceInfo);
+
+	switch (type)
+	{
+	case bqSoundSource::Type::uint8_stereo_44100:
+	case bqSoundSource::Type::uint16_stereo_44100:
+	{
+		uint32_t _channels = 1;
+		uint32_t _blockSize = m_sourceInfo.m_bytesPerSample * _channels;
+		uint32_t _dataSize = m_sourceInfo.m_numOfSamples * m_sourceInfo.m_bytesPerSample * _channels;
+		uint8_t* newData = (uint8_t*)bqMemory::calloc(_dataSize);
+		
+		uint8_t* dst = newData;
+		uint8_t* src = m_sourceData.m_data;
+
+		uint8_t* dst8 = dst;
+		uint16_t* dst16 = (uint16_t*)dst;
+		
+		uint8_t* src8 = src;
+		uint16_t* src16 = (uint16_t*)src;
+
+		uint32_t numBlocks = _dataSize / _blockSize;
+		for (uint32_t i = 0; i < numBlocks; ++i)
+		{
+			switch (type)
+			{
+			case bqSoundSource::Type::uint8_stereo_44100:
+			{
+				if (how)
+				{
+					*dst8 = *src8;
+					++dst8;
+					++src8;
+					++src8;
+				}
+				else
+				{
+					++src8;
+					*dst8 = *src8;
+					++dst8;
+					++src8;
+				}
+			}break;
+			case bqSoundSource::Type::uint16_stereo_44100:
+			{
+				if (how)
+				{
+					*dst16 = *src16;
+					++dst16;
+					++src16;
+					++src16;
+				}
+				else
+				{
+					++src16;
+					*dst16 = *src16;
+					++dst16;
+					++src16;
+				}
+			}break;
+			}
+		}
+
+		if (m_sourceData.m_data)
+			bqMemory::free(m_sourceData.m_data);
+
+		m_sourceInfo.m_channels = _channels;
+		m_sourceInfo.m_blockSize = _blockSize;
+		m_sourceData.m_data = newData;
+		m_sourceData.m_dataSize = _dataSize;
+	}break;
+	default:
+		break;
+	}
+	m_type = bqSoundSource::FindType(m_sourceInfo);
+}
+
+void bqSoundSource::MakeStereo()
+{
+	auto type = bqSoundSource::FindType(m_sourceInfo);
+	
+	switch (type)
+	{
+	case bqSoundSource::Type::uint8_mono_44100:
+	case bqSoundSource::Type::uint16_mono_44100:
+	{
+		uint32_t _channels = 2;
+		uint32_t _blockSize = m_sourceInfo.m_bytesPerSample * _channels;
+		uint32_t _dataSize = m_sourceInfo.m_numOfSamples * m_sourceInfo.m_bytesPerSample * _channels;
+		uint8_t* newData = (uint8_t*)bqMemory::calloc(_dataSize);
+
+		uint8_t* dst = newData;
+		uint8_t* src = m_sourceData.m_data;
+
+		uint8_t* dst8 = dst;
+		uint16_t* dst16 = (uint16_t*)dst;
+
+		uint8_t* src8 = src;
+		uint16_t* src16 = (uint16_t*)src;
+
+		uint32_t numBlocks = _dataSize / _blockSize;
+		for (uint32_t i = 0; i < numBlocks; ++i)
+		{
+			switch (type)
+			{
+			case bqSoundSource::Type::uint8_mono_44100:
+			{
+				*dst8 = *src8;
+				++dst8;
+				*dst8 = *src8;
+				++dst8;
+				++src8;
+			}break;
+			case bqSoundSource::Type::uint16_mono_44100:
+			{
+				*dst16 = *src16;
+				++dst16;
+				*dst16 = *src16;
+				++dst16;
+				++src16;
+			}break;
+			}
+		}
+
+		if (m_sourceData.m_data)
+			bqMemory::free(m_sourceData.m_data);
+
+		m_sourceInfo.m_channels = _channels;
+		m_sourceInfo.m_blockSize = _blockSize;
+		m_sourceData.m_data = newData;
+		m_sourceData.m_dataSize = _dataSize;
+	}break;
+	default:
+		break;
+	}
+
+	m_type = bqSoundSource::FindType(m_sourceInfo);
+}
+
+void bqSoundSource::Make8bits()
+{
+	auto type = bqSoundSource::FindType(m_sourceInfo);
+	
+	m_type = bqSoundSource::FindType(m_sourceInfo);
+}
+
+void bqSoundSource::Make16bits()
+{
+	auto type = bqSoundSource::FindType(m_sourceInfo);
+
+	m_type = bqSoundSource::FindType(m_sourceInfo);
+}
+
 
 void bqSound::Generate(
 	bqSoundWaveType waveType,
@@ -323,6 +508,11 @@ void bqSound::Generate(
 */
 }
 
+bool bqSound::SaveToFile(bqSoundFileType ft, const bqStringA& fn)
+{
+	return SaveToFile(ft, fn.c_str());
+}
+
 bool bqSound::SaveToFile(bqSoundFileType ft, const char* fn)
 {
 	BQ_ASSERT_ST(fn);
@@ -385,23 +575,28 @@ bool bqSound::_saveWav(const char* fn)
 	return false;
 }
 
-bool bqSound::LoadFromFile(const bqStringA& fn)
+bool bqSound::LoadFromFile(const bqStringA& fn, bool convertTo16bitStereo)
 {
-	return LoadFromFile(fn.c_str());
+	return LoadFromFile(fn.c_str(), convertTo16bitStereo);
 }
 
-bool bqSound::LoadFromFile(const char* fn)
+bool bqSound::LoadFromFile(const char* fn, bool convertTo16bitStereo)
 {
 	Clear();
 
 	bqString path(fn);
-
+	bool r = false;
 	if (path.extension(".wav"))
 	{
-		return _loadWav(fn);
+		r = _loadWav(fn);
+
+		if (r && convertTo16bitStereo)
+		{
+
+		}
 	}
 
-	return false;
+	return r;
 }
 
 bool bqSound::_loadWav(const char* fn)
@@ -419,6 +614,37 @@ bool bqSound::_loadWav(const char* fn)
 
 void bqSound::Convert(bqSoundSource::Type type)
 {
+	BQ_ASSERT_ST(type != bqSoundSource::Type::unsupported);
+
+	if (m_soundSource && (type != bqSoundSource::Type::unsupported))
+	{
+		if (m_soundSource->m_type != type)
+		{
+			switch (type)
+			{
+				case bqSoundSource::Type::uint8_mono_44100:
+				{
+					m_soundSource->Make8bits();
+					m_soundSource->MakeMono(0);
+				}break;
+				case bqSoundSource::Type::uint8_stereo_44100:
+				{
+					m_soundSource->Make8bits();
+					m_soundSource->MakeStereo();
+				}break;
+				case bqSoundSource::Type::uint16_mono_44100:
+				{
+					m_soundSource->Make16bits();
+					m_soundSource->MakeMono(0);
+				}break;
+				case bqSoundSource::Type::uint16_stereo_44100:
+				{
+					m_soundSource->Make16bits();
+					m_soundSource->MakeStereo();
+				}break;
+			}
+		}
+	}
 }
 
 bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
@@ -504,7 +730,13 @@ float bqSound::CalculateTime()
 		if (m_soundSource->m_sourceInfo.m_sampleRate && m_soundSource->m_sourceData.m_dataSize)
 		{
 			uint32_t numOfBlocks = m_soundSource->m_sourceData.m_dataSize / m_soundSource->m_sourceInfo.m_blockSize;
+			
+			// правильно ли то что количество сэмплов == количеству блоков?
 			m_soundSource->m_sourceInfo.m_numOfSamples = numOfBlocks;
+			
+			// может быть блок может состоять из 2х и более сэмплов?
+			//m_soundSource->m_sourceInfo.m_numOfSamples = numOfBlocks * m_soundSource->m_sourceInfo.m_channels;
+			
 			m_soundSource->m_sourceInfo.m_time = 1.f / m_soundSource->m_sourceInfo.m_sampleRate;
 			m_soundSource->m_sourceInfo.m_time *= m_soundSource->m_sourceInfo.m_numOfSamples;
 		}

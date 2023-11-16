@@ -37,26 +37,58 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
+//void bqSoundObjectImpl_thread(bqSoundObjectImpl* so)
+//{
+//	while (so->m_threadRun)
+//	{
+//		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+//	}
+//}
+
 bqSoundObjectImpl::bqSoundObjectImpl(bqSound* s)
 {
 	m_sound = s;
 	m_soundSource = s->m_soundSource;
 
-	m_listNodeInThreadListSounds = g_framework->m_threadSounds->push_back(this);
+	//m_listNodeInThreadListSounds = g_framework->m_threadSounds->push_back(this);
+//	Init();
 }
 
 bqSoundObjectImpl::~bqSoundObjectImpl()
 {
-	if (m_threadObject.m_threadReady)
-	{
-		m_threadObject.m_delete = m_threadObject.Delete_request;
-		while (m_threadObject.m_delete == m_threadObject.Delete_request)
-		{
-		}
-		g_framework->m_threadSounds->erase_by_node(m_listNodeInThreadListSounds);
-	}
-
+//	Shutdown();
 }
+
+//void bqSoundObjectImpl::Init()
+//{
+//	if (!m_thread)
+//	{
+//		m_threadRun = true;
+//		m_thread = new std::thread(bqSoundObjectImpl_thread, this);
+//	}
+//}
+//
+//void bqSoundObjectImpl::Shutdown()
+//{
+//	if (m_thread)
+//	{
+//		m_threadRun = false;
+//		m_thread->join();
+//		delete m_thread;
+//		m_thread = 0;
+//	}
+//
+//	//if (m_threadObject.m_threadReady)
+//	//{
+//
+//	//	m_threadObject.m_delete = m_threadObject.Delete_request;
+//	//	while (m_threadObject.m_delete == m_threadObject.Delete_request)
+//	//	{
+//	//	}
+//	//	//g_framework->m_threadSounds->erase_by_node(m_listNodeInThreadListSounds);
+//	//}
+//}
+
 
 void bqSoundObjectImpl::SetVolume(float v)
 {

@@ -89,7 +89,11 @@ bool ExampleBasicsSound::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_sound1 = new bqSound();
-	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1.wav");
+	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1.wav", false);
+	//m_sound1->m_soundSource->MakeMono(0);
+	//m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/16bit2ch_MakeMono.wav");
+	m_sound1->m_soundSource->MakeStereo();
+	m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/song1_MakeStereo.wav");
 
 	auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
 	if(!se->IsReady())
@@ -109,8 +113,8 @@ bool ExampleBasicsSound::Init()
 	// систему. Чтобы эти эффекты работали с другими звуковыми API.
 	// Для этого нужно всё делать самому.
 	m_soundObjectStream = bqFramework::GetSoundSystem()->SummonSoundObject(se, m_sound1);
-	m_soundObjectStream->SetLoop(3);
-	m_soundObjectStream->SetVolume(0.19);
+	//m_soundObjectStream->SetLoop(3);
+	//m_soundObjectStream->SetVolume(0.19);
 
 	m_gs->DisableBackFaceCulling();
 	return true;

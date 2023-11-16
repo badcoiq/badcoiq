@@ -82,12 +82,25 @@ public:
 	// Всё не поддерживаемое должно конвертироваться в поддерживаемое
 	enum class Type
 	{
-		uint8_mono,
-		uint8_stereo,
+		uint8_mono_44100,
+		uint8_stereo_44100,
 		uint16_mono_44100,   // поддерживаемое
 		uint16_stereo_44100,   // поддерживаемое
+		unsupported
 	};
 	Type m_type = Type::uint16_mono_44100;
+	
+	// how:
+	//  0 - использовать первый канал
+	//  1 - использовать второй канал
+	void MakeMono(uint32_t how);
+
+	void MakeStereo();
+	void Make8bits();
+	void Make16bits();
+	//void FlipChannels();
+
+	static Type FindType(const bqSoundSourceInfo&);
 };
 
 // звук загружается сюда
@@ -117,9 +130,10 @@ public:
 
 	// расширение надо указывать в fn
 	bool SaveToFile(bqSoundFileType, const char* fn);
+	bool SaveToFile(bqSoundFileType, const bqStringA& fn);
 	
-	bool LoadFromFile(const char* fn);
-	bool LoadFromFile(const bqStringA& fn);
+	bool LoadFromFile(const char* fn, bool convertTo16bitStereo = true);
+	bool LoadFromFile(const bqStringA& fn, bool convertTo16bitStereo = true);
 
 	void Clear();
 
