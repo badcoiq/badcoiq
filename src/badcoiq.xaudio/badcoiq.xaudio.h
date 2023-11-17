@@ -34,6 +34,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/sound/bqSoundSystem.h"
 
 #include <xaudio2.h>
+#include <xaudio2fx.h>
+
+#pragma warning(push)
+#pragma warning(disable : 4619 4616 5246)
+#include <x3daudio.h>
+#pragma warning(pop)
+
+#include <xapofx.h>
+
 #undef PlaySound
 
 class bqSoundObjectXAudio;
@@ -54,7 +63,7 @@ public:
 	bqSoundObjectXAudio* m_so = 0;
 };
 
-class bqSoundObjectXAudio : public bqSoundEngineObject
+class bqSoundObjectXAudio : public bqSoundObject
 {
 public:
 	bqSoundObjectXAudio();
@@ -71,25 +80,64 @@ public:
 	virtual void Stop() override;
 	virtual void Pause() override;
 	virtual void SetVolume(float) override;
-	virtual void EnableLoop() override;
+	virtual void EnableLoop(uint32_t loops) override;
 	virtual void DisableLoop() override;
 
 	virtual void SetSource(void* data, uint32_t dataSize) override;
 	virtual void PlaySource() override;
 	virtual void StopSource() override;
+
+	virtual void Use3D() override;
 };
 
 class bqSoundEngineXAudio : public bqSoundEngine
 {
+	const XAUDIO2FX_REVERB_I3DL2_PARAMETERS m_ReverbPresets[31] =
+	{
+		XAUDIO2FX_I3DL2_PRESET_DEFAULT,             // Reverb_Off
+		XAUDIO2FX_I3DL2_PRESET_DEFAULT,             // Reverb_Default
+		XAUDIO2FX_I3DL2_PRESET_GENERIC,             // Reverb_Generic
+		XAUDIO2FX_I3DL2_PRESET_FOREST,              // Reverb_Forest
+		XAUDIO2FX_I3DL2_PRESET_PADDEDCELL,          // Reverb_PaddedCell
+		XAUDIO2FX_I3DL2_PRESET_ROOM,                // Reverb_Room
+		XAUDIO2FX_I3DL2_PRESET_BATHROOM,            // Reverb_Bathroom
+		XAUDIO2FX_I3DL2_PRESET_LIVINGROOM,          // Reverb_LivingRoom
+		XAUDIO2FX_I3DL2_PRESET_STONEROOM,           // Reverb_StoneRoom
+		XAUDIO2FX_I3DL2_PRESET_AUDITORIUM,          // Reverb_Auditorium
+		XAUDIO2FX_I3DL2_PRESET_CONCERTHALL,         // Reverb_ConcertHall
+		XAUDIO2FX_I3DL2_PRESET_CAVE,                // Reverb_Cave
+		XAUDIO2FX_I3DL2_PRESET_ARENA,               // Reverb_Arena
+		XAUDIO2FX_I3DL2_PRESET_HANGAR,              // Reverb_Hangar
+		XAUDIO2FX_I3DL2_PRESET_CARPETEDHALLWAY,     // Reverb_CarpetedHallway
+		XAUDIO2FX_I3DL2_PRESET_HALLWAY,             // Reverb_Hallway
+		XAUDIO2FX_I3DL2_PRESET_STONECORRIDOR,       // Reverb_StoneCorridor
+		XAUDIO2FX_I3DL2_PRESET_ALLEY,               // Reverb_Alley
+		XAUDIO2FX_I3DL2_PRESET_CITY,                // Reverb_City
+		XAUDIO2FX_I3DL2_PRESET_MOUNTAINS,           // Reverb_Mountains
+		XAUDIO2FX_I3DL2_PRESET_QUARRY,              // Reverb_Quarry
+		XAUDIO2FX_I3DL2_PRESET_PLAIN,               // Reverb_Plain
+		XAUDIO2FX_I3DL2_PRESET_PARKINGLOT,          // Reverb_ParkingLot
+		XAUDIO2FX_I3DL2_PRESET_SEWERPIPE,           // Reverb_SewerPipe
+		XAUDIO2FX_I3DL2_PRESET_UNDERWATER,          // Reverb_Underwater
+		XAUDIO2FX_I3DL2_PRESET_SMALLROOM,           // Reverb_SmallRoom
+		XAUDIO2FX_I3DL2_PRESET_MEDIUMROOM,          // Reverb_MediumRoom
+		XAUDIO2FX_I3DL2_PRESET_LARGEROOM,           // Reverb_LargeRoom
+		XAUDIO2FX_I3DL2_PRESET_MEDIUMHALL,          // Reverb_MediumHall
+		XAUDIO2FX_I3DL2_PRESET_LARGEHALL,           // Reverb_LargeHall
+		XAUDIO2FX_I3DL2_PRESET_PLATE,               // Reverb_Plate
+	};
+
 	bool m_isInit = false;
 	IXAudio2* m_XAudio = 0;
 	IXAudio2MasteringVoice* m_MasteringVoice = 0;
-
+	IXAudio2SubmixVoice* m_ReverbVoice = 0;
+	X3DAUDIO_HANDLE m_X3DAudio;
+	IUnknown* m_ReverbEffect = 0;
 public:
 	bqSoundEngineXAudio();
 	virtual ~bqSoundEngineXAudio();
 
-	virtual bqSoundEngineObject* SummonSoundObject(bqSound*) override;
+	virtual bqSoundObject* SummonSoundObject(bqSound*) override;
 	virtual const char* Name() override;
 
 	virtual bool Init() override;

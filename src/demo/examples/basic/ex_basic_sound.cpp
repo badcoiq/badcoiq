@@ -89,15 +89,7 @@ bool ExampleBasicsSound::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_sound1 = new bqSound();
-	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1_8bits.wav", false);
-	//m_sound1->m_soundSource->MakeMono(0);
-	//m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/16bit2ch_MakeMono.wav");
-	//m_sound1->m_soundSource->MakeStereo();
-	//m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/song1_MakeStereo.wav");
-	/*m_sound1->m_soundSource->Make8bits();
-	m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/song1_Make8bits.wav");*/
-	m_sound1->m_soundSource->Make16bits();
-	m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/song1_8bits_Make16bits.wav");
+	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/Reload44100.wav", true);
 
 	auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
 	if(!se->IsReady())
@@ -107,7 +99,7 @@ bool ExampleBasicsSound::Init()
 	// играются напрямую этим движком
 	m_soundObjectE = se->SummonSoundObject(m_sound1);
 	m_soundObjectEloop = se->SummonSoundObject(m_sound1);
-	m_soundObjectEloop->EnableLoop();
+	m_soundObjectEloop->EnableLoop(1);
 
 	// Эти объекты играются через отдельный поток.
 	// Пока реализован стриминг из уже загруженного файла.
@@ -116,7 +108,7 @@ bool ExampleBasicsSound::Init()
 	// Эти эффекты реализованы в XAudio2, но я хочу независимую
 	// систему. Чтобы эти эффекты работали с другими звуковыми API.
 	// Для этого нужно всё делать самому.
-	m_soundObjectStream = bqFramework::GetSoundSystem()->SummonSoundObject(se, m_sound1);
+//	m_soundObjectStream = bqFramework::GetSoundSystem()->SummonSoundObject(se, m_sound1);
 	//m_soundObjectStream->SetLoop(3);
 	//m_soundObjectStream->SetVolume(0.19);
 
@@ -169,13 +161,18 @@ void ExampleBasicsSound::OnDraw()
 		m_soundObjectStream->Pause();
 	}
 
+	static float volume = 0.5f;
 	if (bqInput::IsKeyHold(bqInput::KEY_NUM_ADD))
 	{
-		m_soundObjectStream->SetVolume(m_soundObjectStream->GetVolume() + 0.01f);
+		volume += 0.01f;
+		if (volume > 1.f) volume = 1.f;
+		m_soundObjectE->SetVolume(volume);
 	}
 	if (bqInput::IsKeyHold(bqInput::KEY_NUM_SUB))
 	{
-		m_soundObjectStream->SetVolume(m_soundObjectStream->GetVolume() - 0.01f);
+		volume -= 0.01f;
+		if (volume < 0.f) volume = 0.f;
+		m_soundObjectE->SetVolume(volume);
 	}
 
 

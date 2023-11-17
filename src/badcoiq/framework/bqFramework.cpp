@@ -119,9 +119,6 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		g_framework->_initGUIThemes();
 		g_framework->_initGUITextDrawCallbacks();
 
-//		g_framework->m_threadSoundInputQueue = new bqQueue<bq::SoundInputThreadData>(3);
-		g_framework->m_threadSoundList = new bqThreadList<bqSoundObjectImpl*>;
-
 #ifdef BQ_PLATFORM_WINDOWS
 		wchar_t pth[1000];
 		GetModuleFileName(0, pth, 1000);
@@ -170,20 +167,6 @@ void bqFrameworkImpl::OnDestroy()
 	{
 		bqDestroy(m_soundSystem);
 		m_soundSystem = 0;
-	}
-
-	// это нужно удалять после m_soundSystem
-	// так как bqSoundSystem имеет m_threadSound
-	// его сперва нужно завершить потом удалять очередь (и список)
-	/*if (g_framework->m_threadSoundInputQueue)
-	{
-		delete g_framework->m_threadSoundInputQueue;
-		g_framework->m_threadSoundInputQueue = 0;
-	}*/
-	if (g_framework->m_threadSoundList)
-	{
-		delete g_framework->m_threadSoundList;
-		g_framework->m_threadSoundList = 0;
 	}
 
 	for (uint32_t i = 0; i < (uint32_t)bqCursorType::_count; ++i)

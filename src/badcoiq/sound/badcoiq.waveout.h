@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
-class bqSoundObjectWaveOut : public bqSoundEngineObject
+class bqSoundObjectWaveOut : public bqSoundObject
 {
 public:
 	bqSoundObjectWaveOut();
@@ -44,12 +44,13 @@ public:
 	virtual void Stop() override;
 	virtual void Pause() override;
 	virtual void SetVolume(float) override;
-	virtual void EnableLoop() override;
+	virtual void EnableLoop(uint32_t loops) override;
 	virtual void DisableLoop() override;
 
 	virtual void SetSource(void* data, uint32_t dataSize) override;
 	virtual void PlaySource() override;
 	virtual void StopSource() override;
+	virtual void Use3D() override;
 
 	HWAVEOUT m_device = 0;
 	WAVEHDR m_waveHeader;
@@ -65,7 +66,7 @@ public:
 	bqSoundEngineWaveOut();
 	virtual ~bqSoundEngineWaveOut();
 
-	virtual bqSoundEngineObject* SummonSoundObject(bqSound*) override;
+	virtual bqSoundObject* SummonSoundObject(bqSound*) override;
 	virtual const char* Name() override;
 
 	virtual bool Init() override;

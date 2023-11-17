@@ -44,12 +44,12 @@ public:
 
 
 
-class bqSoundEngineObject
+class bqSoundObject
 {
 public:
-	bqSoundEngineObject() {}
-	virtual ~bqSoundEngineObject() {}
-	BQ_PLACEMENT_ALLOCATOR(bqSoundEngineObject);
+	bqSoundObject() {}
+	virtual ~bqSoundObject() {}
+	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
 
 	bqSoundObjectCallback* m_callback = 0;
 
@@ -69,7 +69,10 @@ public:
 	virtual void SetVolume(float) = 0;
 
 	// придётся перезапустить проигрывание
-	virtual void EnableLoop() = 0;
+	// loops - 0 без повторение
+	//         -1 (0xFFFFFFFF) бесконечное повторение
+	//         остальные значения это количество повторов.
+	virtual void EnableLoop(uint32_t loops) = 0;
 	virtual void DisableLoop() = 0;
 
 	// Воспроизводить будет без учёта играет ли уже или нет.
@@ -78,7 +81,10 @@ public:
 	virtual void SetSource(void* data, uint32_t dataSize) = 0;
 	virtual void PlaySource() = 0;
 	virtual void StopSource() = 0;
+
+	virtual void Use3D() = 0;
 };
+
 
 
 
@@ -92,7 +98,7 @@ public:
 	bqSoundEngine(){}
 	virtual ~bqSoundEngine(){}
 
-	virtual bqSoundEngineObject* SummonSoundObject(bqSound*) = 0;
+	virtual bqSoundObject* SummonSoundObject(bqSound*) = 0;
 
 	virtual const char* Name() = 0;
 

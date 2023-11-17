@@ -52,7 +52,7 @@ bqSoundEngineWaveOut::~bqSoundEngineWaveOut()
 }
 
 
-bqSoundEngineObject* bqSoundEngineWaveOut::SummonSoundObject(bqSound* s)
+bqSoundObject* bqSoundEngineWaveOut::SummonSoundObject(bqSound* s)
 {
 	BQ_ASSERT_ST(s);
 
@@ -67,6 +67,8 @@ const char* bqSoundEngineWaveOut::Name()
 	return "WaveOut";
 }
 
+// Возможно девайс должен быть уникальным для каждого звука
+
 bool bqSoundEngineWaveOut::Init()
 {
 	if (!m_isInit)
@@ -79,7 +81,7 @@ bool bqSoundEngineWaveOut::Init()
 		wfx.nSamplesPerSec = 44100;
 		wfx.wBitsPerSample = 16;
 		wfx.nBlockAlign = (wfx.wBitsPerSample / 8) * wfx.nChannels;
-		wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign * wfx.nChannels;
+		wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;// *wfx.nChannels;
 
 		MMRESULT mmr = waveOutOpen(&m_device, WAVE_MAPPER, &wfx, 0, 0, CALLBACK_NULL);
 
@@ -130,12 +132,32 @@ void bqSoundObjectWaveOut::Pause()
 	waveOutPause(m_device);
 }
 
-void bqSoundObjectWaveOut::SetVolume(float)
+void bqSoundObjectWaveOut::SetVolume(float v)
 {
+	if (v > 0.f && v < 1.f)
+	{
+		union _DWORD
+		{
+			DWORD _32;
+			WORD _16[2];
+		};
+		_DWORD __V;
+		__V._16[0] = (WORD)floor(v / (1.f / 65535.f));
+		__V._16[1] = __V._16[0];
+		waveOutSetVolume(m_device, __V._32);
+	}
 }
 
-void bqSoundObjectWaveOut::EnableLoop()
+void bqSoundObjectWaveOut::EnableLoop(uint32_t loops)
 {
+	waveOutPause(m_device);
+	m_waveHeader.dwLoops = loops;
+	MMRESULT r = waveOutPrepareHeader(m_device, &m_waveHeader, sizeof(m_waveHeader));
+	if (r != MMSYSERR_NOERROR)
+		bqLog::PrintError("waveOutPrepareHeader [%u]\n", r);
+	else
+		m_bufferPrepared = true;
+	waveOutRestart(m_device);
 }
 
 void bqSoundObjectWaveOut::DisableLoop()
@@ -179,3 +201,6 @@ void bqSoundObjectWaveOut::StopSource()
 	waveOutReset(m_device);
 }
 
+void bqSoundObjectWaveOut::Use3D()
+{
+}

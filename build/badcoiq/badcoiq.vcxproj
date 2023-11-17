@@ -203,7 +203,6 @@
     <ClCompile Include="..\..\src\badcoiq\scene\bqSprite.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\badcoiq.waveout.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSound.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundObjectImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundSystem.cpp" />
     <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp" />
     <ClCompile Include="..\..\src\badcoiq\system\bqCursorWin32.cpp" />

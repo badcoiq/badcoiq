@@ -33,3 +33,5 @@ build/libpng/Release
 tools/bingen/Release
 build/zlib/Release
 build/fastlz/Release
+data/sounds/Reload.wav
+data/sounds/Reload44100.wav

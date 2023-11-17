@@ -356,11 +356,11 @@ int main()
                 sound6.LoadFromFile("../data/sounds/song1.wav");
 
                 {
-                    BQ_PTR_D(bqSoundEngineObject, so1, se->SummonSoundObject(&sound1));
-                    BQ_PTR_D(bqSoundEngineObject, so2, se->SummonSoundObject(&sound2));
-                    BQ_PTR_D(bqSoundEngineObject, so3, se->SummonSoundObject(&sound3));
-                    BQ_PTR_D(bqSoundEngineObject, so4, se->SummonSoundObject(&sound4));
-                    BQ_PTR_D(bqSoundEngineObject, so5, se->SummonSoundObject(&sound6));
+                    BQ_PTR_D(bqSoundObject, so1, se->SummonSoundObject(&sound1));
+                    BQ_PTR_D(bqSoundObject, so2, se->SummonSoundObject(&sound2));
+                    BQ_PTR_D(bqSoundObject, so3, se->SummonSoundObject(&sound3));
+                    BQ_PTR_D(bqSoundObject, so4, se->SummonSoundObject(&sound4));
+                    BQ_PTR_D(bqSoundObject, so5, se->SummonSoundObject(&sound6));
 
 
                     while (g_run)

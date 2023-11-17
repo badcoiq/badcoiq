@@ -34,6 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 #endif
 
+#pragma comment(lib, "XAudio2.lib")
+
 extern "C"
 {
 	bqSoundEngine* BQ_CDECL bqSoundEngine_createXAudio()
@@ -76,15 +78,9 @@ void bqIXAudio2VoiceCallback::OnBufferStart (THIS_ void* pBufferContext)
 void bqIXAudio2VoiceCallback::OnBufferEnd (THIS_ void* pBufferContext)
 {
 	IXAudio2SourceVoice* voice = (IXAudio2SourceVoice*)pBufferContext;
-//	voice->Stop();
-	//voice->FlushSourceBuffers();
-	
-	// после остановки в thread в playState_remove
-	// xaudio всё вызывает OnBufferEnd
-	// Проблема была такая. При окончании воспроизведения
-	// был вызван OnBufferEnd, потом отсюда OnStop();
-	// Всё окей, как и предпологалось. Но, почему-то 
-	// xaudio опять вызывает OnBufferEnd
+	voice->Stop();
+	voice->FlushSourceBuffers();
+
 	if (m_so->m_state == m_so->state_playing)
 	{
 		m_so->m_state = m_so->state_notplaying;
@@ -105,7 +101,7 @@ void bqIXAudio2VoiceCallback::OnVoiceError (THIS_ void* pBufferContext, HRESULT 
 }
 
 
-bqSoundEngineObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
+bqSoundObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
 {
 	HRESULT hr = S_OK;
 
@@ -118,12 +114,19 @@ bqSoundEngineObject* bqSoundEngineXAudio::SummonSoundObject(bqSound* s)
 	wfx.nSamplesPerSec = s->m_soundSource->m_sourceInfo.m_sampleRate;
 	wfx.wBitsPerSample = s->m_soundSource->m_sourceInfo.m_bitsPerSample;
 	wfx.nBlockAlign = (wfx.wBitsPerSample / 8) * wfx.nChannels;
-	wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign * wfx.nChannels;
+	wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;
 
 	IXAudio2SourceVoice* SourceVoice = 0;
 	bqIXAudio2VoiceCallback* callback = new bqIXAudio2VoiceCallback;
 
-	if (FAILED(hr = m_XAudio->CreateSourceVoice(&SourceVoice, &wfx, 0, 2.f, callback)))
+	XAUDIO2_SEND_DESCRIPTOR sendDescriptors[2];
+	sendDescriptors[0].Flags = XAUDIO2_SEND_USEFILTER; // LPF direct-path
+	sendDescriptors[0].pOutputVoice = m_MasteringVoice; 
+	sendDescriptors[1].Flags = XAUDIO2_SEND_USEFILTER; // LPF reverb-path -- omit for better performance at the cost of less realistic occlusion
+	sendDescriptors[1].pOutputVoice = m_ReverbVoice;
+	const XAUDIO2_VOICE_SENDS sendList = { 2, sendDescriptors };
+
+	if (FAILED(hr = m_XAudio->CreateSourceVoice(&SourceVoice, &wfx, 0, 2.f, callback, 0)))
 	{
 		delete callback;
 		bqLog::PrintError(L"Error %#X creating source voice\n", hr);
@@ -156,17 +159,48 @@ bool bqSoundEngineXAudio::Init()
 		if (FAILED(hr = XAudio2Create(&m_XAudio, flags)))
 		{
 			bqLog::PrintError(L"Failed to init XAudio2 engine: %#X\n", hr);
+			Shutdown();
 			return false;
 		}
 
 		if (FAILED(hr = m_XAudio->CreateMasteringVoice(&m_MasteringVoice)))
 		{
 			bqLog::PrintError(L"Failed creating mastering voice: %#X\n", hr);
-			SAFE_RELEASE(m_XAudio);
+			Shutdown();
+			return false;
+		}
+		
+
+		const float SPEEDOFSOUND = X3DAUDIO_SPEED_OF_SOUND;
+		if (FAILED(hr = X3DAudioInitialize(3, SPEEDOFSOUND, m_X3DAudio)))
+		{
+			bqLog::PrintError(L"X3DAudioInitialize: %#X\n", hr);
+			Shutdown();
 			return false;
 		}
 
-		
+		if (FAILED(hr = XAudio2CreateReverb(&m_ReverbEffect, 0)))
+		{
+			bqLog::PrintError(L"XAudio2CreateReverb: %#X\n", hr);
+			Shutdown();
+			return hr;
+		}
+
+		XAUDIO2_EFFECT_DESCRIPTOR effects[] = { { m_ReverbEffect, TRUE, 1 } };
+		XAUDIO2_EFFECT_CHAIN effectChain = { 1, effects };
+
+		if (FAILED(hr = m_XAudio->CreateSubmixVoice(&m_ReverbVoice, 2,
+			44100, 0, 0,
+			NULL, &effectChain)))
+		{
+			bqLog::PrintError(L"CreateSubmixVoice(&m_ReverbVoice: %#X\n", hr);
+			Shutdown();
+			return hr;
+		}
+
+		XAUDIO2FX_REVERB_PARAMETERS native;
+		ReverbConvertI3DL2ToNative(&m_ReverbPresets[0], &native);
+		m_ReverbVoice->SetEffectParameters(10, &native, sizeof(native));
 
 		m_isInit = true;
 		bqLog::PrintInfo(L"XAudio2 is ready\n");
@@ -178,17 +212,17 @@ bool bqSoundEngineXAudio::Init()
 
 void bqSoundEngineXAudio::Shutdown()
 {
-	if (m_isInit)
-	{
-		m_isInit = false;
+	m_isInit = false;
 
-		if (m_MasteringVoice)
-		{
-			m_MasteringVoice->DestroyVoice();
-			m_MasteringVoice = 0;
-		}
-		SAFE_RELEASE(m_XAudio);
+	if (m_MasteringVoice)
+	{
+		m_MasteringVoice->DestroyVoice();
+		m_MasteringVoice = 0;
 	}
+	if (m_XAudio)
+		m_XAudio->StopEngine();
+	SAFE_RELEASE(m_XAudio);
+	SAFE_RELEASE(m_ReverbEffect);
 }
 
 bool bqSoundEngineXAudio::IsReady()
@@ -226,24 +260,10 @@ void bqSoundObjectXAudio::Start()
 	if (m_state == state_notplaying)
 	{
 		SetSource(m_sourceData->m_data, m_sourceData->m_dataSize);
-		//XAUDIO2_BUFFER buffer = { 0 };
-		//buffer.pAudioData = m_sourceData->m_data;
-		//buffer.Flags = XAUDIO2_END_OF_STREAM;  // tell the source voice not to expect any data after this buffer
-		//buffer.AudioBytes = m_sourceData->m_dataSize;
-		//buffer.LoopCount = m_loopCount;
-
-		//HRESULT hr = S_OK;
-		//if (FAILED(hr = m_SourceVoice->SubmitSourceBuffer(&buffer)))
-		//{
-		//	bqLog::PrintError(L"Error %#X submitting source buffer\n", hr);
-		//	return;
-		//}
-
 		if(m_callback)
 			m_callback->OnStart();
 
 		PlaySource();
-		//m_SourceVoice->Start(0);
 
 		m_state = state_playing;
 	}
@@ -265,9 +285,11 @@ void bqSoundObjectXAudio::SetVolume(float v)
 	m_SourceVoice->SetVolume(v);
 }
 
-void bqSoundObjectXAudio::EnableLoop()
+void bqSoundObjectXAudio::EnableLoop(uint32_t loops)
 {
-	m_loopCount = XAUDIO2_LOOP_INFINITE;
+	m_loopCount = loops;
+	if(loops == 0xFFFFFFFF)
+		m_loopCount = XAUDIO2_LOOP_INFINITE;
 }
 
 void bqSoundObjectXAudio::DisableLoop()
@@ -306,4 +328,8 @@ void bqSoundObjectXAudio::StopSource()
 void bqSoundObjectXAudio::Pause()
 {
 	m_SourceVoice->Stop();
+}
+
+void bqSoundObjectXAudio::Use3D()
+{
 }

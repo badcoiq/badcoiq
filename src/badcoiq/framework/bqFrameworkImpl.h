@@ -114,19 +114,6 @@ public:
 	void _initDefaultCursors();
 
 	bqSoundSystem* m_soundSystem = 0;
-	//std::thread* m_threadSoundPrepare = 0;
-	//std::thread* m_threadSoundPlay = 0;
-	std::thread* m_threadSound = 0;
-	//std::mutex m_threadSoundInputQueueMutex;
-	//bool m_threadSoundPrepareRun = false;
-	//bool m_threadSoundPlayRun = false;
-	bool m_threadSoundRun = false;
-	//bqQueue<bq::SoundInputThreadData>* m_threadSoundInputQueue = 0;
-	friend class bqSoundObjectImpl;
-	bqThreadList<bqSoundObjectImpl*>* m_threadSoundList = 0;
-
-	//uint32_t m_threadSoundSoundLimit = 100;
-	//void _threadSoundInputQueue(bool set, bq::SoundInputThreadData*);
 };
 
 

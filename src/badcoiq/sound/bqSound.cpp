@@ -702,7 +702,8 @@ bool bqSound::LoadFromFile(const char* fn, bool convertTo16bitStereo)
 
 		if (r && convertTo16bitStereo)
 		{
-
+			this->m_soundSource->Make16bits();
+			this->m_soundSource->MakeStereo();
 		}
 	}
 
