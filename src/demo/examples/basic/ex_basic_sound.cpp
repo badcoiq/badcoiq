@@ -89,11 +89,15 @@ bool ExampleBasicsSound::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_sound1 = new bqSound();
-	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1.wav", false);
+	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1_8bits.wav", false);
 	//m_sound1->m_soundSource->MakeMono(0);
 	//m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/16bit2ch_MakeMono.wav");
-	m_sound1->m_soundSource->MakeStereo();
-	m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/song1_MakeStereo.wav");
+	//m_sound1->m_soundSource->MakeStereo();
+	//m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/song1_MakeStereo.wav");
+	/*m_sound1->m_soundSource->Make8bits();
+	m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/song1_Make8bits.wav");*/
+	m_sound1->m_soundSource->Make16bits();
+	m_sound1->SaveToFile(bqSoundFileType::wav, bqFramework::GetAppPathA() + "../data/sounds/song1_8bits_Make16bits.wav");
 
 	auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
 	if(!se->IsReady())
