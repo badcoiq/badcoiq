@@ -87,7 +87,6 @@ class bqCursor;
 enum class bqCursorType : uint32_t;
 class bqGUIScrollbar;
 class bqSound;
-class bqSoundEngine;
 class bqSoundSystem;
 class bqSceneObject;
 class bqSoundObject;

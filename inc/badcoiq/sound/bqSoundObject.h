@@ -1,4 +1,4 @@
-/*
+﻿/*
 BSD 2-Clause License
 
 Copyright (c) 2023, badcoiq
@@ -27,8 +27,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_SE_H__
-#define __BQ_SE_H__
+#ifndef __BQ_SOUNDOBJECT_H__
+#define __BQ_SOUNDOBJECT_H__
 
 class bqSoundObjectCallback
 {
@@ -42,14 +42,33 @@ public:
 	void* m_context = 0;
 };
 
-
-
 class bqSoundObject
 {
 public:
 	bqSoundObject() {}
 	virtual ~bqSoundObject() {}
 	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
+
+	virtual void Start() = 0;
+	virtual void Stop() = 0;
+	//virtual void Pause() = 0;
+	//virtual void SetVolume(float) = 0;
+
+	// придётся перезапустить проигрывание
+	// loops - 0 без повторение
+	//         -1 (0xFFFFFFFF) бесконечное повторение
+	//         остальные значения это количество повторов.
+	//virtual void EnableLoop(uint32_t loops) = 0;
+	//virtual void DisableLoop() = 0;
+
+	// Воспроизводить будет без учёта играет ли уже или нет.
+	// Нет проверок.
+	// Нет вызовов коллбэка.
+	//virtual void SetSource(void* data, uint32_t dataSize) = 0;
+	//virtual void PlaySource() = 0;
+	//virtual void StopSource() = 0;
+
+	//virtual void Update() = 0;
 
 	bqSoundObjectCallback* m_callback = 0;
 
@@ -59,62 +78,10 @@ public:
 		state_playing,
 	};
 	uint32_t m_state = state_notplaying;
-	
-	//bqSound* m_source = 0;
+
 	bqSoundSourceData* m_sourceData = 0;
-
-	virtual void Start() = 0;
-	virtual void Stop() = 0;
-	virtual void Pause() = 0;
-	virtual void SetVolume(float) = 0;
-
-	// придётся перезапустить проигрывание
-	// loops - 0 без повторение
-	//         -1 (0xFFFFFFFF) бесконечное повторение
-	//         остальные значения это количество повторов.
-	virtual void EnableLoop(uint32_t loops) = 0;
-	virtual void DisableLoop() = 0;
-
-	// Воспроизводить будет без учёта играет ли уже или нет.
-	// Нет проверок.
-	// Нет вызовов коллбэка.
-	virtual void SetSource(void* data, uint32_t dataSize) = 0;
-	virtual void PlaySource() = 0;
-	virtual void StopSource() = 0;
-
-	virtual void Use3D(bool) = 0;
-	// Незнаю как правильно назвать метод.
-	// Обновлять 3D каждый N фрейм. 0 - обновлять каждый фрейм
-	// Можно вызывать Update3D тогда когда надо, только надо 
-	// вызвать Set3DUpdateEachNFrame(0) для этого так как внутри
-	// есть счётчик.
-	virtual void Set3DUpdateEachNFrame(uint32_t N) = 0;
-	virtual void SetListenerPosition(const bqVec3&) = 0;
-	virtual void SetEmitterPosition(const bqVec3&) = 0;
-	virtual void Update3D() = 0;
 };
 
-
-
-
-// то через что будет проигрываться звук
-// типа xaudio
-// реализация должна находиться в плагинах
-
-class bqSoundEngine
-{
-public:
-	bqSoundEngine(){}
-	virtual ~bqSoundEngine(){}
-
-	virtual bqSoundObject* SummonSoundObject(bqSound*) = 0;
-
-	virtual const char* Name() = 0;
-
-	virtual bool Init() = 0;
-	virtual void Shutdown() = 0;
-	virtual bool IsReady() = 0;
-};
 
 #endif
 

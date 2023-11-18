@@ -1,4 +1,4 @@
-/*
+﻿/*
 BSD 2-Clause License
 
 Copyright (c) 2023, badcoiq
@@ -31,8 +31,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_SS_H__
 
 #include "bqSound.h"
-#include "bqSoundEngine.h"
-#include "badcoiq/containers/bqQueue.h"
+#include "bqSoundObject.h"
+
+
+#ifdef _WIN64
+#pragma comment(lib, "../../libs/openal/libs/Win64/OpenAL32.lib")
+#else
+#pragma comment(lib, "../../libs/openal/libs/Win32/OpenAL32.lib")
+#endif
+
+class bqSoundEngine
+{
+public:
+	bqSoundEngine() {}
+	virtual ~bqSoundEngine() {}
+
+	virtual const char* GetName() = 0;
+	virtual bqSoundObject* SummonObject(bqSound*) = 0;
+};
 
 class bqSoundSystem
 {
@@ -41,9 +57,8 @@ public:
 	bqSoundSystem();
 	~bqSoundSystem();
 
-	uint32_t GetNumOfEngines();
-
-	bqSoundEngine* GetEngine(uint32_t, const char*);
+	uint32_t GetEngineNum();
+	bqSoundEngine* GetEngine(uint32_t);
 };
 
 #endif

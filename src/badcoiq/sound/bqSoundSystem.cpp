@@ -38,42 +38,31 @@ extern bqFrameworkImpl* g_framework;
 extern "C"
 {
 	bqSoundEngine* BQ_CDECL bqSoundEngine_createWaveOut();
+	bqSoundEngine* BQ_CDECL bqSoundEngine_createOpenAL();
 }
 
-BQ_LINK_LIBRARY("badcoiq.xaudio");
 
 bqSoundSystem::bqSoundSystem()
 {
-	//m_engines.push_back(bqSoundEngine_createWaveOut());
+	m_engines.push_back(bqSoundEngine_createWaveOut());
+	m_engines.push_back(bqSoundEngine_createOpenAL());
 }
 
 bqSoundSystem::~bqSoundSystem()
 {
-	
-}
-
-uint32_t bqSoundSystem::GetNumOfEngines()
-{
-	return (uint32_t)m_engines.m_size;
-}
-
-bqSoundEngine* bqSoundSystem::GetEngine(uint32_t in, const char* n)
-{
-	BQ_ASSERT_ST(m_engines.m_size);
-	if (n)
+	for (size_t i = 0; i < m_engines.m_size; ++i)
 	{
-		for (size_t i = 0; i < m_engines.m_size; ++i)
-		{
-			if (strcmp(m_engines.m_data[i]->Name(), n) == 0)
-			{
-				return m_engines.m_data[i];
-			}
-		}
-
-		// если не нашлось то вернётся самый первый bqSoundEngine
-		in = 0;
+		bqDestroy(m_engines.m_data[i]);
 	}
+}
 
-	return m_engines.m_data[in];
+uint32_t bqSoundSystem::GetEngineNum()
+{
+	return m_engines.m_size;
+}
+
+bqSoundEngine* bqSoundSystem::GetEngine(uint32_t i)
+{
+	return m_engines.m_data[i];
 }
 

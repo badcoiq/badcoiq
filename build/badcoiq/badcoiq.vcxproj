@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../inc/openal/include/</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
@@ -103,6 +103,7 @@
     </Link>
     <Lib>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -114,7 +115,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../inc/openal/include/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
@@ -126,6 +127,7 @@
     </Link>
     <Lib>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -135,7 +137,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../inc/openal/include/</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -155,7 +157,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../inc/openal/include/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
@@ -201,6 +203,7 @@
     <ClCompile Include="..\..\src\badcoiq\scene\bqCamera.cpp" />
     <ClCompile Include="..\..\src\badcoiq\scene\bqCameraFrustum.cpp" />
     <ClCompile Include="..\..\src\badcoiq\scene\bqSprite.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\sound\badcoiq.OpenAL.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\badcoiq.waveout.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSound.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundSystem.cpp" />

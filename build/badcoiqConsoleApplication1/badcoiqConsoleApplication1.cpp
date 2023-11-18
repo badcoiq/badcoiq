@@ -330,8 +330,7 @@ int main()
                 sld->m_alignment = bqGUIElement::Alignment::Center;
                 bqFramework::RebuildGUI();
 
-                auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
-                se->Init();
+                auto se = bqFramework::GetSoundSystem()->GetEngine(0);
 
                 bqSound sound1;
                 bqSound sound2;
@@ -356,11 +355,11 @@ int main()
                 sound6.LoadFromFile("../data/sounds/song1.wav");
 
                 {
-                    BQ_PTR_D(bqSoundObject, so1, se->SummonSoundObject(&sound1));
-                    BQ_PTR_D(bqSoundObject, so2, se->SummonSoundObject(&sound2));
-                    BQ_PTR_D(bqSoundObject, so3, se->SummonSoundObject(&sound3));
-                    BQ_PTR_D(bqSoundObject, so4, se->SummonSoundObject(&sound4));
-                    BQ_PTR_D(bqSoundObject, so5, se->SummonSoundObject(&sound6));
+                //    BQ_PTR_D(bqSoundObject, so1, se->SummonSoundObject(&sound1));
+                //    BQ_PTR_D(bqSoundObject, so2, se->SummonSoundObject(&sound2));
+                //    BQ_PTR_D(bqSoundObject, so3, se->SummonSoundObject(&sound3));
+               //     BQ_PTR_D(bqSoundObject, so4, se->SummonSoundObject(&sound4));
+               //     BQ_PTR_D(bqSoundObject, so5, se->SummonSoundObject(&sound6));
 
 
                     while (g_run)
@@ -368,7 +367,7 @@ int main()
                         bqFramework::Update();
                         bqFramework::UpdateGUI();
 
-                        if (bqInput::IsKeyHit(bqInput::KEY_1))
+                       /* if (bqInput::IsKeyHit(bqInput::KEY_1))
                             so1->Start();
                         if (bqInput::IsKeyHit(bqInput::KEY_2))
                             so2->Start();
@@ -379,7 +378,7 @@ int main()
                         if (bqInput::IsKeyHit(bqInput::KEY_5))
                             so5->Start();
                         if (bqInput::IsKeyHit(bqInput::KEY_6))
-                            so5->Stop();
+                            so5->Stop();*/
 
                         if (bqInput::IsKeyHit(bqInput::KEY_PGDOWN))
                         {

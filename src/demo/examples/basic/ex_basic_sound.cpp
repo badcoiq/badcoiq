@@ -91,18 +91,16 @@ bool ExampleBasicsSound::Init()
 	m_sound1 = new bqSound();
 	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/alien_beacon44100.wav", true);
 
-	auto se = bqFramework::GetSoundSystem()->GetEngine(0, 0);
-	if(!se->IsReady())
-		se->Init();
+	auto se = bqFramework::GetSoundSystem()->GetEngine(0);
 	
 	// Звуковые объекты созданные напрямую звуковым движком
 	// играются напрямую этим движком
-	m_soundObjectE = se->SummonSoundObject(m_sound1);
+//	m_soundObjectE = se->SummonSoundObject(m_sound1);
 	
-	m_soundObjectEloop = se->SummonSoundObject(m_sound1);
-	m_soundObjectEloop->EnableLoop(-1);
-	m_soundObjectEloop->Use3D(true);
-	m_soundObjectEloop->SetEmitterPosition(bqVec3());
+//	m_soundObjectEloop = se->SummonSoundObject(m_sound1);
+//	m_soundObjectEloop->EnableLoop(-1);
+//	m_soundObjectEloop->Use3D(true);
+//	m_soundObjectEloop->SetEmitterPosition(bqVec3());
 
 	// Эти объекты играются через отдельный поток.
 	// Пока реализован стриминг из уже загруженного файла.
@@ -138,8 +136,8 @@ void ExampleBasicsSound::OnDraw()
 
 	_onCamera();
 	
-	m_soundObjectEloop->SetListenerPosition(bqVec3(m_camera->m_position.x, m_camera->m_position.y, m_camera->m_position.z));
-	m_soundObjectEloop->Update3D();
+//	m_soundObjectEloop->SetListenerPosition(bqVec3(m_camera->m_position.x, m_camera->m_position.y, m_camera->m_position.z));
+//	m_soundObjectEloop->Update3D();
 
 
 	if (bqInput::IsKeyHit(bqInput::KEY_1))
@@ -165,7 +163,7 @@ void ExampleBasicsSound::OnDraw()
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_C))
 	{
-		m_soundObjectStream->Pause();
+//		m_soundObjectStream->Pause();
 	}
 
 	static float volume = 0.5f;
@@ -173,13 +171,13 @@ void ExampleBasicsSound::OnDraw()
 	{
 		volume += 0.01f;
 		if (volume > 1.f) volume = 1.f;
-		m_soundObjectE->SetVolume(volume);
+//		m_soundObjectE->SetVolume(volume);
 	}
 	if (bqInput::IsKeyHold(bqInput::KEY_NUM_SUB))
 	{
 		volume -= 0.01f;
 		if (volume < 0.f) volume = 0.f;
-		m_soundObjectE->SetVolume(volume);
+//		m_soundObjectE->SetVolume(volume);
 	}
 
 

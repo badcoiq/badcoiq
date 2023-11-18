@@ -26,19 +26,23 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #pragma once
-#ifndef _BQ_WAVEOUT_H_
-#define _BQ_WAVEOUT_H_
-
-#include <windows.h>
+#ifndef _BQ_OPENAL_H_
+#define _BQ_OPENAL_H_
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
-class bqSoundEngineWaveOut : public bqSoundEngine
+#include "al.h"
+#include "alc.h"
+
+class bqSoundEngineOpenAL : public bqSoundEngine
 {
+	ALCdevice* m_device = 0;
+	ALCcontext* m_context = 0;
+	ALboolean m_eax = 0;
 public:
-	bqSoundEngineWaveOut();
-	virtual ~bqSoundEngineWaveOut();
-	BQ_PLACEMENT_ALLOCATOR(bqSoundEngineWaveOut);
+	bqSoundEngineOpenAL();
+	virtual ~bqSoundEngineOpenAL();
+	BQ_PLACEMENT_ALLOCATOR(bqSoundEngineOpenAL);
 
 	virtual const char* GetName() override;
 	virtual bqSoundObject* SummonObject(bqSound*) override;
