@@ -37,7 +37,6 @@ extern bqFrameworkImpl* g_framework;
 
 extern "C"
 {
-	bqSoundEngine* BQ_CDECL bqSoundEngine_createXAudio();
 	bqSoundEngine* BQ_CDECL bqSoundEngine_createWaveOut();
 }
 
@@ -45,7 +44,6 @@ BQ_LINK_LIBRARY("badcoiq.xaudio");
 
 bqSoundSystem::bqSoundSystem()
 {
-	m_engines.push_back(bqSoundEngine_createXAudio());
 	//m_engines.push_back(bqSoundEngine_createWaveOut());
 }
 

@@ -201,6 +201,11 @@ void bqSoundObjectWaveOut::StopSource()
 	waveOutReset(m_device);
 }
 
-void bqSoundObjectWaveOut::Use3D()
+void bqSoundObjectWaveOut::Use3D(bool)
 {
 }
+
+void bqSoundObjectWaveOut::SetListenerPosition(const bqVec3&) {}
+void bqSoundObjectWaveOut::SetEmitterPosition(const bqVec3&) {}
+void bqSoundObjectWaveOut::Set3DUpdateEachNFrame(uint32_t N) {}
+void bqSoundObjectWaveOut::Update3D() {}

@@ -82,7 +82,16 @@ public:
 	virtual void PlaySource() = 0;
 	virtual void StopSource() = 0;
 
-	virtual void Use3D() = 0;
+	virtual void Use3D(bool) = 0;
+	// Незнаю как правильно назвать метод.
+	// Обновлять 3D каждый N фрейм. 0 - обновлять каждый фрейм
+	// Можно вызывать Update3D тогда когда надо, только надо 
+	// вызвать Set3DUpdateEachNFrame(0) для этого так как внутри
+	// есть счётчик.
+	virtual void Set3DUpdateEachNFrame(uint32_t N) = 0;
+	virtual void SetListenerPosition(const bqVec3&) = 0;
+	virtual void SetEmitterPosition(const bqVec3&) = 0;
+	virtual void Update3D() = 0;
 };
 
 

@@ -50,7 +50,11 @@ public:
 	virtual void SetSource(void* data, uint32_t dataSize) override;
 	virtual void PlaySource() override;
 	virtual void StopSource() override;
-	virtual void Use3D() override;
+	virtual void Use3D(bool) override;
+	virtual void Set3DUpdateEachNFrame(uint32_t N) override;
+	virtual void Update3D() override;
+	virtual void SetListenerPosition(const bqVec3&) override;
+	virtual void SetEmitterPosition(const bqVec3&) override;
 
 	HWAVEOUT m_device = 0;
 	WAVEHDR m_waveHeader;
