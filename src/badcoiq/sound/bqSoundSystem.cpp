@@ -44,8 +44,8 @@ extern "C"
 
 bqSoundSystem::bqSoundSystem()
 {
-	m_engines.push_back(bqSoundEngine_createWaveOut());
 	m_engines.push_back(bqSoundEngine_createOpenAL());
+	m_engines.push_back(bqSoundEngine_createWaveOut());
 }
 
 bqSoundSystem::~bqSoundSystem()
@@ -64,5 +64,18 @@ uint32_t bqSoundSystem::GetEngineNum()
 bqSoundEngine* bqSoundSystem::GetEngine(uint32_t i)
 {
 	return m_engines.m_data[i];
+}
+
+bqSoundEngine* bqSoundSystem::GetEngineByName(const char* s)
+{
+	BQ_ASSERT_ST(s);
+
+	for (size_t i = 0; i < m_engines.m_size; ++i)
+	{
+		if (strcmp(m_engines.m_data[i]->GetName(), s) == 0)
+			return m_engines.m_data[i];
+	}
+
+	return GetEngine(0);
 }
 

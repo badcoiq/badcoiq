@@ -34,11 +34,36 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "al.h"
 #include "alc.h"
 
+class bqSoundObjectOpenAL : public bqSoundObject
+{
+	ALuint m_source = 0;
+	uint32_t m_loop = 0;
+public:
+	bqSoundObjectOpenAL();
+	virtual ~bqSoundObjectOpenAL();
+	BQ_PLACEMENT_ALLOCATOR(bqSoundObjectOpenAL);
+
+	bool Init(ALuint buffer);
+
+	virtual void Play() override;
+	virtual void Stop() override;
+	virtual void Pause() override;
+	virtual void Loop(bool) override;
+};
+
 class bqSoundEngineOpenAL : public bqSoundEngine
 {
 	ALCdevice* m_device = 0;
 	ALCcontext* m_context = 0;
 	ALboolean m_eax = 0;
+
+	struct OpenALBuffer
+	{
+		bqSound* m_sound = 0;
+		ALuint m_buffer = 0;
+	};
+	bqArray<OpenALBuffer> m_buffers;
+
 public:
 	bqSoundEngineOpenAL();
 	virtual ~bqSoundEngineOpenAL();
@@ -46,6 +71,8 @@ public:
 
 	virtual const char* GetName() override;
 	virtual bqSoundObject* SummonObject(bqSound*) override;
+
+	static ALenum CheckOpenALError(ALenum);
 };
 
 #endif

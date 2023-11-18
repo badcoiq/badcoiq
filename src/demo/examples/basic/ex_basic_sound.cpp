@@ -91,14 +91,31 @@ bool ExampleBasicsSound::Init()
 	m_sound1 = new bqSound();
 	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/alien_beacon44100.wav", true);
 
-	auto se = bqFramework::GetSoundSystem()->GetEngine(0);
-	
+	auto se = bqFramework::GetSoundSystem()->GetEngineByName("OpenAL");
+	if (!se)
+	{
+		bqLog::PrintError("Can't get sound engine\n");
+		return false;
+	}
+
 	// Звуковые объекты созданные напрямую звуковым движком
 	// играются напрямую этим движком
-//	m_soundObjectE = se->SummonSoundObject(m_sound1);
+	m_soundObjectE = se->SummonObject(m_sound1);
+	if (!m_soundObjectE)
+	{
+		bqLog::PrintError("Can't create sound object\n");
+		return false;
+	}
 	
-//	m_soundObjectEloop = se->SummonSoundObject(m_sound1);
-//	m_soundObjectEloop->EnableLoop(-1);
+	m_soundObjectEloop = se->SummonObject(m_sound1);
+	if (!m_soundObjectEloop)
+	{
+		bqLog::PrintError("Can't create sound object\n");
+		return false;
+	}
+
+	m_soundObjectEloop->Loop(2);
+
 //	m_soundObjectEloop->Use3D(true);
 //	m_soundObjectEloop->SetEmitterPosition(bqVec3());
 
@@ -142,11 +159,11 @@ void ExampleBasicsSound::OnDraw()
 
 	if (bqInput::IsKeyHit(bqInput::KEY_1))
 	{
-		m_soundObjectE->Start();
+		m_soundObjectE->Play();
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_2))
 	{
-		m_soundObjectEloop->Start();
+		m_soundObjectEloop->Play();
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_3))
 	{
@@ -155,7 +172,7 @@ void ExampleBasicsSound::OnDraw()
 
 	if (bqInput::IsKeyHit(bqInput::KEY_Z))
 	{
-		m_soundObjectStream->Start();
+		m_soundObjectStream->Play();
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_X))
 	{

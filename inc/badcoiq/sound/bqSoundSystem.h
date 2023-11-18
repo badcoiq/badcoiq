@@ -59,6 +59,7 @@ public:
 
 	uint32_t GetEngineNum();
 	bqSoundEngine* GetEngine(uint32_t);
+	bqSoundEngine* GetEngineByName(const char*);
 };
 
 #endif

@@ -49,9 +49,11 @@ public:
 	virtual ~bqSoundObject() {}
 	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
 
-	virtual void Start() = 0;
+	virtual void Play() = 0;
 	virtual void Stop() = 0;
-	//virtual void Pause() = 0;
+	virtual void Pause() = 0;
+	virtual void Loop(bool) = 0;
+
 	//virtual void SetVolume(float) = 0;
 
 	// придётся перезапустить проигрывание
