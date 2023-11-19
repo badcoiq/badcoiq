@@ -60,7 +60,13 @@ struct bqSoundSourceInfo
 	// далее данные чисто для информации
 	// всё должно устанавливаться методами типа при генерировании
 	float m_time = 0.f;
-	uint32_t m_numOfSamples = 0; // m_sampleRate * m_time;
+	
+	uint32_t m_numOfSamples = 0;// когда 2 канала это 2 сэмпла или 1?
+	                            // Ну да, 1, так как например 44100 таким
+	                            // значением и остаётся даже если каналов больше 1.
+	// Тогда количество сэмплов это размер данных делёная на размер 1го сэмпла
+	//m_info.m_numOfSamples = dataSize / m_blockSize;
+
 	uint32_t m_bytesPerSample = 0; // m_bitsPerSample / 8;
 	// nBlockAlign
 	uint32_t m_blockSize = 0;// m_bytesPerSample * m_channels;

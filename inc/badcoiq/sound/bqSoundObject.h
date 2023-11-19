@@ -84,6 +84,19 @@ public:
 	bqSoundSourceData* m_sourceData = 0;
 };
 
+class bqSoundStreamObject
+{
+public:
+	bqSoundStreamObject() {}
+	virtual ~bqSoundStreamObject() {}
+	BQ_PLACEMENT_ALLOCATOR(bqSoundStreamObject);
+
+	virtual void Play() = 0;
+	//virtual void Stop() = 0;
+	//virtual void Pause() = 0;
+	//virtual void Loop(bool) = 0;
+};
+
 
 #endif
 

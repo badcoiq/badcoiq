@@ -26,47 +26,47 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "badcoiq.h"
+#pragma once
+#ifndef __BQ_SFile_H__
+#define __BQ_SFile_H__
 
-#include "badcoiq/sound/bqSoundSystem.h"
-#include "badcoiq.waveout.h"
-
-#pragma comment(lib, "Winmm.lib")
-
-extern "C"
+// Этот класс будет открывать файлы со звуком
+class bqSoundFile
 {
-	bqSoundEngine* BQ_CDECL bqSoundEngine_createWaveOut()
+	bqSoundSourceInfo m_info;
+	FILE* m_file = 0;
+	size_t m_dataSize = 0;
+	long m_firstDataBlock = 0;
+
+	bool _openWav(const char*);
+public:
+	bqSoundFile();
+	~bqSoundFile();
+	BQ_PLACEMENT_ALLOCATOR(bqSoundFile);
+
+	bool Open(const char*);
+	bool Open(const bqStringA&);
+	bool IsGood() { return m_file != 0; }
+
+	size_t Read(void* buffer, size_t size);
+
+	const bqSoundSourceInfo& GetSourceInfo();
+
+	enum class Type
 	{
-		bqSoundEngineWaveOut* o = bqCreate<bqSoundEngineWaveOut>();
-		return o;
-	}
-}
+		Wav
+	};
 
-bqSoundEngineWaveOut::bqSoundEngineWaveOut()
-{
-}
+	Type GetType() { return m_type; }
 
-bqSoundEngineWaveOut::~bqSoundEngineWaveOut()
-{
-}
+	size_t GetDataSize() { return m_dataSize; }
+
+private:
+	Type m_type = Type::Wav;
+};
 
 
-const char* bqSoundEngineWaveOut::GetName()
-{
-	return "WaveOut";
-}
 
-bqSoundObject* bqSoundEngineWaveOut::SummonObject(bqSound* s)
-{
-	return 0;
-}
+#endif
 
-bqSoundStreamObject* bqSoundEngineWaveOut::SummonStreamObject(const char*)
-{
-	return 0;
-}
 
-bqSoundStreamObject* bqSoundEngineWaveOut::SummonStreamObject(const bqStringA&)
-{
-	return 0;
-}

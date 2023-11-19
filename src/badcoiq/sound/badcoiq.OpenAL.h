@@ -51,6 +51,22 @@ public:
 	virtual void Loop(bool) override;
 };
 
+class bqSoundStreamObjectOpenAL : public bqSoundStreamObject
+{
+	friend void bqSoundStreamObjectOpenAL_thread(bqSoundStreamObjectOpenAL* context);
+
+	std::thread* m_thread = 0;
+	bqSoundFile* m_soundFile = 0;
+	bool m_threadRun = false;
+public:
+	bqSoundStreamObjectOpenAL(bqSoundFile*);
+	virtual ~bqSoundStreamObjectOpenAL();
+	BQ_PLACEMENT_ALLOCATOR(bqSoundStreamObjectOpenAL);
+
+	virtual void Play() override;
+};
+
+
 class bqSoundEngineOpenAL : public bqSoundEngine
 {
 	ALCdevice* m_device = 0;
@@ -71,6 +87,8 @@ public:
 
 	virtual const char* GetName() override;
 	virtual bqSoundObject* SummonObject(bqSound*) override;
+	virtual bqSoundStreamObject* SummonStreamObject(const char*) override;
+	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;
 
 	static ALenum CheckOpenALError(ALenum);
 };

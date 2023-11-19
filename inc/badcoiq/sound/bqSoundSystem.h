@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bqSound.h"
 #include "bqSoundObject.h"
+#include "bqSoundFile.h"
 
 
 #ifdef _WIN64
@@ -39,6 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #pragma comment(lib, "../../libs/openal/libs/Win32/OpenAL32.lib")
 #endif
+
+
 
 class bqSoundEngine
 {
@@ -48,6 +51,8 @@ public:
 
 	virtual const char* GetName() = 0;
 	virtual bqSoundObject* SummonObject(bqSound*) = 0;
+	virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
+	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
 };
 
 class bqSoundSystem

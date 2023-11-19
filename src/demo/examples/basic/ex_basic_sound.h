@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class DemoExample;
 class DemoApp;
+class bqSoundStreamObject;
 class ExampleBasicsSound : public DemoExample
 {
 	bqCamera* m_camera = 0;
@@ -39,7 +40,7 @@ class ExampleBasicsSound : public DemoExample
 	bqSoundObject* m_soundObjectE = 0;
 	bqSoundObject* m_soundObjectEloop = 0;
 	
-	bqSoundObject* m_soundObjectStream = 0;
+	bqSoundStreamObject* m_soundObjectStream = 0;
 
     void _onCamera();
 public:

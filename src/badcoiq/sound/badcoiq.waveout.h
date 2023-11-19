@@ -42,6 +42,8 @@ public:
 
 	virtual const char* GetName() override;
 	virtual bqSoundObject* SummonObject(bqSound*) override;
+	virtual bqSoundStreamObject* SummonStreamObject(const char*) override;
+	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;
 };
 
 #endif

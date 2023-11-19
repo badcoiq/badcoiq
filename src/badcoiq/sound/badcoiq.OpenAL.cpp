@@ -49,7 +49,7 @@ bqSoundEngineOpenAL::bqSoundEngineOpenAL()
 	{
 		m_context = alcCreateContext(m_device, NULL);
 		alcMakeContextCurrent(m_context);
-		m_eax = alIsExtensionPresent("EAX2.0");
+	//	m_eax = alIsExtensionPresent("EAX2.0");
 
 		ALCint vmajor = 0;
 		ALCint vminor = 0;
@@ -127,8 +127,6 @@ bqSoundEngineOpenAL::bqSoundEngineOpenAL()
 			bqLog::PrintInfo("Default Input: %s\n", alstr);
 
 
-		if(m_eax)
-			bqLog::PrintInfo("EAX 2.0\n");
 	}
 	else
 	{
@@ -245,6 +243,26 @@ ALenum bqSoundEngineOpenAL::CheckOpenALError(ALenum e)
 	return e;
 }
 
+bqSoundStreamObject* bqSoundEngineOpenAL::SummonStreamObject(const bqStringA& fn)
+{
+	return SummonStreamObject(fn.c_str());
+}
+
+bqSoundStreamObject* bqSoundEngineOpenAL::SummonStreamObject(const char* fn)
+{
+	BQ_ASSERT_ST(fn);
+
+	BQ_PTR_D(bqSoundFile,new_sf,new bqSoundFile());
+
+	if (new_sf->Open(fn))
+	{
+		bqSoundStreamObjectOpenAL* o = new bqSoundStreamObjectOpenAL(new_sf.Drop());
+		// может быть тут нужны ещё какие проверки
+		return o;
+	}
+	return 0;
+}
+
 // ==========================================================
 // 
 // 
@@ -301,4 +319,44 @@ void bqSoundObjectOpenAL::Loop(bool loop)
 	{
 		alSourcei(m_source, AL_LOOPING, AL_FALSE);
 	}
+}
+
+
+
+// =====================================================
+// 
+// 
+// 
+// =====================================================
+void bqSoundStreamObjectOpenAL_thread(bqSoundStreamObjectOpenAL* context)
+{
+	while (context->m_threadRun)
+	{
+
+	}
+}
+
+bqSoundStreamObjectOpenAL::bqSoundStreamObjectOpenAL(bqSoundFile* sf)
+	:
+	m_soundFile(sf)
+{
+	m_threadRun = true;
+	m_thread = new std::thread(bqSoundStreamObjectOpenAL_thread, this);
+}
+
+bqSoundStreamObjectOpenAL::~bqSoundStreamObjectOpenAL() 
+{
+	if (m_thread)
+	{
+		m_threadRun = false;
+		m_thread->join();
+		delete m_thread;
+	}
+
+	if (m_soundFile)
+		delete m_soundFile;
+}
+
+void bqSoundStreamObjectOpenAL::Play()
+{
 }
