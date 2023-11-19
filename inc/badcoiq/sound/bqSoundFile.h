@@ -40,6 +40,20 @@ class bqSoundFile
 	long m_currentDataBlock = 0;
 
 	bool _openWav(const char*);
+
+	using read_method = size_t(bqSoundFile::*)(void* buffer, size_t size);
+
+	enum class file_type
+	{
+		wav
+	}
+	m_fileType = file_type::wav;
+	
+	read_method m_readMethod = 0;
+
+	size_t _ReadWav(void* buffer, size_t size);
+
+
 public:
 	bqSoundFile();
 	~bqSoundFile();

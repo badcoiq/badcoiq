@@ -513,7 +513,6 @@ void bqSoundStreamObjectOpenAL::Play()
 	{
 		m_cmdTh = CommandForThread::Play;
 		m_state = bqSoundStreamObject::state_notplaying;
-		//m_soundFile->MoveToFirstDataBlock();
 	}
 }
 

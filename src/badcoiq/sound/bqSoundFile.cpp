@@ -35,6 +35,7 @@ extern bqFrameworkImpl* g_framework;
 
 bqSoundFile::bqSoundFile()
 {
+	m_readMethod = &bqSoundFile::_ReadWav;
 }
 
 bqSoundFile::~bqSoundFile()
@@ -175,16 +176,20 @@ bool bqSoundFile::Open(const char* fn)
 	return false;
 }
 
-size_t bqSoundFile::Read(void* buffer, size_t size)
+size_t bqSoundFile::_ReadWav(void* buffer, size_t size)
 {
-	BQ_ASSERT_ST(buffer);
-	BQ_ASSERT_ST(size);
-	
 	size_t rn = fread(buffer, 1, size, m_file);
 
 	m_currentDataBlock = ftell(m_file);
 
 	return rn;
+}
+
+size_t bqSoundFile::Read(void* buffer, size_t size)
+{
+	BQ_ASSERT_ST(buffer);
+	BQ_ASSERT_ST(size);
+	return (this->*m_readMethod)(buffer, size);
 }
 
 const bqSoundSourceInfo& bqSoundFile::GetSourceInfo()
