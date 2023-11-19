@@ -122,8 +122,9 @@ bool bqSoundFile::_openWav(const char* fn)
 							m_info.m_time = float(m_info.m_numOfSamples) / float(sampleRate);
 
 							m_firstDataBlock = ftell(m_file);
+							m_currentDataBlock = m_firstDataBlock;
 
-							printf("TIME: %f\n", m_info.m_time);
+						//	printf("TIME: %f\n", m_info.m_time);
 
 							good = true;
 						}
@@ -179,7 +180,11 @@ size_t bqSoundFile::Read(void* buffer, size_t size)
 	BQ_ASSERT_ST(buffer);
 	BQ_ASSERT_ST(size);
 	
-	return 0;
+	size_t rn = fread(buffer, 1, size, m_file);
+
+	m_currentDataBlock = ftell(m_file);
+
+	return rn;
 }
 
 const bqSoundSourceInfo& bqSoundFile::GetSourceInfo()
@@ -187,4 +192,27 @@ const bqSoundSourceInfo& bqSoundFile::GetSourceInfo()
 	return m_info;
 }
 
+bqSoundFormat bqSoundFile::GetFormat()
+{
+	bqSoundFormat r = bqSoundFormat::unsupported;
+	
+	r = bqSoundFormatFindFormat(m_info);
 
+	return r;
+}
+
+void bqSoundFile::MoveToFirstDataBlock()
+{
+	m_currentDataBlock = m_firstDataBlock;
+	fseek(m_file, m_currentDataBlock, SEEK_SET);
+}
+
+long bqSoundFile::Tell()
+{
+	return ftell(m_file);
+}
+
+void bqSoundFile::Seek(long v)
+{
+	fseek(m_file, v, SEEK_SET);
+}

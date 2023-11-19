@@ -37,6 +37,7 @@ class bqSoundFile
 	FILE* m_file = 0;
 	size_t m_dataSize = 0;
 	long m_firstDataBlock = 0;
+	long m_currentDataBlock = 0;
 
 	bool _openWav(const char*);
 public:
@@ -60,6 +61,12 @@ public:
 	Type GetType() { return m_type; }
 
 	size_t GetDataSize() { return m_dataSize; }
+	
+	bqSoundFormat GetFormat();
+
+	void MoveToFirstDataBlock();
+	long Tell();
+	void Seek(long);
 
 private:
 	Type m_type = Type::Wav;

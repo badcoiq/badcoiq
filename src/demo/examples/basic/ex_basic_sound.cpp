@@ -118,7 +118,7 @@ bool ExampleBasicsSound::Init()
 //	m_soundObjectEloop->Use3D(true);
 //	m_soundObjectEloop->SetEmitterPosition(bqVec3());
 
-	m_soundObjectStream = se->SummonStreamObject(bqFramework::GetAppPathA() + "../data/sounds/16bit2ch.wav");
+	m_soundObjectStream = se->SummonStreamObject(bqFramework::GetAppPathA() + "../data/sounds/16bit2ch_MakeMono.wav");
 	//4m_soundObjectStream->Loop(1);
 	//m_soundObjectStream->SetVolume(0.19);
 
@@ -168,11 +168,11 @@ void ExampleBasicsSound::OnDraw()
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_X))
 	{
-//		m_soundObjectStream->Play();
+		m_soundObjectStream->Stop();
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_C))
 	{
-//		m_soundObjectStream->Pause();
+		m_soundObjectStream->Pause();
 	}
 
 	static float volume = 0.5f;

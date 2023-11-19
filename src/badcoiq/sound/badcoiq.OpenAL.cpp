@@ -176,18 +176,18 @@ bqSoundObject* bqSoundEngineOpenAL::SummonObject(bqSound* s)
 			return 0;
 
 		ALenum format = 0;
-		switch (s->m_soundSource->m_type)
+		switch (s->m_soundSource->m_format)
 		{
-		case bqSoundSource::Type::uint8_mono_44100:
+		case bqSoundFormat::uint8_mono_44100:
 			format = AL_FORMAT_MONO8;
 			break;
-		case bqSoundSource::Type::uint8_stereo_44100:
+		case bqSoundFormat::uint8_stereo_44100:
 			format = AL_FORMAT_STEREO8;
 			break;
-		case bqSoundSource::Type::uint16_mono_44100:
+		case bqSoundFormat::uint16_mono_44100:
 			format = AL_FORMAT_MONO16;
 			break;
-		case bqSoundSource::Type::uint16_stereo_44100:
+		case bqSoundFormat::uint16_stereo_44100:
 			format = AL_FORMAT_STEREO16;
 			break;
 		}
@@ -332,7 +332,123 @@ void bqSoundStreamObjectOpenAL_thread(bqSoundStreamObjectOpenAL* context)
 {
 	while (context->m_threadRun)
 	{
+		switch (context->m_cmdTh)
+		{
+		case bqSoundStreamObjectOpenAL::CommandForThread::Play:
+		{
+			if (context->m_pause)
+			{
+				context->m_pause = false;
+				context->m_soundFile->Seek(context->m_pausePos);
+			}
+			else
+			{
+				alSourceStop(context->m_source);
+				ALint iBuffersProcessed = 0;
+				ALuint b = 0;
+				alGetSourcei(context->m_source, AL_BUFFERS_PROCESSED, &iBuffersProcessed);
+				for (int iLoop = 0; iLoop < iBuffersProcessed; ++iLoop)
+					alSourceUnqueueBuffers(context->m_source, 1, &b);
+				alSourcei(context->m_source, AL_BUFFER, 0);
+			
+				for (int iLoop = 0; iLoop < 4; ++iLoop)
+				{
+					uint8_t buffer[0xfffe];
 
+					size_t readNum = context->m_soundFile->Read(buffer, 0xfffe);
+
+					if (readNum)
+					{
+						alBufferData(context->m_buffers[iLoop], context->m_format, buffer, readNum, context->m_soundFile->GetSourceInfo().m_sampleRate);
+						if (bqSoundEngineOpenAL::CheckOpenALError(alGetError()) != AL_NO_ERROR)
+							return;
+
+						alSourceQueueBuffers(context->m_source, 1, &context->m_buffers[iLoop]);
+						if (bqSoundEngineOpenAL::CheckOpenALError(alGetError()) != AL_NO_ERROR)
+							return;
+					}
+				}
+			}
+
+			alSourcePlay(context->m_source);
+			if (bqSoundEngineOpenAL::CheckOpenALError(alGetError()) != AL_NO_ERROR)
+				return;
+			context->m_cmdTh = bqSoundStreamObjectOpenAL::CommandForThread::Null;
+			context->m_state = bqSoundStreamObject::state_playing;
+		}break;
+		case bqSoundStreamObjectOpenAL::CommandForThread::Stop:
+		{
+			alSourceStop(context->m_source);
+			context->m_cmdTh = bqSoundStreamObjectOpenAL::CommandForThread::Null;
+			context->m_state = bqSoundStreamObject::state_notplaying;
+		}break;
+		case bqSoundStreamObjectOpenAL::CommandForThread::Pause:
+		{
+			//alSourceStop(context->m_source);
+			context->m_cmdTh = bqSoundStreamObjectOpenAL::CommandForThread::Null;
+			context->m_state = bqSoundStreamObject::state_notplaying;
+			alSourcePause(context->m_source);
+			context->m_pause = true;
+			context->m_pausePos = context->m_soundFile->Tell();
+		}break;
+		}
+
+
+		if (context->m_state == bqSoundStreamObject::state_playing
+			&& !context->m_pause)
+		{
+			ALint iBuffersProcessed = 0;
+			alGetSourcei(context->m_source, AL_BUFFERS_PROCESSED, &iBuffersProcessed);
+			while (iBuffersProcessed)
+			{
+				// Remove the Buffer from the Queue.  (uiBuffer contains the Buffer ID for the unqueued Buffer)
+				ALuint uiBuffer = 0;
+				alSourceUnqueueBuffers(context->m_source, 1, &uiBuffer);
+
+				// Read more audio data (if there is any)
+				uint8_t buffer[0xfffe];
+				size_t readNum = context->m_soundFile->Read(buffer, 0xfffe);
+				if (readNum)
+				{
+					alBufferData(
+						uiBuffer,
+						context->m_format,
+						buffer,
+						readNum,
+						context->m_soundFile->GetSourceInfo().m_sampleRate);
+					alSourceQueueBuffers(context->m_source, 1, &uiBuffer);
+				}
+
+				iBuffersProcessed--;
+			}
+
+			ALint iState = 0;
+			alGetSourcei(context->m_source, AL_SOURCE_STATE, &iState);
+			if (iState != AL_PLAYING)
+			{
+				ALint iQueuedBuffers = 0;
+				alGetSourcei(context->m_source, AL_BUFFERS_QUEUED, &iQueuedBuffers);
+				if (iQueuedBuffers)
+				{
+					alSourcePlay(context->m_source);
+				}
+				else
+				{
+					alSourceStop(context->m_source);
+
+					if (context->m_loop)
+					{
+						context->m_cmdTh = bqSoundStreamObjectOpenAL::CommandForThread::Play;
+						context->m_soundFile->MoveToFirstDataBlock();
+					}
+					else
+					{
+						context->m_cmdTh = bqSoundStreamObjectOpenAL::CommandForThread::Null;
+						context->m_state = bqSoundStreamObject::state_notplaying;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -342,6 +458,34 @@ bqSoundStreamObjectOpenAL::bqSoundStreamObjectOpenAL(bqSoundFile* sf)
 {
 	m_threadRun = true;
 	m_thread = new std::thread(bqSoundStreamObjectOpenAL_thread, this);
+
+	alGenBuffers(4, m_buffers);
+	if (bqSoundEngineOpenAL::CheckOpenALError(alGetError()) != AL_NO_ERROR)
+		return;
+
+	alGenSources(1, &m_source);
+	if (bqSoundEngineOpenAL::CheckOpenALError(alGetError()) != AL_NO_ERROR)
+		return;
+
+	auto bqformat = sf->GetFormat();
+
+	switch (bqformat)
+	{
+	case bqSoundFormat::uint8_mono_44100:
+		m_format = AL_FORMAT_MONO8;
+		break;
+	case bqSoundFormat::uint8_stereo_44100:
+		m_format = AL_FORMAT_STEREO8;
+		break;
+	case bqSoundFormat::uint16_mono_44100:
+		m_format = AL_FORMAT_MONO16;
+		break;
+	case bqSoundFormat::uint16_stereo_44100:
+		m_format = AL_FORMAT_STEREO16;
+		break;
+	}
+
+	
 }
 
 bqSoundStreamObjectOpenAL::~bqSoundStreamObjectOpenAL() 
@@ -353,10 +497,43 @@ bqSoundStreamObjectOpenAL::~bqSoundStreamObjectOpenAL()
 		delete m_thread;
 	}
 
+	if (m_source)
+		alDeleteSources(1, &m_source);
+
+	if (m_buffers)
+		alDeleteBuffers(4, m_buffers);
+
 	if (m_soundFile)
 		delete m_soundFile;
 }
 
 void bqSoundStreamObjectOpenAL::Play()
 {
+	if (m_state != bqSoundStreamObject::state_playing)
+	{
+		m_cmdTh = CommandForThread::Play;
+		m_state = bqSoundStreamObject::state_notplaying;
+		//m_soundFile->MoveToFirstDataBlock();
+	}
+}
+
+void bqSoundStreamObjectOpenAL::Stop()
+{
+	m_cmdTh = CommandForThread::Stop;
+	m_soundFile->MoveToFirstDataBlock();
+	m_pause = false;
+}
+
+void bqSoundStreamObjectOpenAL::Pause()
+{
+	if (m_state == bqSoundStreamObject::state_playing)
+	{
+		m_cmdTh = CommandForThread::Pause;
+		
+	}
+}
+
+void bqSoundStreamObjectOpenAL::Loop(bool v)
+{
+	m_loop = v;
 }

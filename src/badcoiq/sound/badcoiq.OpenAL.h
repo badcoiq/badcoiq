@@ -58,12 +58,32 @@ class bqSoundStreamObjectOpenAL : public bqSoundStreamObject
 	std::thread* m_thread = 0;
 	bqSoundFile* m_soundFile = 0;
 	bool m_threadRun = false;
+	long m_pausePos = 0;
+	ALuint m_source = 0;
+	ALuint m_buffers[4];
+	ALenum m_format = 0;
+	
+	bool m_pause = false;
+
+	enum class CommandForThread
+	{
+		Null,
+		Play,
+		Pause,
+		Stop,
+	};
+
+	CommandForThread m_cmdTh = CommandForThread::Null;
+
 public:
 	bqSoundStreamObjectOpenAL(bqSoundFile*);
 	virtual ~bqSoundStreamObjectOpenAL();
 	BQ_PLACEMENT_ALLOCATOR(bqSoundStreamObjectOpenAL);
 
 	virtual void Play() override;
+	virtual void Stop() override;
+	virtual void Pause() override;
+	virtual void Loop(bool) override;
 };
 
 

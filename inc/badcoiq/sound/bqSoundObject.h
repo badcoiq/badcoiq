@@ -92,9 +92,19 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundStreamObject);
 
 	virtual void Play() = 0;
-	//virtual void Stop() = 0;
-	//virtual void Pause() = 0;
-	//virtual void Loop(bool) = 0;
+	virtual void Stop() = 0;
+	virtual void Pause() = 0;
+	virtual void Loop(bool) = 0;
+
+	enum
+	{
+		state_notplaying,
+		state_playing,
+	};
+	uint32_t m_state = state_notplaying;
+
+	bqSoundFormat m_format = bqSoundFormat::unsupported;
+	bool m_loop = true;
 };
 
 

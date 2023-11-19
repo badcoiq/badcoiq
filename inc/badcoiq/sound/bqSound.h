@@ -50,6 +50,18 @@ struct bqSoundSourceData
 	uint32_t m_dataSize = 0;
 };
 
+enum class bqSoundFormat
+{
+	uint8_mono_44100,
+	uint8_stereo_44100,
+	uint16_mono_44100,   // поддерживаемое
+	uint16_stereo_44100,   // поддерживаемое
+	unsupported
+};
+
+bqSoundFormat bqSoundFormatFindFormat(const bqSoundSourceInfo&);
+
+
 struct bqSoundSourceInfo
 {
 	uint32_t m_sampleRate = 44100;
@@ -86,15 +98,8 @@ public:
 	bqSoundSourceInfo m_sourceInfo;
 	
 	// Всё не поддерживаемое должно конвертироваться в поддерживаемое
-	enum class Type
-	{
-		uint8_mono_44100,
-		uint8_stereo_44100,
-		uint16_mono_44100,   // поддерживаемое
-		uint16_stereo_44100,   // поддерживаемое
-		unsupported
-	};
-	Type m_type = Type::uint16_mono_44100;
+	bqSoundFormat m_format = bqSoundFormat::uint16_mono_44100;
+
 	
 	// how:
 	//  0 - использовать первый канал
@@ -106,7 +111,6 @@ public:
 	void Make16bits();
 	//void FlipChannels();
 
-	static Type FindType(const bqSoundSourceInfo&);
 };
 
 // звук загружается сюда
@@ -143,7 +147,7 @@ public:
 
 	void Clear();
 
-	void Convert(bqSoundSource::Type);
+	void Convert(bqSoundFormat);
 
 	// Вычислить время по битрейту и прочим параметрам
 	float CalculateTime();

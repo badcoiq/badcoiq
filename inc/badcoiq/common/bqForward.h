@@ -92,6 +92,7 @@ class bqSceneObject;
 class bqSoundObject;
 class bqSkeleton;
 class bqSkeletonAnimation;
+struct bqSoundSourceInfo;
 
 #endif
 
