@@ -53,6 +53,8 @@ public:
 	virtual bqSoundObject* SummonObject(bqSound*) = 0;
 	virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
 	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
+
+	virtual void Test(const bqVec3& pos) = 0;
 };
 
 class bqSoundSystem

@@ -615,6 +615,8 @@ public:
 	T w = static_cast<T>(0);
 	T* Data() { return &x; }
 
+	bqVec3_t<T> GetVec3() { return bqVec3_t<T>(x, y, z); }
+
 	bqRect GetRect() { return bqRect((bqRect::_type)x, (bqRect::_type)y, (bqRect::_type)z, (bqRect::_type)w); }
 	bqRectf GetRectf() { return bqRectf((bqRect::_type)x, (bqRect::_type)y, (bqRect::_type)z, (bqRect::_type)w); }
 };

@@ -31,6 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/sound/bqSoundSystem.h"
 #include "badcoiq.OpenAL.h"
 
+#include "badcoiq/math/bqMath.h"
+
 
 extern "C"
 {
@@ -263,6 +265,20 @@ bqSoundStreamObject* bqSoundEngineOpenAL::SummonStreamObject(const char* fn)
 	return 0;
 }
 
+void bqSoundEngineOpenAL::Test(const bqVec3& pos)
+{
+	alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
+	float directionvect[6];
+	directionvect[0] = 1.f;
+	directionvect[1] = 0;
+	directionvect[2] = 0.f;
+	directionvect[3] = 0;
+	directionvect[4] = 1;
+	directionvect[5] = 0;
+	alListenerfv(AL_ORIENTATION, directionvect);
+
+}
+
 // ==========================================================
 // 
 // 
@@ -290,6 +306,7 @@ bool bqSoundObjectOpenAL::Init(ALuint buffer)
 		return false;
 
 	alSourcei(m_source, AL_BUFFER, buffer);
+	
 
 	return true;
 }
@@ -297,6 +314,12 @@ bool bqSoundObjectOpenAL::Init(ALuint buffer)
 void bqSoundObjectOpenAL::Play()
 {
 	alSourcePlay(m_source);
+	
+	float pos[3] = { 0.f,0.f,0.f };
+	float vel[3] = { 1.f,0.f,0.f };
+	alSourcei(m_source, AL_SOURCE_RELATIVE, AL_TRUE);
+	alSourcefv(m_source, AL_POSITION, pos);
+	alSourcefv(m_source, AL_VELOCITY, vel);
 }
 
 void bqSoundObjectOpenAL::Stop()

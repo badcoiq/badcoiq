@@ -110,6 +110,8 @@ public:
 	virtual bqSoundStreamObject* SummonStreamObject(const char*) override;
 	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;
 
+	virtual void Test(const bqVec3& pos) override;
+
 	static ALenum CheckOpenALError(ALenum);
 };
 

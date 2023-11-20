@@ -70,3 +70,6 @@ bqSoundStreamObject* bqSoundEngineWaveOut::SummonStreamObject(const bqStringA&)
 {
 	return 0;
 }
+void bqSoundEngineWaveOut::Test(const bqVec3& pos)
+{
+}
