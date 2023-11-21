@@ -192,7 +192,7 @@ size_t bqSoundFile::Read(void* buffer, size_t size)
 	return (this->*m_readMethod)(buffer, size);
 }
 
-const bqSoundSourceInfo& bqSoundFile::GetSourceInfo()
+const bqSoundBufferInfo& bqSoundFile::GetBufferInfo()
 {
 	return m_info;
 }

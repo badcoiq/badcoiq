@@ -54,24 +54,6 @@ public:
 	virtual void Pause() = 0;
 	virtual void Loop(bool) = 0;
 
-	//virtual void SetVolume(float) = 0;
-
-	// придётся перезапустить проигрывание
-	// loops - 0 без повторение
-	//         -1 (0xFFFFFFFF) бесконечное повторение
-	//         остальные значения это количество повторов.
-	//virtual void EnableLoop(uint32_t loops) = 0;
-	//virtual void DisableLoop() = 0;
-
-	// Воспроизводить будет без учёта играет ли уже или нет.
-	// Нет проверок.
-	// Нет вызовов коллбэка.
-	//virtual void SetSource(void* data, uint32_t dataSize) = 0;
-	//virtual void PlaySource() = 0;
-	//virtual void StopSource() = 0;
-
-	//virtual void Update() = 0;
-
 	bqSoundObjectCallback* m_callback = 0;
 
 	enum
@@ -81,7 +63,7 @@ public:
 	};
 	uint32_t m_state = state_notplaying;
 
-	bqSoundSourceData* m_sourceData = 0;
+	bqSoundBufferData* m_bufferData = 0;
 };
 
 class bqSoundStreamObject

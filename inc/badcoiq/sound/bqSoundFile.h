@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Этот класс будет открывать файлы со звуком
 class bqSoundFile
 {
-	bqSoundSourceInfo m_info;
+	bqSoundBufferInfo m_info;
 	FILE* m_file = 0;
 	size_t m_dataSize = 0;
 	long m_firstDataBlock = 0;
@@ -65,7 +65,7 @@ public:
 
 	size_t Read(void* buffer, size_t size);
 
-	const bqSoundSourceInfo& GetSourceInfo();
+	const bqSoundBufferInfo& GetBufferInfo();
 
 	enum class Type
 	{

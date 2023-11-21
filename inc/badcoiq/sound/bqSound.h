@@ -44,7 +44,7 @@ enum class bqSoundWaveType
 	saw
 };
 
-struct bqSoundSourceData
+struct bqSoundBufferData
 {
 	uint8_t* m_data = 0;
 	uint32_t m_dataSize = 0;
@@ -59,10 +59,10 @@ enum class bqSoundFormat
 	unsupported
 };
 
-bqSoundFormat bqSoundFormatFindFormat(const bqSoundSourceInfo&);
+bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo&);
 
 
-struct bqSoundSourceInfo
+struct bqSoundBufferInfo
 {
 	uint32_t m_sampleRate = 44100;
 	uint32_t m_channels = 1;
@@ -87,15 +87,15 @@ struct bqSoundSourceInfo
 // возможно лучше это сунуть в bqSound
 // думал что bqSound будет выступать в качестве управляющего объекта
 // но теперь есть bqSoundObject
-class bqSoundSource
+class bqSoundBuffer
 {
 public:
-	bqSoundSource();
-	~bqSoundSource();
-	BQ_PLACEMENT_ALLOCATOR(bqSoundSource);
+	bqSoundBuffer();
+	~bqSoundBuffer();
+	BQ_PLACEMENT_ALLOCATOR(bqSoundBuffer);
 
-	bqSoundSourceData m_sourceData;
-	bqSoundSourceInfo m_sourceInfo;
+	bqSoundBufferData m_bufferData;
+	bqSoundBufferInfo m_bufferInfo;
 	
 	// Всё не поддерживаемое должно конвертироваться в поддерживаемое
 	bqSoundFormat m_format = bqSoundFormat::uint16_mono_44100;
@@ -152,9 +152,7 @@ public:
 	// Вычислить время по битрейту и прочим параметрам
 	float CalculateTime();
 
-//	bqSoundSource* DropSource();
-
-	bqSoundSource* m_soundSource = 0;
+	bqSoundBuffer* m_soundBuffer = 0;
 };
 
 #endif

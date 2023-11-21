@@ -162,12 +162,6 @@
     <ClCompile Include="..\..\src\badcoiq\geometry\bqSkeleton.cpp">
       <Filter>Source Files\geometry</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\badcoiq\sound\badcoiq.waveout.cpp">
-      <Filter>Source Files\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\badcoiq\sound\badcoiq.OpenAL.cpp">
-      <Filter>Source Files\sound</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundFile.cpp">
       <Filter>Source Files\sound</Filter>
     </ClCompile>

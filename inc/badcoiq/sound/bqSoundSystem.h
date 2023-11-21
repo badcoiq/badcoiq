@@ -34,39 +34,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bqSoundObject.h"
 #include "bqSoundFile.h"
 
-
-#ifdef _WIN64
-#pragma comment(lib, "../../libs/openal/libs/Win64/OpenAL32.lib")
-#else
-#pragma comment(lib, "../../libs/openal/libs/Win32/OpenAL32.lib")
-#endif
-
-
-
-class bqSoundEngine
-{
-public:
-	bqSoundEngine() {}
-	virtual ~bqSoundEngine() {}
-
-	virtual const char* GetName() = 0;
-	virtual bqSoundObject* SummonObject(bqSound*) = 0;
-	virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
-	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
-
-	virtual void Test(const bqVec3& pos) = 0;
-};
-
 class bqSoundSystem
 {
-	bqArray<bqSoundEngine*> m_engines;
 public:
 	bqSoundSystem();
 	~bqSoundSystem();
 
-	uint32_t GetEngineNum();
-	bqSoundEngine* GetEngine(uint32_t);
-	bqSoundEngine* GetEngineByName(const char*);
+	//virtual bqSoundObject* SummonObject(bqSound*) = 0;
+	//virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
+	//virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
 };
 
 #endif
