@@ -30,21 +30,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
-#include "bqSoundSystemInternal.h"
+#include "bqSoundSystemImpl.h"
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
-extern "C"
-{
-	//...
-}
-
-
-bqSoundSystem::bqSoundSystem()
+bqSoundSystemImpl::bqSoundSystemImpl()
 {
 }
 
-bqSoundSystem::~bqSoundSystem()
+bqSoundSystemImpl::~bqSoundSystemImpl()
 {
 }
+
+bqSoundObject* bqSoundSystemImpl::SummonObject(const char* fn)
+{
+	BQ_ASSERT_ST(fn);
+	return 0;
+}
+
+bqSoundObject* bqSoundSystemImpl::SummonObject(bqSound* sound)
+{
+	BQ_ASSERT_ST(sound);
+	return 0;
+}
+
+bqSoundStreamObject* bqSoundSystemImpl::SummonStreamObject(const char* fn)
+{
+	BQ_ASSERT_ST(fn);
+	return 0;
+}
+
+bqSoundStreamObject* bqSoundSystemImpl::SummonStreamObject(const bqStringA& str)
+{
+	return SummonStreamObject(str.c_str());
+}
+

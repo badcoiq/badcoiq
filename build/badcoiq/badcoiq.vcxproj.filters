@@ -153,9 +153,6 @@
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIScrollbar.cpp">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundSystem.cpp">
-      <Filter>Source Files\sound</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\sound\bqSound.cpp">
       <Filter>Source Files\sound</Filter>
     </ClCompile>
@@ -163,6 +160,9 @@
       <Filter>Source Files\geometry</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundFile.cpp">
+      <Filter>Source Files\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundSystemImpl.cpp">
       <Filter>Source Files\sound</Filter>
     </ClCompile>
   </ItemGroup>

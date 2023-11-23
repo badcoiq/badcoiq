@@ -25,36 +25,25 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_SS_H__
-#define __BQ_SS_H__
+#ifndef _BQ_SNDSSTMIMPL_H_
+#define _BQ_SNDSSTMIMPL_H_
 
-#include "bqSound.h"
-#include "bqSoundObject.h"
-#include "bqSoundFile.h"
+#include <thread>
+#include <mutex>
 
-// * спрячу реализацию в наследнике
-// Перед использованием нужно инициализировать.
-class bqSoundSystem
+#include "badcoiq/sound/bqSoundSystem.h"
+
+class bqSoundSystemImpl : public bqSoundSystem
 {
 public:
-	bqSoundSystem() {};
-	virtual ~bqSoundSystem() {};
+	bqSoundSystemImpl();
+	virtual ~bqSoundSystemImpl();
 
-	// Загрузить звук и создать объект
-	virtual bqSoundObject* SummonObject(const char*) = 0;
-	
-	// Создать объект из имеющегося звука
-	virtual bqSoundObject* SummonObject(bqSound*) = 0;
-
-	// Создать объект для воспроизведения звука в отдельной нитке.
-	// Файл будет открыт для чтения и потихоньку будет происходить
-	// чтение.
-	virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
-	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
+	virtual bqSoundObject* SummonObject(const char*) override;
+	virtual bqSoundObject* SummonObject(bqSound*) override;
+	virtual bqSoundStreamObject* SummonStreamObject(const char*) override;
+	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;
 };
 
 #endif
-
-
