@@ -35,12 +35,155 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
+#include <Windows.h>
+#include <AudioClient.h>
+#include <AudioPolicy.h>
+#include <functiondiscoverykeys.h>
+#include <strsafe.h>
+
+
 bqSoundSystemImpl::bqSoundSystemImpl()
 {
 }
 
 bqSoundSystemImpl::~bqSoundSystemImpl()
 {
+    if (m_device) m_device->Release();
+}
+
+//
+//  Retrieves the device friendly name for a particular device in a device collection.
+//
+LPWSTR GetDeviceName(IMMDeviceCollection* DeviceCollection, UINT DeviceIndex)
+{
+    IMMDevice* device;
+    LPWSTR deviceId;
+    HRESULT hr;
+
+    hr = DeviceCollection->Item(DeviceIndex, &device);
+    if (FAILED(hr))
+    {
+        printf("Unable to get device %d: %x\n", DeviceIndex, hr);
+        return NULL;
+    }
+    hr = device->GetId(&deviceId);
+    if (FAILED(hr))
+    {
+        printf("Unable to get device %d id: %x\n", DeviceIndex, hr);
+        return NULL;
+    }
+
+    IPropertyStore* propertyStore;
+    hr = device->OpenPropertyStore(STGM_READ, &propertyStore);
+    if (device)
+    {
+        device->Release();
+        device = 0;
+    }
+    if (FAILED(hr))
+    {
+        printf("Unable to open device %d property store: %x\n", DeviceIndex, hr);
+        return NULL;
+    }
+
+    PROPVARIANT friendlyName;
+    PropVariantInit(&friendlyName);
+    hr = propertyStore->GetValue(PKEY_Device_FriendlyName, &friendlyName);
+    if (propertyStore)
+    {
+        propertyStore->Release();
+        propertyStore = 0;
+    }
+
+    if (FAILED(hr))
+    {
+        printf("Unable to retrieve friendly name for device %d : %x\n", DeviceIndex, hr);
+        return NULL;
+    }
+
+    wchar_t deviceName[128];
+    hr = StringCbPrintf(deviceName, sizeof(deviceName), L"%s (%s)", friendlyName.vt != VT_LPWSTR ? L"Unknown" : friendlyName.pwszVal, deviceId);
+    if (FAILED(hr))
+    {
+        printf("Unable to format friendly name for device %d : %x\n", DeviceIndex, hr);
+        return NULL;
+    }
+
+    PropVariantClear(&friendlyName);
+    CoTaskMemFree(deviceId);
+
+    wchar_t* returnValue = _wcsdup(deviceName);
+    if (returnValue == NULL)
+    {
+        printf("Unable to allocate buffer for return\n");
+        return NULL;
+    }
+    return returnValue;
+}
+
+bool bqSoundSystemImpl::Init()
+{
+    bool retValue = true;
+    IMMDeviceEnumerator* deviceEnumerator = NULL;
+    IMMDeviceCollection* deviceCollection = NULL;
+    bqLog::PrintInfo("Init sound system...\n");
+
+    HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&deviceEnumerator));
+    if (FAILED(hr))
+    {
+        bqLog::PrintError("Unable to instantiate device enumerator: %x\n", hr);
+        retValue = false;
+    }
+
+
+    hr = deviceEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &deviceCollection);
+    if (FAILED(hr))
+    {
+        bqLog::PrintError("Unable to retrieve device collection: %x\n", hr);
+        retValue = false;
+    }
+
+    UINT deviceCount;
+    hr = deviceCollection->GetCount(&deviceCount);
+    if (FAILED(hr))
+    {
+        bqLog::PrintError("Unable to get device collection length: %x\n", hr);
+        retValue = false;
+    }
+
+    bqLog::PrintInfo("Output devices:\n");
+    for (UINT i = 0; i < deviceCount; i += 1)
+    {
+        LPWSTR deviceName;
+
+        deviceName = GetDeviceName(deviceCollection, i);
+        if (deviceName == NULL)
+        {
+            retValue = false;
+        }
+        else
+        {
+            bqLog::PrintInfo("    %d:  %S\n", i + 1, deviceName);
+            free(deviceName);
+        }
+    }
+
+    hr = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &m_device);
+    if (FAILED(hr))
+    {
+        retValue = false;
+        bqLog::PrintInfo("GetDefaultAudioEndpoint\n");
+    }
+
+    if (deviceCollection) deviceCollection->Release();
+    if (deviceEnumerator) deviceEnumerator->Release();
+
+    if (!retValue)
+    {
+        if (m_device) m_device->Release();
+    }
+
+	return retValue;
 }
 
 bqSoundObject* bqSoundSystemImpl::SummonObject(const char* fn)

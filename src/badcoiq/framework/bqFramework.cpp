@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/geometry/bqPolygonMesh.h"
 #include "badcoiq/geometry/bqMeshLoader.h"
 #include "badcoiq/sound/bqSoundSystem.h"
+#include "../sound/bqSoundSystemImpl.h"
 
 #include "badcoiq/common/bqTextBufferReader.h"
 #include "badcoiq/archive/bqArchive.h"
@@ -1121,7 +1122,12 @@ bqSoundSystem* bqFramework::GetSoundSystem()
 {
 	if (!g_framework->m_soundSystem)
 	{
-		g_framework->m_soundSystem = bqCreate<bqSoundSystem>();
+		g_framework->m_soundSystem = bqCreate<bqSoundSystemImpl>();
+		if (!g_framework->m_soundSystem->Init())
+		{
+			bqDestroy(g_framework->m_soundSystem);
+			g_framework->m_soundSystem = 0;
+		}
 	}
 
 	return g_framework->m_soundSystem;

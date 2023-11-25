@@ -41,8 +41,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <thread>
 #include <deque>
 
-#include "../sound/bqSoundSystemInternal.h"
-
 class bqFrameworkCallbackDefault : public bqFrameworkCallback
 {
 public:
@@ -50,6 +48,8 @@ public:
 	virtual ~bqFrameworkCallbackDefault() {}
 	virtual void OnMessage() {}
 };
+
+class bqSoundSystemImpl;
 
 class bqFrameworkImpl
 {
@@ -113,7 +113,7 @@ public:
 	bqCursor* m_activeCursor = 0;
 	void _initDefaultCursors();
 
-	bqSoundSystem* m_soundSystem = 0;
+	bqSoundSystemImpl* m_soundSystem = 0;
 };
 
 

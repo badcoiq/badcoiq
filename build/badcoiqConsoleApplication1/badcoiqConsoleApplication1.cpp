@@ -330,8 +330,6 @@ int main()
                 sld->m_alignment = bqGUIElement::Alignment::Center;
                 bqFramework::RebuildGUI();
 
-                auto se = bqFramework::GetSoundSystem()->GetEngine(0);
-
                 bqSound sound1;
                 bqSound sound2;
                 bqSound sound3;

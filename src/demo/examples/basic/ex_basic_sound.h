@@ -42,8 +42,6 @@ class ExampleBasicsSound : public DemoExample
 	
 	bqSoundStreamObject* m_soundObjectStream = 0;
 
-	bqSoundEngine* m_soundEngine = 0;
-
     void _onCamera();
 public:
 	ExampleBasicsSound(DemoApp*);

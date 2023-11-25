@@ -34,11 +34,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
+
+#include <MMDeviceAPI.h>
+
 class bqSoundSystemImpl : public bqSoundSystem
 {
+	IMMDevice* m_device = NULL;
+
 public:
 	bqSoundSystemImpl();
 	virtual ~bqSoundSystemImpl();
+
+	bool Init();
 
 	virtual bqSoundObject* SummonObject(const char*) override;
 	virtual bqSoundObject* SummonObject(bqSound*) override;
