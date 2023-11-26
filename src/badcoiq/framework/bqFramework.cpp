@@ -114,6 +114,7 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 {
 	BQ_ASSERT_STC(cb, "You need to create callback class for bqFramework");
 	BQ_ASSERT_STC(!g_framework, "You can call bqFramework::Start only once");
+	bqLog::PrintInfo("Init BADCOIQ\n");
 	if (!g_framework)
 	{
 		g_framework = new bqFrameworkImpl();
@@ -134,7 +135,11 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		device.hwndTarget = 0;
 		RegisterRawInputDevices(&device, 1, sizeof device);
 
-		
+		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Unable to initialize COM: %x\n", hr);
+		}
 #endif
 
 		g_framework->m_appPath.to_utf8(g_framework->m_appPathA);
@@ -147,6 +152,8 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 
 		g_framework->m_imageLoaders.push_back(bqImageLoaderDefault_create());
 		g_framework->m_meshLoaders.push_back(bqMeshLoaderDefault_create());
+
+		bqLog::PrintInfo("App path : %s\n", g_framework->m_appPathA.c_str());
 	}
 }
 
@@ -848,6 +855,7 @@ bqGUIStyle* bqFramework::GetGUIStyle(bqGUIStyleTheme theme)
 
 void bqFrameworkImpl::_initGUIThemes()
 {
+	bqLog::PrintInfo("Init GUI Themes\n");
 	g_framework->m_themeLight.m_windowActiveBGColor1 = 0xF7F7F7;
 	g_framework->m_themeLight.m_windowActiveBGColor2 = 0xF7F7F7;
 	g_framework->m_themeLight.m_windowActiveBorderColor = 0xE1E6F7;
@@ -1033,6 +1041,8 @@ void bqFramework::Destroy(bqGUIElement* e)
 
 void bqFrameworkImpl::_initGUITextDrawCallbacks()
 {
+	bqLog::PrintInfo("Init GUI callbacks\n");
+
 	m_defaultTextDrawCallback_button = new bqGUIButtonTextDrawCallback;
 	m_defaultTextDrawCallback_icons = new bqGUICheckRadioBoxTextDrawCallback;
 	m_defaultTextDrawCallback_textEditor = new bqGUITextEditorTextDrawCallback;

@@ -90,9 +90,22 @@ void bqLog::Print(const wchar_t* s, ...)
 	va_end(vl);
 }
 
+static const char* g_bqLogInfoWordDefault = "Info: ";
+const char* g_bqLogInfoWord = g_bqLogInfoWordDefault;
+
+void bqLog::SetInfoWord(const char* s)
+{
+	if (s)
+		g_bqLogInfoWord = s;
+	else
+		g_bqLogInfoWord = g_bqLogInfoWordDefault;
+
+
+}
+
 void bqLog::PrintInfo(const char* s, ...)
 {
-	Print("%s", "Info: ");
+	Print("%s", g_bqLogInfoWord);
 
 	va_list vl;
 	va_start(vl, s);
@@ -102,7 +115,7 @@ void bqLog::PrintInfo(const char* s, ...)
 
 void bqLog::PrintInfo(const wchar_t* s, ...)
 {
-	Print("%s", "Info: ");
+	Print("%s", g_bqLogInfoWord);
 	va_list vl;
 	va_start(vl, s);
 	g_log.vwprintf(s, vl);

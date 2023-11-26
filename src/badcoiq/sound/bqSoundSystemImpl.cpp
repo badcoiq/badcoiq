@@ -35,10 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
-#include <Windows.h>
-#include <AudioClient.h>
-#include <AudioPolicy.h>
-#include <functiondiscoverykeys.h>
+
 #include <strsafe.h>
 
 
@@ -48,6 +45,8 @@ bqSoundSystemImpl::bqSoundSystemImpl()
 
 bqSoundSystemImpl::~bqSoundSystemImpl()
 {
+    bqLog::PrintInfo("Shutdown Sound System\n");
+    if (m_WASAPIrenderer) delete m_WASAPIrenderer;
     if (m_device) m_device->Release();
 }
 
@@ -178,9 +177,24 @@ bool bqSoundSystemImpl::Init()
     if (deviceCollection) deviceCollection->Release();
     if (deviceEnumerator) deviceEnumerator->Release();
 
+    if (retValue)
+    {
+        m_WASAPIrenderer = new bqWASAPIRenderer(m_device);
+        retValue = m_WASAPIrenderer->Initialize(10);
+        if (!retValue)
+        {
+            delete m_WASAPIrenderer;
+            m_WASAPIrenderer = 0;
+        }
+    }
+
     if (!retValue)
     {
-        if (m_device) m_device->Release();
+        if (m_device)
+        {
+            m_device->Release();
+            m_device = 0;
+        }
     }
 
 	return retValue;
@@ -207,5 +221,120 @@ bqSoundStreamObject* bqSoundSystemImpl::SummonStreamObject(const char* fn)
 bqSoundStreamObject* bqSoundSystemImpl::SummonStreamObject(const bqStringA& str)
 {
 	return SummonStreamObject(str.c_str());
+}
+
+bqWASAPIRenderer::bqWASAPIRenderer(IMMDevice* Endpoint)
+{
+    m_endpoint = Endpoint;
+    m_endpoint->AddRef();
+}
+
+bqWASAPIRenderer::~bqWASAPIRenderer()
+{
+    Shutdown();
+}
+
+bool bqWASAPIRenderer::Initialize(UINT32 EngineLatency)
+{
+    HRESULT hr = m_endpoint->Activate(__uuidof(IAudioClient), 
+        CLSCTX_INPROC_SERVER, NULL, reinterpret_cast<void**>(&_AudioClient));
+    if (FAILED(hr))
+    {
+        bqLog::PrintError("Unable to activate audio client: %x.\n", hr);
+        return false;
+    }
+    hr = _AudioClient->GetMixFormat(&_MixFormat);
+    if (FAILED(hr))
+    {
+        bqLog::PrintError("Unable to get mix format on audio client: %x.\n", hr);
+        return false;
+    }
+    _FrameSize = _MixFormat->nBlockAlign;
+ 
+        //
+        //  If the mix format is a float format, just try to convert the format to PCM.
+        //
+    if (_MixFormat->wFormatTag == WAVE_FORMAT_PCM ||
+        _MixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
+        reinterpret_cast<WAVEFORMATEXTENSIBLE*>(_MixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
+    {
+        if (_MixFormat->wBitsPerSample == 16)
+        {
+            _RenderSampleType = SampleType16BitPCM;
+        }
+        else
+        {
+            bqLog::PrintError("Unknown PCM integer sample type\n");
+            return false;
+        }
+    }
+    else if (_MixFormat->wFormatTag == WAVE_FORMAT_IEEE_FLOAT ||
+        (_MixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
+            reinterpret_cast<WAVEFORMATEXTENSIBLE*>(_MixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
+    {
+        _RenderSampleType = SampleTypeFloat;
+    }
+    else
+    {
+        bqLog::PrintError("unrecognized device format.\n");
+        return false;
+    }
+
+    int PERIODS_PER_BUFFER = 4;
+    REFERENCE_TIME bufferDuration = EngineLatency * 10000 * PERIODS_PER_BUFFER;
+    REFERENCE_TIME periodicity = EngineLatency * 10000;
+
+    hr = _AudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
+        AUDCLNT_STREAMFLAGS_NOPERSIST,
+        bufferDuration,
+        periodicity,
+        _MixFormat,
+        NULL);
+    if (FAILED(hr))
+    {
+        bqLog::PrintError("Unable to initialize audio client: %x.\n", hr);
+        return false;
+    }
+
+    //
+    //  Retrieve the buffer size for the audio client.
+    //
+    hr = _AudioClient->GetBufferSize(&_BufferSize);
+    if (FAILED(hr))
+    {
+        bqLog::PrintError("Unable to get audio client buffer: %x. \n", hr);
+        return false;
+    }
+
+    hr = _AudioClient->GetService(IID_PPV_ARGS(&_RenderClient));
+    if (FAILED(hr))
+    {
+        bqLog::PrintError("Unable to get new render client: %x.\n", hr);
+        return false;
+    }
+
+    return true;
+}
+
+void bqWASAPIRenderer::Shutdown()
+{
+    bqLog::PrintInfo("Shutdown WASAPI\n");
+    if (m_endpoint)
+    {
+        m_endpoint->Release();
+        m_endpoint = 0;
+    }
+
+    if (_AudioClient)
+    {
+        _AudioClient->Release();
+        _AudioClient = 0;
+    }
+
+    if (_RenderClient)
+    {
+        _RenderClient->Release();
+        _RenderClient = 0;
+    }
 }
 

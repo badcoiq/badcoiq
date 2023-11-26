@@ -56,6 +56,8 @@ public:
 	// Если послать 0 то будет установлен дефолтный коллбэк
 	static void SetCallbackA(void(*)(const char*));
 	static void SetCallbackW(void(*)(const wchar_t*));
+
+	static void SetInfoWord(const char*);
 };
 
 

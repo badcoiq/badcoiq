@@ -28,9 +28,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.imageloader.h"
 
-bqImageLoaderImpl::bqImageLoaderImpl() {}
-bqImageLoaderImpl::~bqImageLoaderImpl() {}
-
 const char* g_badcoiqIMGLoaderFileExt[] =
 {
 	"bmp",
@@ -68,6 +65,21 @@ const char* g_badcoiqIMGLoaderFileName[] =
 	"Truevision TGA",
 #endif
 };
+
+
+bqImageLoaderImpl::bqImageLoaderImpl() 
+{
+	bqLog::PrintInfo("Init image loader. File formats : ");
+
+	uint32_t fn = GetSupportedFilesCount();
+	for (uint32_t i = 0; i < fn; ++i)
+	{
+		bqLog::Print("%s ", g_badcoiqIMGLoaderFileExt[i]);
+	}
+	bqLog::Print("\n");
+}
+bqImageLoaderImpl::~bqImageLoaderImpl() {}
+
 
 uint32_t bqImageLoaderImpl::GetSupportedFilesCount()
 {

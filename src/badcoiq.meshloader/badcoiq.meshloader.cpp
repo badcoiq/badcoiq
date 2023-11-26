@@ -37,7 +37,21 @@ extern "C"
 	}
 }
 
-bqMeshLoaderImpl::bqMeshLoaderImpl() {}
+bqMeshLoaderImpl::bqMeshLoaderImpl() 
+{
+	bqLog::PrintInfo("Init mesh loader. File formats : ");
+
+	uint32_t fn = GetSupportedFilesCount();
+	for (uint32_t i = 0; i < fn; ++i)
+	{
+		bqStringA stra1;
+		bqStringA stra2;
+		GetSupportedFileName(i).to_utf8(stra1);
+		GetSupportedFileExtension(i).to_utf8(stra2);
+		bqLog::Print("%s (.%s) ", stra1.c_str(), stra2.c_str());
+	}
+	bqLog::Print("\n");
+}
 bqMeshLoaderImpl::~bqMeshLoaderImpl() {}
 
 uint32_t bqMeshLoaderImpl::GetSupportedFilesCount()

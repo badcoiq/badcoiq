@@ -35,12 +35,44 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/sound/bqSoundSystem.h"
 
 
+#include <Windows.h>
 #include <MMDeviceAPI.h>
+#include <AudioClient.h>
+#include <AudioPolicy.h>
+#include <functiondiscoverykeys.h>
+
+class bqWASAPIRenderer// : public IUnknown
+{
+public:
+	bqWASAPIRenderer(IMMDevice* Endpoint);
+	~bqWASAPIRenderer();
+	bool Initialize(UINT32 EngineLatency);
+	void Shutdown();
+
+	enum RenderSampleType
+	{
+		SampleTypeFloat,
+		SampleType16BitPCM,
+	};
+
+private:
+	//LONG    _RefCount = 0;
+	IMMDevice* m_endpoint = 0;
+	HANDLE      _RenderThread;
+	HANDLE      _ShutdownEvent;
+	WAVEFORMATEX* _MixFormat;
+	RenderSampleType _RenderSampleType;
+	LONG        _EngineLatencyInMS;
+	UINT32      _FrameSize =0;
+	UINT32      _BufferSize=0;
+	IAudioClient* _AudioClient = 0;
+	IAudioRenderClient* _RenderClient=0;
+};
 
 class bqSoundSystemImpl : public bqSoundSystem
 {
-	IMMDevice* m_device = NULL;
-
+	IMMDevice* m_device = 0;
+	bqWASAPIRenderer* m_WASAPIrenderer = 0;
 public:
 	bqSoundSystemImpl();
 	virtual ~bqSoundSystemImpl();
