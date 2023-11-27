@@ -791,6 +791,12 @@ void bqGUIWindow::Update()
 		Rebuild();
 	}
 
+
+if(m_activePopup)
+{
+ return;
+}
+
 	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
 	{	
 		_bqGUIWindow_UpdateElement(m_rootElement);
