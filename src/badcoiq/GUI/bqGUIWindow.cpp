@@ -792,10 +792,10 @@ void bqGUIWindow::Update()
 	}
 
 
-if(m_activePopup)
-{
- return;
-}
+	if(g_framework->m_GUIState.m_activePopup)
+	{
+		return;
+	}
 
 	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
 	{	

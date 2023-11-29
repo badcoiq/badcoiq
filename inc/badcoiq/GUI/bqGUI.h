@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/GUI/bqGUICommon.h"
 #include "badcoiq/GUI/bqGUIElement.h"
 #include "badcoiq/GUI/bqGUIRootElement.h"
+#include "badcoiq/GUI/bqGUIPopup.h"
 #include "badcoiq/GUI/bqGUIWindow.h"
 
 // Надо знать текущее состояние GUI
@@ -46,7 +47,7 @@ struct bqGUIState
 	bqGUIWindow* m_activeWindow = 0;
 	bqGUITextEditor* m_activeTextEditor = 0;
 	uint32_t m_scrollBlock = 0;
- bqGUIPopup* m_activePopup = 0;
+	bqGUIPopup* m_activePopup = 0;
 };
 
 #include "badcoiq/GUI/bqGUIButton.h"
