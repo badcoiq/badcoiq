@@ -45,9 +45,9 @@ bqSoundSystemImpl::bqSoundSystemImpl()
 
 bqSoundSystemImpl::~bqSoundSystemImpl()
 {
-    bqLog::PrintInfo("Shutdown Sound System\n");
-    if (m_WASAPIrenderer) delete m_WASAPIrenderer;
-    if (m_device) m_device->Release();
+	bqLog::PrintInfo("Shutdown Sound System\n");
+	if (m_WASAPIrenderer) delete m_WASAPIrenderer;
+	if (m_device) m_device->Release();
 }
 
 //
@@ -55,147 +55,149 @@ bqSoundSystemImpl::~bqSoundSystemImpl()
 //
 LPWSTR GetDeviceName(IMMDeviceCollection* DeviceCollection, UINT DeviceIndex)
 {
-    IMMDevice* device;
-    LPWSTR deviceId;
-    HRESULT hr;
+	IMMDevice* device;
+	LPWSTR deviceId;
+	HRESULT hr;
 
-    hr = DeviceCollection->Item(DeviceIndex, &device);
-    if (FAILED(hr))
-    {
-        printf("Unable to get device %d: %x\n", DeviceIndex, hr);
-        return NULL;
-    }
-    hr = device->GetId(&deviceId);
-    if (FAILED(hr))
-    {
-        printf("Unable to get device %d id: %x\n", DeviceIndex, hr);
-        return NULL;
-    }
+	hr = DeviceCollection->Item(DeviceIndex, &device);
+	if (FAILED(hr))
+	{
+		printf("Unable to get device %d: %x\n", DeviceIndex, hr);
+		return NULL;
+	}
+	hr = device->GetId(&deviceId);
+	if (FAILED(hr))
+	{
+		printf("Unable to get device %d id: %x\n", DeviceIndex, hr);
+		return NULL;
+	}
 
-    IPropertyStore* propertyStore;
-    hr = device->OpenPropertyStore(STGM_READ, &propertyStore);
-    if (device)
-    {
-        device->Release();
-        device = 0;
-    }
-    if (FAILED(hr))
-    {
-        printf("Unable to open device %d property store: %x\n", DeviceIndex, hr);
-        return NULL;
-    }
+	IPropertyStore* propertyStore;
+	hr = device->OpenPropertyStore(STGM_READ, &propertyStore);
+	if (device)
+	{
+		device->Release();
+		device = 0;
+	}
+	if (FAILED(hr))
+	{
+		printf("Unable to open device %d property store: %x\n", DeviceIndex, hr);
+		return NULL;
+	}
 
-    PROPVARIANT friendlyName;
-    PropVariantInit(&friendlyName);
-    hr = propertyStore->GetValue(PKEY_Device_FriendlyName, &friendlyName);
-    if (propertyStore)
-    {
-        propertyStore->Release();
-        propertyStore = 0;
-    }
+	PROPVARIANT friendlyName;
+	PropVariantInit(&friendlyName);
+	hr = propertyStore->GetValue(PKEY_Device_FriendlyName, &friendlyName);
+	if (propertyStore)
+	{
+		propertyStore->Release();
+		propertyStore = 0;
+	}
 
-    if (FAILED(hr))
-    {
-        printf("Unable to retrieve friendly name for device %d : %x\n", DeviceIndex, hr);
-        return NULL;
-    }
+	if (FAILED(hr))
+	{
+		printf("Unable to retrieve friendly name for device %d : %x\n", DeviceIndex, hr);
+		return NULL;
+	}
 
-    wchar_t deviceName[128];
-    hr = StringCbPrintf(deviceName, sizeof(deviceName), L"%s (%s)", friendlyName.vt != VT_LPWSTR ? L"Unknown" : friendlyName.pwszVal, deviceId);
-    if (FAILED(hr))
-    {
-        printf("Unable to format friendly name for device %d : %x\n", DeviceIndex, hr);
-        return NULL;
-    }
+	wchar_t deviceName[128];
+	hr = StringCbPrintf(deviceName, sizeof(deviceName), L"%s (%s)", friendlyName.vt != VT_LPWSTR ? L"Unknown" : friendlyName.pwszVal, deviceId);
+	if (FAILED(hr))
+	{
+		printf("Unable to format friendly name for device %d : %x\n", DeviceIndex, hr);
+		return NULL;
+	}
 
-    PropVariantClear(&friendlyName);
-    CoTaskMemFree(deviceId);
+	PropVariantClear(&friendlyName);
+	CoTaskMemFree(deviceId);
 
-    wchar_t* returnValue = _wcsdup(deviceName);
-    if (returnValue == NULL)
-    {
-        printf("Unable to allocate buffer for return\n");
-        return NULL;
-    }
-    return returnValue;
+	wchar_t* returnValue = _wcsdup(deviceName);
+	if (returnValue == NULL)
+	{
+		printf("Unable to allocate buffer for return\n");
+		return NULL;
+	}
+	return returnValue;
 }
 
 bool bqSoundSystemImpl::Init()
 {
-    bool retValue = true;
-    IMMDeviceEnumerator* deviceEnumerator = NULL;
-    IMMDeviceCollection* deviceCollection = NULL;
-    bqLog::PrintInfo("Init sound system...\n");
+	bool retValue = true;
+	IMMDeviceEnumerator* deviceEnumerator = NULL;
+	IMMDeviceCollection* deviceCollection = NULL;
+	bqLog::PrintInfo("Init sound system...\n");
 
-    HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&deviceEnumerator));
-    if (FAILED(hr))
-    {
-        bqLog::PrintError("Unable to instantiate device enumerator: %x\n", hr);
-        retValue = false;
-    }
+	HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_INPROC_SERVER,
+		IID_PPV_ARGS(&deviceEnumerator));
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to instantiate device enumerator: %x\n", hr);
+		retValue = false;
+	}
 
 
-    hr = deviceEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &deviceCollection);
-    if (FAILED(hr))
-    {
-        bqLog::PrintError("Unable to retrieve device collection: %x\n", hr);
-        retValue = false;
-    }
+	hr = deviceEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, 
+		&deviceCollection);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to retrieve device collection: %x\n", hr);
+		retValue = false;
+	}
 
-    UINT deviceCount;
-    hr = deviceCollection->GetCount(&deviceCount);
-    if (FAILED(hr))
-    {
-        bqLog::PrintError("Unable to get device collection length: %x\n", hr);
-        retValue = false;
-    }
+	UINT deviceCount;
+	hr = deviceCollection->GetCount(&deviceCount);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to get device collection length: %x\n", hr);
+		retValue = false;
+	}
 
-    bqLog::PrintInfo("Output devices:\n");
-    for (UINT i = 0; i < deviceCount; i += 1)
-    {
-        LPWSTR deviceName;
+	bqLog::PrintInfo("Output devices:\n");
+	for (UINT i = 0; i < deviceCount; i += 1)
+	{
+		LPWSTR deviceName;
 
-        deviceName = GetDeviceName(deviceCollection, i);
-        if (deviceName == NULL)
-        {
-            retValue = false;
-        }
-        else
-        {
-            bqLog::PrintInfo("    %d:  %S\n", i + 1, deviceName);
-            free(deviceName);
-        }
-    }
+		deviceName = GetDeviceName(deviceCollection, i);
+		if (deviceName == NULL)
+		{
+			retValue = false;
+		}
+		else
+		{
+			bqLog::PrintInfo("    %d:  %S\n", i + 1, deviceName);
+			free(deviceName);
+		}
+	}
 
-    hr = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &m_device);
-    if (FAILED(hr))
-    {
-        retValue = false;
-        bqLog::PrintInfo("GetDefaultAudioEndpoint\n");
-    }
+	hr = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &m_device);
+	if (FAILED(hr))
+	{
+		retValue = false;
+		bqLog::PrintInfo("GetDefaultAudioEndpoint\n");
+	}
 
-    if (deviceCollection) deviceCollection->Release();
-    if (deviceEnumerator) deviceEnumerator->Release();
+	if (deviceCollection) deviceCollection->Release();
+	if (deviceEnumerator) deviceEnumerator->Release();
 
-    if (retValue)
-    {
-        m_WASAPIrenderer = new bqWASAPIRenderer(m_device);
-        retValue = m_WASAPIrenderer->Initialize(10);
-        if (!retValue)
-        {
-            delete m_WASAPIrenderer;
-            m_WASAPIrenderer = 0;
-        }
-    }
+	if (retValue)
+	{
+		m_WASAPIrenderer = new bqWASAPIRenderer(m_device);
+		retValue = m_WASAPIrenderer->Initialize(10);
+		if (!retValue)
+		{
+			delete m_WASAPIrenderer;
+			m_WASAPIrenderer = 0;
+		}
+	}
 
-    if (!retValue)
-    {
-        if (m_device)
-        {
-            m_device->Release();
-            m_device = 0;
-        }
-    }
+	if (!retValue)
+	{
+		if (m_device)
+		{
+			m_device->Release();
+			m_device = 0;
+		}
+	}
 
 	return retValue;
 }
@@ -225,116 +227,215 @@ bqSoundStreamObject* bqSoundSystemImpl::SummonStreamObject(const bqStringA& str)
 
 bqWASAPIRenderer::bqWASAPIRenderer(IMMDevice* Endpoint)
 {
-    m_endpoint = Endpoint;
-    m_endpoint->AddRef();
+	m_endpoint = Endpoint;
+	m_endpoint->AddRef();
 }
 
 bqWASAPIRenderer::~bqWASAPIRenderer()
 {
-    Shutdown();
+	Shutdown();
 }
 
 bool bqWASAPIRenderer::Initialize(UINT32 EngineLatency)
 {
-    HRESULT hr = m_endpoint->Activate(__uuidof(IAudioClient), 
-        CLSCTX_INPROC_SERVER, NULL, reinterpret_cast<void**>(&_AudioClient));
-    if (FAILED(hr))
-    {
-        bqLog::PrintError("Unable to activate audio client: %x.\n", hr);
-        return false;
-    }
-    hr = _AudioClient->GetMixFormat(&_MixFormat);
-    if (FAILED(hr))
-    {
-        bqLog::PrintError("Unable to get mix format on audio client: %x.\n", hr);
-        return false;
-    }
-    _FrameSize = _MixFormat->nBlockAlign;
+	HRESULT hr = m_endpoint->Activate(__uuidof(IAudioClient), 
+		CLSCTX_INPROC_SERVER, NULL, 
+		reinterpret_cast<void**>(&_AudioClient));
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to activate audio client: %x.\n", hr);
+		return false;
+	}
+
+	hr = _AudioClient->GetMixFormat(&_MixFormat);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to get mix format on audio client: %x.\n", hr);
+		return false;
+	}
+	_FrameSize = _MixFormat->nBlockAlign;
  
-        //
-        //  If the mix format is a float format, just try to convert the format to PCM.
-        //
-    if (_MixFormat->wFormatTag == WAVE_FORMAT_PCM ||
-        _MixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
-        reinterpret_cast<WAVEFORMATEXTENSIBLE*>(_MixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
-    {
-        if (_MixFormat->wBitsPerSample == 16)
-        {
-            _RenderSampleType = SampleType16BitPCM;
-        }
-        else
-        {
-            bqLog::PrintError("Unknown PCM integer sample type\n");
-            return false;
-        }
-    }
-    else if (_MixFormat->wFormatTag == WAVE_FORMAT_IEEE_FLOAT ||
-        (_MixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
-            reinterpret_cast<WAVEFORMATEXTENSIBLE*>(_MixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
-    {
-        _RenderSampleType = SampleTypeFloat;
-    }
-    else
-    {
-        bqLog::PrintError("unrecognized device format.\n");
-        return false;
-    }
+	//  If the mix format is a float format, just try to convert the format to PCM.
+	if (_MixFormat->wFormatTag == WAVE_FORMAT_PCM ||
+		_MixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
+		reinterpret_cast<WAVEFORMATEXTENSIBLE*>(_MixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
+	{
+		if (_MixFormat->wBitsPerSample == 16)
+		{
+			_RenderSampleType = SampleType16BitPCM;
+		}
+		else
+		{
+			bqLog::PrintError("Unknown PCM integer sample type\n");
+			return false;
+		}
+	}
+	else if (_MixFormat->wFormatTag == WAVE_FORMAT_IEEE_FLOAT ||
+		(_MixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
+			reinterpret_cast<WAVEFORMATEXTENSIBLE*>(_MixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
+	{
+		_RenderSampleType = SampleTypeFloat;
+	}
+	else
+	{
+		bqLog::PrintError("unrecognized device format.\n");
+		return false;
+	}
 
-    int PERIODS_PER_BUFFER = 4;
-    REFERENCE_TIME bufferDuration = EngineLatency * 10000 * PERIODS_PER_BUFFER;
-    REFERENCE_TIME periodicity = EngineLatency * 10000;
+	int PERIODS_PER_BUFFER = 4;
+	REFERENCE_TIME bufferDuration = EngineLatency * 10000 * PERIODS_PER_BUFFER;
+	REFERENCE_TIME periodicity = EngineLatency * 10000;
 
-    hr = _AudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
-        AUDCLNT_STREAMFLAGS_NOPERSIST,
-        bufferDuration,
-        periodicity,
-        _MixFormat,
-        NULL);
-    if (FAILED(hr))
-    {
-        bqLog::PrintError("Unable to initialize audio client: %x.\n", hr);
-        return false;
-    }
+	hr = _AudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
+		AUDCLNT_STREAMFLAGS_NOPERSIST,
+		bufferDuration,
+		periodicity,
+		_MixFormat,
+		NULL);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to initialize audio client: %x.\n", hr);
+		return false;
+	}
 
-    //
-    //  Retrieve the buffer size for the audio client.
-    //
-    hr = _AudioClient->GetBufferSize(&_BufferSize);
-    if (FAILED(hr))
-    {
-        bqLog::PrintError("Unable to get audio client buffer: %x. \n", hr);
-        return false;
-    }
+	//  Retrieve the buffer size for the audio client.
+	hr = _AudioClient->GetBufferSize(&_BufferSize);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to get audio client buffer: %x. \n", hr);
+		return false;
+	}
 
-    hr = _AudioClient->GetService(IID_PPV_ARGS(&_RenderClient));
-    if (FAILED(hr))
-    {
-        bqLog::PrintError("Unable to get new render client: %x.\n", hr);
-        return false;
-    }
+	hr = _AudioClient->GetService(IID_PPV_ARGS(&_RenderClient));
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to get new render client: %x.\n", hr);
+		return false;
+	}
 
-    return true;
+	return true;
 }
 
 void bqWASAPIRenderer::Shutdown()
 {
-    bqLog::PrintInfo("Shutdown WASAPI\n");
-    if (m_endpoint)
-    {
-        m_endpoint->Release();
-        m_endpoint = 0;
-    }
+	bqLog::PrintInfo("Shutdown WASAPI\n");
+	if (m_endpoint)
+	{
+		m_endpoint->Release();
+		m_endpoint = 0;
+	}
 
-    if (_AudioClient)
-    {
-        _AudioClient->Release();
-        _AudioClient = 0;
-    }
+	if (_AudioClient)
+	{
+		_AudioClient->Release();
+		_AudioClient = 0;
+	}
 
-    if (_RenderClient)
-    {
-        _RenderClient->Release();
-        _RenderClient = 0;
-    }
+	if (_RenderClient)
+	{
+		_RenderClient->Release();
+		_RenderClient = 0;
+	}
 }
 
+//  When a session is disconnected because of a device removal or format change event, we just want 
+//  to let the render thread know that the session's gone away
+//
+HRESULT bqWASAPIRenderer::OnSessionDisconnected(AudioSessionDisconnectReason DisconnectReason)
+{
+	if (DisconnectReason == DisconnectReasonDeviceRemoval)
+	{
+		//
+		//  The stream was disconnected because the device we're rendering to was removed.
+		//
+		//  We want to reset the stream switch complete event (so we'll block when the HandleStreamSwitchEvent function
+		//  waits until the default device changed event occurs).
+		//
+		//  Note that we _don't_ set the _StreamSwitchCompleteEvent - that will be set when the OnDefaultDeviceChanged event occurs.
+		//
+		//_InStreamSwitch = true;
+		//SetEvent(_StreamSwitchEvent);
+	}
+	if (DisconnectReason == DisconnectReasonFormatChanged)
+	{
+		//
+		//  The stream was disconnected because the format changed on our render device.
+		//
+		//  We want to flag that we're in a stream switch and then set the stream switch event (which breaks out of the renderer).  We also
+		//  want to set the _StreamSwitchCompleteEvent because we're not going to see a default device changed event after this.
+		//
+		//_InStreamSwitch = true;
+		//SetEvent(_StreamSwitchEvent);
+		//SetEvent(_StreamSwitchCompleteEvent);
+	}
+	return S_OK;
+}
+//  Called when the default render device changed.  We just want to set an event which lets the stream switch logic know that it's ok to 
+//  continue with the stream switch.
+//
+HRESULT bqWASAPIRenderer::OnDefaultDeviceChanged(EDataFlow Flow, ERole Role, LPCWSTR /*NewDefaultDeviceId*/)
+{
+	//if (Flow == eRender && Role == _EndpointRole)
+	//{
+	//    //
+	//    //  The default render device for our configuredf role was changed.  
+	//    //
+	//    //  If we're not in a stream switch already, we want to initiate a stream switch event.  
+	//    //  We also we want to set the stream switch complete event.  That will signal the render thread that it's ok to re-initialize the
+	//    //  audio renderer.
+	//    //
+	//    if (!_InStreamSwitch)
+	//    {
+	//        _InStreamSwitch = true;
+	//        SetEvent(_StreamSwitchEvent);
+	//    }
+	//    SetEvent(_StreamSwitchCompleteEvent);
+	//}
+	return S_OK;
+}
+
+//
+//  IUnknown
+//
+HRESULT bqWASAPIRenderer::QueryInterface(REFIID Iid, void** Object)
+{
+	if (Object == NULL)
+	{
+		return E_POINTER;
+	}
+	*Object = NULL;
+
+	if (Iid == IID_IUnknown)
+	{
+		*Object = static_cast<IUnknown*>(static_cast<IAudioSessionEvents*>(this));
+		AddRef();
+	}
+	else if (Iid == __uuidof(IMMNotificationClient))
+	{
+		*Object = static_cast<IMMNotificationClient*>(this);
+		AddRef();
+	}
+	else if (Iid == __uuidof(IAudioSessionEvents))
+	{
+		*Object = static_cast<IAudioSessionEvents*>(this);
+		AddRef();
+	}
+	else
+	{
+		return E_NOINTERFACE;
+	}
+	return S_OK;
+}
+ULONG bqWASAPIRenderer::AddRef()
+{
+	return InterlockedIncrement(&_RefCount);
+}
+ULONG bqWASAPIRenderer::Release()
+{
+	ULONG returnValue = InterlockedDecrement(&_RefCount);
+	if (returnValue == 0)
+	{
+		delete this;
+	}
+	return returnValue;
+}
