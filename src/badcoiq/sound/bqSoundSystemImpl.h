@@ -69,8 +69,8 @@ private:
 	LONG        _EngineLatencyInMS;
 	UINT32      _FrameSize =0;
 	UINT32      _BufferSize=0;
-	IAudioClient* _AudioClient = 0;
-	IAudioRenderClient* _RenderClient=0;
+	//IAudioClient* _AudioClient = 0;
+	//IAudioRenderClient* _RenderClient=0;
 
 	//  IUnknown
 	STDMETHOD(QueryInterface)(REFIID iid, void** pvObject);
