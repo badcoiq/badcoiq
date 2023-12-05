@@ -50,11 +50,7 @@ public:
 	bool Initialize(UINT32 EngineLatency);
 	void Shutdown();
 
-	enum RenderSampleType
-	{
-		SampleTypeFloat,
-		SampleType16BitPCM,
-	};
+	
 
 	STDMETHOD_(ULONG, AddRef)();
 	STDMETHOD_(ULONG, Release)();
@@ -64,13 +60,7 @@ private:
 	IMMDevice* m_endpoint = 0;
 	HANDLE      _RenderThread;
 	HANDLE      _ShutdownEvent;
-	WAVEFORMATEX* _MixFormat;
-	RenderSampleType _RenderSampleType;
 	LONG        _EngineLatencyInMS;
-	UINT32      _FrameSize =0;
-	UINT32      _BufferSize=0;
-	//IAudioClient* _AudioClient = 0;
-	//IAudioRenderClient* _RenderClient=0;
 
 	//  IUnknown
 	STDMETHOD(QueryInterface)(REFIID iid, void** pvObject);

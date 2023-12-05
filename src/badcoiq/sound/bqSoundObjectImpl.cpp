@@ -41,6 +41,17 @@ bqSoundObjectImpl::bqSoundObjectImpl()
 
 bqSoundObjectImpl::~bqSoundObjectImpl()
 {
+	if (m_audioClient)
+	{
+		m_audioClient->Release();
+		m_audioClient = 0;
+	}
+
+	if (m_renderClient)
+	{
+		m_renderClient->Release();
+		m_renderClient = 0;
+	}
 }
 
 void bqSoundObjectImpl::Play()
@@ -59,3 +70,73 @@ void bqSoundObjectImpl::Loop(bool v)
 {
 }
 
+bool bqSoundObjectImpl::Init(uint32_t EngineLatency)
+{
+	HRESULT hr = m_audioClient->GetMixFormat(&m_mixFormat);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to get mix format on audio client: %x.\n", hr);
+		return false;
+	}
+	m_frameSize = m_mixFormat->nBlockAlign;
+
+	//  If the mix format is a float format, just try to convert the format to PCM.
+	if (m_mixFormat->wFormatTag == WAVE_FORMAT_PCM ||
+		m_mixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
+		reinterpret_cast<WAVEFORMATEXTENSIBLE*>(m_mixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
+	{
+		if (m_mixFormat->wBitsPerSample == 16)
+		{
+			m_renderSampleType = SampleType16BitPCM;
+		}
+		else
+		{
+			bqLog::PrintError("Unknown PCM integer sample type\n");
+			return false;
+		}
+	}
+	else if (m_mixFormat->wFormatTag == WAVE_FORMAT_IEEE_FLOAT ||
+		(m_mixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
+			reinterpret_cast<WAVEFORMATEXTENSIBLE*>(m_mixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
+	{
+		m_renderSampleType = SampleTypeFloat;
+	}
+	else
+	{
+		bqLog::PrintError("unrecognized device format.\n");
+		return false;
+	}
+
+	int PERIODS_PER_BUFFER = 4;
+	REFERENCE_TIME bufferDuration = EngineLatency * 10000 * PERIODS_PER_BUFFER;
+	REFERENCE_TIME periodicity = EngineLatency * 10000;
+
+	hr = m_audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
+		AUDCLNT_STREAMFLAGS_NOPERSIST,
+		bufferDuration,
+		periodicity,
+		m_mixFormat,
+		NULL);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to initialize audio client: %x.\n", hr);
+		return false;
+	}
+
+	//  Retrieve the buffer size for the audio client.
+	hr = m_audioClient->GetBufferSize(&m_bufferSize);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to get audio client buffer: %x. \n", hr);
+		return false;
+	}
+
+	hr = m_audioClient->GetService(IID_PPV_ARGS(&m_renderClient));
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to get new render client: %x.\n", hr);
+		return false;
+	}
+
+	return true;
+}

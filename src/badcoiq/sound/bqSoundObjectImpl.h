@@ -39,6 +39,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class bqSoundObjectImpl : bqSoundObject
 {
+	IAudioClient* m_audioClient = 0;
+	IAudioRenderClient* m_renderClient=0;
+	WAVEFORMATEX* m_mixFormat = 0;
+	UINT32      m_frameSize = 0;
+	UINT32      m_bufferSize = 0;
+
+	enum RenderSampleType
+	{
+		SampleTypeFloat,
+		SampleType16BitPCM,
+	};
+	RenderSampleType m_renderSampleType;
+
 public:
 	bqSoundObjectImpl();
 	virtual ~bqSoundObjectImpl();
@@ -48,6 +61,8 @@ public:
 	virtual void Stop() override;
 	virtual void Pause() override;
 	virtual void Loop(bool) override;
+
+	bool Init(uint32_t EngineLatency);
 };
 
 #endif
