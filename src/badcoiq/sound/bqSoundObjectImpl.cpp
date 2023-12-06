@@ -70,7 +70,7 @@ void bqSoundObjectImpl::Loop(bool v)
 {
 }
 
-bool bqSoundObjectImpl::Init(uint32_t EngineLatency)
+bool bqSoundObjectImpl::Init(bqSound* sound, uint32_t EngineLatency)
 {
 	HRESULT hr = m_audioClient->GetMixFormat(&m_mixFormat);
 	if (FAILED(hr))

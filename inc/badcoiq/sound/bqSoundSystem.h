@@ -41,9 +41,6 @@ class bqSoundSystem
 public:
 	bqSoundSystem() {};
 	virtual ~bqSoundSystem() {};
-
-	// Загрузить звук и создать объект
-	virtual bqSoundObject* SummonObject(const char*) = 0;
 	
 	// Создать объект из имеющегося звука
 	virtual bqSoundObject* SummonObject(bqSound*) = 0;

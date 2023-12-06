@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
-class bqSoundObjectImpl : bqSoundObject
+class bqSoundObjectImpl : public bqSoundObject
 {
 	IAudioClient* m_audioClient = 0;
 	IAudioRenderClient* m_renderClient=0;
@@ -62,7 +62,7 @@ public:
 	virtual void Pause() override;
 	virtual void Loop(bool) override;
 
-	bool Init(uint32_t EngineLatency);
+	bool Init(bqSound* , uint32_t EngineLatency);
 };
 
 #endif

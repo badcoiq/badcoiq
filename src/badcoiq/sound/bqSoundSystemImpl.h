@@ -89,7 +89,6 @@ public:
 
 	bool Init();
 
-	virtual bqSoundObject* SummonObject(const char*) override;
 	virtual bqSoundObject* SummonObject(bqSound*) override;
 	virtual bqSoundStreamObject* SummonStreamObject(const char*) override;
 	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;

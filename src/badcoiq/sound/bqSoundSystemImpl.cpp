@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
+#include "bqSoundObjectImpl.h"
 #include "bqSoundSystemImpl.h"
 
 #include "../framework/bqFrameworkImpl.h"
@@ -202,15 +203,24 @@ bool bqSoundSystemImpl::Init()
 	return retValue;
 }
 
-bqSoundObject* bqSoundSystemImpl::SummonObject(const char* fn)
-{
-	BQ_ASSERT_ST(fn);
-	return 0;
-}
-
 bqSoundObject* bqSoundSystemImpl::SummonObject(bqSound* sound)
 {
 	BQ_ASSERT_ST(sound);
+	BQ_PTR_D(bqSoundObjectImpl,newO,new bqSoundObjectImpl);
+	if (newO->Init(sound, 10))
+	{
+		HRESULT hr = m_endpoint->Activate(__uuidof(IAudioClient),
+			CLSCTX_INPROC_SERVER, NULL,
+			reinterpret_cast<void**>(&_AudioClient));
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Unable to activate audio client: %x.\n", hr);
+			return false;
+		}
+
+
+		return newO.Drop();
+	}
 	return 0;
 }
 
@@ -238,15 +248,7 @@ bqWASAPIRenderer::~bqWASAPIRenderer()
 
 bool bqWASAPIRenderer::Initialize(UINT32 EngineLatency)
 {
-	HRESULT hr = m_endpoint->Activate(__uuidof(IAudioClient), 
-		CLSCTX_INPROC_SERVER, NULL, 
-		reinterpret_cast<void**>(&_AudioClient));
-	if (FAILED(hr))
-	{
-		bqLog::PrintError("Unable to activate audio client: %x.\n", hr);
-		return false;
-	}
-
+	
 	
 
 	return true;
