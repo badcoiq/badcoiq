@@ -92,6 +92,7 @@ bool ExampleBasicsSound::Init()
 	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/alien_beacon44100.wav", true);
 
 	auto ss = bqFramework::GetSoundSystem();
+	m_soundObject = ss->SummonObject(m_sound1);
 
 	// Звуковые объекты созданные напрямую звуковым движком
 	// играются напрямую этим движком
@@ -125,7 +126,7 @@ void ExampleBasicsSound::Shutdown()
 {
 	BQ_SAFEDESTROY(m_soundObjectStream);
 	BQ_SAFEDESTROY(m_soundObjectEloop);
-	BQ_SAFEDESTROY(m_soundObjectE);
+	BQ_SAFEDESTROY(m_soundObject);
 	BQ_SAFEDESTROY(m_sound1);
 	BQ_SAFEDESTROY(m_camera);
 }
@@ -145,10 +146,14 @@ void ExampleBasicsSound::OnDraw()
 
 	//m_soundEngine->Test(m_camera->m_position.GetVec3());
 
-	//if (bqInput::IsKeyHit(bqInput::KEY_1))
-	//{
-	//	m_soundObjectE->Play();
-	//}
+	if (bqInput::IsKeyHit(bqInput::KEY_1))
+	{
+		m_soundObject->Play();
+	}
+	if (bqInput::IsKeyHit(bqInput::KEY_2))
+	{
+		m_soundObject->Stop();
+	}
 	//if (bqInput::IsKeyHit(bqInput::KEY_2))
 	//{
 	//	m_soundObjectEloop->Play();

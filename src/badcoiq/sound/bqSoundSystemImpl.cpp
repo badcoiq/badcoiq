@@ -182,8 +182,8 @@ bool bqSoundSystemImpl::Init()
 
 	if (retValue)
 	{
-		m_WASAPIrenderer = new bqWASAPIRenderer(m_device);
-		retValue = m_WASAPIrenderer->Initialize(10);
+		m_WASAPIrenderer = new bqWASAPIRenderer();
+		retValue = m_WASAPIrenderer->Initialize(m_device, 10);
 		if (!retValue)
 		{
 			delete m_WASAPIrenderer;
@@ -207,20 +207,8 @@ bqSoundObject* bqSoundSystemImpl::SummonObject(bqSound* sound)
 {
 	BQ_ASSERT_ST(sound);
 	BQ_PTR_D(bqSoundObjectImpl,newO,new bqSoundObjectImpl);
-	if (newO->Init(sound, 10))
-	{
-		HRESULT hr = m_endpoint->Activate(__uuidof(IAudioClient),
-			CLSCTX_INPROC_SERVER, NULL,
-			reinterpret_cast<void**>(&_AudioClient));
-		if (FAILED(hr))
-		{
-			bqLog::PrintError("Unable to activate audio client: %x.\n", hr);
-			return false;
-		}
-
-
+	if (newO->Init(m_WASAPIrenderer->GetEndpoint(), sound, 10))
 		return newO.Drop();
-	}
 	return 0;
 }
 
@@ -235,10 +223,9 @@ bqSoundStreamObject* bqSoundSystemImpl::SummonStreamObject(const bqStringA& str)
 	return SummonStreamObject(str.c_str());
 }
 
-bqWASAPIRenderer::bqWASAPIRenderer(IMMDevice* Endpoint)
+bqWASAPIRenderer::bqWASAPIRenderer()
 {
-	m_endpoint = Endpoint;
-	m_endpoint->AddRef();
+	
 }
 
 bqWASAPIRenderer::~bqWASAPIRenderer()
@@ -246,17 +233,49 @@ bqWASAPIRenderer::~bqWASAPIRenderer()
 	Shutdown();
 }
 
-bool bqWASAPIRenderer::Initialize(UINT32 EngineLatency)
+void bqWASAPIRenderer::_thread_function()
 {
-	
-	
+	while (m_threadContext.m_run)
+	{
 
-	return true;
+	}
+}
+
+bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint, UINT32 EngineLatency)
+{
+	BQ_ASSERT_ST(!m_endpoint);
+	BQ_ASSERT_ST(Endpoint);
+
+	if (!m_endpoint)
+	{
+		m_endpoint = Endpoint;
+		m_endpoint->AddRef();
+
+		m_threadContext.m_run = true;
+		m_tread = new std::thread(&bqWASAPIRenderer::_thread_function, this);
+
+		return true;
+	}
+	return false;
 }
 
 void bqWASAPIRenderer::Shutdown()
 {
 	bqLog::PrintInfo("Shutdown WASAPI\n");
+
+	if (m_tread)
+	{
+		bqLog::PrintInfo("Shutdown audio thread...");
+		m_threadContext.m_run = false;
+
+		if(m_tread->joinable())
+			m_tread->join();
+
+		delete m_tread;
+		m_tread = 0;
+		bqLog::PrintInfo("done\n");
+	}
+
 	if (m_endpoint)
 	{
 		m_endpoint->Release();

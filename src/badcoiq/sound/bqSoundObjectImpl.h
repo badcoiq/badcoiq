@@ -62,7 +62,7 @@ public:
 	virtual void Pause() override;
 	virtual void Loop(bool) override;
 
-	bool Init(bqSound* , uint32_t EngineLatency);
+	bool Init(IMMDevice* , bqSound* , uint32_t EngineLatency);
 };
 
 #endif

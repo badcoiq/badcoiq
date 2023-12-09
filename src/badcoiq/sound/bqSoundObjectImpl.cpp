@@ -56,10 +56,52 @@ bqSoundObjectImpl::~bqSoundObjectImpl()
 
 void bqSoundObjectImpl::Play()
 {
+	if (m_state == bqSoundObject::state_notplaying)
+	{
+		HRESULT hr = S_OK;
+
+		// очистка буфера у m_renderClient
+		// чтобы при старте не проигрывался `мусор`
+		{
+			BYTE* pData;
+			hr = m_renderClient->GetBuffer(m_bufferSize, &pData);
+			if (FAILED(hr))
+			{
+				bqLog::PrintError("Failed to get buffer: %x.\n", hr);
+				return;
+			}
+			hr = m_renderClient->ReleaseBuffer(m_bufferSize, AUDCLNT_BUFFERFLAGS_SILENT);
+			if (FAILED(hr))
+			{
+				bqLog::PrintError("Failed to release buffer: %x.\n", hr);
+				return;
+			}
+		}
+
+		// в тред надо послать сигнал что нужно начать обработку
+		// возможно hr = m_audioClient->Start(); нужно вызывать там же
+		hr = m_audioClient->Start();
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Unable to start render client: %x.\n", hr);
+		}
+
+		m_state = bqSoundObject::state_playing;
+	}
 }
 
 void bqSoundObjectImpl::Stop()
 {
+	if (m_state == bqSoundObject::state_playing)
+	{
+		m_state = bqSoundObject::state_notplaying;
+
+		HRESULT hr = m_audioClient->Stop();
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Unable to stop render client: %x.\n", hr);
+		}
+	}
 }
 
 void bqSoundObjectImpl::Pause()
@@ -70,9 +112,20 @@ void bqSoundObjectImpl::Loop(bool v)
 {
 }
 
-bool bqSoundObjectImpl::Init(bqSound* sound, uint32_t EngineLatency)
+bool bqSoundObjectImpl::Init(IMMDevice* endpoint, bqSound* sound, uint32_t EngineLatency)
 {
-	HRESULT hr = m_audioClient->GetMixFormat(&m_mixFormat);
+	m_bufferData = &sound->m_soundBuffer->m_bufferData;
+
+	HRESULT hr = endpoint->Activate(__uuidof(IAudioClient),
+		CLSCTX_INPROC_SERVER, NULL,
+		reinterpret_cast<void**>(&m_audioClient));
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Unable to activate audio client: %x.\n", hr);
+		return false;
+	}
+
+	hr = m_audioClient->GetMixFormat(&m_mixFormat);
 	if (FAILED(hr))
 	{
 		bqLog::PrintError("Unable to get mix format on audio client: %x.\n", hr);

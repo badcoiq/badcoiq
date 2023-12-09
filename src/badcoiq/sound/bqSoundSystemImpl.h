@@ -45,22 +45,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqWASAPIRenderer : IMMNotificationClient, IAudioSessionEvents
 {
 public:
-	bqWASAPIRenderer(IMMDevice* Endpoint);
+	bqWASAPIRenderer();
 	~bqWASAPIRenderer();
-	bool Initialize(UINT32 EngineLatency);
+	bool Initialize(IMMDevice* Endpoint, UINT32 EngineLatency);
 	void Shutdown();
 
-	
+	struct _thread_context
+	{
+
+		bool m_run = true;
+	}m_threadContext;
+
+	void _thread_function();
 
 	STDMETHOD_(ULONG, AddRef)();
 	STDMETHOD_(ULONG, Release)();
 
+	IMMDevice* GetEndpoint() { return m_endpoint; }
+
 private:
 	LONG    _RefCount = 1;
 	IMMDevice* m_endpoint = 0;
-	HANDLE      _RenderThread;
-	HANDLE      _ShutdownEvent;
+	//HANDLE      _RenderThread;
+	//HANDLE      _ShutdownEvent;
 	LONG        _EngineLatencyInMS;
+
+	
+
+	std::thread* m_tread = 0;
 
 	//  IUnknown
 	STDMETHOD(QueryInterface)(REFIID iid, void** pvObject);
