@@ -547,6 +547,7 @@ public:
 	}
 
 	size_t size() const { return m_container.m_size; }
+	bool empty() const { return m_container.m_size == 0; }
 };
 
 #endif

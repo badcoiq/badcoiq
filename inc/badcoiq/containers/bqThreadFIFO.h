@@ -67,6 +67,9 @@ public:
 		m_mutex.unlock();
 		return r;
 	}
+
+	bool Empty() { return m_container.empty(); }
+	void Clear() { return m_container.clear(); }
 };
 
 

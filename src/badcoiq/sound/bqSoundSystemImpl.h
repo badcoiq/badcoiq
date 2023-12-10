@@ -50,9 +50,31 @@ public:
 	bool Initialize(IMMDevice* Endpoint, UINT32 EngineLatency);
 	void Shutdown();
 
+	// Когда надо что-то сделать в треде обработки звука
+	// надо послать команду. Команды обрабатываются после
+	// цикла обработки звука.
+	struct _thread_command
+	{
+		enum
+		{
+			type_null,
+			type_start,
+			type_stop,
+			
+			type_stopAll,
+
+			type_addSound,
+			type_removeSound,
+		};
+		uint32_t m_type = type_null;
+
+		bqSoundObjectImpl* m_sound = 0;
+	};
+
 	struct _thread_context
 	{
-
+		bqThreadFIFO<_thread_command> m_commands;
+		bqArray<bqSoundObjectImpl*> m_sounds;
 		bool m_run = true;
 	}m_threadContext;
 

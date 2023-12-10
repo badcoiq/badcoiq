@@ -237,6 +237,27 @@ void bqWASAPIRenderer::_thread_function()
 {
 	while (m_threadContext.m_run)
 	{
+		for (size_t i = 0; i < m_threadContext.m_sounds.m_size; ++i)
+		{
+
+		}
+
+		while (m_threadContext.m_commands.Empty() == false)
+		{
+			auto command = m_threadContext.m_commands.Front();
+
+			switch (command.m_type)
+			{
+			case _thread_command::type_addSound:
+				if (command.m_sound)
+				{
+					m_threadContext.m_sounds.push_back(command.m_sound);
+				}
+				break;
+			}
+
+			m_threadContext.m_commands.Pop();
+		}
 
 	}
 }
@@ -270,6 +291,9 @@ void bqWASAPIRenderer::Shutdown()
 
 		if(m_tread->joinable())
 			m_tread->join();
+
+		m_threadContext.m_commands.Clear();
+		m_threadContext.m_sounds.clear();
 
 		delete m_tread;
 		m_tread = 0;
