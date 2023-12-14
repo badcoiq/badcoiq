@@ -254,7 +254,15 @@ void bqWASAPIRenderer::_thread_function()
 					m_threadContext.m_sounds.push_back(command.m_sound);
 				}
 				break;
+
+			case _thread_command::type_start:
+				if (command.m_sound)
+				{
+					command.m_sound->m_bufferData;
+				}
+				break;
 			}
+		}
 
 			m_threadContext.m_commands.Pop();
 		}

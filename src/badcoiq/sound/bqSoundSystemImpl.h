@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <thread>
 #include <mutex>
 
+#include "badcoiq/containers/bqThreadFIFO.h"
 #include "badcoiq/sound/bqSoundSystem.h"
 
 
@@ -41,6 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <AudioPolicy.h>
 #include <functiondiscoverykeys.h>
 
+class bqSoundObjectImpl;
 
 class bqWASAPIRenderer : IMMNotificationClient, IAudioSessionEvents
 {

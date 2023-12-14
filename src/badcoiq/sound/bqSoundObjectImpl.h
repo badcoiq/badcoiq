@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqSoundObjectImpl : public bqSoundObject
 {
 	IAudioClient* m_audioClient = 0;
-	IAudioRenderClient* m_renderClient=0;
+	IAudioRenderClient* m_renderClient = 0;
 	WAVEFORMATEX* m_mixFormat = 0;
 	UINT32      m_frameSize = 0;
 	UINT32      m_bufferSize = 0;
@@ -51,6 +51,21 @@ class bqSoundObjectImpl : public bqSoundObject
 		SampleType16BitPCM,
 	};
 	RenderSampleType m_renderSampleType;
+
+	// Управляем воспроизведением `передавая` команды
+	enum ThreadCommand
+	{
+		ThreadCommand_null,
+		ThreadCommand_start,
+	};
+	ThreadCommand m_threadCommand = ThreadCommand::ThreadCommand_null;
+
+	// `Передавая` команды, должно изменяться состояние воспроизведения
+	enum ThreadState
+	{
+		ThreadState_null,
+	};
+	ThreadState m_threadState = ThreadState::ThreadState_null;
 
 public:
 	bqSoundObjectImpl();

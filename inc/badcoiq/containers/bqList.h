@@ -431,6 +431,7 @@ public:
 
 	size_t m_size = 0;
 	size_t size() const { return m_size; }
+	bool empty() const { return m_size == 0; }
 };
 
 #include <mutex>
