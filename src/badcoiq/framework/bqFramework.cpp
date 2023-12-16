@@ -261,6 +261,10 @@ void bqFrameworkImpl::OnDestroy()
 		}
 		g_framework->m_gss.clear();
 	}
+
+#ifdef BQ_PLATFORM_WINDOWS
+	CoUninitialize();
+#endif
 }
 
 void bqFramework::Update()

@@ -49,7 +49,7 @@ class bqWASAPIRenderer : IMMNotificationClient, IAudioSessionEvents
 public:
 	bqWASAPIRenderer();
 	~bqWASAPIRenderer();
-	bool Initialize(IMMDevice* Endpoint, UINT32 EngineLatency);
+	bool Initialize(IMMDevice* Endpoint);
 	void Shutdown();
 
 	// Когда надо что-то сделать в треде обработки звука
@@ -60,8 +60,10 @@ public:
 		enum
 		{
 			type_null,
-			type_start,
-			type_stop,
+			
+			// Наверно лучше это делать через сам звуковой объект
+			/*type_start,
+			type_stop,*/
 			
 			type_stopAll,
 
@@ -79,6 +81,8 @@ public:
 		bqArray<bqSoundObjectImpl*> m_sounds;
 		bool m_run = true;
 	}m_threadContext;
+
+	void ThreadAddSound(bqSoundObjectImpl*);
 
 	void _thread_function();
 

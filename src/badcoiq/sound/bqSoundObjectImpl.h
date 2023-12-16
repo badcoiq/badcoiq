@@ -39,6 +39,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class bqSoundObjectImpl : public bqSoundObject
 {
+	friend class bqWASAPIRenderer;
+
 	IAudioClient* m_audioClient = 0;
 	IAudioRenderClient* m_renderClient = 0;
 	WAVEFORMATEX* m_mixFormat = 0;
@@ -57,6 +59,7 @@ class bqSoundObjectImpl : public bqSoundObject
 	{
 		ThreadCommand_null,
 		ThreadCommand_start,
+		ThreadCommand_stop,
 	};
 	ThreadCommand m_threadCommand = ThreadCommand::ThreadCommand_null;
 
@@ -64,6 +67,7 @@ class bqSoundObjectImpl : public bqSoundObject
 	enum ThreadState
 	{
 		ThreadState_null,
+		ThreadState_play,
 	};
 	ThreadState m_threadState = ThreadState::ThreadState_null;
 
