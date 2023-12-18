@@ -423,7 +423,21 @@ void bqSoundBuffer::Make8bits()
 
 			case bqSoundFormat::float32_mono_44100:
 			{
-				*dst8 = (*src32 + 32767) >> 8;
+				float v = *src32;
+				if (v < -1.f)
+					v = -1.f;
+				v += 2.f;
+
+				v *= 127.f;
+
+				v = ceilf(v);
+
+				if (v > 255.f)
+					v = 255.f;
+
+				*dst8 = (uint8_t)v;
+				//*dst8 = (*src32 + 32767) >> 8;
+
 				++src32;
 				++dst8;
 			}break;
