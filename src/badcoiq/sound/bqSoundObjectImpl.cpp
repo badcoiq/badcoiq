@@ -144,14 +144,13 @@ bool bqSoundObjectImpl::Init(IMMDevice* endpoint, bqSound* sound, uint32_t Engin
 		return false;
 	}
 
-	int PERIODS_PER_BUFFER = 4;
-	REFERENCE_TIME bufferDuration = EngineLatency * 10000 * PERIODS_PER_BUFFER;
+	REFERENCE_TIME bufferDuration = EngineLatency * 10000;
 	REFERENCE_TIME periodicity = EngineLatency * 10000;
 
 	hr = m_audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
 		AUDCLNT_STREAMFLAGS_NOPERSIST,
 		bufferDuration,
-		periodicity,
+		0,
 		m_mixFormat,
 		NULL);
 	if (FAILED(hr))

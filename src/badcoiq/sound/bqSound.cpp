@@ -182,6 +182,8 @@ bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo& info)
 				r = bqSoundFormat::uint8_mono_44100;
 			else if (info.m_bitsPerSample == 16)
 				r = bqSoundFormat::uint16_mono_44100;
+			else if (info.m_bitsPerSample == 32)
+				r = bqSoundFormat::float32_mono_44100;
 		}
 	}
 	else if (info.m_channels == 2)
@@ -192,6 +194,8 @@ bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo& info)
 				r = bqSoundFormat::uint8_stereo_44100;
 			else if (info.m_bitsPerSample == 16)
 				r = bqSoundFormat::uint16_stereo_44100;
+			else if (info.m_bitsPerSample == 32)
+				r = bqSoundFormat::float32_stereo_44100;
 		}
 	}
 	return r;
@@ -205,6 +209,7 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 	{
 	case bqSoundFormat::uint8_stereo_44100:
 	case bqSoundFormat::uint16_stereo_44100:
+	case bqSoundFormat::float32_stereo_44100:
 	{
 		uint32_t _channels = 1;
 		uint32_t _blockSize = m_bufferInfo.m_bytesPerSample * _channels;
@@ -216,9 +221,11 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 
 		uint8_t* dst8 = dst;
 		uint16_t* dst16 = (uint16_t*)dst;
+		float* dst32 = (float*)dst;
 		
 		uint8_t* src8 = src;
 		uint16_t* src16 = (uint16_t*)src;
+		float* src32 = (float*)src;
 
 		uint32_t numBlocks = _dataSize / _blockSize;
 		for (uint32_t i = 0; i < numBlocks; ++i)
@@ -259,6 +266,23 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 					++src16;
 				}
 			}break;
+			case bqSoundFormat::float32_stereo_44100:
+			{
+				if (how)
+				{
+					*dst32 = *src32;
+					++dst32;
+					++src32;
+					++src32;
+				}
+				else
+				{
+					++src32;
+					*dst32 = *src32;
+					++dst32;
+					++src32;
+				}
+			}break;
 			}
 		}
 
@@ -284,6 +308,7 @@ void bqSoundBuffer::MakeStereo()
 	{
 	case bqSoundFormat::uint8_mono_44100:
 	case bqSoundFormat::uint16_mono_44100:
+	case bqSoundFormat::float32_mono_44100:
 	{
 		uint32_t _channels = 2;
 		uint32_t _blockSize = m_bufferInfo.m_bytesPerSample * _channels;
@@ -295,9 +320,11 @@ void bqSoundBuffer::MakeStereo()
 
 		uint8_t* dst8 = dst;
 		uint16_t* dst16 = (uint16_t*)dst;
+		float* dst32 = (float*)dst;
 
 		uint8_t* src8 = src;
 		uint16_t* src16 = (uint16_t*)src;
+		float* src32 = (float*)src;
 
 		uint32_t numBlocks = _dataSize / _blockSize;
 		for (uint32_t i = 0; i < numBlocks; ++i)
@@ -319,6 +346,14 @@ void bqSoundBuffer::MakeStereo()
 				*dst16 = *src16;
 				++dst16;
 				++src16;
+			}break;
+			case bqSoundFormat::float32_mono_44100:
+			{
+				*dst32 = *src32;
+				++dst32;
+				*dst32 = *src32;
+				++dst32;
+				++src32;
 			}break;
 			}
 		}
@@ -346,10 +381,13 @@ void bqSoundBuffer::Make8bits()
 	{
 	case bqSoundFormat::uint16_mono_44100:
 	case bqSoundFormat::uint16_stereo_44100:
+	case bqSoundFormat::float32_mono_44100:
+	case bqSoundFormat::float32_stereo_44100:
 	{
 		uint32_t _channels = 2;
 
-		if(type == bqSoundFormat::uint16_mono_44100)
+		if(type == bqSoundFormat::uint16_mono_44100
+			|| type == bqSoundFormat::float32_mono_44100)
 			_channels = 1;
 		 
 		uint32_t _bytesPerSample = 1;
@@ -360,6 +398,8 @@ void bqSoundBuffer::Make8bits()
 
 		uint8_t* dst8 = (uint8_t*)newData;
 		uint16_t* src16 = (uint16_t*)m_bufferData.m_data;
+		float* src32 = (float*)m_bufferData.m_data;
+
 		uint32_t numBlocks = _dataSize / _blockSize;
 		for (uint32_t i = 0; i < numBlocks; ++i)
 		{
@@ -378,6 +418,13 @@ void bqSoundBuffer::Make8bits()
 				++dst8;
 				*dst8 = (*src16 + 32767) >> 8;
 				++src16;
+				++dst8;
+			}break;
+
+			case bqSoundFormat::float32_mono_44100:
+			{
+				*dst8 = (*src32 + 32767) >> 8;
+				++src32;
 				++dst8;
 			}break;
 			}

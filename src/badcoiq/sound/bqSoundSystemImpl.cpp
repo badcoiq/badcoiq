@@ -207,7 +207,7 @@ bqSoundObject* bqSoundSystemImpl::SummonObject(bqSound* sound)
 {
 	BQ_ASSERT_ST(sound);
 	BQ_PTR_D(bqSoundObjectImpl,newO,new bqSoundObjectImpl);
-	if (newO->Init(m_WASAPIrenderer->GetEndpoint(), sound, 10))
+	if (newO->Init(m_WASAPIrenderer->GetEndpoint(), sound, 50))
 	{
 		m_WASAPIrenderer->ThreadAddSound(newO.Ptr());
 		return newO.Drop();
@@ -311,6 +311,13 @@ void bqWASAPIRenderer::_thread_function()
 			//		printf("Start\n");
 					sound->m_threadState = bqSoundObjectImpl::ThreadState::ThreadState_play;
 					sound->m_state = bqSoundObject::state_playing;
+
+					UINT32 padding = 0;
+					hr = sound->m_audioClient->GetCurrentPadding(&padding);
+					if (SUCCEEDED(hr))
+					{
+						bqLog::Print("padding on start is %u\n", padding);
+					}
 				}
 
 			}break;

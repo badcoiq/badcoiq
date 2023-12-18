@@ -89,7 +89,8 @@ bool ExampleBasicsSound::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_sound1 = new bqSound();
-	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/alien_beacon44100.wav", true);
+	//m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/alien_beacon44100.wav", true);
+	m_sound1->Generate(bqSoundWaveType::sin, 10.f, 440);
 
 	auto ss = bqFramework::GetSoundSystem();
 	m_soundObject = ss->SummonObject(m_sound1);

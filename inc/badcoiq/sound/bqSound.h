@@ -54,8 +54,10 @@ enum class bqSoundFormat
 {
 	uint8_mono_44100,
 	uint8_stereo_44100,
-	uint16_mono_44100,   // поддерживаемое
-	uint16_stereo_44100,   // поддерживаемое
+	uint16_mono_44100,
+	uint16_stereo_44100,
+	float32_mono_44100,
+	float32_stereo_44100,
 	unsupported
 };
 
@@ -109,6 +111,7 @@ public:
 	void MakeStereo();
 	void Make8bits();
 	void Make16bits();
+	void Make32bitsFloat();
 	//void FlipChannels();
 
 };
