@@ -426,7 +426,7 @@ void bqSoundBuffer::Make8bits()
 				float v = *src32;
 				if (v < -1.f)
 					v = -1.f;
-				v += 2.f;
+				v += 1.f;
 
 				v *= 127.f;
 
