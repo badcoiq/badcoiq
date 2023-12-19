@@ -572,6 +572,14 @@ case bqSoundFormat::float32_stereo_44100:
 	m_format = bqSoundFormatFindFormat(m_bufferInfo);
 }
 
+void bqSoundBuffer::Make32bits()
+{
+	auto type = bqSoundFormatFindFormat(m_bufferInfo);
+
+	switch (type)
+	{
+}
+}
 
 void bqSound::Generate(
 	bqSoundWaveType waveType,
