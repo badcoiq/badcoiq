@@ -389,8 +389,7 @@ int16_t bqSoundBuffer::_32_to_16(float v)
 {
 if (v < -1.f)
 					v = -1.f;
-				v += 1.f;
-				v *= 32767.f; ???
+				v *= 32767.f;
 				v = ceilf(v);
 				if (v > 0xffff)
 					v = 0xffff;
