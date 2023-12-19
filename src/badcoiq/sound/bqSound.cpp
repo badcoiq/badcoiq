@@ -456,17 +456,17 @@ void bqSoundBuffer::Make8bits()
 	//				v = 255.f;
 		//		*dst8 = (uint8_t)v;
 
-*dst = ::_32_to_8(*src);
+				*dst8 = _32_to_8(*src32);
 
 				++src32;
 				++dst8;
 			}break;
-case bqSoundFormat::float32_stereo_44100:
+			case bqSoundFormat::float32_stereo_44100:
 			{
-*dst = ::_32_to_8(*src);
+				*dst8 = _32_to_8(*src32);
 				++src32;
 				++dst8;
-*dst = ::_32_to_8(*src);
+				*dst8 = _32_to_8(*src32);
 				++src32;
 				++dst8;
 			}break;
@@ -503,7 +503,7 @@ void bqSoundBuffer::Make16bits()
 	{
 		uint32_t _channels = 2;
 
-		if (type == bqSoundFormat::uint8_mono_44100)
+		if (type == bqSoundFormat::uint8_mono_44100
 				|| type == bqSoundFormat::float32_mono_44100)
 			_channels = 1;
 
@@ -515,7 +515,7 @@ void bqSoundBuffer::Make16bits()
 
 		uint16_t* dst16 = (uint16_t*)newData;
 		uint8_t* src8 = (uint8_t*)m_bufferData.m_data;
-float* src32 = (float*)m_bufferData.m_data;
+		float* src32 = (float*)m_bufferData.m_data;
 
 		uint32_t numBlocks = _dataSize / _blockSize;
 		for (uint32_t i = 0; i < numBlocks; ++i)
@@ -537,18 +537,18 @@ float* src32 = (float*)m_bufferData.m_data;
 				++src8;
 				++dst16;
 			}break;
-case bqSoundFormat::float32_mono_44100:
+			case bqSoundFormat::float32_mono_44100:
 			{
 				*dst16 = _32_to_16(*src32);
 				++src32;
 				++dst16;
 			}break;
-case bqSoundFormat::float32_stereo_44100:
+			case bqSoundFormat::float32_stereo_44100:
 			{
 				*dst16 = _32_to_16(*src32);
 				++src32;
 				++dst16;
-	*dst16 = _32_to_16(*src32);
+				*dst16 = _32_to_16(*src32);
 				++src32;
 				++dst16;
 			}break;
@@ -572,13 +572,13 @@ case bqSoundFormat::float32_stereo_44100:
 	m_format = bqSoundFormatFindFormat(m_bufferInfo);
 }
 
-void bqSoundBuffer::Make32bits()
+void bqSoundBuffer::Make32bitsFloat()
 {
 	auto type = bqSoundFormatFindFormat(m_bufferInfo);
 
 	switch (type)
 	{
-}
+	}
 }
 
 void bqSound::Generate(
@@ -871,14 +871,14 @@ void bqSound::Convert(bqSoundFormat type)
 					m_soundBuffer->Make16bits();
 					m_soundBuffer->MakeStereo();
 				}break;
-case bqSoundFormat::float32_mono_44100:
+				case bqSoundFormat::float32_mono_44100:
 				{
-					m_soundBuffer->Make32bits();
+					m_soundBuffer->Make32bitsFloat();
 					m_soundBuffer->MakeMono(0);
 				}break;
 				case bqSoundFormat::float32_stereo_44100:
 				{
-					m_soundBuffer->Make32bits();
+					m_soundBuffer->Make32bitsFloat();
 					m_soundBuffer->MakeStereo();
 				}break;
 			}

@@ -91,6 +91,8 @@ struct bqSoundBufferInfo
 // но теперь есть bqSoundObject
 class bqSoundBuffer
 {
+	uint8_t _32_to_8(float v);
+	int16_t _32_to_16(float v);
 public:
 	bqSoundBuffer();
 	~bqSoundBuffer();
