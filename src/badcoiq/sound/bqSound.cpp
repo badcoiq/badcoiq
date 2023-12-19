@@ -385,6 +385,18 @@ if (v < -1.f)
 return (uint8_t)v;
 }
 
+int16_t bqSoundBuffer::_32_to_16(float v)
+{
+if (v < -1.f)
+					v = -1.f;
+				v += 1.f;
+				v *= 32767.f; ???
+				v = ceilf(v);
+				if (v > 0xffff)
+					v = 0xffff;
+return (int16_t)v;
+}
+
 void bqSoundBuffer::Make8bits()
 {
 	auto type = bqSoundFormatFindFormat(m_bufferInfo);
@@ -487,10 +499,13 @@ void bqSoundBuffer::Make16bits()
 	{
 	case bqSoundFormat::uint8_mono_44100:
 	case bqSoundFormat::uint8_stereo_44100:
+	case bqSoundFormat::float32_mono_44100:
+	case bqSoundFormat::float32_stereo_44100:
 	{
 		uint32_t _channels = 2;
 
 		if (type == bqSoundFormat::uint8_mono_44100)
+				|| type == bqSoundFormat::float32_mono_44100)
 			_channels = 1;
 
 		uint32_t _bytesPerSample = 2;
@@ -501,6 +516,8 @@ void bqSoundBuffer::Make16bits()
 
 		uint16_t* dst16 = (uint16_t*)newData;
 		uint8_t* src8 = (uint8_t*)m_bufferData.m_data;
+float* src32 = (float*)m_bufferData.m_data;
+
 		uint32_t numBlocks = _dataSize / _blockSize;
 		for (uint32_t i = 0; i < numBlocks; ++i)
 		{
@@ -519,6 +536,21 @@ void bqSoundBuffer::Make16bits()
 				++dst16;
 				*dst16 = ((uint16_t)*src8 << 8) - 32767;
 				++src8;
+				++dst16;
+			}break;
+case bqSoundFormat::float32_mono_44100:
+			{
+				*dst16 = _32_to_16(*src32);
+				++src32;
+				++dst16;
+			}break;
+case bqSoundFormat::float32_stereo_44100:
+			{
+				*dst16 = _32_to_16(*src32);
+				++src32;
+				++dst16;
+	*dst16 = _32_to_16(*src32);
+				++src32;
 				++dst16;
 			}break;
 			}
