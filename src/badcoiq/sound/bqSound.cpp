@@ -396,6 +396,20 @@ if (v < -1.f)
 return (int16_t)v;
 }
 
+// -1  0
+// 0   127
+// 1   255
+// 
+// 0   0
+// 127 1
+// 255 2
+float bqSoundBuffer::_8_to_32(uint8_t v)
+{
+
+return (int16_t)v;
+}
+
+
 void bqSoundBuffer::Make8bits()
 {
 	auto type = bqSoundFormatFindFormat(m_bufferInfo);
