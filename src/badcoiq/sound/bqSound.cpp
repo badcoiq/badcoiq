@@ -396,17 +396,33 @@ if (v < -1.f)
 return (int16_t)v;
 }
 
-// -1  0
-// 0   127
-// 1   255
-// 
 // 0   0
 // 127 1
 // 255 2
 float bqSoundBuffer::_8_to_32(uint8_t v)
 {
+const float m = 0.00787401574;// 1:127
+float r = (v * m)-1.f;
+if(r<-1.f)
+	r = -1.f;
+if(r > 1.f)
+	r = 1.f;
+return r;
+}
 
-return (int16_t)v;
+
+// -32767   0
+// 0        1
+// 32767    2
+float bqSoundBuffer::_16_to_32(int32_t v)
+{
+const double m = 0.0000305185094759971922971282;// 1:32767
+float r = ((double)v * m);
+if(r<-1.f)
+	r = -1.f;
+if(r > 1.f)
+	r = 1.f;
+return r;
 }
 
 
