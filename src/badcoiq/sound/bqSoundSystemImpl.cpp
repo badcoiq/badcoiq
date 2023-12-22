@@ -363,7 +363,7 @@ void bqWASAPIRenderer::_thread_function()
 					hr = sound->m_renderClient->GetBuffer(sound->m_bufferSize, &pData);
 					if (SUCCEEDED(hr))
 					{
-						CopyMemory(pData, &soundData->m_data[4096], sound->m_bufferSize);
+						CopyMemory(pData, soundData->m_data, sound->m_bufferSize);
 						hr = sound->m_renderClient->ReleaseBuffer(sound->m_bufferSize, 0);
 						printf("daone\n");
 						if (!SUCCEEDED(hr))
