@@ -93,6 +93,8 @@ class bqSoundBuffer
 {
 	uint8_t _32_to_8(float v);
 	int16_t _32_to_16(float v);
+	float _8_to_32(uint8_t v);
+	float _16_to_32(int16_t v);
 public:
 	bqSoundBuffer();
 	~bqSoundBuffer();
@@ -113,7 +115,7 @@ public:
 	void MakeStereo();
 	void Make8bits();
 	void Make16bits();
-	void Make32bitsFloat();
+	void Make32bits();
 	//void FlipChannels();
 
 };

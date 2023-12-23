@@ -375,25 +375,25 @@ void bqSoundBuffer::MakeStereo()
 
 uint8_t bqSoundBuffer::_32_to_8(float v)
 {
-if (v < -1.f)
-					v = -1.f;
-				v += 1.f;
-				v *= 127.f;
-				v = ceilf(v);
-				if (v > 255.f)
-					v = 255.f;
-return (uint8_t)v;
+	if (v < -1.f)
+			v = -1.f;
+		v += 1.f;
+		v *= 127.f;
+		v = floorf(v);
+		if (v > 255.f)
+			v = 255.f;
+	return (uint8_t)v;
 }
 
 int16_t bqSoundBuffer::_32_to_16(float v)
 {
-if (v < -1.f)
-					v = -1.f;
-				v *= 32767.f;
-				v = ceilf(v);
-				if (v > 0xffff)
-					v = 0xffff;
-return (int16_t)v;
+	if (v < -1.f)
+			v = -1.f;
+		v *= 32767.f;
+		v = floorf(v);
+		if (v > 0xffff)
+			v = 0xffff;
+	return (int16_t)v;
 }
 
 // 0   0
@@ -401,28 +401,28 @@ return (int16_t)v;
 // 255 2
 float bqSoundBuffer::_8_to_32(uint8_t v)
 {
-const float m = 0.00787401574;// 1:127
-float r = (v * m)-1.f;
-if(r<-1.f)
-	r = -1.f;
-if(r > 1.f)
-	r = 1.f;
-return r;
+	const float m = 0.00787401574;// 1:127
+	float r = (v * m)-1.f;
+	if(r<-1.f)
+		r = -1.f;
+	if(r > 1.f)
+		r = 1.f;
+	return r;
 }
 
 
 // -32767   0
 // 0        1
 // 32767    2
-float bqSoundBuffer::_16_to_32(int32_t v)
+float bqSoundBuffer::_16_to_32(int16_t v)
 {
-const double m = 0.0000305185094759971922971282;// 1:32767
-float r = ((double)v * m);
-if(r<-1.f)
-	r = -1.f;
-if(r > 1.f)
-	r = 1.f;
-return r;
+	const double m = 0.0000305185094759971922971282;// 1:32767
+	float r = ((double)v * m);
+	if(r<-1.f)
+		r = -1.f;
+	if(r > 1.f)
+		r = 1.f;
+	return r;
 }
 
 
@@ -450,7 +450,7 @@ void bqSoundBuffer::Make8bits()
 		uint8_t* newData = (uint8_t*)bqMemory::calloc(_dataSize);
 
 		uint8_t* dst8 = (uint8_t*)newData;
-		uint16_t* src16 = (uint16_t*)m_bufferData.m_data;
+		int16_t* src16 = (int16_t*)m_bufferData.m_data;
 		float* src32 = (float*)m_bufferData.m_data;
 
 		uint32_t numBlocks = _dataSize / _blockSize;
@@ -543,7 +543,7 @@ void bqSoundBuffer::Make16bits()
 		uint32_t _dataSize = m_bufferInfo.m_numOfSamples * _bytesPerSample * _channels;
 		uint8_t* newData = (uint8_t*)bqMemory::calloc(_dataSize);
 
-		uint16_t* dst16 = (uint16_t*)newData;
+		int16_t* dst16 = (int16_t*)newData;
 		uint8_t* src8 = (uint8_t*)m_bufferData.m_data;
 		float* src32 = (float*)m_bufferData.m_data;
 
@@ -602,13 +602,86 @@ void bqSoundBuffer::Make16bits()
 	m_format = bqSoundFormatFindFormat(m_bufferInfo);
 }
 
-void bqSoundBuffer::Make32bitsFloat()
+void bqSoundBuffer::Make32bits()
 {
 	auto type = bqSoundFormatFindFormat(m_bufferInfo);
 
 	switch (type)
 	{
+	case bqSoundFormat::uint8_mono_44100:
+	case bqSoundFormat::uint8_stereo_44100:
+	case bqSoundFormat::uint16_mono_44100:
+	case bqSoundFormat::uint16_stereo_44100:
+	{
+		uint32_t _channels = 2;
+
+		if (type == bqSoundFormat::uint8_mono_44100
+			|| type == bqSoundFormat::uint16_mono_44100)
+			_channels = 1;
+
+		uint32_t _bytesPerSample = 4;
+		uint32_t _bitsPerSample = 32;
+		uint32_t _blockSize = _bytesPerSample * _channels;
+		uint32_t _dataSize = m_bufferInfo.m_numOfSamples * _bytesPerSample * _channels;
+		uint8_t* newData = (uint8_t*)bqMemory::calloc(_dataSize);
+
+		float* dst32 = (float*)newData;
+		uint8_t* src8 = (uint8_t*)m_bufferData.m_data;
+		int16_t* src16 = (int16_t*)m_bufferData.m_data;
+
+		uint32_t numBlocks = _dataSize / _blockSize;
+		for (uint32_t i = 0; i < numBlocks; ++i)
+		{
+			switch (type)
+			{
+			case bqSoundFormat::uint8_mono_44100:
+			{
+				*dst32 = _8_to_32(*src8);
+				++src8;
+				++dst32;
+			}break;
+			case bqSoundFormat::uint8_stereo_44100:
+			{
+				*dst32 = _8_to_32(*src8);
+				++src8;
+				++dst32;
+				*dst32 = _8_to_32(*src8);
+				++src8;
+				++dst32;
+			}break;
+			case bqSoundFormat::uint16_mono_44100:
+			{
+				*dst32 = _16_to_32(*src16);
+				++src16;
+				++dst32;
+			}break;
+			case bqSoundFormat::uint16_stereo_44100:
+			{
+				*dst32 = _16_to_32(*src16);
+				++src16;
+				++dst32;
+				*dst32 = _16_to_32(*src16);
+				++src16;
+				++dst32;
+			}break;
+			}
+		}
+
+		if (m_bufferData.m_data)
+			bqMemory::free(m_bufferData.m_data);
+
+		m_bufferInfo.m_channels = _channels;
+		m_bufferInfo.m_blockSize = _blockSize;
+		m_bufferInfo.m_bytesPerSample = _bytesPerSample;
+		m_bufferInfo.m_bitsPerSample = _bitsPerSample;
+		m_bufferData.m_data = newData;
+		m_bufferData.m_dataSize = _dataSize;
+	}break;
+	default:
+		break;
 	}
+
+	m_format = bqSoundFormatFindFormat(m_bufferInfo);
 }
 
 void bqSound::Generate(
@@ -793,17 +866,27 @@ bool bqSound::_saveWav(const char* fn)
 		fwrite("RIFF", 4, 1, f);
 			
 		int32_t chunkSz = m_soundBuffer->m_bufferData.m_dataSize + 44 - 8;
+
+		if (m_soundBuffer->m_format == bqSoundFormat::float32_mono_44100
+			|| m_soundBuffer->m_format == bqSoundFormat::float32_stereo_44100)
+			chunkSz += 4 + 4 + 4;
+
 		fwrite(&chunkSz, 4, 1, f);
 			
 		fwrite("WAVE", 4, 1, f);
 		fwrite("fmt ", 4, 1, f);
 			
-//bits per sample?
 		int32_t subchnkSz = 16;
 		fwrite(&subchnkSz, 4, 1, f);
 			
-		// pcm
+		// pcm = 1
+		// IEEE float = 3
 		int16_t TYPE = 1;
+
+		if(m_soundBuffer->m_format == bqSoundFormat::float32_mono_44100
+			|| m_soundBuffer->m_format == bqSoundFormat::float32_stereo_44100)
+			TYPE = 3;
+
 		fwrite(&TYPE, sizeof(TYPE), 1, f);
 			
 		fwrite(&m_soundBuffer->m_bufferInfo.m_channels, 2, 1, f);
@@ -816,6 +899,16 @@ bool bqSound::_saveWav(const char* fn)
 			
 		fwrite(&m_soundBuffer->m_bufferInfo.m_blockSize, 2, 1, f);
 		fwrite(&m_soundBuffer->m_bufferInfo.m_bitsPerSample, 2, 1, f);
+
+		if (m_soundBuffer->m_format == bqSoundFormat::float32_mono_44100
+			|| m_soundBuffer->m_format == bqSoundFormat::float32_stereo_44100)
+		{
+			fwrite("fact", 4, 1, f);
+			int32_t factchunkSz = 4;
+			fwrite(&factchunkSz, 4, 1, f);
+			fwrite(&m_soundBuffer->m_bufferInfo.m_numOfSamples, 4, 1, f);
+
+		}
 		
 		// Где запись этого???
 		//uint16_t extraFormatInfoSz = 0;
@@ -903,12 +996,12 @@ void bqSound::Convert(bqSoundFormat type)
 				}break;
 				case bqSoundFormat::float32_mono_44100:
 				{
-					m_soundBuffer->Make32bitsFloat();
+					m_soundBuffer->Make32bits();
 					m_soundBuffer->MakeMono(0);
 				}break;
 				case bqSoundFormat::float32_stereo_44100:
 				{
-					m_soundBuffer->Make32bitsFloat();
+					m_soundBuffer->Make32bits();
 					m_soundBuffer->MakeStereo();
 				}break;
 			}

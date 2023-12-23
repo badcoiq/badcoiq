@@ -31,8 +31,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //#include "badcoiq/scene/bqSprite.h"
 #include "badcoiq/sound/bqSoundSystem.h"
 
-
-
 ExampleBasicsSound::ExampleBasicsSound(DemoApp* app)
 	:
 	DemoExample(app)

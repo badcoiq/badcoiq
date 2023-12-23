@@ -345,12 +345,28 @@ int main()
                 sound3.Generate(bqSoundWaveType::triangle, time, Hz, loudness);
                 sound4.Generate(bqSoundWaveType::saw, time, Hz, loudness);
                 sound5.Create(1.f, 2, 44100, 16);
-               // sound1.SaveToFile(bqSoundFileType::wav, "sin.wav");
+               
+                sound1.SaveToFile(bqSoundFileType::wav, "uint16_mono_44100_origin.wav");
+                sound1.Convert(bqSoundFormat::float32_mono_44100);
+                sound1.SaveToFile(bqSoundFileType::wav, "float32_mono_44100.wav");
+
+                sound1.Convert(bqSoundFormat::uint16_mono_44100);
+                sound1.SaveToFile(bqSoundFileType::wav, "uint16_mono_44100.wav");
+
+                sound1.Convert(bqSoundFormat::float32_stereo_44100);
+                sound1.SaveToFile(bqSoundFileType::wav, "float32_stereo_44100.wav");
+
+                sound1.Convert(bqSoundFormat::uint16_stereo_44100);
+                sound1.SaveToFile(bqSoundFileType::wav, "uint16_stereo_44100.wav");
+
               //  sound2.SaveToFile(bqSoundFileType::wav, "square.wav");
               //  sound3.SaveToFile(bqSoundFileType::wav, "triangle.wav");
               //  sound4.SaveToFile(bqSoundFileType::wav, "saw.wav");
               //  sound5.SaveToFile(bqSoundFileType::wav, "2channels.wav");
+
                 sound6.LoadFromFile("../data/sounds/song1.wav");
+                sound6.Convert(bqSoundFormat::float32_mono_44100);
+                sound6.SaveToFile(bqSoundFileType::wav, "song1_float32.wav");
 
                 {
                 //    BQ_PTR_D(bqSoundObject, so1, se->SummonSoundObject(&sound1));
