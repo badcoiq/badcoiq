@@ -875,7 +875,11 @@ bool bqSound::_saveWav(const char* fn)
 			
 		fwrite("WAVE", 4, 1, f);
 		fwrite("fmt ", 4, 1, f);
-			
+		
+		// 16 - минимальный размер
+		// 18 - extraFormatInfoSz
+		// если 18 и extraFormatInfoSz == 22 то
+		//     subchnkSz = 40
 		int32_t subchnkSz = 16;
 		fwrite(&subchnkSz, 4, 1, f);
 			
@@ -887,7 +891,7 @@ bool bqSound::_saveWav(const char* fn)
 			|| m_soundBuffer->m_format == bqSoundFormat::float32_stereo_44100)
 			TYPE = 3;
 
-		fwrite(&TYPE, sizeof(TYPE), 1, f);
+		fwrite(&TYPE, 2, 1, f);
 			
 		fwrite(&m_soundBuffer->m_bufferInfo.m_channels, 2, 1, f);
 		fwrite(&m_soundBuffer->m_bufferInfo.m_sampleRate, 4, 1, f);
@@ -899,6 +903,10 @@ bool bqSound::_saveWav(const char* fn)
 			
 		fwrite(&m_soundBuffer->m_bufferInfo.m_blockSize, 2, 1, f);
 		fwrite(&m_soundBuffer->m_bufferInfo.m_bitsPerSample, 2, 1, f);
+		
+		// Если 
+		//uint16_t extraFormatInfoSz = 0;
+		//fwrite(&extraFormatInfoSz, 2, 1, f);
 
 		if (m_soundBuffer->m_format == bqSoundFormat::float32_mono_44100
 			|| m_soundBuffer->m_format == bqSoundFormat::float32_stereo_44100)
@@ -909,12 +917,6 @@ bool bqSound::_saveWav(const char* fn)
 			fwrite(&m_soundBuffer->m_bufferInfo.m_numOfSamples, 4, 1, f);
 
 		}
-		
-		// Где запись этого???
-		//uint16_t extraFormatInfoSz = 0;
-		// FMTChunkSize он же subchnkSz должен быть больше 16 для записи этого
-		// подробности я не знаю.
-		//fwrite(&extraFormatInfoSz, 2, 1, f);
 
 		fwrite("data", 4, 1, f);
 		fwrite(&m_soundBuffer->m_bufferData.m_dataSize, 4, 1, f);
@@ -1031,8 +1033,8 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 				uint32_t FMTChunkSize = 0;
 				file.Read(&FMTChunkSize, 4);
 
-				uint16_t format = 0;
-				file.Read(&format, 2);
+				uint16_t TYPE = 0;
+				file.Read(&TYPE, 2);
 
 				uint16_t channels = 0;
 				file.Read(&channels, 2);
@@ -1040,11 +1042,11 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 				uint32_t sampleRate = 0;
 				file.Read(&sampleRate, 4);
 
-				uint32_t byteRate = 0;
-				file.Read(&byteRate, 4);
+				uint32_t nAvgBytesPerSec = 0;
+				file.Read(&nAvgBytesPerSec, 4);
 
-				uint16_t blockAlign = 0;
-				file.Read(&blockAlign, 2);
+				uint16_t blockSize = 0;
+				file.Read(&blockSize, 2);
 
 				uint16_t bitsPerSample = 0;
 				file.Read(&bitsPerSample, 2);
@@ -1053,10 +1055,79 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 				{
 					uint16_t extraFormatInfoSz = 0;
 					file.Read(&extraFormatInfoSz, 2);
+
+					if (extraFormatInfoSz == 22)
+					{
+						uint16_t wValidBitsPerSample = 0;
+						uint32_t dwChannelMask = 0;
+						uint8_t SubFormat[16];
+						file.Read(&wValidBitsPerSample, 2);
+						file.Read(&dwChannelMask, 4);
+						file.Read(SubFormat, 16);
+					}
+				}
+
+				if (TYPE != 0)
+				{
+					char fact[5] = { 0,0,0,0,0 };
+					file.Read(fact, 4);
+					if (strcmp(fact, "fact") == 0)
+					{
+						uint32_t factcksize = 0;
+						file.Read(&factcksize, 4);
+						if(factcksize < 4)
+							return false;
+
+						// на каждый канал.
+						// наверное Chunk size и содержит размер с учётом количества каналов
+						// поэтому получаю это количество через factcksize / 4
+						for (uint32_t i = 0, sz = factcksize / 4; i < sz; ++i)
+						{
+							uint32_t factdwSampleLength = 0;
+							file.Read(&factdwSampleLength, 4);
+						}
+
+					}
+					else
+					{
+						return false;
+					}
 				}
 
 				char data[5] = { 0,0,0,0,0 };
 				file.Read(data, 4);
+
+				// возможно есть PEAK
+				if (strcmp(data, "PEAK") == 0)
+				{
+					uint32_t peakchunkDataSize = 0;
+					uint32_t peakversion = 0;
+					uint32_t peaktimeStamp = 0;
+
+					struct PositionPeak
+					{
+						float   value;    /* signed value of peak */
+						uint32_t position; /* the sample frame for the peak */
+					};
+
+					file.Read(&peakchunkDataSize, 4);
+					file.Read(&peakversion, 4);
+					file.Read(&peaktimeStamp, 4);
+
+					if (peakchunkDataSize > 8)
+					{
+						PositionPeak peak;
+						for (uint32_t i = 0; i < channels; ++i)
+						{
+							file.Read(&peak.value, 4);
+							file.Read(&peak.position, 4);
+						}
+					}
+
+					memset(data, 0, 5);
+					file.Read(data, 4);
+				}
+
 				if (strcmp(data, "data") == 0)
 				{
 					uint32_t dataSize = 0;

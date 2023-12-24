@@ -364,9 +364,10 @@ int main()
               //  sound4.SaveToFile(bqSoundFileType::wav, "saw.wav");
               //  sound5.SaveToFile(bqSoundFileType::wav, "2channels.wav");
 
-                sound6.LoadFromFile("../data/sounds/song1.wav");
-                sound6.Convert(bqSoundFormat::float32_mono_44100);
-                sound6.SaveToFile(bqSoundFileType::wav, "song1_float32.wav");
+                sound6.LoadFromFile("../data/sounds/alien_beacon44100_float.wav");
+             //   sound6.LoadFromFile("../data/sounds/song1.wav");
+                sound6.Convert(bqSoundFormat::uint16_mono_44100);
+                sound6.SaveToFile(bqSoundFileType::wav, "alien_beacon44100_uint16.wav");
 
                 {
                 //    BQ_PTR_D(bqSoundObject, so1, se->SummonSoundObject(&sound1));
