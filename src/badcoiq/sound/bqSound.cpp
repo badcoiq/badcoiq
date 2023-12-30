@@ -1067,7 +1067,7 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 					}
 				}
 
-				if (TYPE != 0)
+				if (TYPE != 1)
 				{
 					char fact[5] = { 0,0,0,0,0 };
 					file.Read(fact, 4);
@@ -1114,7 +1114,7 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 					file.Read(&peakversion, 4);
 					file.Read(&peaktimeStamp, 4);
 
-					if (peakchunkDataSize > 8)
+					if (peakchunkDataSize > 8)// надо ли это делать?
 					{
 						PositionPeak peak;
 						for (uint32_t i = 0; i < channels; ++i)

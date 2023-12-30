@@ -158,6 +158,9 @@ bool bqSoundObjectImpl::Init(IMMDevice* endpoint, bqSound* sound, uint32_t Engin
 		bqLog::PrintError("Unable to initialize audio client: %x.\n", hr);
 		return false;
 	}
+	
+	//constexpr uint32_t ewerr = AUDCLNT_E_BUFFER_TOO_LARGE;
+	// AUDCLNT_E_BUFFER_TOO_LARGE = decimal code 2290679814
 
 	//  Retrieve the buffer size for the audio client.
 	hr = m_audioClient->GetBufferSize(&m_bufferSize);
@@ -175,4 +178,32 @@ bool bqSoundObjectImpl::Init(IMMDevice* endpoint, bqSound* sound, uint32_t Engin
 	}
 
 	return true;
+}
+
+void bqSoundObjectImpl::_thread_fillRenderBuffer()
+{
+	BYTE* pData = 0;
+	HRESULT hr = m_renderClient->GetBuffer(m_bufferSize, &pData);
+	if (SUCCEEDED(hr))
+	{
+		bqSoundBufferData* soundData = m_bufferData;
+
+		memcpy(pData, &soundData->m_data[m_currentPosition], m_bufferSize);
+
+		m_currentPosition += m_bufferSize;
+
+		hr = m_renderClient->ReleaseBuffer(m_bufferSize, 0);
+		printf("done %u\n", m_currentPosition);
+		if (!SUCCEEDED(hr))
+		{
+			//AUDCLNT_E_BUFFER_ERROR
+			printf("Unable to release buffer: %x\n", hr);
+		//	stillPlaying = false;
+		}
+	}
+	else
+	{
+		printf("Unable to get buffer: %x bufferSize: %u\n", hr, m_bufferSize);
+	//	stillPlaying = false;
+	}
 }

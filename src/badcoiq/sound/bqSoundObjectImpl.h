@@ -47,6 +47,10 @@ class bqSoundObjectImpl : public bqSoundObject
 	UINT32      m_frameSize = 0;
 	UINT32      m_bufferSize = 0;
 
+	uint32_t m_currentPosition = 0;
+
+	void _thread_fillRenderBuffer();
+
 	enum RenderSampleType
 	{
 		SampleTypeFloat,

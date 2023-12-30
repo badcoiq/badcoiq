@@ -289,6 +289,13 @@ void bqWASAPIRenderer::_thread_function()
 						bqLog::PrintError("Failed to release buffer: %x.\n", hr);
 						return;
 					}
+
+					UINT32 padding = 0;
+					hr = sound->m_audioClient->GetCurrentPadding(&padding);
+					if (SUCCEEDED(hr))
+					{
+						bqLog::Print("first padding is %u\n", padding);
+					}
 				}
 
 				// сначала надо менять m_threadCommand и m_threadState
@@ -316,7 +323,21 @@ void bqWASAPIRenderer::_thread_function()
 					hr = sound->m_audioClient->GetCurrentPadding(&padding);
 					if (SUCCEEDED(hr))
 					{
+						Sleep(50); // должна быть пауза между обновлениями буфера
+						// видимо это то самое (хз что), о котором написано в примере
+						// WASAPIRenderSharedEventDriven в CWASAPIRenderer::Initialize
+						// Engine latency in shared mode timer driven cannot be less than 50ms
+						// 
+
 						bqLog::Print("padding on start is %u\n", padding);
+						// так как обновили буфер из render client и запустили воспроизведение
+						// padding равен какому-то значению, которое означает сколько байтов
+						// осталось воспроизводить.
+						// в буфер нужно послать звук. нужно создать отдельный метод для этого
+						// и вызвать его в нескольких местах
+						// первое место это здесь.
+						// второе ниже, в bqSoundObjectImpl::ThreadState::ThreadState_play:
+						sound->_thread_fillRenderBuffer();
 					}
 				}
 
@@ -346,37 +367,15 @@ void bqWASAPIRenderer::_thread_function()
 				break;
 			case bqSoundObjectImpl::ThreadState::ThreadState_play:
 			{
-				Sleep(100);
+				Sleep(50);
 				UINT32 padding = 0;
 				hr = sound->m_audioClient->GetCurrentPadding(&padding);
 				if (SUCCEEDED(hr))
 				{
 					bqLog::Print("padding %u\n", padding);
-					UINT32 framesAvailable = sound->m_bufferSize - padding;
-
-					bqSoundBufferData* soundData = sound->m_bufferData;
-
-					//UINT32 framesToWrite = soundData->m_dataSize / // renderBuffer->_BufferLength /
-					//	sound->m_frameSize;// _FrameSize;
-
-					BYTE* pData = 0;
-					hr = sound->m_renderClient->GetBuffer(sound->m_bufferSize, &pData);
-					if (SUCCEEDED(hr))
-					{
-						CopyMemory(pData, soundData->m_data, sound->m_bufferSize);
-						hr = sound->m_renderClient->ReleaseBuffer(sound->m_bufferSize, 0);
-						printf("daone\n");
-						if (!SUCCEEDED(hr))
-						{
-							printf("Unable to release buffer: %x\n", hr);
-						//	stillPlaying = false;
-						}
-					}
-					else
-					{
-						printf("Unable to get buffer: %x\n", hr);
-					//	stillPlaying = false;
-					}
+					
+					if(!padding)
+						sound->_thread_fillRenderBuffer();
 
 				//	sound->m_threadState = bqSoundObjectImpl::ThreadState::ThreadState_null;
 				}
