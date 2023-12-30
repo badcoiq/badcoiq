@@ -928,12 +928,12 @@ bool bqSound::_saveWav(const char* fn)
 	return false;
 }
 
-bool bqSound::LoadFromFile(const bqStringA& fn, bool convertTo16bitStereo)
+bool bqSound::LoadFromFile(const bqStringA& fn)
 {
-	return LoadFromFile(fn.c_str(), convertTo16bitStereo);
+	return LoadFromFile(fn.c_str());
 }
 
-bool bqSound::LoadFromFile(const char* fn, bool convertTo16bitStereo)
+bool bqSound::LoadFromFile(const char* fn)
 {
 	Clear();
 
@@ -942,12 +942,6 @@ bool bqSound::LoadFromFile(const char* fn, bool convertTo16bitStereo)
 	if (path.extension(".wav"))
 	{
 		r = _loadWav(fn);
-
-		if (r && convertTo16bitStereo)
-		{
-			this->m_soundBuffer->Make16bits();
-			this->m_soundBuffer->MakeStereo();
-		}
 	}
 
 	return r;

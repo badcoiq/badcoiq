@@ -149,8 +149,8 @@ public:
 	bool SaveToFile(bqSoundFileType, const char* fn);
 	bool SaveToFile(bqSoundFileType, const bqStringA& fn);
 	
-	bool LoadFromFile(const char* fn, bool convertTo16bitStereo = true);
-	bool LoadFromFile(const bqStringA& fn, bool convertTo16bitStereo = true);
+	bool LoadFromFile(const char* fn);
+	bool LoadFromFile(const bqStringA& fn);
 
 	void Clear();
 
