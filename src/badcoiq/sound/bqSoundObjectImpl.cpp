@@ -150,7 +150,7 @@ bool bqSoundObjectImpl::Init(IMMDevice* endpoint, bqSound* sound, uint32_t Engin
 	hr = m_audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
 		AUDCLNT_STREAMFLAGS_NOPERSIST,
 		bufferDuration,
-		0,
+		periodicity,
 		m_mixFormat,
 		NULL);
 	if (FAILED(hr))

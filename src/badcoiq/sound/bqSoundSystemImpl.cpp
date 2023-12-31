@@ -367,15 +367,45 @@ void bqWASAPIRenderer::_thread_function()
 				break;
 			case bqSoundObjectImpl::ThreadState::ThreadState_play:
 			{
-				Sleep(50);
 				UINT32 padding = 0;
 				hr = sound->m_audioClient->GetCurrentPadding(&padding);
 				if (SUCCEEDED(hr))
 				{
-					bqLog::Print("padding %u\n", padding);
+					//bqLog::Print("padding %u\n", padding);
+					//Sleep(1);
+					//if(!padding)
+					//sound->_thread_fillRenderBuffer();
 					
-					if(!padding)
-						sound->_thread_fillRenderBuffer();
+					UINT32 framesAvailable = sound->m_bufferSize - padding;
+					UINT32 framesToWrite = sound->m_bufferSize / sound->m_frameSize;
+
+					if(sound->m_bufferSize <= (framesAvailable * sound->m_frameSize))
+					{
+						BYTE* pData = 0;
+						hr = sound->m_renderClient->GetBuffer(framesToWrite, &pData);
+						if (SUCCEEDED(hr))
+						{
+							bqSoundBufferData* soundData = sound->m_bufferData;
+
+							memcpy(pData, &soundData->m_data[sound->m_currentPosition], framesToWrite * sound->m_frameSize);
+
+							sound->m_currentPosition += framesToWrite * sound->m_frameSize;
+
+							hr = sound->m_renderClient->ReleaseBuffer(framesToWrite, 0);
+							//printf("done %u\n", sound->m_currentPosition);
+							if (!SUCCEEDED(hr))
+							{
+								//AUDCLNT_E_BUFFER_ERROR
+								printf("Unable to release buffer: %x\n", hr);
+								//	stillPlaying = false;
+							}
+						}
+						else
+						{
+							printf("Unable to get buffer: %x bufferSize: %u\n", hr, sound->m_bufferSize);
+							//	stillPlaying = false;
+						}
+					}
 
 				//	sound->m_threadState = bqSoundObjectImpl::ThreadState::ThreadState_null;
 				}
