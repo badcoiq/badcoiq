@@ -85,7 +85,7 @@ public:
 	};
 	uint32_t m_state = state_notplaying;
 
-	bqSoundFormat m_format = bqSoundFormat::unsupported;
+	//bqSoundFormat m_format = bqSoundFormat::unsupported;
 	bool m_loop = true;
 };
 

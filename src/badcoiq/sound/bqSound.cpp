@@ -32,6 +32,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/math/bqMath.h"
 #include "badcoiq/common/bqFileBuffer.h"
 
+//class bqSoundBlock
+//{
+//	float * m_data = 0;
+//	uint32_t m_channels = 1;
+//public:
+//	bqSoundBlock(uint32_t channels)
+//	{
+//		if (channels == 0)
+//			channels = 1;
+//		m_channels = channels;
+//
+//		m_data = (float*)bqMemory::calloc(sizeof(float) * channels);
+//	}
+//
+//	~bqSoundBlock()
+//	{
+//		if (m_data)
+//			bqMemory::free(m_data);
+//	}
+//
+//	void MakeZero()
+//	{
+//		for (uint32_t i = 0; i < m_channels; ++i)
+//		{
+//			m_data[i] = 0;
+//		}
+//	}
+//
+//	void FromUint8(uint8_t* other, uint32_t ch)
+//	{
+//	}
+//};
+
 
 float bqSoundBuffer_sin_tri(float rads)
 {
@@ -165,70 +198,140 @@ void bqSound::Create(float time,
 
 	newSound->m_bufferData.m_data = (uint8_t*)bqMemory::malloc(newSound->m_bufferData.m_dataSize);
 
-	newSound->m_format = bqSoundFormatFindFormat(newSound->m_bufferInfo);
+//	newSound->m_format = bqSoundFormatFindFormat(newSound->m_bufferInfo);
 
 	m_soundBuffer = newSound;
 }
 
-bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo& info)
-{
-	bqSoundFormat r = bqSoundFormat::unsupported;
-
-	if (info.m_channels == 1)
-	{
-		if (info.m_sampleRate == 44100)
-		{
-			if(info.m_bitsPerSample == 8)
-				r = bqSoundFormat::uint8_mono_44100;
-			else if (info.m_bitsPerSample == 16)
-				r = bqSoundFormat::uint16_mono_44100;
-			else if (info.m_bitsPerSample == 32)
-				r = bqSoundFormat::float32_mono_44100;
-		}
-	}
-	else if (info.m_channels == 2)
-	{
-		if (info.m_sampleRate == 44100)
-		{
-			if (info.m_bitsPerSample == 8)
-				r = bqSoundFormat::uint8_stereo_44100;
-			else if (info.m_bitsPerSample == 16)
-				r = bqSoundFormat::uint16_stereo_44100;
-			else if (info.m_bitsPerSample == 32)
-				r = bqSoundFormat::float32_stereo_44100;
-		}
-	}
-	return r;
-}
+//bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo& info)
+//{
+//	bqSoundFormat r = bqSoundFormat::unsupported;
+//
+//	if (info.m_channels == 1)
+//	{
+//		if (info.m_sampleRate == 44100)
+//		{
+//			if(info.m_bitsPerSample == 8)
+//				r = bqSoundFormat::uint8_mono_44100;
+//			else if (info.m_bitsPerSample == 16)
+//				r = bqSoundFormat::uint16_mono_44100;
+//			else if (info.m_bitsPerSample == 32)
+//				r = bqSoundFormat::float32_mono_44100;
+//		}
+//	}
+//	else if (info.m_channels == 2)
+//	{
+//		if (info.m_sampleRate == 44100)
+//		{
+//			if (info.m_bitsPerSample == 8)
+//				r = bqSoundFormat::uint8_stereo_44100;
+//			else if (info.m_bitsPerSample == 16)
+//				r = bqSoundFormat::uint16_stereo_44100;
+//			else if (info.m_bitsPerSample == 32)
+//				r = bqSoundFormat::float32_stereo_44100;
+//		}
+//	}
+//	return r;
+//}
 
 void bqSoundBuffer::MakeMono(uint32_t how)
 {
-	auto type = bqSoundFormatFindFormat(m_bufferInfo);
+	/*auto type = bqSoundFormatFindFormat(m_bufferInfo);
 
 	switch (type)
 	{
 	case bqSoundFormat::uint8_stereo_44100:
 	case bqSoundFormat::uint16_stereo_44100:
 	case bqSoundFormat::float32_stereo_44100:
+	{*/
+	if (m_bufferInfo.m_channels > 1)
 	{
-		uint32_t _channels = 1;
-		uint32_t _blockSize = m_bufferInfo.m_bytesPerSample * _channels;
-		uint32_t _dataSize = m_bufferInfo.m_numOfSamples * m_bufferInfo.m_bytesPerSample * _channels;
-		uint8_t* newData = (uint8_t*)bqMemory::calloc(_dataSize);
+		uint32_t new_channels = 1;
+		uint32_t new_blockSize = m_bufferInfo.m_bytesPerSample * new_channels;
+		uint32_t new_dataSize = m_bufferInfo.m_numOfSamples * new_blockSize;
+		uint8_t* new_data = (uint8_t*)bqMemory::calloc(new_dataSize);
+
+		// Блок содержит по одному сэмплу с каждого канала.
+		// Если 16бит моно то блок равен 2 байта
+		// Если 32бит стерео то равен 4байта*2канала=8байт
+
+		uint32_t old_blockSize = m_bufferInfo.m_blockSize;
+		// numBlocks должен быть у обоих буферов одинаковым
+		uint32_t numBlocks = new_dataSize / new_blockSize;
 		
-		uint8_t* dst = newData;
+		uint8_t* dst_block = new_data;
+		uint8_t* src_block = m_bufferData.m_data;
+		
+		// должен быть такого же размера как src block
+		uint8_t* tmp_block = (uint8_t*)bqMemory::calloc(old_blockSize);
+
+		for (uint32_t i = 0; i < numBlocks; ++i)
+		{			
+			// Данный способ будет брать только первый канал.
+			// Нужно сделать так чтобы можно было выбрать какой канал
+			// копировать. Для этого используется парамет `how`
+			// Значение 0 у how должен означать использовать все каналы.
+			/*for (uint32_t o = 0; o < new_blockSize; ++o)
+			{
+				dst_block[o] = src_block[o];
+			}
+			dst_block += new_blockSize;
+			src_block += old_blockSize;*/
+
+			// Пусть пока будет реализован how==0
+			
+			// Надо получить сумму со всех каналов и поделить на количество каналов
+			int64_t summInt = 0;
+			double summReal = 0.0;
+			for (uint32_t o = 0; o < m_bufferInfo.m_channels; ++o)
+			{
+				if (m_bufferInfo.m_format == bqSoundFormat::float32)
+				{
+					float* float_data = (float*)src_block;
+					summReal += float_data[o];
+				}
+				else
+				{
+					int64_t* int_data = (int64_t*)src_block;
+					summInt += int_data[o];
+				}
+			}
+			if (summReal != 0.0)
+				summReal /= m_bufferInfo.m_channels;
+			if (summInt != 0)
+				summInt /= m_bufferInfo.m_channels;
+
+			bqSoundBlock testBlock(1);
+			bqSoundBlock<uint8_t> testBlock2(2);
+			testBlock.FromUint8(&testBlock2);
+
+			// надо заполнить tmp_block
+			for (uint32_t o = 0; o < new_blockSize; ++o)
+			{
+			}
+
+			for (uint32_t o = 0; o < new_blockSize; ++o)
+			{
+				dst_block[o] = tmp_block[o];
+			}
+			dst_block += new_blockSize;
+			src_block += old_blockSize;
+		}
+
+		/*uint8_t* dst = newData;
 		uint8_t* src = m_bufferData.m_data;
 
 		uint8_t* dst8 = dst;
 		uint16_t* dst16 = (uint16_t*)dst;
 		float* dst32 = (float*)dst;
-		
+
 		uint8_t* src8 = src;
 		uint16_t* src16 = (uint16_t*)src;
 		float* src32 = (float*)src;
 
-		uint32_t numBlocks = _dataSize / _blockSize;
-		for (uint32_t i = 0; i < numBlocks; ++i)
+		uint32_t numBlocks = _dataSize / _blockSize;*/
+
+		/*for (uint32_t i = 0; i < numBlocks; ++i)
 		{
 			switch (type)
 			{
@@ -284,20 +387,24 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 				}
 			}break;
 			}
-		}
+		}*/
 
 		if (m_bufferData.m_data)
 			bqMemory::free(m_bufferData.m_data);
 
-		m_bufferInfo.m_channels = _channels;
-		m_bufferInfo.m_blockSize = _blockSize;
-		m_bufferData.m_data = newData;
-		m_bufferData.m_dataSize = _dataSize;
-	}break;
+		if(tmp_block)
+			bqMemory::free(tmp_block);
+
+		m_bufferInfo.m_channels = new_channels;
+		m_bufferInfo.m_blockSize = new_blockSize;
+		m_bufferData.m_data = new_data;
+		m_bufferData.m_dataSize = new_dataSize;
+	}
+	/*}break;
 	default:
 		break;
 	}
-	m_format = bqSoundFormatFindFormat(m_bufferInfo);
+	m_format = bqSoundFormatFindFormat(m_bufferInfo);*/
 }
 
 void bqSoundBuffer::MakeStereo()

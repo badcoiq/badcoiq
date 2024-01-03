@@ -50,14 +50,22 @@ struct bqSoundBufferData
 	uint32_t m_dataSize = 0;
 };
 
+//enum class bqSoundFormat
+//{
+//	uint8_mono_44100,
+//	uint8_stereo_44100,
+//	uint16_mono_44100,
+//	uint16_stereo_44100,
+//	float32_mono_44100,
+//	float32_stereo_44100,
+//	unsupported
+//};
+
 enum class bqSoundFormat
 {
-	uint8_mono_44100,
-	uint8_stereo_44100,
-	uint16_mono_44100,
-	uint16_stereo_44100,
-	float32_mono_44100,
-	float32_stereo_44100,
+	uint8,
+	uint16,
+	float32,
 	unsupported
 };
 
@@ -66,18 +74,23 @@ bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo&);
 
 struct bqSoundBufferInfo
 {
+	bqSoundFormat m_format = bqSoundFormat::uint16;
+
+	// всё должно быть вычислено правильно.
+	// используется в генерации, конвертации и эффектах
+
 	uint32_t m_sampleRate = 44100;
 	uint32_t m_channels = 1;
 	uint32_t m_bitsPerSample = 16;
 
-	// for info
-	// далее данные чисто для информации
-	// всё должно устанавливаться методами типа при генерировании
 	float m_time = 0.f;
 	
 	uint32_t m_numOfSamples = 0;// когда 2 канала это 2 сэмпла или 1?
-	                            // Ну да, 1, так как например 44100 таким
-	                            // значением и остаётся даже если каналов больше 1.
+	                            // ответ - у каждого канала свой сэмпл.
+								// при проигрывании имеем столько-то сэмплов 
+								// сколько и каналов, но переменная m_numOfSamples
+								// отвечает только за 1 канал, как и m_sampleRate.
+								
 	// Тогда количество сэмплов это размер данных делёная на размер 1го сэмпла
 	//m_info.m_numOfSamples = dataSize / m_blockSize;
 
@@ -104,7 +117,7 @@ public:
 	bqSoundBufferInfo m_bufferInfo;
 	
 	// Всё не поддерживаемое должно конвертироваться в поддерживаемое
-	bqSoundFormat m_format = bqSoundFormat::uint16_mono_44100;
+	//bqSoundFormat m_format = bqSoundFormat::uint16_mono_44100;
 
 	
 	// how:
