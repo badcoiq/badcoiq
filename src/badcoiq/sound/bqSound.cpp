@@ -65,6 +65,109 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	}
 //};
 
+template <typename _type>
+class bqSoundSample
+{
+public:
+	_type m_data;
+
+	using sample_type = _type;
+};
+
+#include "badcoiq/common/bqPack.h"
+struct bqSoundSample24Base { int8_t m_byte[3]; };
+#include "badcoiq/common/bqUnpack.h"
+
+using bqSoundSample_8bit = bqSoundSample<uint8_t>;
+using bqSoundSample_16bit = bqSoundSample<int16_t>;
+using bqSoundSample_24bit = bqSoundSample<bqSoundSample24Base>;
+using bqSoundSample_32bit = bqSoundSample<int32_t>;
+using bqSoundSample_32bitFloat = bqSoundSample<bqFloat32>;
+using bqSoundSample_64bitFloat = bqSoundSample<bqFloat64>;
+
+class bqSoundLab
+{
+public:
+	bqSoundLab() {}
+	~bqSoundLab() {}
+
+	// Все типы сэмплов должны уметь конвертироваться в 32bitFloat
+	static bqSoundSample_32bitFloat ConvertSample_32bitFloat(bqSoundSample_8bit);
+	static bqSoundSample_32bitFloat ConvertSample_32bitFloat(bqSoundSample_16bit);
+//	static bqSoundSample_32bitFloat ConvertSample_32bitFloat(bqSoundSample_24bit);
+//	static bqSoundSample_32bitFloat ConvertSample_32bitFloat(bqSoundSample_32bit);
+//	static bqSoundSample_32bitFloat ConvertSample_32bitFloat(bqSoundSample_64bitFloat);
+
+	// 32bitFloat должен быть сконвертирован в другие форматы
+	static bqSoundSample_8bit ConvertSample_8bit(bqSoundSample_32bitFloat);
+	static bqSoundSample_16bit ConvertSample_16bit(bqSoundSample_32bitFloat);
+	//static bqSoundSample_24bit ConvertSample_24bit(bqSoundSample_32bitFloat);
+	//static bqSoundSample_32bit ConvertSample_32bit(bqSoundSample_32bitFloat);
+	//static bqSoundSample_64bitFloat ConvertSample_64bitFloat(bqSoundSample_32bitFloat);
+
+};
+
+bqSoundSample_32bitFloat bqSoundLab::ConvertSample_32bitFloat(bqSoundSample_8bit in_sample)
+{
+	bqSoundSample_32bitFloat out_sample;
+	out_sample.m_data = 0.f;
+
+	const float m = 0.00787401574;// 1:127
+	out_sample.m_data = (in_sample.m_data * m) - 1.f;
+	if (out_sample.m_data < -1.f)
+		out_sample.m_data = -1.f;
+	if (out_sample.m_data > 1.f)
+		out_sample.m_data = 1.f;
+
+	return out_sample;
+}
+
+bqSoundSample_32bitFloat bqSoundLab::ConvertSample_32bitFloat(bqSoundSample_16bit in_sample)
+{
+	bqSoundSample_32bitFloat out_sample;
+	out_sample.m_data = 0.f;
+
+	const double m = 0.0000305185094759971922971282;// 1:32767
+	out_sample.m_data = ((double)in_sample.m_data * m);
+	if (out_sample.m_data < -1.f)
+		out_sample.m_data = -1.f;
+	if (out_sample.m_data > 1.f)
+		out_sample.m_data = 1.f;
+
+	return out_sample;
+}
+
+bqSoundSample_8bit bqSoundLab::ConvertSample_8bit(bqSoundSample_32bitFloat in_sample)
+{
+	bqSoundSample_8bit out_sample;
+	out_sample.m_data = 0;
+
+	if (in_sample.m_data < -1.f)
+		in_sample.m_data = -1.f;
+	in_sample.m_data += 1.f;
+	in_sample.m_data *= 127.f;
+	in_sample.m_data = floorf(in_sample.m_data);
+	if (in_sample.m_data > 255.f)
+		in_sample.m_data = 255.f;
+	out_sample.m_data = (bqSoundSample_8bit::sample_type)in_sample.m_data;
+	return out_sample;
+}
+
+bqSoundSample_16bit bqSoundLab::ConvertSample_16bit(bqSoundSample_32bitFloat in_sample)
+{
+	bqSoundSample_16bit out_sample;
+	out_sample.m_data = 0;
+
+	if (in_sample.m_data < -1.f)
+		in_sample.m_data = -1.f;
+	in_sample.m_data *= 32767.f;
+	in_sample.m_data = floorf(in_sample.m_data);
+	if (in_sample.m_data > 0xffff)
+		in_sample.m_data = 0xffff;
+	out_sample.m_data = (bqSoundSample_16bit::sample_type)in_sample.m_data;
+	return out_sample;
+}
+
 
 float bqSoundBuffer_sin_tri(float rads)
 {
@@ -300,10 +403,6 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 				summReal /= m_bufferInfo.m_channels;
 			if (summInt != 0)
 				summInt /= m_bufferInfo.m_channels;
-
-			bqSoundBlock testBlock(1);
-			bqSoundBlock<uint8_t> testBlock2(2);
-			testBlock.FromUint8(&testBlock2);
 
 			// надо заполнить tmp_block
 			for (uint32_t o = 0; o < new_blockSize; ++o)

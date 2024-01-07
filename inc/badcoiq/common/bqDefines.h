@@ -55,6 +55,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Такому типу обычно дают имя `real`
 #define bqReal double
 
+#define bqFloat32 float
+#define bqFloat64 double
+
 // Определяем платформу
 #if defined(WIN32) | defined(_WIN64) | defined(_WIN32)
 #define BQ_PLATFORM_WINDOWS
