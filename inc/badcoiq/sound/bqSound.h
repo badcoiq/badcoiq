@@ -64,8 +64,12 @@ struct bqSoundBufferData
 enum class bqSoundFormat
 {
 	uint8,
-	uint16,
+	int16,
+	//int24,
+	int32,
+	int64,
 	float32,
+	float64,
 	unsupported
 };
 
@@ -74,7 +78,7 @@ bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo&);
 
 struct bqSoundBufferInfo
 {
-	bqSoundFormat m_format = bqSoundFormat::uint16;
+	bqSoundFormat m_format = bqSoundFormat::int16;
 
 	// всё должно быть вычислено правильно.
 	// используется в генерации, конвертации и эффектах

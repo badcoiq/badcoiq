@@ -366,7 +366,7 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 		uint8_t* src_block = m_bufferData.m_data;
 		
 		// должен быть такого же размера как src block
-		uint8_t* tmp_block = (uint8_t*)bqMemory::calloc(old_blockSize);
+	//	uint8_t* tmp_block = (uint8_t*)bqMemory::calloc(old_blockSize);
 
 		for (uint32_t i = 0; i < numBlocks; ++i)
 		{			
@@ -388,30 +388,80 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 			double summReal = 0.0;
 			for (uint32_t o = 0; o < m_bufferInfo.m_channels; ++o)
 			{
-				if (m_bufferInfo.m_format == bqSoundFormat::float32)
+				switch (m_bufferInfo.m_format)
 				{
-					float* float_data = (float*)src_block;
-					summReal += float_data[o];
-				}
-				else
-				{
-					int64_t* int_data = (int64_t*)src_block;
+				case bqSoundFormat::uint8:
+					uint8_t* int_data = (uint8_t*)src_block;
 					summInt += int_data[o];
+					break;
+				case bqSoundFormat::int16:
+					int16_t* int_data = (int16_t*)src_block;
+					summInt += int_data[o];
+					break;
+				//case bqSoundFormat::int24:
+				//	break;
+				case bqSoundFormat::int32:
+					int32_t* int_data = (int32_t*)src_block;
+					summInt += int_data[o];
+					break;
+
+				case bqSoundFormat::float32:
+					bqFloat32* float_data = (bqFloat32*)src_block;
+					summReal += float_data[o];
+					break;
+
+				case bqSoundFormat::float64:
+					bqFloat64* float_data = (bqFloat64*)src_block;
+					summReal += float_data[o];
+					break;
+				default:
+					bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
+					break;
 				}
 			}
+
+			int64_t avgInt = 0;
+			double avgReal = 0.0;
+
 			if (summReal != 0.0)
-				summReal /= m_bufferInfo.m_channels;
+				avgReal = summReal / m_bufferInfo.m_channels;
 			if (summInt != 0)
-				summInt /= m_bufferInfo.m_channels;
+				avgInt = summInt / m_bufferInfo.m_channels;
 
 			// надо заполнить tmp_block
-			for (uint32_t o = 0; o < new_blockSize; ++o)
+	/*		for (uint32_t o = 0; o < new_blockSize; ++o)
 			{
-			}
+			}*/
 
+			// так как пока реализую how==0
+			// нужно использовать avgReal или avgInt
+			// ниже
 			for (uint32_t o = 0; o < new_blockSize; ++o)
 			{
-				dst_block[o] = tmp_block[o];
+	//			dst_block[o] = tmp_block[o];
+				switch (m_bufferInfo.m_format)
+				{
+				case bqSoundFormat::uint8:
+					uint8_t* int_data = (uint8_t*)dst_block;
+					break;
+				case bqSoundFormat::int16:
+					int16_t* int_data = (int16_t*)dst_block;
+					break;
+				case bqSoundFormat::int32:
+					int32_t* int_data = (int32_t*)dst_block;
+					break;
+
+				case bqSoundFormat::float32:
+					bqFloat32* float_data = (bqFloat32*)dst_block;
+					break;
+
+				case bqSoundFormat::float64:
+					bqFloat64* float_data = (bqFloat64*)dst_block;
+					break;
+				default:
+					bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
+					break;
+				}
 			}
 			dst_block += new_blockSize;
 			src_block += old_blockSize;
@@ -491,8 +541,8 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 		if (m_bufferData.m_data)
 			bqMemory::free(m_bufferData.m_data);
 
-		if(tmp_block)
-			bqMemory::free(tmp_block);
+	//	if(tmp_block)
+	//		bqMemory::free(tmp_block);
 
 		m_bufferInfo.m_channels = new_channels;
 		m_bufferInfo.m_blockSize = new_blockSize;
