@@ -385,7 +385,7 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 			
 			// Надо получить сумму со всех каналов и поделить на количество каналов
 			int64_t summInt = 0;
-			double summReal = 0.0;
+			bqFloat64 summReal = 0.0;
 			for (uint32_t o = 0; o < m_bufferInfo.m_channels; ++o)
 			{
 				switch (m_bufferInfo.m_format)
@@ -421,7 +421,7 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 			}
 
 			int64_t avgInt = 0;
-			double avgReal = 0.0;
+			bqFloat64 avgReal = 0.0;
 
 			if (summReal != 0.0)
 				avgReal = summReal / m_bufferInfo.m_channels;
@@ -443,20 +443,25 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 				{
 				case bqSoundFormat::uint8:
 					uint8_t* int_data = (uint8_t*)dst_block;
+					*int_data = (uint8_t)avgInt;
 					break;
 				case bqSoundFormat::int16:
 					int16_t* int_data = (int16_t*)dst_block;
+					*int_data = (int16_t)avgInt;
 					break;
 				case bqSoundFormat::int32:
 					int32_t* int_data = (int32_t*)dst_block;
+					*int_data = (int32_t)avgInt;
 					break;
 
 				case bqSoundFormat::float32:
 					bqFloat32* float_data = (bqFloat32*)dst_block;
+					*int_data = (bqFloat32)avgReal;
 					break;
 
 				case bqSoundFormat::float64:
 					bqFloat64* float_data = (bqFloat64*)dst_block;
+					*int_data = (bqFloat64)avgReal;
 					break;
 				default:
 					bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
@@ -554,79 +559,6 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 		break;
 	}
 	m_format = bqSoundFormatFindFormat(m_bufferInfo);*/
-}
-
-void bqSoundBuffer::MakeStereo()
-{
-	auto type = bqSoundFormatFindFormat(m_bufferInfo);
-	
-	switch (type)
-	{
-	case bqSoundFormat::uint8_mono_44100:
-	case bqSoundFormat::uint16_mono_44100:
-	case bqSoundFormat::float32_mono_44100:
-	{
-		uint32_t _channels = 2;
-		uint32_t _blockSize = m_bufferInfo.m_bytesPerSample * _channels;
-		uint32_t _dataSize = m_bufferInfo.m_numOfSamples * m_bufferInfo.m_bytesPerSample * _channels;
-		uint8_t* newData = (uint8_t*)bqMemory::calloc(_dataSize);
-
-		uint8_t* dst = newData;
-		uint8_t* src = m_bufferData.m_data;
-
-		uint8_t* dst8 = dst;
-		uint16_t* dst16 = (uint16_t*)dst;
-		float* dst32 = (float*)dst;
-
-		uint8_t* src8 = src;
-		uint16_t* src16 = (uint16_t*)src;
-		float* src32 = (float*)src;
-
-		uint32_t numBlocks = _dataSize / _blockSize;
-		for (uint32_t i = 0; i < numBlocks; ++i)
-		{
-			switch (type)
-			{
-			case bqSoundFormat::uint8_mono_44100:
-			{
-				*dst8 = *src8;
-				++dst8;
-				*dst8 = *src8;
-				++dst8;
-				++src8;
-			}break;
-			case bqSoundFormat::uint16_mono_44100:
-			{
-				*dst16 = *src16;
-				++dst16;
-				*dst16 = *src16;
-				++dst16;
-				++src16;
-			}break;
-			case bqSoundFormat::float32_mono_44100:
-			{
-				*dst32 = *src32;
-				++dst32;
-				*dst32 = *src32;
-				++dst32;
-				++src32;
-			}break;
-			}
-		}
-
-		if (m_bufferData.m_data)
-			bqMemory::free(m_bufferData.m_data);
-
-		m_bufferInfo.m_channels = _channels;
-		m_bufferInfo.m_blockSize = _blockSize;
-		m_bufferData.m_data = newData;
-		m_bufferData.m_dataSize = _dataSize;
-	}break;
-	default:
-		break;
-	}
-
-	m_format = bqSoundFormatFindFormat(m_bufferInfo);
 }
 
 uint8_t bqSoundBuffer::_32_to_8(float v)

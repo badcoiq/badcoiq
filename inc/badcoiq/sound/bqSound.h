@@ -129,7 +129,6 @@ public:
 	//  1 - использовать второй канал
 	void MakeMono(uint32_t how);
 
-	void MakeStereo();
 	void Make8bits();
 	void Make16bits();
 	void Make32bits();
