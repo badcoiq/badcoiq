@@ -73,7 +73,7 @@ enum class bqSoundFormat
 	unsupported
 };
 
-bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo&);
+//bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo&);
 
 
 struct bqSoundBufferInfo

@@ -616,7 +616,38 @@ float bqSoundBuffer::_16_to_32(int16_t v)
 
 void bqSoundBuffer::Make8bits()
 {
-	auto type = bqSoundFormatFindFormat(m_bufferInfo);
+	if (m_bufferInfo.m_format != bqSoundFormat::uint8)
+	{
+		uint32_t newBytesPerSample = 1;
+		uint32_t newBitsPerSample = 8;
+		uint32_t newBlockSize = newBytesPerSample * m_bufferInfo.m_channels;
+		uint32_t newDataSize = m_bufferInfo.m_numOfSamples * newBytesPerSample * m_bufferInfo.m_channels;
+		uint8_t* newData = (uint8_t*)bqMemory::calloc(newDataSize);
+
+		uint32_t numBlocks = newDataSize / newBlockSize;
+
+		uint8_t* dst_block = newData;
+		uint8_t* src_block = m_bufferData.m_data;
+		for (uint32_t i = 0; i < numBlocks; ++i)
+		{
+			for (uint32_t o = 0; o < m_bufferInfo.m_channels; ++o)
+			{
+
+			}
+		}
+
+
+		if (m_bufferData.m_data)
+			bqMemory::free(m_bufferData.m_data);
+
+		m_bufferInfo.m_blockSize = newBlockSize;
+		m_bufferInfo.m_bytesPerSample = newBytesPerSample;
+		m_bufferInfo.m_bitsPerSample = newBitsPerSample;
+		m_bufferData.m_data = newData;
+		m_bufferData.m_dataSize = newDataSize;
+	}
+
+	/*auto type = bqSoundFormatFindFormat(m_bufferInfo);
 
 	switch (type)
 	{
@@ -664,15 +695,6 @@ void bqSoundBuffer::Make8bits()
 
 			case bqSoundFormat::float32_mono_44100:
 			{
-	//			float v = *src32;
-		//		if (v < -1.f)
-		//			v = -1.f;
-	//			v += 1.f;
-	//			v *= 127.f;
-		//		v = ceilf(v);
-//				if (v > 255.f)
-	//				v = 255.f;
-		//		*dst8 = (uint8_t)v;
 
 				*dst8 = _32_to_8(*src32);
 
@@ -705,7 +727,7 @@ void bqSoundBuffer::Make8bits()
 		break;
 	}
 	
-	m_format = bqSoundFormatFindFormat(m_bufferInfo);
+	m_format = bqSoundFormatFindFormat(m_bufferInfo);*/
 }
 
 void bqSoundBuffer::Make16bits()
