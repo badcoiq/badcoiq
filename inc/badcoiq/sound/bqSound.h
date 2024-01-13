@@ -50,24 +50,12 @@ struct bqSoundBufferData
 	uint32_t m_dataSize = 0;
 };
 
-//enum class bqSoundFormat
-//{
-//	uint8_mono_44100,
-//	uint8_stereo_44100,
-//	uint16_mono_44100,
-//	uint16_stereo_44100,
-//	float32_mono_44100,
-//	float32_stereo_44100,
-//	unsupported
-//};
-
 enum class bqSoundFormat
 {
 	uint8,
 	int16,
-	//int24,
+	int24,
 	int32,
-	int64,
 	float32,
 	float64,
 	unsupported
@@ -131,9 +119,7 @@ public:
 
 	void Make8bits();
 	void Make16bits();
-	void Make32bits();
-	//void FlipChannels();
-
+	void Make32bitsFloat();
 };
 
 // звук загружается сюда
