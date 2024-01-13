@@ -165,6 +165,28 @@ bqSoundSample_32bitFloat bqSoundLab::SampleTo32bitFloat(bqSoundSample_16bit in_s
 	return out_sample;
 }
 
+bqSoundSample_32bitFloat bqSoundLab::SampleTo32bitFloat(bqSoundSample_24bit)
+{
+	bqSoundSample_32bitFloat out_sample;
+	out_sample.m_data = 0.f;
+	return out_sample;
+}
+
+bqSoundSample_32bitFloat bqSoundLab::SampleTo32bitFloat(bqSoundSample_32bit)
+{
+	bqSoundSample_32bitFloat out_sample;
+	out_sample.m_data = 0.f;
+	return out_sample;
+}
+
+bqSoundSample_32bitFloat bqSoundLab::SampleTo32bitFloat(bqSoundSample_64bitFloat)
+{
+	bqSoundSample_32bitFloat out_sample;
+	out_sample.m_data = 0.f;
+	return out_sample;
+}
+
+
 bqSoundSample_8bit bqSoundLab::SampleTo8bit(bqSoundSample_32bitFloat in_sample)
 {
 	bqSoundSample_8bit out_sample;
@@ -361,37 +383,6 @@ void bqSound::Create(float time,
 	m_soundBuffer = newSound;
 }
 
-//bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo& info)
-//{
-//	bqSoundFormat r = bqSoundFormat::unsupported;
-//
-//	if (info.m_channels == 1)
-//	{
-//		if (info.m_sampleRate == 44100)
-//		{
-//			if(info.m_bitsPerSample == 8)
-//				r = bqSoundFormat::uint8_mono_44100;
-//			else if (info.m_bitsPerSample == 16)
-//				r = bqSoundFormat::uint16_mono_44100;
-//			else if (info.m_bitsPerSample == 32)
-//				r = bqSoundFormat::float32_mono_44100;
-//		}
-//	}
-//	else if (info.m_channels == 2)
-//	{
-//		if (info.m_sampleRate == 44100)
-//		{
-//			if (info.m_bitsPerSample == 8)
-//				r = bqSoundFormat::uint8_stereo_44100;
-//			else if (info.m_bitsPerSample == 16)
-//				r = bqSoundFormat::uint16_stereo_44100;
-//			else if (info.m_bitsPerSample == 32)
-//				r = bqSoundFormat::float32_stereo_44100;
-//		}
-//	}
-//	return r;
-//}
-
 void bqSoundBuffer::MakeMono(uint32_t how)
 {
 	if (m_bufferInfo.m_channels > 1)
@@ -509,6 +500,8 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 				{
 					bqSoundSample_24bit* int_data = (bqSoundSample_24bit*)dst_block;
 					bqInteger4 bint;
+					bint.m_int = avgInt;
+
 					if (bint.m_int > 4194304)
 						bint.m_int = 4194304;
 					else if (bint.m_int < -4194304)
@@ -1022,8 +1015,7 @@ bool bqSound::_saveWav(const char* fn)
 			
 		int32_t chunkSz = m_soundBuffer->m_bufferData.m_dataSize + 44 - 8;
 
-		if (m_soundBuffer->m_format == bqSoundFormat::float32_mono_44100
-			|| m_soundBuffer->m_format == bqSoundFormat::float32_stereo_44100)
+		if (m_soundBuffer->m_bufferInfo.m_format == bqSoundFormat::float32)
 			chunkSz += 4 + 4 + 4;
 
 		fwrite(&chunkSz, 4, 1, f);
@@ -1042,9 +1034,8 @@ bool bqSound::_saveWav(const char* fn)
 		// IEEE float = 3
 		int16_t TYPE = 1;
 
-		if(m_soundBuffer->m_format == bqSoundFormat::float32_mono_44100
-			|| m_soundBuffer->m_format == bqSoundFormat::float32_stereo_44100)
-			TYPE = 3;
+		if (m_soundBuffer->m_bufferInfo.m_format == bqSoundFormat::float32)
+				TYPE = 3;
 
 		fwrite(&TYPE, 2, 1, f);
 			
@@ -1063,8 +1054,7 @@ bool bqSound::_saveWav(const char* fn)
 		//uint16_t extraFormatInfoSz = 0;
 		//fwrite(&extraFormatInfoSz, 2, 1, f);
 
-		if (m_soundBuffer->m_format == bqSoundFormat::float32_mono_44100
-			|| m_soundBuffer->m_format == bqSoundFormat::float32_stereo_44100)
+		if (m_soundBuffer->m_bufferInfo.m_format == bqSoundFormat::float32)
 		{
 			fwrite("fact", 4, 1, f);
 			int32_t factchunkSz = 4;
@@ -1121,45 +1111,36 @@ void bqSound::Convert(bqSoundFormat type)
 
 	if (m_soundBuffer && (type != bqSoundFormat::unsupported))
 	{
-		if (m_soundBuffer->m_format != type)
+		switch (type)
 		{
-			switch (type)
-			{
-				case bqSoundFormat::uint8_mono_44100:
-				{
-					m_soundBuffer->Make8bits();
-					m_soundBuffer->MakeMono(0);
-				}break;
-				case bqSoundFormat::uint8_stereo_44100:
-				{
-					m_soundBuffer->Make8bits();
-					m_soundBuffer->MakeStereo();
-				}break;
-				case bqSoundFormat::uint16_mono_44100:
-				{
-					m_soundBuffer->Make16bits();
-					m_soundBuffer->MakeMono(0);
-				}break;
-				case bqSoundFormat::uint16_stereo_44100:
-				{
-					m_soundBuffer->Make16bits();
-					m_soundBuffer->MakeStereo();
-				}break;
-				case bqSoundFormat::float32_mono_44100:
-				{
-					m_soundBuffer->Make32bits();
-					m_soundBuffer->MakeMono(0);
-				}break;
-				case bqSoundFormat::float32_stereo_44100:
-				{
-					m_soundBuffer->Make32bits();
-					m_soundBuffer->MakeStereo();
-				}break;
-			}
+		case bqSoundFormat::uint8:
+			m_soundBuffer->Make8bits();
+			break;
+		case bqSoundFormat::int16:
+			m_soundBuffer->Make16bits();
+			break;
+		/*case bqSoundFormat::int24:
+			m_soundBuffer->Make24bits();
+			break;
+		case bqSoundFormat::int32:
+			m_soundBuffer->Make32bits();
+			break;*/
+		case bqSoundFormat::float32:
+			m_soundBuffer->Make32bitsFloat();
+			break;
+		/*case bqSoundFormat::float64:
+			m_soundBuffer->Make64bitsFloat();
+			break;*/
+		case bqSoundFormat::unsupported:
+			break;
+		default:
+			bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
+			break;
 		}
 	}
 }
 
+// Так-же надо обновлять этот метод -> bool bqSoundFile::_openWav(const char* fn)
 bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 {
 	bqFileBuffer file(buffer, bufferSz);

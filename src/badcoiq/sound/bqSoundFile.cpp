@@ -197,15 +197,6 @@ const bqSoundBufferInfo& bqSoundFile::GetBufferInfo()
 	return m_info;
 }
 
-bqSoundFormat bqSoundFile::GetFormat()
-{
-	bqSoundFormat r = bqSoundFormat::unsupported;
-	
-	r = bqSoundFormatFindFormat(m_info);
-
-	return r;
-}
-
 void bqSoundFile::MoveToFirstDataBlock()
 {
 	m_currentDataBlock = m_firstDataBlock;
