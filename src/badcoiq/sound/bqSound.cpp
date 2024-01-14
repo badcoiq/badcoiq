@@ -165,10 +165,22 @@ bqSoundSample_32bitFloat bqSoundLab::SampleTo32bitFloat(bqSoundSample_16bit in_s
 	return out_sample;
 }
 
-bqSoundSample_32bitFloat bqSoundLab::SampleTo32bitFloat(bqSoundSample_24bit)
+///bqSoundSample_32bitFloat bqSoundLab::SampleTo32bitFloat(bqSoundSample_24bit)
 {
-	bqSoundSample_32bitFloat out_sample;
-	out_sample.m_data = 0.f;
+	bqSoundSample_8bit out_sample;
+	out_sample.m_data = 0;
+
+	int32_t sample = in_sample.m_data.m_byte[0];
+	sample += in_sample.m_data.m_byte[1] << 8;
+	sample += in_sample.m_data.m_byte[2] << 16;
+
+	//1 / 4194304
+	//const double m = 2.384185791015625e-7;
+
+	//127 / 4194304 = 3,027915954589844e-5
+	const double m = 3.027915954589844e-5;
+
+	out_sample.m_data = (bqSoundSample_8bit::sample_type)(floor((double)sample * 3.027915954589844e-5));
 	return out_sample;
 }
 
