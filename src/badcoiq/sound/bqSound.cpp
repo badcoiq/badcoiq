@@ -170,9 +170,7 @@ bqSoundSample_32bitFloat bqSoundLab::SampleTo32bitFloat(bqSoundSample_16bit in_s
 	bqSoundSample_8bit out_sample;
 	out_sample.m_data = 0;
 
-	int32_t sample = in_sample.m_data.m_byte[0];
-	sample += in_sample.m_data.m_byte[1] << 8;
-	sample += in_sample.m_data.m_byte[2] << 16;
+	int32_t sample = _24_to_32i(&in_sample)
 
 	//1 / 4194304
 	//const double m = 2.384185791015625e-7;
@@ -243,7 +241,7 @@ bqSoundSample_8bit bqSoundLab::SampleTo8bit(bqSoundSample_24bit in_sample)
 	bqSoundSample_8bit out_sample;
 	out_sample.m_data = 0;
 
-	int32_t sample = in_sample.m_data.m_byte[0];
+	int32_t sample = _24_to_32i(&in_sample); in_sample.m_data.m_byte[0];
 	sample += in_sample.m_data.m_byte[1] << 8;
 	sample += in_sample.m_data.m_byte[2] << 16;
 
@@ -453,7 +451,7 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 				case bqSoundFormat::int24:
 				{
 					bqSoundSample_24bit* int_data = (bqSoundSample_24bit*)src_block;
-					int64_t sample = int_data->m_data.m_byte[0];
+					int64_t sample = _24_to_32i(int_data); int_data->m_data.m_byte[0];
 					sample += int_data->m_data.m_byte[1] << 8;
 					sample += int_data->m_data.m_byte[2] << 16;
 
@@ -613,6 +611,14 @@ float bqSoundBuffer::_16_to_32(int16_t v)
 	return r;
 }
 
+...
+int32_t _24_to_32i(bqSoundSample_24bit* in_sample)
+{
+int32_t ret = in_sample->m_data.m_byte[0];
+	ret += in_sample->m_data.m_byte[1] << 8;
+	ret += in_sample->m_data.m_byte[2] << 16;
+return ret;
+}
 
 void bqSoundBuffer::Make8bits()
 {
