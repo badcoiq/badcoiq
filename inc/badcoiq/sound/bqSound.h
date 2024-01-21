@@ -116,6 +116,8 @@ public:
 	void Make8bits();
 	void Make16bits();
 	void Make32bitsFloat();
+
+	void Resample(uint32_t newSampleRate);
 };
 
 // звук загружается сюда

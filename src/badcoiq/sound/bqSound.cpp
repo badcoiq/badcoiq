@@ -239,26 +239,12 @@ bqSoundSample_8bit bqSoundLab::SampleTo8bit(bqSoundSample_64bitFloat in_sample)
 	return out_sample;
 }
 
-bqSoundSample_16bit bqSoundLab::SampleTo16bit(bqSoundSample_32bitFloat in_sample)
-{
-	bqSoundSample_16bit out_sample;
-	out_sample.m_data = 0;
-
-	if (in_sample.m_data < -1.f)
-		in_sample.m_data = -1.f;
-	in_sample.m_data *= 32767.f;
-	in_sample.m_data = floorf(in_sample.m_data);
-	if (in_sample.m_data > 0xffff)
-		in_sample.m_data = 0xffff;
-	out_sample.m_data = (bqSoundSample_16bit::sample_type)in_sample.m_data;
-	return out_sample;
-}
 
 bqSoundSample_8bit bqSoundLab::SampleTo8bit(bqSoundSample_16bit in_sample)
 {
 	bqSoundSample_8bit out_sample;
 	out_sample.m_data = 0;
-	out_sample.m_data = (bqSoundSample_8bit::sample_type)(in_sample.m_data + 32767) >> 8;
+	out_sample.m_data = (bqSoundSample_8bit::sample_type)((in_sample.m_data + 32767) >> 8);
 	return out_sample;
 }
 
@@ -1569,3 +1555,8 @@ void bqSound::_reallocate(uint32_t newSz)
 //	m_soundBuffer = 0;
 //	return tmp;
 //}
+
+void bqSoundBuffer::Resample(uint32_t newSampleRate)
+{
+
+}
