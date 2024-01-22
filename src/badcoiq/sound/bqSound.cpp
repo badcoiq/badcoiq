@@ -1558,6 +1558,15 @@ void bqSound::_reallocate(uint32_t newSz)
 
 void bqSoundBuffer::Resample(uint32_t newSampleRate)
 {
+
+// только для формата float32
+if(m_bufferInfo.m_format != bqSoundFormat::float32)
+{
+bqLog::PrintError
+return;
+}
+
+
 if(newSampleRate && (newSampleRate != m_bufferInfo.m_sampleRate))
 {
 if((newSampleRate >= 11000) && (newSampleRate <= 196000))
