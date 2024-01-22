@@ -1558,5 +1558,20 @@ void bqSound::_reallocate(uint32_t newSz)
 
 void bqSoundBuffer::Resample(uint32_t newSampleRate)
 {
+if(newSampleRate && (newSampleRate != m_bufferInfo.m_sampleRate))
+{
+if((newSampleRate >= 11000) && (newSampleRate <= 196000))
+{
 
+// есть 2 пути. уменьшение и увеличение 
+if(newSampleRate < m_bufferInfo.m_sampleRate)
+{
+}
+else
+{
+}
+
+
+}
+}
 }
