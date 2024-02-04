@@ -1558,29 +1558,46 @@ void bqSound::_reallocate(uint32_t newSz)
 
 void bqSoundBuffer::Resample(uint32_t newSampleRate)
 {
+	BQ_ASSERT_ST(m_bufferData.m_data);
+	BQ_ASSERT_STC(newSampleRate != 0, "New sample rate must be between 11000 and 192000");
 
-// только для формата float32
-if(m_bufferInfo.m_format != bqSoundFormat::float32)
-{
-bqLog::PrintError
-return;
-}
+	// только для формата float32
+	if(m_bufferInfo.m_format != bqSoundFormat::float32)
+	{
+		bqLog::PrintError("%s : sound format is not float32\n", BQ_FUNCTION);
+		return;
+	}
+
+	if(newSampleRate && (newSampleRate != m_bufferInfo.m_sampleRate))
+	{
+		if((newSampleRate >= 11000) && (newSampleRate <= 192000))
+		{
+			// Надо создать новый массив где будет находится звук с новым sample rate
+
+			// Надо вычислить размер нового массива
+			uint32_t newDataSize = 0;
+
+			if (newDataSize)
+			{
+				uint8_t* newData = (uint8_t*)bqMemory::malloc(newDataSize);
 
 
-if(newSampleRate && (newSampleRate != m_bufferInfo.m_sampleRate))
-{
-if((newSampleRate >= 11000) && (newSampleRate <= 196000))
-{
+				// есть 2 пути. уменьшение и увеличение 
+				if (newSampleRate < m_bufferInfo.m_sampleRate) // уменьшение
+				{
 
-// есть 2 пути. уменьшение и увеличение 
-if(newSampleRate < m_bufferInfo.m_sampleRate)
-{
-}
-else
-{
-}
+				}
+				else // увеличение
+				{
+				}
 
+				m_bufferInfo.m_sampleRate = newSampleRate;
 
-}
-}
+				bqMemory::free(m_bufferData.m_data);
+
+				m_bufferData.m_data = newData;
+				m_bufferData.m_dataSize = newDataSize;
+			}
+		}
+	}
 }
