@@ -1529,9 +1529,16 @@ float bqSound::CalculateTime()
 			
 			// может быть блок может состоять из 2х и более сэмплов?
 			//m_soundBuffer->m_bufferInfo.m_numOfSamples = numOfBlocks * m_soundBuffer->m_bufferInfo.m_channels;
+			// скорее всего нет...
 			
-			m_soundBuffer->m_bufferInfo.m_time = 1.f / m_soundBuffer->m_bufferInfo.m_sampleRate;
-			m_soundBuffer->m_bufferInfo.m_time *= m_soundBuffer->m_bufferInfo.m_numOfSamples;
+			// старое
+			//m_soundBuffer->m_bufferInfo.m_time = 1.f / m_soundBuffer->m_bufferInfo.m_sampleRate;
+			//m_soundBuffer->m_bufferInfo.m_time *= m_soundBuffer->m_bufferInfo.m_numOfSamples;
+			
+			// новое
+			m_soundBuffer->m_bufferInfo.m_time = m_soundBuffer->m_bufferData.m_dataSize 
+				/ (m_soundBuffer->m_bufferInfo.m_sampleRate * m_soundBuffer->m_bufferInfo.m_bytesPerSample);
+			!!!
 		}
 	}
 
@@ -1568,7 +1575,8 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 		return;
 	}
 
-	if(newSampleRate && (newSampleRate != m_bufferInfo.m_sampleRate))
+	if(newSampleRate && (newSampleRate != m_bufferInfo.m_sampleRate)
+		&& m_bufferData.m_dataSize)
 	{
 		if((newSampleRate >= 11000) && (newSampleRate <= 192000))
 		{
@@ -1576,6 +1584,33 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 
 			// Надо вычислить размер нового массива
 			uint32_t newDataSize = 0;
+
+			// Вычисляем время в секундах.
+			// Потом, используя время, вычисляем размер newDataSize
+			
+			// Время это размер данных делёное на байтВСекунду
+			!!! не учитывается множество каналов.
+			Надо или учитывать каналы, или работать с моно.
+			Возможно надо просто получить размер данных на 1 канал
+			   и использовать это значение. Так-же надо сделать изменение
+			   в методе CalculateTime()
+			
+			
+			// Например если 44100 сэмплрейт 1 канал, 16 бит
+			// То на 1 секунду надо 44100*2=88200 байт
+			// Например, звук на полторы секунды, 88200*1.5=132300 байт m_dataSize
+			// Получим время имея только значение 132300
+			// 132300 / байтВСекунду = ?
+			// байтВСекунду = 44100*(16/8) = 88200
+			// 132300 / 88200 = 1,5
+
+			bqFloat64 time = m_bufferData.m_dataSize / (m_bufferInfo.m_sampleRate * m_bufferInfo.m_bytesPerSample);
+
+			if (time > 0.0)
+			{
+				// теперь вычисляю размер для нового массива
+				newDataSize = ceil((bqFloat64)(newSampleRate * m_bufferInfo.m_bytesPerSample) * time);
+			}
 
 			if (newDataSize)
 			{
