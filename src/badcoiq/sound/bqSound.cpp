@@ -1536,7 +1536,13 @@ float bqSound::CalculateTime()
 			//m_soundBuffer->m_bufferInfo.m_time *= m_soundBuffer->m_bufferInfo.m_numOfSamples;
 			
 			// новое
-			m_soundBuffer->m_bufferInfo.m_time = m_soundBuffer->m_bufferData.m_dataSize 
+double dataSizePerChannel = m_soundBuffer->m_bufferData.m_dataSize;
+if(m_soundBuffer->m_bufferInfo.m_channels > 1)
+{
+dataSizePerChannel = ceil(dataSizePerChannel / m_soundBuffer->m_bufferInfo.m_channels);
+}
+
+			m_soundBuffer->m_bufferInfo.m_time = dataSizePerChannel 
 				/ (m_soundBuffer->m_bufferInfo.m_sampleRate * m_soundBuffer->m_bufferInfo.m_bytesPerSample);
 			!!!
 		}
@@ -1594,6 +1600,7 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 			Возможно надо просто получить размер данных на 1 канал
 			   и использовать это значение. Так-же надо сделать изменение
 			   в методе CalculateTime()
+готово 
 			
 			
 			// Например если 44100 сэмплрейт 1 канал, 16 бит
@@ -1604,7 +1611,13 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 			// байтВСекунду = 44100*(16/8) = 88200
 			// 132300 / 88200 = 1,5
 
-			bqFloat64 time = m_bufferData.m_dataSize / (m_bufferInfo.m_sampleRate * m_bufferInfo.m_bytesPerSample);
+double dataSizePerChannel = m_bufferData.m_dataSize;
+if(m_bufferInfo.m_channels > 1)
+{
+dataSizePerChannel = ceil(dataSizePerChannel /m_bufferInfo.m_channels);
+}
+
+			bqFloat64 time = dataSizePerChannel / (m_bufferInfo.m_sampleRate * m_bufferInfo.m_bytesPerSample);
 
 			if (time > 0.0)
 			{
