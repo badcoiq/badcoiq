@@ -87,7 +87,10 @@ struct bqSoundBufferInfo
 	//m_info.m_numOfSamples = dataSize / m_blockSize;
 
 	uint32_t m_bytesPerSample = 0; // m_bitsPerSample / 8;
+	
 	// nBlockAlign
+	// блоком называется текущий сэмпл на каждый канал
+	// размер в байтах
 	uint32_t m_blockSize = 0;// m_bytesPerSample * m_channels;
 };
 

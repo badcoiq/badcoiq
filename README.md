@@ -4,4 +4,3 @@
 
 [BADCOIQ](https://badcoiq.ucoz.net/forum/)
 
-[TELEGRAM](https://t.me/badcoiq)
