@@ -352,6 +352,8 @@ int main()
               //  sound5.SaveToFile(bqSoundFileType::wav, "2channels.wav");
 
                 sound6.LoadFromFile("../data/sounds/alien_beacon44100_float.wav");
+                sound6.m_soundBuffer->Resample(5000);
+                sound6.SaveToFile(bqSoundFileType::wav, "../data/sounds/alien_beacon44100_float_resample_5000.wav");
 
                 {
                 //    BQ_PTR_D(bqSoundObject, so1, se->SummonSoundObject(&sound1));

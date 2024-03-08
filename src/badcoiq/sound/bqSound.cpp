@@ -1375,6 +1375,8 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 {
 	bqFileBuffer file(buffer, bufferSz);
 
+	bqSoundFormat format = bqSoundFormat::unsupported;
+
 	char riff[5] = { 0,0,0,0,0 };
 	file.Read(riff, 4);
 	if (strcmp(riff, "RIFF") == 0)
@@ -1396,6 +1398,16 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 				uint16_t TYPE = 0;
 				file.Read(&TYPE, 2);
 
+				switch (TYPE)
+				{
+				case 1:
+					format = bqSoundFormat::int16;
+					break;
+				case 3:
+					format = bqSoundFormat::float32; // я пока ХЗ на счёт float64
+					break;
+				}
+
 				uint16_t channels = 0;
 				file.Read(&channels, 2);
 
@@ -1410,6 +1422,28 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 
 				uint16_t bitsPerSample = 0;
 				file.Read(&bitsPerSample, 2);
+
+				if (format == bqSoundFormat::int16)
+				{
+					switch (bitsPerSample)
+					{
+					case 8:
+						format = bqSoundFormat::uint8;
+						break;
+					case 24:
+						format = bqSoundFormat::int24;
+						break;
+					case 32:
+						format = bqSoundFormat::int32;
+						break;
+					}
+				}
+				else if (format == bqSoundFormat::float32)
+				{
+					// возможно можно определить так
+					if (bitsPerSample == 64)
+						format = bqSoundFormat::float64;
+				}
 
 				if (FMTChunkSize > 16)
 				{
@@ -1494,16 +1528,27 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 					file.Read(&dataSize, 4);
 					if (dataSize)
 					{
-						Create(0.1f, channels, sampleRate, bitsPerSample);
-						if (m_soundBuffer->m_bufferData.m_dataSize < dataSize)
-							_reallocate(dataSize);
+						if (format != bqSoundFormat::unsupported)
+						{
 
-						file.Read(m_soundBuffer->m_bufferData.m_data, m_soundBuffer->m_bufferData.m_dataSize);
 
-						//Convert();
+							Create(0.1f, channels, sampleRate, bitsPerSample);
+							if (m_soundBuffer->m_bufferData.m_dataSize < dataSize)
+								_reallocate(dataSize);
 
-						CalculateTime();
-						return true;
+							m_soundBuffer->m_bufferInfo.m_format = format;
+
+							file.Read(m_soundBuffer->m_bufferData.m_data, m_soundBuffer->m_bufferData.m_dataSize);
+
+							//Convert();
+
+							CalculateTime();
+							return true;
+						}
+						else
+						{
+							bqLog::PrintWarning("Unsupported sound file format\n");
+						}
 					}
 				}
 			}
@@ -1585,7 +1630,7 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 	if(newSampleRate && (newSampleRate != m_bufferInfo.m_sampleRate)
 		&& m_bufferData.m_dataSize)
 	{
-		if((newSampleRate >= 11000) && (newSampleRate <= 192000))
+		if((newSampleRate >= 1000) && (newSampleRate <= 192000))
 		{
 			// Надо создать новый массив где будет находится звук с новым sample rate
 
@@ -1628,33 +1673,73 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 			{
 				uint8_t* newData = (uint8_t*)bqMemory::malloc(newDataSize);
 
-
-				// есть 2 пути. уменьшение и увеличение 
-				if (newSampleRate < m_bufferInfo.m_sampleRate) // уменьшение
+				if (m_bufferInfo.m_blockSize && m_bufferData.m_dataSize)
 				{
-					// 
-					if (m_bufferInfo.m_blockSize && m_bufferData.m_dataSize)
+					uint32_t numOfBlocksOld = m_bufferData.m_dataSize / m_bufferInfo.m_blockSize;
+					uint32_t numOfBlocksNew = newDataSize / m_bufferInfo.m_blockSize;
+
+					// прохожусь по блокам из source.
+					// сую их в новый массив.
+					// Надо обрабатывать частями по 1й секунде
+					// потому что samplerate это есть секунда, будет проще без всяких вычислений.
+					// есть 2 пути. уменьшение и увеличение 
+					
+					if (newSampleRate < m_bufferInfo.m_sampleRate) // уменьшение
 					{
-						uint32_t numOfBlocks = m_bufferData.m_dataSize / m_bufferInfo.m_blockSize;
+						// Надо проходиться по блокам из нового массива.
+						// Блок = сэмпл * количество каналов.
 
-						// прохожусь по блокам из source.
-						// сую их в новый массив.
-						// определённые блоки из source нужно скипать.
-						// Надо понять как скипать.
-						// Так-же, идея, возможно проще будет обрабатывать звук по времени
-						//   Например, обрабатывать по 0.1 секунде.
-						for (uint32_t i = 0; i < numOfBlocks; ++i)
+						bqFloat32* ptrNew = (bqFloat32*)newData;
+						bqFloat32* ptrOld = (bqFloat32*)m_bufferData.m_data;
+
+
+						// для нахождения индекса в старом массиве
+						// размер массива 1 делим на размер массива 2
+						// (большого массива    на    меньший массив)
+						double _m = (double)numOfBlocksOld / (double)numOfBlocksNew;
+
+						// Надо сначала конвертировать один канал, потом другой и т.д.
+						for (uint32_t ic = 0; ic < m_bufferInfo.m_channels; ++ic)
 						{
-							for (uint32_t ci = 0; ci < m_bufferInfo.m_channels; ++ci)
+							// проход по всем блокам - то есть по всем данным
+							for (uint32_t ib = 0; ib < numOfBlocksNew; /*++ib*/)
 							{
+								
+								// индекс должен начинаться с нуля так как
+								// идея алгоритма такова что работаем с 
+								// массивами от начала до конца. Потом
+								// надо будет изменить указатели ptrNew и ptrOld
+								uint32_t indexNewNoChannels = 0; // без учёта каналов, для получения индекса старого массива
+								uint32_t indexNew = 0; // для прохода по новому массиву
 
+								for (uint32_t i = 0; i < newSampleRate; ++i)
+								{
+									// получаю индекс в старом массиве
+									double _v = (double)indexNewNoChannels * _m;
+
+									// конвертирую в индекс с учётом каналов
+									// индекс * количество канало + индекс текущего канала
+									uint32_t indexOld = (uint32_t)floor(_v) * m_bufferInfo.m_channels;
+									indexOld += ic;
+
+									ptrNew[indexNew] = ptrOld[indexOld];
+
+									indexNew += m_bufferInfo.m_channels;
+
+									++indexNewNoChannels;
+								}
+
+								ib += newSampleRate;
+								ptrNew += newSampleRate * m_bufferInfo.m_blockSize;
+								ptrOld += m_bufferInfo.m_sampleRate * m_bufferInfo.m_blockSize;
 							}
 						}
 					}
+					else // увеличение
+					{
+					}
 				}
-				else // увеличение
-				{
-				}
+
 
 				m_bufferInfo.m_sampleRate = newSampleRate;
 
