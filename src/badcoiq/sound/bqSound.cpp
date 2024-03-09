@@ -1662,12 +1662,15 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 			}
 
 			bqFloat64 time = dataSizePerChannel / (m_bufferInfo.m_sampleRate * m_bufferInfo.m_bytesPerSample);
+			//printf("RESAMPLE TIME: %f\n", time);
 
 			if (time > 0.0)
 			{
 				// теперь вычисляю размер для нового массива
-				newDataSize = ceil((bqFloat64)(newSampleRate * m_bufferInfo.m_bytesPerSample) * time);
+				newDataSize = ceil((bqFloat64)(newSampleRate * m_bufferInfo.m_bytesPerSample * m_bufferInfo.m_channels) * time);
 			}
+
+			printf("RESAMPLE newDataSize: %u\n", newDataSize);
 
 			if (newDataSize)
 			{
@@ -1689,8 +1692,6 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 						// Надо проходиться по блокам из нового массива.
 						// Блок = сэмпл * количество каналов.
 
-						bqFloat32* ptrNew = (bqFloat32*)newData;
-						bqFloat32* ptrOld = (bqFloat32*)m_bufferData.m_data;
 
 
 						// для нахождения индекса в старом массиве
@@ -1701,6 +1702,9 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 						// Надо сначала конвертировать один канал, потом другой и т.д.
 						for (uint32_t ic = 0; ic < m_bufferInfo.m_channels; ++ic)
 						{
+							bqFloat32* ptrNew = (bqFloat32*)newData;
+							bqFloat32* ptrOld = (bqFloat32*)m_bufferData.m_data;
+
 							// проход по всем блокам - то есть по всем данным
 							for (uint32_t ib = 0; ib < numOfBlocksNew; /*++ib*/)
 							{
@@ -1709,10 +1713,15 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 								// идея алгоритма такова что работаем с 
 								// массивами от начала до конца. Потом
 								// надо будет изменить указатели ptrNew и ptrOld
-								uint32_t indexNewNoChannels = 0; // без учёта каналов, для получения индекса старого массива
+								uint32_t indexNewNoChannels = 0; // без учёта каналов, для 
+								                                 //получения индекса старого массива
 								uint32_t indexNew = 0; // для прохода по новому массиву
 
-								for (uint32_t i = 0; i < newSampleRate; ++i)
+								uint32_t _1_second = newSampleRate;
+								if ((numOfBlocksNew - ib) < _1_second)
+									_1_second = numOfBlocksNew - ib;
+
+								for (uint32_t i = 0; i < _1_second; ++i)
 								{
 									// получаю индекс в старом массиве
 									double _v = (double)indexNewNoChannels * _m;
@@ -1722,16 +1731,16 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 									uint32_t indexOld = (uint32_t)floor(_v) * m_bufferInfo.m_channels;
 									indexOld += ic;
 
-									ptrNew[indexNew] = ptrOld[indexOld];
+									ptrNew[indexNew + ic] = ptrOld[indexOld];
 
 									indexNew += m_bufferInfo.m_channels;
 
 									++indexNewNoChannels;
 								}
 
-								ib += newSampleRate;
-								ptrNew += newSampleRate * m_bufferInfo.m_blockSize;
-								ptrOld += m_bufferInfo.m_sampleRate * m_bufferInfo.m_blockSize;
+								ib += _1_second;
+								ptrNew += newSampleRate * m_bufferInfo.m_channels;
+								ptrOld += m_bufferInfo.m_sampleRate * m_bufferInfo.m_channels;
 							}
 						}
 					}
