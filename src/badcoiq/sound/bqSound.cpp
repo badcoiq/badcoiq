@@ -1670,7 +1670,7 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 				newDataSize = ceil((bqFloat64)(newSampleRate * m_bufferInfo.m_bytesPerSample * m_bufferInfo.m_channels) * time);
 			}
 
-			printf("RESAMPLE newDataSize: %u\n", newDataSize);
+			//printf("RESAMPLE newDataSize: %u\n", newDataSize);
 
 			if (newDataSize)
 			{
@@ -1691,8 +1691,6 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 					{
 						// Надо проходиться по блокам из нового массива.
 						// Блок = сэмпл * количество каналов.
-
-
 
 						// для нахождения индекса в старом массиве
 						// размер массива 1 делим на размер массива 2
@@ -1718,6 +1716,7 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 								uint32_t indexNew = 0; // для прохода по новому массиву
 
 								uint32_t _1_second = newSampleRate;
+								// случай если данных осталось менее секунды
 								if ((numOfBlocksNew - ib) < _1_second)
 									_1_second = numOfBlocksNew - ib;
 
@@ -1725,14 +1724,15 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 								{
 									// получаю индекс в старом массиве
 									double _v = (double)indexNewNoChannels * _m;
-
 									// конвертирую в индекс с учётом каналов
 									// индекс * количество канало + индекс текущего канала
 									uint32_t indexOld = (uint32_t)floor(_v) * m_bufferInfo.m_channels;
 									indexOld += ic;
 
+									// копирую нужный сэмпл
 									ptrNew[indexNew + ic] = ptrOld[indexOld];
 
+									// двигаемся дальше
 									indexNew += m_bufferInfo.m_channels;
 
 									++indexNewNoChannels;
