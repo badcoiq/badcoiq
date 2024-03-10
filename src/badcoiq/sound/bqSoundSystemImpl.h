@@ -52,6 +52,21 @@ public:
 	bool Initialize(IMMDevice* Endpoint);
 	void Shutdown();
 
+	// эти вещи предположительно могут быть в 1м экземпляре
+	IAudioClient* m_audioClient = 0;
+	IAudioRenderClient* m_renderClient = 0;
+
+	WAVEFORMATEX* m_mixFormat = 0;
+	UINT32      m_frameSize = 0;
+	UINT32      m_bufferSize = 0;
+
+	enum RenderSampleType
+	{
+		SampleTypeFloat,
+		SampleType16BitPCM,
+	};
+	RenderSampleType m_renderSampleType;
+
 	// Когда надо что-то сделать в треде обработки звука
 	// надо послать команду. Команды обрабатываются после
 	// цикла обработки звука.
@@ -123,6 +138,7 @@ class bqSoundSystemImpl : public bqSoundSystem
 {
 	IMMDevice* m_device = 0;
 	bqWASAPIRenderer* m_WASAPIrenderer = 0;
+	bqSoundSystemDeviceInfo m_deviceInfo;
 public:
 	bqSoundSystemImpl();
 	virtual ~bqSoundSystemImpl();
@@ -132,6 +148,7 @@ public:
 	virtual bqSoundObject* SummonObject(bqSound*) override;
 	virtual bqSoundStreamObject* SummonStreamObject(const char*) override;
 	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;
+	virtual bqSoundSystemDeviceInfo GetDeviceInfo() override;
 };
 
 #endif

@@ -353,14 +353,17 @@ int main()
               //  sound5.SaveToFile(bqSoundFileType::wav, "2channels.wav");
 
                 sound6.LoadFromFile("../data/sounds/alien_beacon44100_float.wav");
-                sound6.m_soundBuffer->Resample(2000);
-                sound6.SaveToFile(bqSoundFileType::wav, "../data/sounds/alien_beacon44100_float_resample_2000.wav");
+                sound6.m_soundBuffer->Resample(100000);
+                sound6.SaveToFile(bqSoundFileType::wav, "../data/sounds/alien_beacon44100_float_resample_100000.wav");
 
                 sound7.LoadFromFile("../data/sounds/song1_MakeStereo.wav");
                 sound7.m_soundBuffer->Make32bitsFloat();
-                sound7.m_soundBuffer->Resample(5000);
-                sound7.SaveToFile(bqSoundFileType::wav, "../data/sounds/song1_MakeStereo_float32_resampled5000.wav");
-
+                sound7.m_soundBuffer->Resample(50000);
+                sound7.SaveToFile(bqSoundFileType::wav, "../data/sounds/song1_MakeStereo_float32_resampled50000.wav");
+                
+                bqFramework::GetSoundSystem();
+              //  bqFramework::GetSoundSystem()->
+                
                 {
                 //    BQ_PTR_D(bqSoundObject, so1, se->SummonSoundObject(&sound1));
                 //    BQ_PTR_D(bqSoundObject, so2, se->SummonSoundObject(&sound2));

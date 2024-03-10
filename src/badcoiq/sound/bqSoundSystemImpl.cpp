@@ -51,6 +51,11 @@ bqSoundSystemImpl::~bqSoundSystemImpl()
 	if (m_device) m_device->Release();
 }
 
+bqSoundSystemDeviceInfo bqSoundSystemImpl::GetDeviceInfo()
+{
+	return m_deviceInfo;
+}
+
 //
 //  Retrieves the device friendly name for a particular device in a device collection.
 //
@@ -189,6 +194,25 @@ bool bqSoundSystemImpl::Init()
 			delete m_WASAPIrenderer;
 			m_WASAPIrenderer = 0;
 		}
+		else
+		{
+			//WAVE_FORMAT_PCM
+			switch (m_WASAPIrenderer->m_renderSampleType)
+			{
+			case bqWASAPIRenderer::SampleType16BitPCM:
+				m_deviceInfo.m_format = bqSoundFormat::int16;
+				break;
+			case bqWASAPIRenderer::SampleTypeFloat:
+				m_deviceInfo.m_format = bqSoundFormat::float32;
+				break;
+			default:
+				m_deviceInfo.m_format = bqSoundFormat::unsupported;
+				break;
+			}
+
+			m_deviceInfo.m_channels = m_WASAPIrenderer->m_mixFormat->nChannels;
+			m_deviceInfo.m_sampleRate = m_WASAPIrenderer->m_mixFormat->nSamplesPerSec;
+		}
 	}
 
 	if (!retValue)
@@ -207,7 +231,7 @@ bqSoundObject* bqSoundSystemImpl::SummonObject(bqSound* sound)
 {
 	BQ_ASSERT_ST(sound);
 	BQ_PTR_D(bqSoundObjectImpl,newO,new bqSoundObjectImpl);
-	if (newO->Init(m_WASAPIrenderer->GetEndpoint(), sound, 50))
+	if (newO->Init(m_WASAPIrenderer->GetEndpoint(), sound))
 	{
 		m_WASAPIrenderer->ThreadAddSound(newO.Ptr());
 		return newO.Drop();
@@ -277,13 +301,13 @@ void bqWASAPIRenderer::_thread_function()
 				// чтобы при старте не проигрывался `мусор`
 				{
 					BYTE* pData;
-					hr = sound->m_renderClient->GetBuffer(sound->m_bufferSize, &pData);
+					hr = m_renderClient->GetBuffer(m_bufferSize, &pData);
 					if (FAILED(hr))
 					{
 						bqLog::PrintError("Failed to get buffer: %x.\n", hr);
 						return;
 					}
-					hr = sound->m_renderClient->ReleaseBuffer(sound->m_bufferSize, AUDCLNT_BUFFERFLAGS_SILENT);
+					hr = m_renderClient->ReleaseBuffer(m_bufferSize, AUDCLNT_BUFFERFLAGS_SILENT);
 					if (FAILED(hr))
 					{
 						bqLog::PrintError("Failed to release buffer: %x.\n", hr);
@@ -291,7 +315,7 @@ void bqWASAPIRenderer::_thread_function()
 					}
 
 					UINT32 padding = 0;
-					hr = sound->m_audioClient->GetCurrentPadding(&padding);
+					hr = m_audioClient->GetCurrentPadding(&padding);
 					if (SUCCEEDED(hr))
 					{
 						bqLog::Print("first padding is %u\n", padding);
@@ -306,7 +330,7 @@ void bqWASAPIRenderer::_thread_function()
 				// Тут всякие проверки
 				// 
 				// Далее Start и изменяем state
-				hr = sound->m_audioClient->Start();
+				hr = m_audioClient->Start();
 				if (FAILED(hr))
 				{
 					bqLog::Print("Unable to start render client: %x.\n", hr);
@@ -320,7 +344,7 @@ void bqWASAPIRenderer::_thread_function()
 					sound->m_state = bqSoundObject::state_playing;
 
 					UINT32 padding = 0;
-					hr = sound->m_audioClient->GetCurrentPadding(&padding);
+					hr = m_audioClient->GetCurrentPadding(&padding);
 					if (SUCCEEDED(hr))
 					{
 						Sleep(50); // должна быть пауза между обновлениями буфера
@@ -344,7 +368,7 @@ void bqWASAPIRenderer::_thread_function()
 			}break;
 			case bqSoundObjectImpl::ThreadCommand::ThreadCommand_stop:
 			{
-				hr = sound->m_audioClient->Stop();
+				hr = m_audioClient->Stop();
 				if (FAILED(hr))
 				{
 					bqLog::Print("Unable to stop render client: %x.\n", hr);
@@ -368,7 +392,7 @@ void bqWASAPIRenderer::_thread_function()
 			case bqSoundObjectImpl::ThreadState::ThreadState_play:
 			{
 				UINT32 padding = 0;
-				hr = sound->m_audioClient->GetCurrentPadding(&padding);
+				hr = m_audioClient->GetCurrentPadding(&padding);
 				if (SUCCEEDED(hr))
 				{
 					//bqLog::Print("padding %u\n", padding);
@@ -376,22 +400,22 @@ void bqWASAPIRenderer::_thread_function()
 					//if(!padding)
 					//sound->_thread_fillRenderBuffer();
 					
-					UINT32 framesAvailable = sound->m_bufferSize - padding;
-					UINT32 framesToWrite = sound->m_bufferSize / sound->m_frameSize;
+					UINT32 framesAvailable = m_bufferSize - padding;
+					UINT32 framesToWrite = m_bufferSize / m_frameSize;
 
-					if(sound->m_bufferSize <= (framesAvailable * sound->m_frameSize))
+					if(m_bufferSize <= (framesAvailable * m_frameSize))
 					{
 						BYTE* pData = 0;
-						hr = sound->m_renderClient->GetBuffer(framesToWrite, &pData);
+						hr = m_renderClient->GetBuffer(framesToWrite, &pData);
 						if (SUCCEEDED(hr))
 						{
 							bqSoundBufferData* soundData = sound->m_bufferData;
 
-							memcpy(pData, &soundData->m_data[sound->m_currentPosition], framesToWrite * sound->m_frameSize);
+							memcpy(pData, &soundData->m_data[sound->m_currentPosition], framesToWrite * m_frameSize);
 
-							sound->m_currentPosition += framesToWrite * sound->m_frameSize;
+							sound->m_currentPosition += framesToWrite * m_frameSize;
 
-							hr = sound->m_renderClient->ReleaseBuffer(framesToWrite, 0);
+							hr = m_renderClient->ReleaseBuffer(framesToWrite, 0);
 							//printf("done %u\n", sound->m_currentPosition);
 							if (!SUCCEEDED(hr))
 							{
@@ -402,7 +426,7 @@ void bqWASAPIRenderer::_thread_function()
 						}
 						else
 						{
-							printf("Unable to get buffer: %x bufferSize: %u\n", hr, sound->m_bufferSize);
+							printf("Unable to get buffer: %x bufferSize: %u\n", hr, m_bufferSize);
 							//	stillPlaying = false;
 						}
 					}
@@ -465,6 +489,85 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 		m_endpoint = Endpoint;
 		m_endpoint->AddRef();
 
+		HRESULT hr = m_endpoint->Activate(__uuidof(IAudioClient),
+			CLSCTX_INPROC_SERVER, NULL,
+			reinterpret_cast<void**>(&m_audioClient));
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Unable to activate audio client: %x.\n", hr);
+			return false;
+		}
+
+		hr = m_audioClient->GetMixFormat(&m_mixFormat);
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Unable to get mix format on audio client: %x.\n", hr);
+			return false;
+		}
+		m_frameSize = m_mixFormat->nBlockAlign;
+
+		//  If the mix format is a float format, just try to convert the format to PCM.
+		if (m_mixFormat->wFormatTag == WAVE_FORMAT_PCM ||
+			m_mixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
+			reinterpret_cast<WAVEFORMATEXTENSIBLE*>(m_mixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
+		{
+			if (m_mixFormat->wBitsPerSample == 16)
+			{
+				m_renderSampleType = SampleType16BitPCM;
+			}
+			else
+			{
+				bqLog::PrintError("Unknown PCM integer sample type\n");
+				return false;
+			}
+		}
+		else if (m_mixFormat->wFormatTag == WAVE_FORMAT_IEEE_FLOAT ||
+			(m_mixFormat->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
+				reinterpret_cast<WAVEFORMATEXTENSIBLE*>(m_mixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
+		{
+			m_renderSampleType = SampleTypeFloat;
+		}
+		else
+		{
+			bqLog::PrintError("unrecognized device format.\n");
+			return false;
+		}
+
+		uint32_t EngineLatency = 50;
+
+		REFERENCE_TIME bufferDuration = EngineLatency * 10000;
+		REFERENCE_TIME periodicity = EngineLatency * 10000;
+
+		hr = m_audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
+			AUDCLNT_STREAMFLAGS_NOPERSIST,
+			bufferDuration,
+			periodicity,
+			m_mixFormat,
+			NULL);
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Unable to initialize audio client: %x.\n", hr);
+			return false;
+		}
+
+		//constexpr uint32_t ewerr = AUDCLNT_E_BUFFER_TOO_LARGE;
+		// AUDCLNT_E_BUFFER_TOO_LARGE = decimal code 2290679814
+
+		//  Retrieve the buffer size for the audio client.
+		hr = m_audioClient->GetBufferSize(&m_bufferSize);
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Unable to get audio client buffer: %x. \n", hr);
+			return false;
+		}
+
+		hr = m_audioClient->GetService(IID_PPV_ARGS(&m_renderClient));
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Unable to get new render client: %x.\n", hr);
+			return false;
+		}
+
 		m_threadContext.m_run = true;
 		m_tread = new std::thread(&bqWASAPIRenderer::_thread_function, this);
 
@@ -490,6 +593,18 @@ void bqWASAPIRenderer::Shutdown()
 
 		delete m_tread;
 		m_tread = 0;
+
+		if (m_audioClient)
+		{
+			m_audioClient->Release();
+			m_audioClient = 0;
+		}
+
+		if (m_renderClient)
+		{
+			m_renderClient->Release();
+			m_renderClient = 0;
+		}
 		bqLog::PrintInfo("done\n");
 	}
 
@@ -601,3 +716,5 @@ ULONG bqWASAPIRenderer::Release()
 	}
 	return returnValue;
 }
+
+

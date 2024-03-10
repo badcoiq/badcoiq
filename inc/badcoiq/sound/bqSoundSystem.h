@@ -34,6 +34,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bqSoundObject.h"
 #include "bqSoundFile.h"
 
+struct bqSoundSystemDeviceInfo
+{
+	bqSoundFormat m_format = bqSoundFormat::unsupported;
+	uint32_t m_sampleRate = 0;
+	uint32_t m_channels = 0;
+};
+
 // * спрячу реализацию в наследнике
 // Перед использованием нужно инициализировать.
 class bqSoundSystem
@@ -50,6 +57,8 @@ public:
 	// чтение.
 	virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
 	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
+
+	virtual bqSoundSystemDeviceInfo GetDeviceInfo() = 0;
 };
 
 #endif

@@ -41,22 +41,18 @@ class bqSoundObjectImpl : public bqSoundObject
 {
 	friend class bqWASAPIRenderer;
 
-	IAudioClient* m_audioClient = 0;
-	IAudioRenderClient* m_renderClient = 0;
-	WAVEFORMATEX* m_mixFormat = 0;
-	UINT32      m_frameSize = 0;
-	UINT32      m_bufferSize = 0;
+	//IAudioClient* m_audioClient = 0;
+	//IAudioRenderClient* m_renderClient = 0;
+	//WAVEFORMATEX* m_mixFormat = 0;
+
+	/*UINT32      m_frameSize = 0;
+	UINT32      m_bufferSize = 0;*/
 
 	uint32_t m_currentPosition = 0;
 
 	void _thread_fillRenderBuffer();
 
-	enum RenderSampleType
-	{
-		SampleTypeFloat,
-		SampleType16BitPCM,
-	};
-	RenderSampleType m_renderSampleType;
+	
 
 	// Управляем воспроизведением `передавая` команды
 	enum ThreadCommand
@@ -85,7 +81,7 @@ public:
 	virtual void Pause() override;
 	virtual void Loop(bool) override;
 
-	bool Init(IMMDevice* , bqSound* , uint32_t EngineLatency);
+	bool Init(IMMDevice* , bqSound*);
 };
 
 #endif

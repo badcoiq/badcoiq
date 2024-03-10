@@ -35,3 +35,5 @@ build/zlib/Release
 build/fastlz/Release
 data/sounds/Reload.wav
 data/sounds/Reload44100.wav
+data/sounds/alien_beacon44100_float_resample_100000.wav
+data/sounds/song1_MakeStereo_float32_resampled50000.wav

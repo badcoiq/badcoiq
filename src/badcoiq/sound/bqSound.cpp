@@ -1746,6 +1746,49 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 					}
 					else // увеличение
 					{
+						// должно быть всё тоже самое что и с уменьшением
+						// только надо будет определять есть ли между
+						// скопированными сэмплами место для вставки
+						// новых сэмплов. Если есть, вставляем и интерполируем значения
+
+						// Код из уменьшения работает и в данном случае.
+						// Просто в результате нет гладкости.
+						// Возможно эту гладкость можно сделать опционально.
+						// Гладкость это и есть интерполированное значение.
+
+						double _m = (double)numOfBlocksOld / (double)numOfBlocksNew;
+
+						for (uint32_t ic = 0; ic < m_bufferInfo.m_channels; ++ic)
+						{
+							bqFloat32* ptrNew = (bqFloat32*)newData;
+							bqFloat32* ptrOld = (bqFloat32*)m_bufferData.m_data;
+
+							for (uint32_t ib = 0; ib < numOfBlocksNew; /*++ib*/)
+							{
+
+								uint32_t indexNewNoChannels = 0;
+								uint32_t indexNew = 0;
+
+								uint32_t _1_second = newSampleRate;
+								if ((numOfBlocksNew - ib) < _1_second)
+									_1_second = numOfBlocksNew - ib;
+
+								for (uint32_t i = 0; i < _1_second; ++i)
+								{
+									double _v = (double)indexNewNoChannels * _m;
+									uint32_t indexOld = (uint32_t)floor(_v) * m_bufferInfo.m_channels;
+									indexOld += ic;
+
+									ptrNew[indexNew + ic] = ptrOld[indexOld];
+									indexNew += m_bufferInfo.m_channels;
+									++indexNewNoChannels;
+								}
+
+								ib += _1_second;
+								ptrNew += newSampleRate * m_bufferInfo.m_channels;
+								ptrOld += m_bufferInfo.m_sampleRate * m_bufferInfo.m_channels;
+							}
+						}
 					}
 				}
 
