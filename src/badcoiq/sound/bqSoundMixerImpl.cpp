@@ -40,26 +40,29 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 	BQ_ASSERT_ST(channels > 0);
 	BQ_ASSERT_ST(channels < 10);
 	BQ_ASSERT_ST(info.m_bufferSize);
+	BQ_ASSERT_ST(info.m_channels);
 
 	if (channels == 0)
 		channels = 1;
 	if (channels > 10)
 		channels = 10;
 
+	uint32_t bufferSizeForOneChannel = info.m_bufferSize / info.m_channels;
+
 	m_dataInfo.m_bitsPerSample = 32;
 	m_dataInfo.m_blockSize = 4; // не имеет значения, пусть будет как на 1 канал
 	m_dataInfo.m_bytesPerSample = 4;
 	m_dataInfo.m_channels = channels;
 	m_dataInfo.m_format = bqSoundFormat::float32; // всё миксуется единым форматом
-	m_dataInfo.m_numOfSamples = ;
+	m_dataInfo.m_numOfSamples = bufferSizeForOneChannel / m_dataInfo.m_blockSize;
 	m_dataInfo.m_sampleRate = info.m_sampleRate;
-	m_dataInfo.m_time=;
+	m_dataInfo.m_time = bufferSizeForOneChannel / (m_dataInfo.m_sampleRate * m_dataInfo.m_bytesPerSample);;
 
 	for (uint32_t i = 0; i < channels; ++i)
 	{
 		_channel* _new_channel = new _channel;
 
-		_new_channel->m_data.m_dataSize = info.m_bufferSize;
+		_new_channel->m_data.m_dataSize = bufferSizeForOneChannel;
 		_new_channel->m_data.m_data = (uint8_t*)bqMemory::malloc(_new_channel->m_data.m_dataSize);
 
 		m_channels.push_back(_new_channel);
