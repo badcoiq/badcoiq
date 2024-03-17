@@ -1,4 +1,4 @@
-﻿/*
+/*
 BSD 2-Clause License
 
 Copyright (c) 2023, badcoiq
@@ -27,42 +27,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_SS_H__
-#define __BQ_SS_H__
+#ifndef __BQ_SOUNDEFFECT_H__
+#define __BQ_SOUNDEFFECT_H__
 
-#include "bqSound.h"
-#include "bqSoundObject.h"
-#include "bqSoundEffect.h"
-#include "bqSoundMixer.h"
-#include "bqSoundFile.h"
+// Базовый класс для звуковых эффектов
 
-struct bqSoundSystemDeviceInfo
-{
-	bqSoundFormat m_format = bqSoundFormat::unsupported;
-	uint32_t m_sampleRate = 0;
-	uint32_t m_channels = 0;
-};
-
-// * спрячу реализацию в наследнике
-// Перед использованием нужно инициализировать.
-class bqSoundSystem
+class bqSoundEffect
 {
 public:
-	bqSoundSystem() {};
-	virtual ~bqSoundSystem() {};
-	
-	// Создать объект из имеющегося звука
-	virtual bqSoundObject* SummonObject(bqSound*) = 0;
+	bqSoundEffect(){}
+	virtual ~bqSoundEffect(){}
 
-	// Создать объект для воспроизведения звука в отдельной нитке.
-	// Файл будет открыт для чтения и потихоньку будет происходить
-	// чтение.
-	virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
-	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
-
-	virtual bqSoundSystemDeviceInfo GetDeviceInfo() = 0;
+	virtual void Process(bqSoundBuffer*) = 0;
 };
 
+#include "bqSoundEffectVolume.h"
+
 #endif
-
-

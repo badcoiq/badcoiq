@@ -204,7 +204,9 @@
     <ClCompile Include="..\..\src\badcoiq\scene\bqCameraFrustum.cpp" />
     <ClCompile Include="..\..\src\badcoiq\scene\bqSprite.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSound.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundEffectVolumeImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundFile.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundMixerImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundObjectImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundSystemImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp" />

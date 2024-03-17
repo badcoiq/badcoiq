@@ -26,43 +26,47 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_SS_H__
-#define __BQ_SS_H__
+#include "badcoiq.h"
 
-#include "bqSound.h"
-#include "bqSoundObject.h"
-#include "bqSoundEffect.h"
-#include "bqSoundMixer.h"
-#include "bqSoundFile.h"
+#include "badcoiq/sound/bqSoundSystem.h"
 
-struct bqSoundSystemDeviceInfo
+#include "bqSoundMixerImpl.h"
+
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
+
+bqSoundMixerImpl::bqSoundMixerImpl()
 {
-	bqSoundFormat m_format = bqSoundFormat::unsupported;
-	uint32_t m_sampleRate = 0;
-	uint32_t m_channels = 0;
-};
+}
 
-// * спрячу реализацию в наследнике
-// Перед использованием нужно инициализировать.
-class bqSoundSystem
+bqSoundMixerImpl::~bqSoundMixerImpl()
 {
-public:
-	bqSoundSystem() {};
-	virtual ~bqSoundSystem() {};
-	
-	// Создать объект из имеющегося звука
-	virtual bqSoundObject* SummonObject(bqSound*) = 0;
+}
 
-	// Создать объект для воспроизведения звука в отдельной нитке.
-	// Файл будет открыт для чтения и потихоньку будет происходить
-	// чтение.
-	virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
-	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
+void bqSoundMixerImpl::AddEffect(bqSoundEffect* effect)
+{
+	BQ_ASSERT_ST(effect);
+}
 
-	virtual bqSoundSystemDeviceInfo GetDeviceInfo() = 0;
-};
+void bqSoundMixerImpl::RemoveEffect(bqSoundEffect* effect)
+{
+	BQ_ASSERT_ST(effect);
+}
 
-#endif
+void bqSoundMixerImpl::RemoveAllEffects()
+{
+}
 
+void bqSoundMixerImpl::AddSound(bqSound* sound)
+{
+	BQ_ASSERT_ST(sound);
+}
 
+void bqSoundMixerImpl::RemoveSound(bqSound* sound)
+{
+	BQ_ASSERT_ST(sound);
+}
+
+void bqSoundMixerImpl::RemoveAllSounds()
+{
+}
