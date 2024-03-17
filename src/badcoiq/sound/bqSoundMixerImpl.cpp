@@ -35,6 +35,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
+class bqSoundMixerCallbackDefault : public bqSoundMixerCallback
+{
+public:
+	bqSoundMixerCallbackDefault() {}
+	virtual ~bqSoundMixerCallbackDefault() {}
+};
+
+static bqSoundMixerCallbackDefault g_defaultCallback;
+
 bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceInfo& info)
 {
 	BQ_ASSERT_ST(channels > 0);
@@ -141,3 +150,36 @@ void bqSoundMixerImpl::Process()
 
 }
 
+void bqSoundMixerImpl::GetSoundBufferInfo(bqSoundBufferInfo& info)
+{
+	info = m_dataInfo;
+}
+
+uint32_t bqSoundMixerImpl::GetNumOfChannels()
+{
+	return (uint32_t)m_channels.m_size;
+}
+
+bqSoundBufferData* bqSoundMixerImpl::GetChannel(uint32_t i)
+{
+	BQ_ASSERT_ST(i < m_channels.m_size);
+
+	if (i < m_channels.m_size)
+	{
+		return &m_channels.m_data[i]->m_data;
+	}
+
+	return 0;
+}
+
+void bqSoundMixerImpl::SetCallback(bqSoundMixerCallback* cb)
+{
+	if (cb)
+	{
+		m_callback = cb;
+	}
+	else
+	{
+		m_callback = &g_defaultCallback;
+	}
+}

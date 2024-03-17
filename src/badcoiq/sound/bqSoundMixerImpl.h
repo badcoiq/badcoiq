@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 struct bqSoundMixerNode
 {
 	bqSound* m_sound = 0;
+	uint32_t m_position = 0;
 };
 
 class bqSoundMixerImpl : public bqSoundMixer
@@ -53,6 +54,8 @@ class bqSoundMixerImpl : public bqSoundMixer
 		bqSoundBufferData m_data;
 	};
 	bqArray<_channel*> m_channels;
+
+	bqSoundMixerCallback* m_callback = 0;
 
 public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundMixer);
@@ -69,5 +72,11 @@ public:
 	virtual void RemoveAllSounds() override;
 
 	virtual void Process() override;
+
+	virtual void GetSoundBufferInfo(bqSoundBufferInfo&) override;
+	virtual uint32_t GetNumOfChannels() override;
+	virtual bqSoundBufferData* GetChannel(uint32_t) override;
+	virtual void SetCallback(bqSoundMixerCallback*) override;
+
 };
 #endif

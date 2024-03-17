@@ -30,10 +30,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SOUNDMIXER_H__
 #define __BQ_SOUNDMIXER_H__
 
+class bqSoundMixerCallback;
+
 // Класс который смешивает звуки в одно целое.
 // Должны быть реализованы эффекты.
 // Звуки должны добавляться, возможно в специальную оболочку, так как надо запоминать текущую позицию воспроизведения.
-
 class bqSoundMixer
 {
 public:
@@ -70,12 +71,49 @@ public:
 	// Потом эти буферы будут смешаны с главным миксером, и
 	// буферы из главного миксера будут скопированы в буфер
 	// звукового движка.
-	// Вызывать данный метод пока нужно лишь внутри звукового движка.
-	// Так как каждый вызов должен будет проигрывать звук, проходится
-	// по буферу звука. А когда это нужно делать знает только движок.
-	// Возможно в будущем можно будет добавить методы чтобы
-	// обработать звуки вручную (например, обработал звук, и сохранил в файл).
 	virtual void Process() = 0;
+
+	// Получить информацию о буфере используемом в миксере
+	virtual void GetSoundBufferInfo(bqSoundBufferInfo&) = 0;
+
+	// Получить количество каналов
+	virtual uint32_t GetNumOfChannels() = 0;
+
+	// Получить канал.
+	virtual bqSoundBufferData* GetChannel(uint32_t) = 0;
+
+	virtual void SetCallback(bqSoundMixerCallback*) = 0;
+};
+
+class bqSoundMixerCallback
+{
+public:
+	bqSoundMixerCallback() {}
+	virtual ~bqSoundMixerCallback() {}
+
+	// Когда завершается смешивание звука в общую кучу.
+	virtual void OnEndMixSound(bqSoundMixerCallback*, bqSound*) = 0;
+	
+	// Когда прошлись по всем звукам.
+	virtual void OnEndProcess(bqSoundMixerCallback*) = 0;
+
+	// Когда звук обработан полностью.
+	virtual void OnEndSound(bqSoundMixerCallback*, bqSound*) = 0;
+
+	// Действия миксера примерно такие
+	/*
+		for(sounds)
+		{
+			mix...
+			cb->OnEndMixSound(sound);
+
+			if(sound->position == sound->end)
+				cb->OnEndSound(sound);
+		}
+
+		cb->OnEndProcess();
+	*/
+
 };
 
 #endif
