@@ -241,16 +241,31 @@ public:
 			--m_size;
 	}
 
-	void erase_first(const_reference ref)
+	bool erase_first(const_reference ref)
 	{
 		for (size_t i = 0u; i < m_size; ++i)
 		{
 			if (m_data[i] == ref)
 			{
 				erase(i);
-				return;
+				return true;
 			}
 		}
+		return false;
+	}
+
+	template<class Compare>
+	bool erase_first(const_reference ref, Compare _cmp)
+	{
+		for (size_t i = 0u; i < m_size; ++i)
+		{
+			if (_cmp(*this, ref)/* m_data[i] == ref*/)
+			{
+				erase(i);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	pointer m_data;

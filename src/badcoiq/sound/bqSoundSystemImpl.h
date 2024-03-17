@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -149,6 +149,7 @@ public:
 	virtual bqSoundStreamObject* SummonStreamObject(const char*) override;
 	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() override;
+	virtual bqSoundMixer* CreateMixer(uint32_t channels) override;
 };
 
 #endif

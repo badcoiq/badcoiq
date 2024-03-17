@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,10 +31,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
+#include <map>
+
+// один звук может находится во множестве миксерах
+// каждый миксер будет воспроизводить его по своему
+// надо знать определённые вещи у звука
+// например позиция воспроизведения
+struct bqSoundMixerNode
+{
+	bqSound* m_sound = 0;
+};
+
 class bqSoundMixerImpl : public bqSoundMixer
 {
+	bqArray<bqSoundMixerNode> m_sounds;
+	bqList<bqSoundEffect*> m_effects;
+
+	bqSoundBufferInfo m_dataInfo;
+	struct _channel
+	{
+		bqSoundBufferData m_data;
+	};
+	bqArray<_channel*> m_channels;
+
 public:
-	bqSoundMixerImpl();
+	BQ_PLACEMENT_ALLOCATOR(bqSoundMixer);
+	
+	bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceInfo& );
 	virtual ~bqSoundMixerImpl();
 
 	virtual void AddEffect(bqSoundEffect*) override;
@@ -44,5 +67,7 @@ public:
 	virtual void AddSound(bqSound*) override;
 	virtual void RemoveSound(bqSound*) override;
 	virtual void RemoveAllSounds() override;
+
+	virtual void Process() override;
 };
 #endif

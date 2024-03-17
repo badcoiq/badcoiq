@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bqSoundObjectImpl.h"
 #include "bqSoundSystemImpl.h"
+#include "bqSoundMixerImpl.h"
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
@@ -54,6 +55,14 @@ bqSoundSystemImpl::~bqSoundSystemImpl()
 bqSoundSystemDeviceInfo bqSoundSystemImpl::GetDeviceInfo()
 {
 	return m_deviceInfo;
+}
+
+bqSoundMixer* bqSoundSystemImpl::CreateMixer(uint32_t channels)
+{
+	bqSoundMixerImpl* newMixer = new bqSoundMixerImpl(channels, m_deviceInfo);
+
+
+	return newMixer;
 }
 
 //
@@ -212,6 +221,7 @@ bool bqSoundSystemImpl::Init()
 
 			m_deviceInfo.m_channels = m_WASAPIrenderer->m_mixFormat->nChannels;
 			m_deviceInfo.m_sampleRate = m_WASAPIrenderer->m_mixFormat->nSamplesPerSec;
+			m_deviceInfo.m_bufferSize = m_WASAPIrenderer->m_bufferSize;
 		}
 	}
 

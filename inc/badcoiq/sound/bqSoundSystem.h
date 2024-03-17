@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -36,11 +36,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bqSoundMixer.h"
 #include "bqSoundFile.h"
 
+// информация о типе звука который воспроизводит аудио девайс
 struct bqSoundSystemDeviceInfo
 {
 	bqSoundFormat m_format = bqSoundFormat::unsupported;
 	uint32_t m_sampleRate = 0;
 	uint32_t m_channels = 0;
+
+	// размер того буфера который передаётся в звуковой драйвер
+	uint32_t m_bufferSize = 0;
 };
 
 // * спрячу реализацию в наследнике
@@ -57,10 +61,16 @@ public:
 	// Создать объект для воспроизведения звука в отдельной нитке.
 	// Файл будет открыт для чтения и потихоньку будет происходить
 	// чтение.
+	// чтото пока не реализовано
 	virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
 	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
 
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() = 0;
+
+	// Создать миксер. 
+	// Параметры будут как GetDeviceInfo()
+	// Нужно только указать количество каналов.
+	virtual bqSoundMixer* CreateMixer(uint32_t channels) = 0;
 };
 
 #endif
