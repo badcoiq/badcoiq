@@ -40,6 +40,9 @@ class bqSoundMixerCallbackDefault : public bqSoundMixerCallback
 public:
 	bqSoundMixerCallbackDefault() {}
 	virtual ~bqSoundMixerCallbackDefault() {}
+	virtual void OnEndMixSound(bqSoundMixerCallback*, bqSound*) {}
+	virtual void OnEndProcess(bqSoundMixerCallback*) {}
+	virtual void OnEndSound(bqSoundMixerCallback*, bqSound*) {}
 };
 
 static bqSoundMixerCallbackDefault g_defaultCallback;
