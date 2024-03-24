@@ -59,22 +59,22 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 	if (channels > 10)
 		channels = 10;
 
-	uint32_t bufferSizeForOneChannel = info.m_bufferSize / info.m_channels;
+	m_bufferSizeForOneChannel = info.m_bufferSize / info.m_channels;
 
 	m_dataInfo.m_bitsPerSample = 32;
 	m_dataInfo.m_blockSize = 4; // не имеет значения, пусть будет как на 1 канал
 	m_dataInfo.m_bytesPerSample = 4;
 	m_dataInfo.m_channels = channels;
 	m_dataInfo.m_format = bqSoundFormat::float32; // всё миксуется единым форматом
-	m_dataInfo.m_numOfSamples = bufferSizeForOneChannel / m_dataInfo.m_blockSize;
+	m_dataInfo.m_numOfSamples = m_bufferSizeForOneChannel / m_dataInfo.m_blockSize;
 	m_dataInfo.m_sampleRate = info.m_sampleRate;
-	m_dataInfo.m_time = bufferSizeForOneChannel / (m_dataInfo.m_sampleRate * m_dataInfo.m_bytesPerSample);;
+	m_dataInfo.m_time = m_bufferSizeForOneChannel / (m_dataInfo.m_sampleRate * m_dataInfo.m_bytesPerSample);;
 
 	for (uint32_t i = 0; i < channels; ++i)
 	{
 		_channel* _new_channel = new _channel;
 
-		_new_channel->m_data.m_dataSize = bufferSizeForOneChannel;
+		_new_channel->m_data.m_dataSize = m_bufferSizeForOneChannel;
 		_new_channel->m_data.m_data = (uint8_t*)bqMemory::malloc(_new_channel->m_data.m_dataSize);
 
 		m_channels.push_back(_new_channel);
@@ -121,6 +121,24 @@ void bqSoundMixerImpl::RemoveAllEffects()
 void bqSoundMixerImpl::AddSound(bqSound* sound)
 {
 	BQ_ASSERT_ST(sound);
+	BQ_ASSERT_ST(sound->m_soundBuffer);
+	
+	bqSoundSystem* ss = (bqSoundSystem*)g_framework->m_soundSystem;
+
+	auto deviceInfo = ss->GetDeviceInfo();
+
+	if (sound->m_soundBuffer->m_bufferInfo.m_format != deviceInfo.m_format)
+	{
+		bqLog::PrintWarning("SoundMixer: unable to add sound. Wrong format.\n");
+		return;
+	}
+
+	if (sound->m_soundBuffer->m_bufferInfo.m_sampleRate != deviceInfo.m_sampleRate)
+	{
+		bqLog::PrintWarning("SoundMixer: unable to add sound. Wrong sample rate.\n");
+		return;
+	}
+
 	bqSoundMixerNode node;
 	node.m_sound = sound;
 	m_sounds.push_back(node);
@@ -150,7 +168,69 @@ void bqSoundMixerImpl::RemoveAllSounds()
 
 void bqSoundMixerImpl::Process()
 {
+	// НАДО ВСЁ ОЧИСТИТЬ
+	for (size_t i = 0; i < m_channels.m_size; ++i)
+	{
+		for (size_t ii = 0; ii < m_channels.m_data[i]->m_data.m_dataSize; ++ii)
+		{
+			m_channels.m_data[i]->m_data.m_data[ii] = 0;
+		}
+	}
 
+	for (size_t si = 0; si < m_sounds.m_size; ++si)
+	{
+		bqSoundMixerNode& soundNode = m_sounds.m_data[si];
+
+		// беру ноду, и копирую кусок данных
+		for (size_t ci = 0; ci < m_channels.m_size; ++ci)
+		{
+			// Вот такая ситуация может быть:
+			/*
+			* Изобразим графически
+			* 
+			* Есть буфер канала
+			*                 |-------------------------------|
+			* 
+			* Есть звук,      |===| размером он меньше буфера канала
+			* 
+			* Если надо сделать непрерывное воспроизведение звука
+			* то буфер канала надо будет заполнять полностью
+			*                 |-------------------------------|
+			*                 |===||===||===||===||===||===||==
+			* 
+			* Потом, звук может быть больше буфера канала.
+			* В этом случае остаток так-же должен быть скопирован.
+			* 
+			* *                 |-------------------------------| первый проход
+			*                   |================================
+			* 
+			* *                 |-------------------------------| второй проход
+			*                   =======||======================== конец звука скопировали, начали копировать опять.
+			* 
+			* Правда ли что это должно быть реализовано? Для чего это нужно?
+			* Если имеем звук который надо воспроизвести 1 раз, то проблем не будет.
+			* Он будет обработан от начала и до конца.
+			* Но если нужно воспроизводить звук постоянно, то, при повторном воспроизведении,
+			* если ничего не предпринимать, будут микропаузы.
+			* Возможно, из-за маленького размера буфера канала, эти микропаузы будут незаметны.
+			
+			*/
+
+			for (size_t i = 0; i < m_bufferSizeForOneChannel; ++i)
+			{
+				for (size_t di = soundNode.m_position;
+					di < soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;
+					++di)
+				{
+
+					...soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[di];
+
+				}
+			}
+			
+		}
+
+	}
 }
 
 void bqSoundMixerImpl::GetSoundBufferInfo(bqSoundBufferInfo& info)

@@ -48,6 +48,7 @@ class bqSoundMixerImpl : public bqSoundMixer
 	bqArray<bqSoundMixerNode> m_sounds;
 	bqList<bqSoundEffect*> m_effects;
 
+	uint32_t m_bufferSizeForOneChannel = 0;
 	bqSoundBufferInfo m_dataInfo;
 	struct _channel
 	{
