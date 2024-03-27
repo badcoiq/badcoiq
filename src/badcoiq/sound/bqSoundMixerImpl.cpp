@@ -216,11 +216,14 @@ void bqSoundMixerImpl::Process()
 			
 			*/
 
-			for (size_t i = 0; i < m_bufferSizeForOneChannel; ++i)
+			for (size_t di = soundNode.m_position;
+				di < soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;
+				++di)
 			{
-				for (size_t di = soundNode.m_position;
-					di < soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;
-					++di)
+				// 1. беру звук
+				// 2. заполняю им текущий канал
+
+				for (size_t i = 0; i < m_bufferSizeForOneChannel; ++i)
 				{
 
 					...soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[di];
