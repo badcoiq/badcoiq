@@ -181,8 +181,9 @@ void bqSoundMixerImpl::Process()
 	{
 		bqSoundMixerNode& soundNode = m_sounds.m_data[si];
 
-		// беру ноду, и копирую кусок данных
-		for (size_t ci = 0; ci < m_channels.m_size; ++ci)
+		for (size_t di = soundNode.m_position;
+			di < soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;
+			++di)
 		{
 			// Вот такая ситуация может быть:
 			/*
@@ -216,13 +217,14 @@ void bqSoundMixerImpl::Process()
 			
 			*/
 
-			for (size_t di = soundNode.m_position;
-				di < soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;
-				++di)
+			// Циклы...
+			// 1й - soundNode. Надо работать основываясь на позиции в soundNode.
+			//   проще будет проходиться по звуку.
+			//   Если сунуть цикл с `ci` то в случае множества каналов будет
+			//    необходимо возвращать значение позиции в soundNode.
+			// 2й и 3й - заполняю первый канал, второй и т.д.
+			for (size_t ci = 0; ci < m_channels.m_size; ++ci)
 			{
-				// 1. беру звук
-				// 2. заполняю им текущий канал
-
 				for (size_t i = 0; i < m_bufferSizeForOneChannel; ++i)
 				{
 
