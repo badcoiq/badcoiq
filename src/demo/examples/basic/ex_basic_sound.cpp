@@ -88,10 +88,28 @@ bool ExampleBasicsSound::Init()
 
 	m_sound1 = new bqSound();
 	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1_float32_48000_mono.wav");
+	
+	
+	auto ss = bqFramework::GetSoundSystem();
+
+	bqSoundSystemDeviceInfo soundDeviceInfo = ss->GetDeviceInfo();
+	bqLog::Print("Device sample rate (%u)\n", soundDeviceInfo.m_sampleRate);
+	bqLog::Print("Sound sample rate (%u)\n", m_sound1->m_soundBuffer->m_bufferInfo.m_sampleRate);
+	
+	if (soundDeviceInfo.m_sampleRate != m_sound1->m_soundBuffer->m_bufferInfo.m_sampleRate)
+	{
+		bqLog::PrintWarning("Wrong sample rate. Resample.\n");
+
+		if (m_sound1->m_soundBuffer->m_bufferInfo.m_format != bqSoundFormat::float32)
+			m_sound1->m_soundBuffer->Make32bitsFloat();
+
+		m_sound1->m_soundBuffer->Resample(soundDeviceInfo.m_sampleRate);
+	}
+
+
 	//m_sound1->Generate(bqSoundWaveType::sin, 10.f, 440);
 	//m_sound1->Convert(bqSoundFormat::float32_mono_44100);
 
-	auto ss = bqFramework::GetSoundSystem();
 	m_soundObject = ss->SummonObject(m_sound1);
 
 	// Звуковые объекты созданные напрямую звуковым движком

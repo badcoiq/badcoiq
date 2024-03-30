@@ -40,9 +40,10 @@ class bqSoundMixerCallbackDefault : public bqSoundMixerCallback
 public:
 	bqSoundMixerCallbackDefault() {}
 	virtual ~bqSoundMixerCallbackDefault() {}
-	virtual void OnEndMixSound(bqSoundMixerCallback*, bqSound*) {}
-	virtual void OnEndProcess(bqSoundMixerCallback*) {}
-	virtual void OnEndSound(bqSoundMixerCallback*, bqSound*) {}
+	virtual void OnStartProcess() {};
+	virtual void OnEndMixSound(bqSound*) {}
+	virtual void OnEndProcess() {}
+	virtual void OnEndSound(bqSound*) {}
 };
 
 static bqSoundMixerCallbackDefault g_defaultCallback;
@@ -68,7 +69,7 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 	m_dataInfo.m_format = bqSoundFormat::float32; // всё миксуется единым форматом
 	m_dataInfo.m_numOfSamples = m_bufferSizeForOneChannel / m_dataInfo.m_blockSize;
 	m_dataInfo.m_sampleRate = info.m_sampleRate;
-	m_dataInfo.m_time = m_bufferSizeForOneChannel / (m_dataInfo.m_sampleRate * m_dataInfo.m_bytesPerSample);;
+	m_dataInfo.m_time = (float)m_bufferSizeForOneChannel / ((float)m_dataInfo.m_sampleRate * (float)m_dataInfo.m_bytesPerSample);;
 
 	for (uint32_t i = 0; i < channels; ++i)
 	{
@@ -148,7 +149,7 @@ void bqSoundMixerImpl::RemoveSound(bqSound* sound)
 {
 	BQ_ASSERT_ST(sound);
 
-	struct
+	struct _compare
 	{
 		bool operator()(const bqSoundMixerNode& a, const bqSoundMixerNode& b) const
 		{
@@ -161,6 +162,8 @@ void bqSoundMixerImpl::RemoveSound(bqSound* sound)
 	while (m_sounds.erase_first(node, compare));
 }
 
+#include <algorithm>
+
 void bqSoundMixerImpl::RemoveAllSounds()
 {
 	m_sounds.free_memory();
@@ -169,13 +172,17 @@ void bqSoundMixerImpl::RemoveAllSounds()
 void bqSoundMixerImpl::Process()
 {
 	// НАДО ВСЁ ОЧИСТИТЬ
-	for (size_t i = 0; i < m_channels.m_size; ++i)
+	// возможно можно будет убрать или вставить условие чтобы зря не проходиться циклом
+	// так как ниже в большинстве случаев буфер и так будет заполнен значениями
+	/*for (size_t i = 0; i < m_channels.m_size; ++i)
 	{
 		for (size_t ii = 0; ii < m_channels.m_data[i]->m_data.m_dataSize; ++ii)
 		{
 			m_channels.m_data[i]->m_data.m_data[ii] = 0;
 		}
-	}
+	}*/
+
+	m_callback->OnStartProcess();
 
 	for (size_t si = 0; si < m_sounds.m_size; ++si)
 	{
@@ -217,25 +224,49 @@ void bqSoundMixerImpl::Process()
 			
 			*/
 
+
 			// Циклы...
-			// 1й - soundNode. Надо работать основываясь на позиции в soundNode.
+			// 1й - прохожусь по звукам
+			// 2й - soundNode. Надо работать основываясь на позиции в soundNode.
 			//   проще будет проходиться по звуку.
 			//   Если сунуть цикл с `ci` то в случае множества каналов будет
 			//    необходимо возвращать значение позиции в soundNode.
-			// 2й и 3й - заполняю первый канал, второй и т.д.
+			// 3й и 4й - заполняю первый канал, второй и т.д.
 			for (size_t ci = 0; ci < m_channels.m_size; ++ci)
 			{
+				bqSoundBufferData* _channel = &m_channels.m_data[ci]->m_data;
+
+				bqFloat32* float32_data_mixer = (bqFloat32*)_channel->m_data;
+			
+				bqFloat32* float32_data_sound = (bqFloat32*)soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[di];
+				bqFloat32* float32_data_sound_end =
+					(bqFloat32*)soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[
+						soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize];
+
 				for (size_t i = 0; i < m_bufferSizeForOneChannel; ++i)
 				{
+					*float32_data_mixer = *float32_data_sound;
+					++float32_data_mixer;
 
-					...soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[di];
+					float32_data_sound = float32_data_sound 
+						+ (sizeof(bqFloat32) * soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_channels);
 
+					m_callback->OnEndMixSound(soundNode.m_sound);
+
+					if (float32_data_sound >= float32_data_sound_end)
+					{
+						i = m_bufferSizeForOneChannel;
+						ci = m_channels.m_size;
+						m_callback->OnEndSound(soundNode.m_sound);
+					}
 				}
 			}
 			
 		}
 
 	}
+
+	m_callback->OnEndProcess();
 }
 
 void bqSoundMixerImpl::GetSoundBufferInfo(bqSoundBufferInfo& info)

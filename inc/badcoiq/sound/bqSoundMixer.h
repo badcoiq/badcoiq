@@ -90,15 +90,17 @@ class bqSoundMixerCallback
 public:
 	bqSoundMixerCallback() {}
 	virtual ~bqSoundMixerCallback() {}
+	
+	virtual void OnStartProcess() = 0;
 
 	// Когда завершается смешивание звука в общую кучу.
-	virtual void OnEndMixSound(bqSoundMixerCallback*, bqSound*) = 0;
+	virtual void OnEndMixSound(bqSound*) = 0;
 	
 	// Когда прошлись по всем звукам.
-	virtual void OnEndProcess(bqSoundMixerCallback*) = 0;
+	virtual void OnEndProcess() = 0;
 
 	// Когда звук обработан полностью.
-	virtual void OnEndSound(bqSoundMixerCallback*, bqSound*) = 0;
+	virtual void OnEndSound(bqSound*) = 0;
 
 	// Действия миксера примерно такие
 	/*

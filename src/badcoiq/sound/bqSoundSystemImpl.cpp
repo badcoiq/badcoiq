@@ -660,7 +660,7 @@ HRESULT bqWASAPIRenderer::OnSessionDisconnected(AudioSessionDisconnectReason Dis
 //  Called when the default render device changed.  We just want to set an event which lets the stream switch logic know that it's ok to 
 //  continue with the stream switch.
 //
-HRESULT bqWASAPIRenderer::OnDefaultDeviceChanged(EDataFlow Flow, ERole Role, LPCWSTR /*NewDefaultDeviceId*/)
+HRESULT bqWASAPIRenderer::OnDefaultDeviceChanged(EDataFlow /*Flow*/, ERole /*Role*/, LPCWSTR /*NewDefaultDeviceId*/)
 {
 	//if (Flow == eRender && Role == _EndpointRole)
 	//{

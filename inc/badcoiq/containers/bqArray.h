@@ -259,7 +259,7 @@ public:
 	{
 		for (size_t i = 0u; i < m_size; ++i)
 		{
-			if (_cmp(*this, ref)/* m_data[i] == ref*/)
+			if (_cmp(m_data[i], ref)/* m_data[i] == ref*/)
 			{
 				erase(i);
 				return true;
