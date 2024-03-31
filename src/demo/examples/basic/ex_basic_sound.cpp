@@ -92,6 +92,17 @@ bool ExampleBasicsSound::Init()
 	
 	auto ss = bqFramework::GetSoundSystem();
 
+	bqSoundMixer* mixer = ss->CreateMixer(1);
+
+	if (mixer)
+	{
+		mixer->AddSound(m_sound1);
+
+		mixer->Process();
+
+		delete mixer;
+	}
+
 	bqSoundSystemDeviceInfo soundDeviceInfo = ss->GetDeviceInfo();
 	bqLog::Print("Device sample rate (%u)\n", soundDeviceInfo.m_sampleRate);
 	bqLog::Print("Sound sample rate (%u)\n", m_sound1->m_soundBuffer->m_bufferInfo.m_sampleRate);

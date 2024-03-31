@@ -60,6 +60,8 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 	if (channels > 10)
 		channels = 10;
 
+	m_callback = &g_defaultCallback;
+
 	m_bufferSizeForOneChannel = info.m_bufferSize / info.m_channels;
 
 	m_dataInfo.m_bitsPerSample = 32;
@@ -187,11 +189,13 @@ void bqSoundMixerImpl::Process()
 	for (size_t si = 0; si < m_sounds.m_size; ++si)
 	{
 		bqSoundMixerNode& soundNode = m_sounds.m_data[si];
+		
+		size_t soundPosition_next = soundNode.m_position;
 
-		for (size_t di = soundNode.m_position;
+		/*for (size_t di = soundNode.m_position;
 			di < soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;
 			++di)
-		{
+		{*/
 			// Вот такая ситуация может быть:
 			/*
 			* Изобразим графически
@@ -236,20 +240,29 @@ void bqSoundMixerImpl::Process()
 			{
 				bqSoundBufferData* _channel = &m_channels.m_data[ci]->m_data;
 
-				bqFloat32* float32_data_mixer = (bqFloat32*)_channel->m_data;
-			
-				bqFloat32* float32_data_sound = (bqFloat32*)soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[di];
+				uint8_t* dataMixer8 = _channel->m_data;
+				bqFloat32* dataMixer32 = (bqFloat32*)dataMixer8;
+
+				uint8_t* dataSound8 = &soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
+				bqFloat32* dataSound32 = (bqFloat32*)dataSound8;
+
+				/*bqFloat32* float32_data_mixer = (bqFloat32*)_channel->m_data;
+				bqFloat32* float32_data_sound = (bqFloat32*)&soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
 				bqFloat32* float32_data_sound_end =
-					(bqFloat32*)soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[
-						soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize];
+					(bqFloat32*)&soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[
+						soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize];*/
 
-				for (size_t i = 0; i < m_bufferSizeForOneChannel; ++i)
+				size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
+
+				for (size_t i = 0; i < isz; ++i)
 				{
-					*float32_data_mixer = *float32_data_sound;
-					++float32_data_mixer;
+					*dataMixer32 = *dataSound32;// *float32_data_sound;
+					++dataMixer32;
 
-					float32_data_sound = float32_data_sound 
-						+ (sizeof(bqFloat32) * soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_channels);
+
+/*
+					soundPosition_next += sizeof(bqFloat32) * soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_channels;
+					float32_data_sound = (bqFloat32*)&soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundPosition_next];
 
 					m_callback->OnEndMixSound(soundNode.m_sound);
 
@@ -258,11 +271,14 @@ void bqSoundMixerImpl::Process()
 						i = m_bufferSizeForOneChannel;
 						ci = m_channels.m_size;
 						m_callback->OnEndSound(soundNode.m_sound);
-					}
+					}*/
 				}
 			}
 			
-		}
+			soundNode.m_position = soundPosition_next;
+			if (soundNode.m_position >= soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize)
+				soundNode.m_position = 0;
+		//}
 
 	}
 
