@@ -246,18 +246,26 @@ void bqSoundMixerImpl::Process()
 				uint8_t* dataSound8 = &soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
 				bqFloat32* dataSound32 = (bqFloat32*)dataSound8;
 
-				/*bqFloat32* float32_data_mixer = (bqFloat32*)_channel->m_data;
-				bqFloat32* float32_data_sound = (bqFloat32*)&soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
-				bqFloat32* float32_data_sound_end =
-					(bqFloat32*)&soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[
-						soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize];*/
+				// Надо установить указатель dataSound32 на нужный канал
+				...
 
 				size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
 
 				for (size_t i = 0; i < isz; ++i)
 				{
-					*dataMixer32 = *dataSound32;// *float32_data_sound;
+					
+					*dataMixer32 = *dataSound32;
 					++dataMixer32;
+
+					перемещение soundNode.m_position
+					проверка на выход за пределы массива
+						Если вышли то
+							завершаем обработку текущего звука
+							или обрабатываем опять если указан repeat \ loop
+
+					dataSound8 = &soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
+					dataSound32 = (bqFloat32*)dataSound8;
+
 
 
 /*
