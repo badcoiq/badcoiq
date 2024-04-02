@@ -164,8 +164,6 @@ void bqSoundMixerImpl::RemoveSound(bqSound* sound)
 	while (m_sounds.erase_first(node, compare));
 }
 
-#include <algorithm>
-
 void bqSoundMixerImpl::RemoveAllSounds()
 {
 	m_sounds.free_memory();
@@ -247,7 +245,24 @@ void bqSoundMixerImpl::Process()
 				bqFloat32* dataSound32 = (bqFloat32*)dataSound8;
 
 				// Надо установить указатель dataSound32 на нужный канал
-				...
+// если
+// канал миксера может быть например 2
+// звук одноканальный.
+// тогда ничего не делаем так как всё само заполниться
+
+// если 
+// миксер одноканальный, то надо все каналы звука добавлять в этот канал
+// в этом случае необходимо реализовать отдельный метод в виде указателя на метод
+
+// если миксер и звуки многоканальные
+// копируем звук из канала в канал
+// если каналов в миксере больше то каналы не соответствующие каналам звука будут пустыми
+// если каналов у звука больше то эти каналы будут пропущены
+// данный случай будет реализован по умолчанию 
+				if(soundNode.m_sound->m_soundBuffer->m_dataInfo.m_channels > 1)
+{
+
+}
 
 				size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
 
