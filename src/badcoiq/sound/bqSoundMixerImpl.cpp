@@ -187,6 +187,8 @@ void bqSoundMixerImpl::Process()
 	for (size_t si = 0; si < m_sounds.m_size; ++si)
 	{
 		bqSoundMixerNode& soundNode = m_sounds.m_data[si];
+
+auto soundChannelsNum = soundNode.m_sound->m_soundBuffer->m_dataInfo.m_channels;
 		
 		size_t soundPosition_next = soundNode.m_position;
 
@@ -259,9 +261,23 @@ void bqSoundMixerImpl::Process()
 // если каналов в миксере больше то каналы не соответствующие каналам звука будут пустыми
 // если каналов у звука больше то эти каналы будут пропущены
 // данный случай будет реализован по умолчанию 
-				if(soundNode.m_sound->m_soundBuffer->m_dataInfo.m_channels > 1)
+				if(soundChannelsNum > 1)
 {
 
+int ch = 0;
+if(ci < soundChannelsNum)
+// например каналов в звуке 2
+// индекс ci равен 1 когда идёт 2й канал миксера
+{
+ch = ci;
+}
+else
+{
+заглушить текущий канал миксера
+}
+
+dataMixer32 += ch;
+надо проверить арифметику указателя
 }
 
 				size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
