@@ -40,10 +40,10 @@ class bqSoundMixerCallbackDefault : public bqSoundMixerCallback
 public:
 	bqSoundMixerCallbackDefault() {}
 	virtual ~bqSoundMixerCallbackDefault() {}
-	virtual void OnStartProcess() {};
-	virtual void OnEndMixSound(bqSound*) {}
-	virtual void OnEndProcess() {}
-	virtual void OnEndSound(bqSound*) {}
+	virtual void OnStartProcess(bqSoundMixer*) {};
+	virtual void OnEndMixSound(bqSoundMixer*, bqSound*) {}
+	virtual void OnEndProcess(bqSoundMixer*) {}
+	virtual void OnEndSound(bqSoundMixer*, bqSound*) {}
 };
 
 static bqSoundMixerCallbackDefault g_defaultCallback;
@@ -182,15 +182,15 @@ void bqSoundMixerImpl::Process()
 		}
 	}*/
 
-	m_callback->OnStartProcess();
+	m_callback->OnStartProcess(this);
 
 	for (size_t si = 0; si < m_sounds.m_size; ++si)
 	{
 		bqSoundMixerNode& soundNode = m_sounds.m_data[si];
 
-auto soundChannelsNum = soundNode.m_sound->m_soundBuffer->m_dataInfo.m_channels;
+		auto soundChannelsNum = soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_channels;
 		
-		size_t soundPosition_next = soundNode.m_position;
+		//size_t soundPosition_next = soundNode.m_position;
 
 		/*for (size_t di = soundNode.m_position;
 			di < soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;
@@ -238,6 +238,7 @@ auto soundChannelsNum = soundNode.m_sound->m_soundBuffer->m_dataInfo.m_channels;
 			// 3й и 4й - заполняю первый канал, второй и т.д.
 			for (size_t ci = 0; ci < m_channels.m_size; ++ci)
 			{
+				bool makeSilent = false;
 				bqSoundBufferData* _channel = &m_channels.m_data[ci]->m_data;
 
 				uint8_t* dataMixer8 = _channel->m_data;
@@ -247,81 +248,80 @@ auto soundChannelsNum = soundNode.m_sound->m_soundBuffer->m_dataInfo.m_channels;
 				bqFloat32* dataSound32 = (bqFloat32*)dataSound8;
 
 				// Надо установить указатель dataSound32 на нужный канал
-// если
-// канал миксера может быть например 2
-// звук одноканальный.
-// тогда ничего не делаем так как всё само заполниться
+				// если
+				// канал миксера может быть например 2
+				// звук одноканальный.
+				// тогда ничего не делаем так как всё само заполниться
 
-// если 
-// миксер одноканальный, то надо все каналы звука добавлять в этот канал
-// в этом случае необходимо реализовать отдельный метод в виде указателя на метод
+				// если 
+				// миксер одноканальный, то надо все каналы звука добавлять в этот канал
+				// в этом случае необходимо реализовать отдельный метод в виде указателя на метод
 
-// если миксер и звуки многоканальные
-// копируем звук из канала в канал
-// если каналов в миксере больше то каналы не соответствующие каналам звука будут пустыми
-// если каналов у звука больше то эти каналы будут пропущены
-// данный случай будет реализован по умолчанию 
+				// если миксер и звуки многоканальные
+				// копируем звук из канала в канал
+				// если каналов в миксере больше то каналы не соответствующие каналам звука будут пустыми
+				// если каналов у звука больше то эти каналы будут пропущены
+				// данный случай будет реализован по умолчанию 
 				if(soundChannelsNum > 1)
-{
+				{
+					int ch = 0;
+					if(ci < soundChannelsNum)
+					// например каналов в звуке 2
+					// индекс ci равен 1 когда идёт 2й канал миксера
+					{
+						ch = ci;
+					}
+					else
+					{
+						makeSilent = true;
+					}
 
-int ch = 0;
-if(ci < soundChannelsNum)
-// например каналов в звуке 2
-// индекс ci равен 1 когда идёт 2й канал миксера
-{
-ch = ci;
-}
-else
-{
-заглушить текущий канал миксера
-}
-
-dataMixer32 += ch;
-надо проверить арифметику указателя
-}
+					dataSound32 += ch;
+				}
 
 				size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
 
 				for (size_t i = 0; i < isz; ++i)
 				{
 					
-					*dataMixer32 = *dataSound32;
+					if (makeSilent)
+					{
+						*dataMixer32 = 0;
+					}
+					else
+					{
+						*dataMixer32 = *dataSound32;
+					}
 					++dataMixer32;
 
-					перемещение soundNode.m_position
-					проверка на выход за пределы массива
-						Если вышли то
-							завершаем обработку текущего звука
-							или обрабатываем опять если указан repeat \ loop
+					//перемещение soundNode.m_position					
+					soundNode.m_position += soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_blockSize;
+					
+					m_callback->OnEndMixSound(this, soundNode.m_sound);
 
+					//проверка на выход за пределы массива
+					if (soundNode.m_position >= (soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize - 4))
+					{
+						//Если вышли то
+						//	завершаем обработку текущего звука
+
+						m_callback->OnEndSound(this, soundNode.m_sound);
+
+						soundNode.m_position = 0;
+						goto end_sound;
+
+						//	или обрабатываем опять если указан repeat \ loop
+					}
 					dataSound8 = &soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
 					dataSound32 = (bqFloat32*)dataSound8;
 
-
-
-/*
-					soundPosition_next += sizeof(bqFloat32) * soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_channels;
-					float32_data_sound = (bqFloat32*)&soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundPosition_next];
-
-					m_callback->OnEndMixSound(soundNode.m_sound);
-
-					if (float32_data_sound >= float32_data_sound_end)
-					{
-						i = m_bufferSizeForOneChannel;
-						ci = m_channels.m_size;
-						m_callback->OnEndSound(soundNode.m_sound);
-					}*/
 				}
 			}
-			
-			soundNode.m_position = soundPosition_next;
-			if (soundNode.m_position >= soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize)
-				soundNode.m_position = 0;
 		//}
-
+end_sound:;
 	}
 
-	m_callback->OnEndProcess();
+	m_callback->OnEndProcess(this);
 }
 
 void bqSoundMixerImpl::GetSoundBufferInfo(bqSoundBufferInfo& info)

@@ -1,4 +1,4 @@
-#include "badcoiq.h"
+﻿#include "badcoiq.h"
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/input/bqInput.h"
 #include "badcoiq/gs/bqGS.h"
@@ -219,11 +219,48 @@ public:
     BQ_PLACEMENT_ALLOCATOR(TestGUIScrollbar);
 };
 
+class MySoundMixerCallback : public bqSoundMixerCallback
+{
+
+public:
+    MySoundMixerCallback() {}
+    virtual ~MySoundMixerCallback() {}
+
+    virtual void OnStartProcess(bqSoundMixer*)
+    {
+    //    bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+    }
+
+    // Когда завершается смешивание звука в общую кучу.
+    virtual void OnEndMixSound(bqSoundMixer* mixer, bqSound* s)
+    {
+     //   bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+    }
+
+    // Когда прошлись по всем звукам.
+    virtual void OnEndProcess(bqSoundMixer*)
+    {
+     //   bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+    }
+
+    // Когда звук обработан полностью.
+    virtual void OnEndSound(bqSoundMixer* mixer, bqSound* s)
+    {
+       // bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+
+        m_isFinished = true;
+    }
+
+    bool m_isFinished = false;
+};
+
 int main()
 {
 
     bqFrameworkCallbackCB fcb;
     bqFramework::Start(&fcb);
+
+    MySoundMixerCallback mixerCallback;
 
     bqWindowCallbackCB wcb;
     auto window = bqFramework::SummonWindow(&wcb);
@@ -258,7 +295,7 @@ int main()
                 bqFramework::SetMatrix(bqMatrixType::ViewProjection, &ViewProjection);
                 
                 MyModel* model = new MyModel(gs);
-                model->Load(bqFramework::GetPath("../data/1.obj").c_str());
+                model->Load(bqFramework::GetPath("../data/models/1.obj").c_str());
                 
                 bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/image.bmp").c_str());
                 bqTextureInfo ti;
@@ -358,10 +395,27 @@ int main()
 
                 sound7.LoadFromFile("../data/sounds/song1_MakeStereo.wav");
                 sound7.m_soundBuffer->Make32bitsFloat();
-                sound7.m_soundBuffer->Resample(50000);
+                sound7.m_soundBuffer->Resample(48000);
                 sound7.SaveToFile(bqSoundFileType::wav, "../data/sounds/song1_MakeStereo_float32_resampled50000.wav");
                 
-                bqFramework::GetSoundSystem();
+                auto soundSystem = bqFramework::GetSoundSystem();
+                auto mixer = soundSystem->CreateMixer(1);
+                if (mixer)
+                {
+                    mixer->SetCallback(&mixerCallback);
+
+                    mixer->AddSound(&sound7);
+                    
+                    for (int i = 0; i < 8000; ++i)
+                    {
+                        mixer->Process();
+
+                        if (mixerCallback.m_isFinished)
+                            break;
+                    }
+
+                    delete mixer;
+                }
               //  bqFramework::GetSoundSystem()->
                 
                 {
