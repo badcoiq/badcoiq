@@ -116,6 +116,8 @@ public:
 		cb->OnEndProcess();
 	*/
 
+	// Когда буфер миксера заполнен
+	virtual void OnFullBuffer(bqSoundMixer*) = 0;
 };
 
 #endif

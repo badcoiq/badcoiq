@@ -32,39 +32,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/math/bqMath.h"
 #include "badcoiq/common/bqFileBuffer.h"
 
-//class bqSoundBlock
-//{
-//	float * m_data = 0;
-//	uint32_t m_channels = 1;
-//public:
-//	bqSoundBlock(uint32_t channels)
-//	{
-//		if (channels == 0)
-//			channels = 1;
-//		m_channels = channels;
-//
-//		m_data = (float*)bqMemory::calloc(sizeof(float) * channels);
-//	}
-//
-//	~bqSoundBlock()
-//	{
-//		if (m_data)
-//			bqMemory::free(m_data);
-//	}
-//
-//	void MakeZero()
-//	{
-//		for (uint32_t i = 0; i < m_channels; ++i)
-//		{
-//			m_data[i] = 0;
-//		}
-//	}
-//
-//	void FromUint8(uint8_t* other, uint32_t ch)
-//	{
-//	}
-//};
-
 template <typename _type>
 class bqSoundSample
 {
@@ -640,14 +607,37 @@ void bqSound::Clear()
 void bqSound::Create(float time,
 	uint32_t channels,
 	uint32_t sampleRate,
-	uint32_t bitsPerSample)
+	bqSoundFormat format)
 {
 	Clear();
 
 	bqSoundBuffer* newSound = new bqSoundBuffer;
 	newSound->m_bufferInfo.m_channels = channels;
 	newSound->m_bufferInfo.m_sampleRate = sampleRate;
-	newSound->m_bufferInfo.m_bitsPerSample = bitsPerSample;
+
+	switch (format)
+	{
+	case bqSoundFormat::uint8:
+		newSound->m_bufferInfo.m_bitsPerSample = 8;
+		break;
+	case bqSoundFormat::int16:
+		newSound->m_bufferInfo.m_bitsPerSample = 16;
+		break;
+	case bqSoundFormat::int24:
+		newSound->m_bufferInfo.m_bitsPerSample = 24;
+		break;
+	case bqSoundFormat::int32:
+	case bqSoundFormat::float32:
+		newSound->m_bufferInfo.m_bitsPerSample = 32;
+		break;
+	default:
+	case bqSoundFormat::unsupported:
+		bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
+		newSound->m_bufferInfo.m_bitsPerSample = 32;
+		format = bqSoundFormat::float32;
+		break;
+	}
+
 	newSound->m_bufferInfo.m_bytesPerSample = newSound->m_bufferInfo.m_bitsPerSample / 8;
 	newSound->m_bufferInfo.m_blockSize = newSound->m_bufferInfo.m_bytesPerSample * newSound->m_bufferInfo.m_channels;
 	newSound->m_bufferInfo.m_time = time;
@@ -662,8 +652,6 @@ void bqSound::Create(float time,
 	newSound->m_bufferData.m_dataSize *= newSound->m_bufferInfo.m_channels;
 
 	newSound->m_bufferData.m_data = (uint8_t*)bqMemory::malloc(newSound->m_bufferData.m_dataSize);
-
-//	newSound->m_format = bqSoundFormatFindFormat(newSound->m_bufferInfo);
 
 	m_soundBuffer = newSound;
 }
@@ -742,11 +730,11 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 					summReal += float_data[o];
 				}break;
 
-				case bqSoundFormat::float64:
+				/*case bqSoundFormat::float64:
 				{
 					bqFloat64* float_data = (bqFloat64*)src_block;
 					summReal += float_data[o];
-				}break;
+				}break;*/
 				default:
 					bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
 					break;
@@ -807,11 +795,11 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 					*float_data = (bqFloat32)avgReal;
 				}break;
 
-				case bqSoundFormat::float64:
+				/*case bqSoundFormat::float64:
 				{
 					bqFloat64* float_data = (bqFloat64*)dst_block;
 					*float_data = (bqFloat64)avgReal;
-				}break;
+				}break;*/
 
 				default:
 					bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
@@ -881,9 +869,9 @@ void bqSoundBuffer::Make8bits()
 					dst_8bit[o] = bqSoundLab::SampleTo8bit(_32bitFloat[o]);
 					break;
 
-				case bqSoundFormat::float64:
+				/*case bqSoundFormat::float64:
 					dst_8bit[o] = bqSoundLab::SampleTo8bit(_64bitFloat[o]);
-					break;
+					break;*/
 
 				default:
 					bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
@@ -958,9 +946,9 @@ void bqSoundBuffer::Make16bits()
 					dst_16bit[o] = bqSoundLab::SampleTo16bit(_32bitFloat[o]);
 					break;
 
-				case bqSoundFormat::float64:
+				/*case bqSoundFormat::float64:
 					dst_16bit[o] = bqSoundLab::SampleTo16bit(_64bitFloat[o]);
-					break;
+					break;*/
 
 				default:
 					bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
@@ -1035,9 +1023,9 @@ void bqSoundBuffer::Make32bitsFloat()
 					dst_32bit[o] = _32bitFloat[o];
 					break;
 
-				case bqSoundFormat::float64:
+				/*case bqSoundFormat::float64:
 					dst_32bit[o] = bqSoundLab::SampleTo32bitFloat(_64bitFloat[o]);
-					break;
+					break;*/
 
 				default:
 					bqLog::PrintError("Need implementation! %s %i\n", BQ_FUNCTION, BQ_LINE);
@@ -1072,7 +1060,7 @@ void bqSound::Generate(
 	
 	if (time > 0.f)
 	{
-		Create(time, 1, 44100, 16);
+		Create(time, 1, 44100, bqSoundFormat::int16);
 
 		double samplesPerWave = (double)m_soundBuffer->m_bufferInfo.m_sampleRate / Hz;
 		double angle = 0.f;
@@ -1441,8 +1429,8 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 				else if (format == bqSoundFormat::float32)
 				{
 					// возможно можно определить так
-					if (bitsPerSample == 64)
-						format = bqSoundFormat::float64;
+					//if (bitsPerSample == 64)
+					//	format = bqSoundFormat::float64;
 				}
 
 				if (FMTChunkSize > 16)
@@ -1532,7 +1520,7 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 						{
 
 
-							Create(0.1f, channels, sampleRate, bitsPerSample);
+							Create(0.1f, channels, sampleRate, format);
 							if (m_soundBuffer->m_bufferData.m_dataSize < dataSize)
 								_reallocate(dataSize);
 
@@ -1571,10 +1559,6 @@ float bqSound::CalculateTime()
 			
 			// правильно ли то что количество сэмплов == количеству блоков?
 			m_soundBuffer->m_bufferInfo.m_numOfSamples = numOfBlocks;
-			
-			// может быть блок может состоять из 2х и более сэмплов?
-			//m_soundBuffer->m_bufferInfo.m_numOfSamples = numOfBlocks * m_soundBuffer->m_bufferInfo.m_channels;
-			// скорее всего нет...
 			
 			// старое
 			//m_soundBuffer->m_bufferInfo.m_time = 1.f / m_soundBuffer->m_bufferInfo.m_sampleRate;
@@ -1802,4 +1786,57 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 			}
 		}
 	}
+}
+
+void bqSound::Append(bqSoundBuffer* buffer)
+{
+	BQ_ASSERT_ST(buffer);
+	BQ_ASSERT_ST(buffer->m_bufferData.m_data);
+
+	if (buffer)
+	{
+		if (buffer->m_bufferData.m_data)
+		{
+			Append(&buffer->m_bufferData, &buffer->m_bufferInfo);
+		}
+	}
+}
+
+void bqSound::Append(bqSoundBufferData* data, bqSoundBufferInfo* info)
+{
+	BQ_ASSERT_ST(data);
+	BQ_ASSERT_ST(info);
+
+	if (!m_soundBuffer)
+	{
+		Create(0.0001, info->m_channels, info->m_sampleRate, info->m_format);
+	}
+
+	if (info->m_format != m_soundBuffer->m_bufferInfo.m_format)
+	{
+		return;
+	}
+
+	if (info->m_channels != m_soundBuffer->m_bufferInfo.m_channels)
+	{
+		return;
+	}
+
+	if (info->m_sampleRate != m_soundBuffer->m_bufferInfo.m_sampleRate)
+	{
+		return;
+	}
+
+	uint32_t newDataSize = m_soundBuffer->m_bufferData.m_dataSize + data->m_dataSize;
+	uint8_t* newData = (uint8_t*)bqMemory::malloc(newDataSize);
+
+	memcpy(newData, m_soundBuffer->m_bufferData.m_data, m_soundBuffer->m_bufferData.m_dataSize);
+	memcpy(&newData[m_soundBuffer->m_bufferData.m_dataSize], data->m_data, data->m_dataSize);
+
+	bqMemory::free(m_soundBuffer->m_bufferData.m_data);
+
+	m_soundBuffer->m_bufferData.m_data = newData;
+	m_soundBuffer->m_bufferData.m_dataSize = newDataSize;
+
+	CalculateTime();
 }

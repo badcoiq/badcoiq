@@ -57,23 +57,21 @@ enum class bqSoundFormat
 	int24,
 	int32,
 	float32,
-	float64,
+	//float64,
 	unsupported
 };
 
-//bqSoundFormat bqSoundFormatFindFormat(const bqSoundBufferInfo&);
-
-
+// по умолчанию звук формата float
 struct bqSoundBufferInfo
 {
-	bqSoundFormat m_format = bqSoundFormat::int16;
+	bqSoundFormat m_format = bqSoundFormat::float32;
 
 	// всё должно быть вычислено правильно.
 	// используется в генерации, конвертации и эффектах
 
 	uint32_t m_sampleRate = 44100;
 	uint32_t m_channels = 1;
-	uint32_t m_bitsPerSample = 16;
+	uint32_t m_bitsPerSample = 32;
 
 	float m_time = 0.f;
 	
@@ -82,9 +80,10 @@ struct bqSoundBufferInfo
 								// при проигрывании имеем столько-то сэмплов 
 								// сколько и каналов, но переменная m_numOfSamples
 								// отвечает только за 1 канал, как и m_sampleRate.
-								
-	// Тогда количество сэмплов это размер данных делёная на размер 1го сэмпла
-	//m_info.m_numOfSamples = dataSize / m_blockSize;
+	// количество самплов есть количество блоков
+	//uint32_t numOfBlocks = m_soundBuffer->m_bufferData.m_dataSize / m_soundBuffer->m_bufferInfo.m_blockSize;
+	// на основе времени
+	// newSound->m_bufferInfo.m_numOfSamples = (uint32_t)ceil((float)newSound->m_bufferInfo.m_sampleRate * time);
 
 	uint32_t m_bytesPerSample = 0; // m_bitsPerSample / 8;
 	
@@ -139,11 +138,11 @@ public:
 	// time - время, должно быть больше 0
 	// channels - 1 моно, 2 стерео, но можно указывать и более, только тогда хрен это проиграть
 	// sampleRate - желательно 44100. тоже как channels, можно указать иное значение, но наверно не проиграть
-	// bitsPerSample - количество бит на сэмпл. 8, 16. можно указать иное значение
+	// format - format
 	// метод просто выделяет память и вычисляет остальные значения для bqSoundSource
 	//       поэтому можно указывать почти любые значения, но для воспроизведения нужны правильные
-	//       значения. channels 1/2; sampleRate 44100; bitsPerSample 16
-	void Create(float time, uint32_t channels, uint32_t sampleRate, uint32_t bitsPerSample);
+	//       значения. channels 1/2; sampleRate 44100; format bqSoundFormat::float32
+	void Create(float time, uint32_t channels, uint32_t sampleRate, bqSoundFormat format);
 
 	// loudness - громкость, от 0 до 1
 	void Generate(bqSoundWaveType, float time, uint32_t frequency, float loudness = 0.5f);
@@ -161,6 +160,9 @@ public:
 
 	// Вычислить время по битрейту и прочим параметрам
 	float CalculateTime();
+
+	void Append(bqSoundBuffer*);
+	void Append(bqSoundBufferData*, bqSoundBufferInfo*);
 
 	bqSoundBuffer* m_soundBuffer = 0;
 };

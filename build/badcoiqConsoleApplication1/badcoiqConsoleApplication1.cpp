@@ -221,10 +221,18 @@ public:
 
 class MySoundMixerCallback : public bqSoundMixerCallback
 {
-
+    bqSound* m_sound = 0;
 public:
-    MySoundMixerCallback() {}
-    virtual ~MySoundMixerCallback() {}
+    MySoundMixerCallback() 
+    {
+        m_sound = new bqSound();
+        m_sound->Convert(bqSoundFormat::float32);
+    }
+
+    virtual ~MySoundMixerCallback() 
+    {
+        if (m_sound) delete m_sound;
+    }
 
     virtual void OnStartProcess(bqSoundMixer*)
     {
@@ -234,7 +242,9 @@ public:
     // Когда завершается смешивание звука в общую кучу.
     virtual void OnEndMixSound(bqSoundMixer* mixer, bqSound* s)
     {
-     //   bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+      //  bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+
+        
     }
 
     // Когда прошлись по всем звукам.
@@ -246,9 +256,25 @@ public:
     // Когда звук обработан полностью.
     virtual void OnEndSound(bqSoundMixer* mixer, bqSound* s)
     {
-       // bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+        bqLog::PrintInfo("%s\n", BQ_FUNCTION);
 
         m_isFinished = true;
+        m_sound->SaveToFile(bqSoundFileType::wav, "test.wav");
+    }
+
+    virtual void OnFullBuffer(bqSoundMixer* mixer)
+    {
+        //   bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+
+        if (mixer)
+        {
+            if (mixer->GetNumOfChannels())
+            {
+                bqSoundBufferInfo inf;
+                mixer->GetSoundBufferInfo(inf);
+                m_sound->Append(mixer->GetChannel(0), &inf);
+            }
+        }
     }
 
     bool m_isFinished = false;
@@ -382,7 +408,7 @@ int main()
                 sound2.Generate(bqSoundWaveType::square, time, Hz, loudness);
                 sound3.Generate(bqSoundWaveType::triangle, time, Hz, loudness);
                 sound4.Generate(bqSoundWaveType::saw, time, Hz, loudness);
-                sound5.Create(1.f, 2, 44100, 16);
+                sound5.Create(1.f, 2, 44100, bqSoundFormat::int16);
 
               //  sound2.SaveToFile(bqSoundFileType::wav, "square.wav");
               //  sound3.SaveToFile(bqSoundFileType::wav, "triangle.wav");
@@ -393,7 +419,7 @@ int main()
                 sound6.m_soundBuffer->Resample(100000);
                 sound6.SaveToFile(bqSoundFileType::wav, "../data/sounds/alien_beacon44100_float_resample_100000.wav");
 
-                sound7.LoadFromFile("../data/sounds/song1_MakeStereo.wav");
+                sound7.LoadFromFile("../data/sounds/industrial1.wav");
                 sound7.m_soundBuffer->Make32bitsFloat();
                 sound7.m_soundBuffer->Resample(48000);
                 sound7.SaveToFile(bqSoundFileType::wav, "../data/sounds/song1_MakeStereo_float32_resampled50000.wav");

@@ -44,6 +44,7 @@ public:
 	virtual void OnEndMixSound(bqSoundMixer*, bqSound*) {}
 	virtual void OnEndProcess(bqSoundMixer*) {}
 	virtual void OnEndSound(bqSoundMixer*, bqSound*) {}
+	virtual void OnFullBuffer(bqSoundMixer*) {}
 };
 
 static bqSoundMixerCallbackDefault g_defaultCallback;
@@ -297,6 +298,8 @@ void bqSoundMixerImpl::Process()
 					//перемещение soundNode.m_position					
 					soundNode.m_position += soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_blockSize;
 					
+					//printf("POS: %i | %i\n", soundNode.m_position, soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize);
+
 					m_callback->OnEndMixSound(this, soundNode.m_sound);
 
 					//проверка на выход за пределы массива
@@ -314,8 +317,9 @@ void bqSoundMixerImpl::Process()
 					}
 					dataSound8 = &soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
 					dataSound32 = (bqFloat32*)dataSound8;
-
 				}
+				
+				m_callback->OnFullBuffer(this);
 			}
 		//}
 end_sound:;
