@@ -319,6 +319,7 @@ void bqSoundMixerImpl::Process()
 					dataSound32 = (bqFloat32*)dataSound8;
 				}
 				
+				_processEffects(ci);
 				m_callback->OnFullBuffer(this);
 			}
 		//}
@@ -326,6 +327,21 @@ end_sound:;
 	}
 
 	m_callback->OnEndProcess(this);
+}
+
+void bqSoundMixerImpl::_processEffects(int channel)
+{
+	auto channelData = GetChannel(channel);
+
+	auto curr = m_effects.m_head;
+	auto end = m_effects.m_head->m_left;
+	while(true)
+	{
+		curr->m_data->Process(channelData, &this->m_dataInfo);
+		curr = curr->m_right;
+		if (curr == end)
+			break;
+	}
 }
 
 void bqSoundMixerImpl::GetSoundBufferInfo(bqSoundBufferInfo& info)
@@ -360,4 +376,9 @@ void bqSoundMixerImpl::SetCallback(bqSoundMixerCallback* cb)
 	{
 		m_callback = &g_defaultCallback;
 	}
+}
+
+bqList<bqSoundEffect*>* bqSoundMixerImpl::GetEffects()
+{
+	return &m_effects;
 }

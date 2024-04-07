@@ -56,6 +56,8 @@ public:
 	// Убрать все эффекты
 	virtual void RemoveAllEffects() = 0;
 
+	virtual bqList<bqSoundEffect*>* GetEffects() = 0;
+
 	// Добавить звук. Добавляется множество раз.
 	// Звук должен быть формата float32
 	virtual void AddSound(bqSound*) = 0;

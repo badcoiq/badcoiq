@@ -149,7 +149,8 @@ public:
 	virtual bqSoundStreamObject* SummonStreamObject(const char*) override;
 	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() override;
-	virtual bqSoundMixer* CreateMixer(uint32_t channels) override;
+	virtual bqSoundMixer* SummonMixer(uint32_t channels) override;
+	virtual bqSoundEffectVolume* SummonEffectVolume() override;
 };
 
 #endif

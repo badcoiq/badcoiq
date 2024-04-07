@@ -60,5 +60,23 @@ float bqSoundEffectVolumeImpl::GetVolume()
 void bqSoundEffectVolumeImpl::Process(bqSoundBuffer* v)
 {
 	BQ_ASSERT_ST(v);
+	Process(&v->m_bufferData, &v->m_bufferInfo);
 }
 
+void bqSoundEffectVolumeImpl::Process(bqSoundBufferData* data, bqSoundBufferInfo* info)
+{
+	BQ_ASSERT_ST(data);
+	BQ_ASSERT_ST(info);
+
+	if (info->m_format == bqSoundFormat::float32)
+	{
+		bqFloat32* data32 = (bqFloat32*)data->m_data;
+		uint32_t dataSize = data->m_dataSize / sizeof(bqFloat32);
+
+		for (uint32_t i = 0; i < dataSize; ++i)
+		{
+			*data32 *= m_volume;
+			++data32;
+		}
+	}
+}

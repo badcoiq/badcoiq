@@ -70,7 +70,9 @@ public:
 	// Создать миксер. 
 	// Параметры будут как GetDeviceInfo()
 	// Нужно только указать количество каналов.
-	virtual bqSoundMixer* CreateMixer(uint32_t channels) = 0;
+	virtual bqSoundMixer* SummonMixer(uint32_t channels) = 0;
+	
+	virtual bqSoundEffectVolume* SummonEffectVolume() = 0;
 };
 
 #endif

@@ -92,7 +92,7 @@ bool ExampleBasicsSound::Init()
 	
 	auto ss = bqFramework::GetSoundSystem();
 
-	bqSoundMixer* mixer = ss->CreateMixer(1);
+	bqSoundMixer* mixer = ss->SummonMixer(1);
 
 	if (mixer)
 	{

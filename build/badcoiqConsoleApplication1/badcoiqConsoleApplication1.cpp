@@ -240,11 +240,33 @@ public:
     }
 
     // Когда завершается смешивание звука в общую кучу.
-    virtual void OnEndMixSound(bqSoundMixer* mixer, bqSound* s)
+    virtual void OnEndMixSound(bqSoundMixer* mixer, bqSound*)
     {
       //  bqLog::PrintInfo("%s\n", BQ_FUNCTION);
 
-        
+        auto effects = mixer->GetEffects();
+
+        static float angle = 0.0f;
+        float s = sinf(angle);
+
+        auto curr = effects->m_head;
+        auto end = effects->m_head->m_left;
+        while (true)
+        {
+            bqSoundEffectVolume* effect = dynamic_cast<bqSoundEffectVolume*>(curr->m_data);
+            if (effect)
+            {
+                effect->SetVolume(s);
+            }
+
+            curr = curr->m_right;
+            if (curr == end)
+                break;
+        }
+
+        angle += 0.0005f;
+        if (angle > PIf)
+            angle = 0.f;
     }
 
     // Когда прошлись по всем звукам.
@@ -259,7 +281,7 @@ public:
         bqLog::PrintInfo("%s\n", BQ_FUNCTION);
 
         m_isFinished = true;
-        m_sound->SaveToFile(bqSoundFileType::wav, "test.wav");
+        m_sound->SaveToFile(bqSoundFileType::wav, "test_aftereffect.wav");
     }
 
     virtual void OnFullBuffer(bqSoundMixer* mixer)
@@ -425,12 +447,16 @@ int main()
                 sound7.SaveToFile(bqSoundFileType::wav, "../data/sounds/song1_MakeStereo_float32_resampled50000.wav");
                 
                 auto soundSystem = bqFramework::GetSoundSystem();
-                auto mixer = soundSystem->CreateMixer(1);
+                auto mixer = soundSystem->SummonMixer(1);
                 if (mixer)
                 {
                     mixer->SetCallback(&mixerCallback);
 
                     mixer->AddSound(&sound7);
+
+                    bqSoundEffectVolume* sfx_volume = soundSystem->SummonEffectVolume();
+                    sfx_volume->SetVolume(0.1f);
+                    mixer->AddEffect(sfx_volume);
                     
                     for (int i = 0; i < 8000; ++i)
                     {
@@ -440,6 +466,7 @@ int main()
                             break;
                     }
 
+                    delete sfx_volume;
                     delete mixer;
                 }
               //  bqFramework::GetSoundSystem()->

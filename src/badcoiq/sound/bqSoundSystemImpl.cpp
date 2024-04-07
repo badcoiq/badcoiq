@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bqSoundObjectImpl.h"
 #include "bqSoundSystemImpl.h"
 #include "bqSoundMixerImpl.h"
+#include "bqSoundEffectVolumeImpl.h"
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
@@ -57,12 +58,16 @@ bqSoundSystemDeviceInfo bqSoundSystemImpl::GetDeviceInfo()
 	return m_deviceInfo;
 }
 
-bqSoundMixer* bqSoundSystemImpl::CreateMixer(uint32_t channels)
+bqSoundMixer* bqSoundSystemImpl::SummonMixer(uint32_t channels)
 {
 	bqSoundMixerImpl* newMixer = new bqSoundMixerImpl(channels, m_deviceInfo);
-
-
 	return newMixer;
+}
+
+bqSoundEffectVolume* bqSoundSystemImpl::SummonEffectVolume()
+{
+	bqSoundEffectVolumeImpl* newEffect = new bqSoundEffectVolumeImpl();
+	return newEffect;
 }
 
 //

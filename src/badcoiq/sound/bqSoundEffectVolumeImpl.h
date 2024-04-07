@@ -42,6 +42,7 @@ public:
 	virtual float GetVolume() override;
 
 	virtual void Process(bqSoundBuffer*) override;
+	virtual void Process(bqSoundBufferData*, bqSoundBufferInfo*) override;
 };
 
 #endif

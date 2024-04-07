@@ -77,6 +77,7 @@ class bqSoundMixerImpl : public bqSoundMixer
 
 	bqSoundMixerCallback* m_callback = 0;
 
+	void _processEffects(int channel);
 public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundMixer);
 	
@@ -86,6 +87,7 @@ public:
 	virtual void AddEffect(bqSoundEffect*) override;
 	virtual void RemoveEffect(bqSoundEffect*) override;
 	virtual void RemoveAllEffects() override;
+	virtual bqList<bqSoundEffect*>* GetEffects() override;
 
 	virtual void AddSound(bqSound*) override;
 	virtual void RemoveSound(bqSound*) override;

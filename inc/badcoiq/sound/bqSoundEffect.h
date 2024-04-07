@@ -39,6 +39,7 @@ public:
 	virtual ~bqSoundEffect(){}
 
 	virtual void Process(bqSoundBuffer*) = 0;
+	virtual void Process(bqSoundBufferData*, bqSoundBufferInfo*) = 0;
 };
 
 #include "bqSoundEffectVolume.h"
