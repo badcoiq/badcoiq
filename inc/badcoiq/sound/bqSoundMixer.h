@@ -95,6 +95,12 @@ public:
 
 	// Если обработка не игнорируется то вернётся true
 	virtual bool IsProcessing() = 0;
+
+	// так-же можно использовать звук из других миксеров
+	virtual void AddMixer(bqSoundMixer*) = 0;
+	virtual void RemoveMixer(bqSoundMixer*) = 0;
+	virtual void RemoveAllMixers() = 0;
+
 };
 
 class bqSoundMixerCallback
