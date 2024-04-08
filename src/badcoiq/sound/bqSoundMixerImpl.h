@@ -65,6 +65,7 @@ struct bqSoundMixerNode
 class bqSoundMixerImpl : public bqSoundMixer
 {
 	bqArray<bqSoundMixerNode> m_sounds;
+	bqArray<bqSoundMixer*> m_mixers;
 	bqList<bqSoundEffect*> m_effects;
 
 	uint32_t m_bufferSizeForOneChannel = 0;
@@ -78,6 +79,8 @@ class bqSoundMixerImpl : public bqSoundMixer
 	bqSoundMixerCallback* m_callback = 0;
 
 	void _processEffects(int channel);
+
+	bool m_useProcessing = true;
 public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundMixer);
 	
@@ -100,5 +103,11 @@ public:
 	virtual bqSoundBufferData* GetChannel(uint32_t) override;
 	virtual void SetCallback(bqSoundMixerCallback*) override;
 
+	virtual void UseProcessing(bool) override;
+	virtual bool IsProcessing() override;
+
+	virtual void AddMixer(bqSoundMixer*) override;
+	virtual void RemoveMixer(bqSoundMixer*) override;
+	virtual void RemoveAllMixers() override;
 };
 #endif

@@ -85,6 +85,16 @@ public:
 	virtual bqSoundBufferData* GetChannel(uint32_t) = 0;
 
 	virtual void SetCallback(bqSoundMixerCallback*) = 0;
+
+	// Установить, будет ли работать метод Process.
+	// По умолчанию уже установлено true.
+	// Если false то метод Process будет игнорироваться,
+	// а другие миксеры будут игнорировать использование этого миксера.
+	// Воспроизведение движком будет тоже игнорироваться.
+	virtual void UseProcessing(bool) = 0;
+
+	// Если обработка не игнорируется то вернётся true
+	virtual bool IsProcessing() = 0;
 };
 
 class bqSoundMixerCallback

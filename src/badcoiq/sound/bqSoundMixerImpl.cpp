@@ -172,6 +172,9 @@ void bqSoundMixerImpl::RemoveAllSounds()
 
 void bqSoundMixerImpl::Process()
 {
+	if (!m_useProcessing)
+		return;
+
 	// НАДО ВСЁ ОЧИСТИТЬ
 	// возможно можно будет убрать или вставить условие чтобы зря не проходиться циклом
 	// так как ниже в большинстве случаев буфер и так будет заполнен значениями
@@ -382,3 +385,29 @@ bqList<bqSoundEffect*>* bqSoundMixerImpl::GetEffects()
 {
 	return &m_effects;
 }
+
+void bqSoundMixerImpl::UseProcessing(bool v)
+{
+	m_useProcessing = v;
+}
+
+bool bqSoundMixerImpl::IsProcessing()
+{
+	return m_useProcessing;
+}
+
+void bqSoundMixerImpl::AddMixer(bqSoundMixer* mixer)
+{
+	m_mixers.push_back(mixer);
+}
+
+void bqSoundMixerImpl::RemoveMixer(bqSoundMixer* mixer)
+{
+	while (m_mixers.erase_first(mixer));
+}
+
+void bqSoundMixerImpl::RemoveAllMixers()
+{
+	m_mixers.clear();
+}
+
