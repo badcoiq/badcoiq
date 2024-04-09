@@ -194,8 +194,6 @@ void bqSoundMixerImpl::Process()
 
 		auto soundChannelsNum = soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_channels;
 		
-		//size_t soundPosition_next = soundNode.m_position;
-
 		/*for (size_t di = soundNode.m_position;
 			di < soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;
 			++di)
@@ -329,6 +327,17 @@ void bqSoundMixerImpl::Process()
 end_sound:;
 	}
 
+
+	// добавить буферы из других миксеров будет проще
+	// размеры у всех одинаковые
+	// надо только будет распределять каналы
+	for (size_t mi = 0; mi < m_mixers.m_size; ++mi)
+	{
+		auto mixer = m_mixers.m_data[mi];
+
+		mixer->
+	}
+
 	m_callback->OnEndProcess(this);
 }
 
@@ -398,11 +407,13 @@ bool bqSoundMixerImpl::IsProcessing()
 
 void bqSoundMixerImpl::AddMixer(bqSoundMixer* mixer)
 {
+	BQ_ASSERT_ST(mixer);
 	m_mixers.push_back(mixer);
 }
 
 void bqSoundMixerImpl::RemoveMixer(bqSoundMixer* mixer)
 {
+	BQ_ASSERT_ST(mixer);
 	while (m_mixers.erase_first(mixer));
 }
 
@@ -410,4 +421,3 @@ void bqSoundMixerImpl::RemoveAllMixers()
 {
 	m_mixers.clear();
 }
-
