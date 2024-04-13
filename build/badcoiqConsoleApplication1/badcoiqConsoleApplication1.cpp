@@ -256,7 +256,7 @@ public:
             bqSoundEffectVolume* effect = dynamic_cast<bqSoundEffectVolume*>(curr->m_data);
             if (effect)
             {
-                effect->SetVolume(s);
+    //            effect->SetVolume(s);
             }
 
             curr = curr->m_right;
@@ -270,9 +270,21 @@ public:
     }
 
     // Когда прошлись по всем звукам.
-    virtual void OnEndProcess(bqSoundMixer*)
+    virtual void OnEndProcess(bqSoundMixer* mixer)
     {
      //   bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+
+        if (mixer)
+        {
+            if (mixer->GetNumOfChannels())
+            {
+                bqSoundBufferInfo inf;
+                mixer->GetSoundBufferInfo(inf);
+                m_sound->Append(mixer->GetChannel(0), &inf);
+            }
+
+           
+        }
     }
 
     // Когда звук обработан полностью.
@@ -288,15 +300,7 @@ public:
     {
         //   bqLog::PrintInfo("%s\n", BQ_FUNCTION);
 
-        if (mixer)
-        {
-            if (mixer->GetNumOfChannels())
-            {
-                bqSoundBufferInfo inf;
-                mixer->GetSoundBufferInfo(inf);
-                m_sound->Append(mixer->GetChannel(0), &inf);
-            }
-        }
+       
     }
 
     bool m_isFinished = false;
@@ -422,6 +426,7 @@ int main()
                 bqSound sound5;
                 bqSound sound6;
                 bqSound sound7;
+                bqSound sound8;
                 uint32_t Hz = 440;
 
                 float time = 0.5f;
@@ -441,10 +446,16 @@ int main()
                 sound6.m_soundBuffer->Resample(100000);
                 sound6.SaveToFile(bqSoundFileType::wav, "../data/sounds/alien_beacon44100_float_resample_100000.wav");
 
-                sound7.LoadFromFile("../data/sounds/industrial1.wav");
+                sound7.LoadFromFile("../data/sounds/Jimbo's_Lullaby_float32_stereo.wav");
                 sound7.m_soundBuffer->Make32bitsFloat();
+                sound7.m_soundBuffer->MakeMono(0);
                 sound7.m_soundBuffer->Resample(48000);
-                sound7.SaveToFile(bqSoundFileType::wav, "../data/sounds/song1_MakeStereo_float32_resampled50000.wav");
+                sound7.SaveToFile(bqSoundFileType::wav, "../data/sounds/Jimbo's_Lullaby_float32_stereo_MONORESAMPLED48000.wav");
+
+                sound8.LoadFromFile("../data/sounds/flute.wav");
+                sound8.m_soundBuffer->Make32bitsFloat();
+                sound8.m_soundBuffer->MakeMono(0);
+                sound8.m_soundBuffer->Resample(48000);
                 
                 auto soundSystem = bqFramework::GetSoundSystem();
                 auto mixer = soundSystem->SummonMixer(1);
@@ -453,6 +464,7 @@ int main()
                     mixer->SetCallback(&mixerCallback);
 
                     mixer->AddSound(&sound7);
+                    mixer->AddSound(&sound8);
 
                     bqSoundEffectVolume* sfx_volume = soundSystem->SummonEffectVolume();
                     sfx_volume->SetVolume(0.1f);

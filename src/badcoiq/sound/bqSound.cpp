@@ -480,8 +480,8 @@ float bqSoundLab::_8_to_32(uint8_t v)
 // 32767    2
 float bqSoundLab::_16_to_32(int16_t v)
 {
-	const double m = 0.0000305185094759971922971282;// 1:32767
-	float r = ((double)v * m);
+	const float m = 0.0000305185094759971922971282;// 1:32767
+	float r = ((float)v * m);
 	if (r < -1.f)
 		r = -1.f;
 	if (r > 1.f)
@@ -1449,96 +1449,180 @@ bool bqSound::_loadWav(uint8_t* buffer, uint32_t bufferSz)
 					}
 				}
 
-				if (TYPE != 1)
+				while (!file.Eof())
 				{
-					char fact[5] = { 0,0,0,0,0 };
-					file.Read(fact, 4);
-					if (strcmp(fact, "fact") == 0)
-					{
-						uint32_t factcksize = 0;
-						file.Read(&factcksize, 4);
-						if(factcksize < 4)
-							return false;
+					char chunkName[5] = { 0,0,0,0,0 };
+					file.Read(chunkName, 4);
 
-						// на каждый канал.
-						// наверное Chunk size и содержит размер с учётом количества каналов
-						// поэтому получаю это количество через factcksize / 4
-						for (uint32_t i = 0, sz = factcksize / 4; i < sz; ++i)
+					if (TYPE != 1)
+					{
+						if (strcmp(chunkName, "fact") == 0)
 						{
-							uint32_t factdwSampleLength = 0;
-							file.Read(&factdwSampleLength, 4);
-						}
+							uint32_t factcksize = 0;
+							file.Read(&factcksize, 4);
+							if (factcksize < 4)
+								return false;
 
+							// на каждый канал.
+							// наверное Chunk size и содержит размер с учётом количества каналов
+							// поэтому получаю это количество через factcksize / 4
+							for (uint32_t i = 0, sz = factcksize / 4; i < sz; ++i)
+							{
+								uint32_t factdwSampleLength = 0;
+								file.Read(&factdwSampleLength, 4);
+							}
+						}
 					}
-					else
+
+					// возможно есть PEAK
+					if (strcmp(chunkName, "PEAK") == 0)
 					{
-						return false;
+						uint32_t peakchunkDataSize = 0;
+						uint32_t peakversion = 0;
+						uint32_t peaktimeStamp = 0;
+
+						struct PositionPeak
+						{
+							float   value;    /* signed value of peak */
+							uint32_t position; /* the sample frame for the peak */
+						};
+
+						file.Read(&peakchunkDataSize, 4);
+						file.Read(&peakversion, 4);
+						file.Read(&peaktimeStamp, 4);
+
+						if (peakchunkDataSize > 8)// надо ли это делать?
+						{
+							PositionPeak peak;
+							for (uint32_t i = 0; i < channels; ++i)
+							{
+								file.Read(&peak.value, 4);
+								file.Read(&peak.position, 4);
+							}
+						}
+					}
+
+					if (strcmp(chunkName, "data") == 0)
+					{
+						uint32_t dataSize = 0;
+						file.Read(&dataSize, 4);
+						if (dataSize)
+						{
+							if (format != bqSoundFormat::unsupported)
+							{
+								Create(0.1f, channels, sampleRate, format);
+								if (m_soundBuffer->m_bufferData.m_dataSize < dataSize)
+									_reallocate(dataSize);
+
+								m_soundBuffer->m_bufferInfo.m_format = format;
+
+								file.Read(m_soundBuffer->m_bufferData.m_data, m_soundBuffer->m_bufferData.m_dataSize);
+
+								//Convert();
+
+								CalculateTime();
+								return true;
+							}
+							else
+							{
+								bqLog::PrintWarning("Unsupported sound file format\n");
+							}
+						}
 					}
 				}
 
-				char data[5] = { 0,0,0,0,0 };
-				file.Read(data, 4);
+				//if (TYPE != 1)
+				//{
+				//	char fact[5] = { 0,0,0,0,0 };
+				//	file.Read(fact, 4);
+				//	if (strcmp(fact, "fact") == 0)
+				//	{
+				//		uint32_t factcksize = 0;
+				//		file.Read(&factcksize, 4);
+				//		if(factcksize < 4)
+				//			return false;
 
-				// возможно есть PEAK
-				if (strcmp(data, "PEAK") == 0)
-				{
-					uint32_t peakchunkDataSize = 0;
-					uint32_t peakversion = 0;
-					uint32_t peaktimeStamp = 0;
+				//		// на каждый канал.
+				//		// наверное Chunk size и содержит размер с учётом количества каналов
+				//		// поэтому получаю это количество через factcksize / 4
+				//		for (uint32_t i = 0, sz = factcksize / 4; i < sz; ++i)
+				//		{
+				//			uint32_t factdwSampleLength = 0;
+				//			file.Read(&factdwSampleLength, 4);
+				//		}
+				//	}
+				//	else if (strcmp(fact, "data") == 0)
+				//	{
+				//	}
+				//	else
+				//	{
+				//		return false;
+				//	}
+				//}
 
-					struct PositionPeak
-					{
-						float   value;    /* signed value of peak */
-						uint32_t position; /* the sample frame for the peak */
-					};
+				//char data[5] = { 0,0,0,0,0 };
+				//file.Read(data, 4);
 
-					file.Read(&peakchunkDataSize, 4);
-					file.Read(&peakversion, 4);
-					file.Read(&peaktimeStamp, 4);
+				//// возможно есть PEAK
+				//if (strcmp(data, "PEAK") == 0)
+				//{
+				//	uint32_t peakchunkDataSize = 0;
+				//	uint32_t peakversion = 0;
+				//	uint32_t peaktimeStamp = 0;
 
-					if (peakchunkDataSize > 8)// надо ли это делать?
-					{
-						PositionPeak peak;
-						for (uint32_t i = 0; i < channels; ++i)
-						{
-							file.Read(&peak.value, 4);
-							file.Read(&peak.position, 4);
-						}
-					}
+				//	struct PositionPeak
+				//	{
+				//		float   value;    /* signed value of peak */
+				//		uint32_t position; /* the sample frame for the peak */
+				//	};
 
-					memset(data, 0, 5);
-					file.Read(data, 4);
-				}
+				//	file.Read(&peakchunkDataSize, 4);
+				//	file.Read(&peakversion, 4);
+				//	file.Read(&peaktimeStamp, 4);
 
-				if (strcmp(data, "data") == 0)
-				{
-					uint32_t dataSize = 0;
-					file.Read(&dataSize, 4);
-					if (dataSize)
-					{
-						if (format != bqSoundFormat::unsupported)
-						{
+				//	if (peakchunkDataSize > 8)// надо ли это делать?
+				//	{
+				//		PositionPeak peak;
+				//		for (uint32_t i = 0; i < channels; ++i)
+				//		{
+				//			file.Read(&peak.value, 4);
+				//			file.Read(&peak.position, 4);
+				//		}
+				//	}
+
+				//	memset(data, 0, 5);
+				//	file.Read(data, 4);
+				//}
+
+				//if (strcmp(data, "data") == 0)
+				//{
+				//	uint32_t dataSize = 0;
+				//	file.Read(&dataSize, 4);
+				//	if (dataSize)
+				//	{
+				//		if (format != bqSoundFormat::unsupported)
+				//		{
 
 
-							Create(0.1f, channels, sampleRate, format);
-							if (m_soundBuffer->m_bufferData.m_dataSize < dataSize)
-								_reallocate(dataSize);
+				//			Create(0.1f, channels, sampleRate, format);
+				//			if (m_soundBuffer->m_bufferData.m_dataSize < dataSize)
+				//				_reallocate(dataSize);
 
-							m_soundBuffer->m_bufferInfo.m_format = format;
+				//			m_soundBuffer->m_bufferInfo.m_format = format;
 
-							file.Read(m_soundBuffer->m_bufferData.m_data, m_soundBuffer->m_bufferData.m_dataSize);
+				//			file.Read(m_soundBuffer->m_bufferData.m_data, m_soundBuffer->m_bufferData.m_dataSize);
 
-							//Convert();
+				//			//Convert();
 
-							CalculateTime();
-							return true;
-						}
-						else
-						{
-							bqLog::PrintWarning("Unsupported sound file format\n");
-						}
-					}
-				}
+				//			CalculateTime();
+				//			return true;
+				//		}
+				//		else
+				//		{
+				//			bqLog::PrintWarning("Unsupported sound file format\n");
+				//		}
+				//	}
+				//}
 			}
 		}
 	}

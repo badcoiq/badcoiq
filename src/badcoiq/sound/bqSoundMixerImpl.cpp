@@ -41,10 +41,10 @@ public:
 	bqSoundMixerCallbackDefault() {}
 	virtual ~bqSoundMixerCallbackDefault() {}
 	virtual void OnStartProcess(bqSoundMixer*) {};
-	virtual void OnEndMixSound(bqSoundMixer*, bqSound*) {}
+	//virtual void OnEndMixSound(bqSoundMixer*, bqSound*) {}
 	virtual void OnEndProcess(bqSoundMixer*) {}
 	virtual void OnEndSound(bqSoundMixer*, bqSound*) {}
-	virtual void OnFullBuffer(bqSoundMixer*) {}
+	//virtual void OnFullBuffer(bqSoundMixer*) {}
 };
 
 static bqSoundMixerCallbackDefault g_defaultCallback;
@@ -83,12 +83,14 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 
 		m_channels.push_back(_new_channel);
 	}
+
 }
 
 bqSoundMixerImpl::~bqSoundMixerImpl()
 {
 	RemoveAllSounds();
 	RemoveAllEffects();
+
 
 	for (uint32_t i = 0; i < m_channels.m_size; ++i)
 	{
@@ -178,13 +180,13 @@ void bqSoundMixerImpl::Process()
 	// НАДО ВСЁ ОЧИСТИТЬ
 	// возможно можно будет убрать или вставить условие чтобы зря не проходиться циклом
 	// так как ниже в большинстве случаев буфер и так будет заполнен значениями
-	/*for (size_t i = 0; i < m_channels.m_size; ++i)
+	for (size_t i = 0; i < m_channels.m_size; ++i)
 	{
 		for (size_t ii = 0; ii < m_channels.m_data[i]->m_data.m_dataSize; ++ii)
 		{
 			m_channels.m_data[i]->m_data.m_data[ii] = 0;
 		}
-	}*/
+	}
 
 	m_callback->OnStartProcess(this);
 
@@ -292,7 +294,7 @@ void bqSoundMixerImpl::Process()
 					}
 					else
 					{
-						*dataMixer32 = *dataSound32;
+						*dataMixer32 += (*dataSound32) * soundNode.m_sound->m_volume;
 					}
 					++dataMixer32;
 
@@ -301,7 +303,7 @@ void bqSoundMixerImpl::Process()
 					
 					//printf("POS: %i | %i\n", soundNode.m_position, soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize);
 
-					m_callback->OnEndMixSound(this, soundNode.m_sound);
+			//		m_callback->OnEndMixSound(this, soundNode.m_sound);
 
 					//проверка на выход за пределы массива
 					if (soundNode.m_position >= (soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize - 4))
@@ -319,14 +321,38 @@ void bqSoundMixerImpl::Process()
 					dataSound8 = &soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
 					dataSound32 = (bqFloat32*)dataSound8;
 				}
+
 				
-				_processEffects(ci);
-				m_callback->OnFullBuffer(this);
+			//	_processEffects(ci);
+			//	m_callback->OnFullBuffer(this);
 			}
 		//}
 end_sound:;
 	}
 
+	//for (size_t ci = 0; ci < m_channels.m_size; ++ci)
+	//{
+	//	bool makeSilent = false;
+	//	bqSoundBufferData* _channel = &m_channels.m_data[ci]->m_data;
+
+	//	uint8_t* dataMixer8 = _channel->m_data;
+	//	bqFloat32* dataMixer32 = (bqFloat32*)dataMixer8;
+	//	if (!makeSilent)
+	//	{
+	//		dataMixer32 = (bqFloat32*)dataMixer8;
+	//		size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
+	//		for (size_t i = 0; i < isz; ++i)
+	//		{
+	//			*dataMixer32 *= 0.5f;
+
+	//			if (*dataMixer32 > 1.f)
+	//				*dataMixer32 = 1.f;
+	//			if (*dataMixer32 < -1.f)
+	//				*dataMixer32 = -1.f;
+	//			++dataMixer32;
+	//		}
+	//	}
+	//}
 
 	// добавить буферы из других миксеров будет проще
 	// размеры у всех одинаковые
@@ -335,7 +361,7 @@ end_sound:;
 	{
 		auto mixer = m_mixers.m_data[mi];
 
-		mixer->
+		//mixer->
 	}
 
 	m_callback->OnEndProcess(this);

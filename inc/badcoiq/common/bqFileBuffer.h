@@ -98,6 +98,11 @@ public:
 	{
 		return m_size;
 	}
+
+	bool Eof()
+	{
+		return m_cursor == m_size;
+	}
 };
 
 #endif

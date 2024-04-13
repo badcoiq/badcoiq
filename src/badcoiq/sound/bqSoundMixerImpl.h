@@ -82,7 +82,7 @@ class bqSoundMixerImpl : public bqSoundMixer
 
 	bool m_useProcessing = true;
 public:
-	BQ_PLACEMENT_ALLOCATOR(bqSoundMixer);
+	BQ_PLACEMENT_ALLOCATOR(bqSoundMixerImpl);
 	
 	bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceInfo& );
 	virtual ~bqSoundMixerImpl();

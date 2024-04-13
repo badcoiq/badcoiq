@@ -112,7 +112,7 @@ public:
 	virtual void OnStartProcess(bqSoundMixer*) = 0;
 
 	// Когда завершается смешивание звука в общую кучу.
-	virtual void OnEndMixSound(bqSoundMixer*, bqSound*) = 0;
+//	virtual void OnEndMixSound(bqSoundMixer*, bqSound*) = 0;
 	
 	// Когда прошлись по всем звукам.
 	virtual void OnEndProcess(bqSoundMixer*) = 0;
@@ -135,7 +135,7 @@ public:
 	*/
 
 	// Когда буфер миксера заполнен
-	virtual void OnFullBuffer(bqSoundMixer*) = 0;
+//	virtual void OnFullBuffer(bqSoundMixer*) = 0;
 };
 
 #endif
