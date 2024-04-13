@@ -594,6 +594,13 @@ bqSound::~bqSound()
 	Clear();
 }
 
+bqSound::bqSound(uint32_t channels, uint32_t sr, bqSoundFormat f, float t)
+{
+	if (t < 0.001f)
+		t = 0.001f;
+	Create(t, channels, sr, f);
+}
+
 void bqSound::Clear()
 {
 	if (m_soundBuffer)
@@ -1898,16 +1905,19 @@ void bqSound::Append(bqSoundBufferData* data, bqSoundBufferInfo* info)
 
 	if (info->m_format != m_soundBuffer->m_bufferInfo.m_format)
 	{
+		bqLog::PrintError("File : %s; Line : %i; Wrong format;\n", BQ_FUNCTION, BQ_LINE);
 		return;
 	}
 
-	if (info->m_channels != m_soundBuffer->m_bufferInfo.m_channels)
+	/*if (info->m_channels != m_soundBuffer->m_bufferInfo.m_channels)
 	{
+		bqLog::PrintError("%s %i : wrong format\n", BQ_FUNCTION, BQ_LINE);
 		return;
-	}
+	}*/
 
 	if (info->m_sampleRate != m_soundBuffer->m_bufferInfo.m_sampleRate)
 	{
+		bqLog::PrintError("File : %s; Line : %i; Wrong samplerate;\n", BQ_FUNCTION, BQ_LINE);
 		return;
 	}
 

@@ -43,7 +43,7 @@ public:
 	virtual void OnStartProcess(bqSoundMixer*) {};
 	//virtual void OnEndMixSound(bqSoundMixer*, bqSound*) {}
 	virtual void OnEndProcess(bqSoundMixer*) {}
-	virtual void OnEndSound(bqSoundMixer*, bqSound*) {}
+	virtual void OnEndSound(bqSoundMixer*, bqSound*, uint32_t channel) {}
 	//virtual void OnFullBuffer(bqSoundMixer*) {}
 };
 
@@ -295,6 +295,9 @@ void bqSoundMixerImpl::Process()
 					else
 					{
 						*dataMixer32 += (*dataSound32) * soundNode.m_sound->m_volume;
+
+						// должно быть выравнивание звука
+						// примитивное решение - поделить на количество звуков
 					}
 					++dataMixer32;
 
@@ -311,7 +314,7 @@ void bqSoundMixerImpl::Process()
 						//Если вышли то
 						//	завершаем обработку текущего звука
 
-						m_callback->OnEndSound(this, soundNode.m_sound);
+						m_callback->OnEndSound(this, soundNode.m_sound, ci);
 
 						soundNode.m_position = 0;
 						goto end_sound;
@@ -330,29 +333,29 @@ void bqSoundMixerImpl::Process()
 end_sound:;
 	}
 
-	//for (size_t ci = 0; ci < m_channels.m_size; ++ci)
-	//{
-	//	bool makeSilent = false;
-	//	bqSoundBufferData* _channel = &m_channels.m_data[ci]->m_data;
+	for (size_t ci = 0; ci < m_channels.m_size; ++ci)
+	{
+		bool makeSilent = false;
+		bqSoundBufferData* _channel = &m_channels.m_data[ci]->m_data;
 
-	//	uint8_t* dataMixer8 = _channel->m_data;
-	//	bqFloat32* dataMixer32 = (bqFloat32*)dataMixer8;
-	//	if (!makeSilent)
-	//	{
-	//		dataMixer32 = (bqFloat32*)dataMixer8;
-	//		size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
-	//		for (size_t i = 0; i < isz; ++i)
-	//		{
-	//			*dataMixer32 *= 0.5f;
+		uint8_t* dataMixer8 = _channel->m_data;
+		bqFloat32* dataMixer32 = (bqFloat32*)dataMixer8;
+		if (!makeSilent)
+		{
+			dataMixer32 = (bqFloat32*)dataMixer8;
+			size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
+			for (size_t i = 0; i < isz; ++i)
+			{
+				*dataMixer32 *= 0.5f;
 
-	//			if (*dataMixer32 > 1.f)
-	//				*dataMixer32 = 1.f;
-	//			if (*dataMixer32 < -1.f)
-	//				*dataMixer32 = -1.f;
-	//			++dataMixer32;
-	//		}
-	//	}
-	//}
+				if (*dataMixer32 > 1.f)
+					*dataMixer32 = 1.f;
+				if (*dataMixer32 < -1.f)
+					*dataMixer32 = -1.f;
+				++dataMixer32;
+			}
+		}
+	}
 
 	// добавить буферы из других миксеров будет проще
 	// размеры у всех одинаковые

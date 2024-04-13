@@ -118,7 +118,7 @@ public:
 	virtual void OnEndProcess(bqSoundMixer*) = 0;
 
 	// Когда звук обработан полностью.
-	virtual void OnEndSound(bqSoundMixer*, bqSound*) = 0;
+	virtual void OnEndSound(bqSoundMixer*, bqSound*, uint32_t channel) = 0;
 
 	// Действия миксера примерно такие
 	/*

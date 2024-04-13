@@ -131,6 +131,7 @@ class bqSound
 	bool _loadWav(uint8_t* buffer, uint32_t bufferSz);
 public:
 	bqSound();
+	bqSound(uint32_t channels, uint32_t samplerate, bqSoundFormat, float time = 0.001f);
 	virtual ~bqSound();
 	BQ_PLACEMENT_ALLOCATOR(bqSound);
 

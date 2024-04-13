@@ -225,8 +225,8 @@ class MySoundMixerCallback : public bqSoundMixerCallback
 public:
     MySoundMixerCallback() 
     {
-        m_sound = new bqSound();
-        m_sound->Convert(bqSoundFormat::float32);
+        m_sound = new bqSound(2, 41000, bqSoundFormat::float32);
+        //m_sound->Convert(bqSoundFormat::float32);
     }
 
     virtual ~MySoundMixerCallback() 
@@ -280,6 +280,9 @@ public:
             {
                 bqSoundBufferInfo inf;
                 mixer->GetSoundBufferInfo(inf);
+
+                m_sound->m_soundBuffer->Resample(bqFramework::GetSoundSystem()->GetDeviceInfo().m_sampleRate);
+
                 m_sound->Append(mixer->GetChannel(0), &inf);
             }
 
@@ -288,12 +291,17 @@ public:
     }
 
     // Когда звук обработан полностью.
-    virtual void OnEndSound(bqSoundMixer* mixer, bqSound* s)
+    virtual void OnEndSound(bqSoundMixer* mixer, bqSound* s, uint32_t channel)
     {
         bqLog::PrintInfo("%s\n", BQ_FUNCTION);
 
-        m_isFinished = true;
-        m_sound->SaveToFile(bqSoundFileType::wav, "test_aftereffect.wav");
+        //m_isFinished = true;
+        // 
+        if(m_numOfSounds)
+            --m_numOfSounds;
+
+        if(!m_numOfSounds)
+            m_sound->SaveToFile(bqSoundFileType::wav, "test_aftereffect.wav");
     }
 
     virtual void OnFullBuffer(bqSoundMixer* mixer)
@@ -303,7 +311,8 @@ public:
        
     }
 
-    bool m_isFinished = false;
+    //bool m_isFinished = false;
+    int m_numOfSounds = 0;
 };
 
 int main()
@@ -465,6 +474,7 @@ int main()
 
                     mixer->AddSound(&sound7);
                     mixer->AddSound(&sound8);
+                    mixerCallback.m_numOfSounds = 2;
 
                     bqSoundEffectVolume* sfx_volume = soundSystem->SummonEffectVolume();
                     sfx_volume->SetVolume(0.1f);
@@ -474,7 +484,7 @@ int main()
                     {
                         mixer->Process();
 
-                        if (mixerCallback.m_isFinished)
+                        if (!mixerCallback.m_numOfSounds)
                             break;
                     }
 
