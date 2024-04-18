@@ -1903,6 +1903,7 @@ void bqSound::Append(bqSoundBufferData* data, bqSoundBufferInfo* info)
 		Create(0.0001, info->m_channels, info->m_sampleRate, info->m_format);
 	}
 
+	// должно происходить копирование в формат ЭТОГО звука
 	if (info->m_format != m_soundBuffer->m_bufferInfo.m_format)
 	{
 		bqLog::PrintError("File : %s; Line : %i; Wrong format;\n", BQ_FUNCTION, BQ_LINE);
@@ -1915,6 +1916,7 @@ void bqSound::Append(bqSoundBufferData* data, bqSoundBufferInfo* info)
 		return;
 	}*/
 
+	// и так-же нужно делать resample
 	if (info->m_sampleRate != m_soundBuffer->m_bufferInfo.m_sampleRate)
 	{
 		bqLog::PrintError("File : %s; Line : %i; Wrong samplerate;\n", BQ_FUNCTION, BQ_LINE);

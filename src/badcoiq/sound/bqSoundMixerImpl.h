@@ -76,6 +76,15 @@ class bqSoundMixerImpl : public bqSoundMixer
 	};
 	bqArray<_channel*> m_channels;
 
+	// звук копируется в отдельный буфер
+	// будет происходить распределение каналов звука в этот bqArray
+	// потом будут применяться вещи типа pitch
+	// в конце это будет слито m_channels.
+	// Поддерживается 2 канала.
+	// Если звук момно то моно копируется в оба канала.
+	// Если звук имеет 2 и более каналов то копируется только 2 канала
+	bqArray<_channel*> m_channelsTmp;
+
 	bqSoundMixerCallback* m_callback = 0;
 
 	void _processEffects(int channel);
