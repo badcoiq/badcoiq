@@ -42,6 +42,7 @@ struct bqSoundMixerNode
 	bqSound* m_sound = 0;
 	uint32_t m_position = 0;
 
+
 	bqSoundMixerNode& operator=(const bqSoundMixerNode& other) 
 	{
 		m_sound = other.m_sound;

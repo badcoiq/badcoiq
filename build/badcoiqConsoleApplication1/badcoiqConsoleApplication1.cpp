@@ -285,13 +285,11 @@ public:
 
                 m_sound->Append(mixer->GetChannel(0), &inf);
             }
-
-           
         }
     }
 
     // Когда звук обработан полностью.
-    virtual void OnEndSound(bqSoundMixer* mixer, bqSound* s, uint32_t channel)
+    virtual void OnEndSound(bqSoundMixer* mixer, bqSound* s)
     {
         bqLog::PrintInfo("%s\n", BQ_FUNCTION);
 
