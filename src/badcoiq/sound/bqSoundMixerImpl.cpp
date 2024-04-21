@@ -202,9 +202,16 @@ void bqSoundMixerImpl::Process()
 	// так как ниже в большинстве случаев буфер и так будет заполнен значениями
 	for (size_t i = 0; i < m_channels.m_size; ++i)
 	{
-		for (size_t ii = 0; ii < m_channels.m_data[i]->m_data.m_dataSize; ++ii)
+		bqSoundBufferData* _channel = &(m_channels.m_data[i])->m_data;
+		
+		uint8_t* dataMixer8 = _channel->m_data;
+		bqFloat32* dataMixer32 = (bqFloat32*)dataMixer8;
+
+		size_t isz = m_bufferSizeForOneChannel / sizeof(bqFloat32);
+
+		for (size_t ii = 0; ii < isz; ++ii)
 		{
-			m_channels.m_data[i]->m_data.m_data[ii] = 0;
+			dataMixer32[ii] = 0.f;
 		}
 	}
 
@@ -222,7 +229,9 @@ void bqSoundMixerImpl::Process()
 
 		// Заполняю временные буферы m_channelsTmp
 		size_t isz = soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;// / sizeof(bqFloat32);
-		for (size_t i = 0, i_tmp = 0, last = isz-1; i < isz; ) // проход по звуку. 
+		//size_t isz = soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize / sizeof(bqFloat32);
+
+		for (size_t i = 0, i_tmp = 0, last = isz - 1; i < isz; ) // проход по звуку. 
 		{
 			// если заполнили m_channelsTmp то
 			// * выход из цикла
@@ -232,10 +241,10 @@ void bqSoundMixerImpl::Process()
 			}
 
 			uint8_t* dataSound8 = soundNode.m_sound->m_soundBuffer->m_bufferData.m_data;
-			bqFloat32* dataSound32 = (bqFloat32*)(&dataSound8[0]);
+			bqFloat32* dataSound32 = (bqFloat32*)(&dataSound8[sPos]);
 
 			// Сразу возьму звук. + умножу на значение громкости
-			bqFloat32 ch1 = *dataSound32;
+			bqFloat32 ch1 = *dataSound32 * soundNode.m_sound->m_volume;
 			bqFloat32 ch2 = ch1;
 			// Если каналов больше то беру второй
 			if (soundChannelsNum > 1)
@@ -253,13 +262,11 @@ void bqSoundMixerImpl::Process()
 			// теперь надо передать звук во временный буфер
 			uint8_t* dataTmp8 = (uint8_t*)m_channelsTmp.m_data[0]->m_data.m_data;
 			bqFloat32* dataTmp32 = (bqFloat32*)dataTmp8;
-			dataTmp32 += i_tmp;
-			*dataTmp32 = ch1;
+			dataTmp32[i_tmp] = ch1;
 
 			dataTmp8 = (uint8_t*)m_channelsTmp.m_data[1]->m_data.m_data;
 			dataTmp32 = (bqFloat32*)dataTmp8;
-			dataTmp32 += i_tmp;
-			*dataTmp32 = ch2;
+			dataTmp32[i_tmp] = ch2;
 
 			++i_tmp;
 
@@ -269,7 +276,7 @@ void bqSoundMixerImpl::Process()
 				// если вышла за пределы то обнуление
 				// при pitch нужно ли что-то иное пока хз
 				sPos = 0;
-				
+
 				isOnEnd = true;
 
 				break;
@@ -299,26 +306,25 @@ void bqSoundMixerImpl::Process()
 			bqFloat32* src32 = (bqFloat32*)src->m_data.m_data;
 			bqFloat32* dst32 = (bqFloat32*)dst->m_data.m_data;
 
-			for (uint32_t i = 0, sz = src->m_data.m_dataSize/sizeof(bqFloat32); i < sz; ++i)
+			for (uint32_t i = 0, sz = src->m_data.m_dataSize / sizeof(bqFloat32); i < sz; ++i)
 			{
+				bqFloat32 v = *src32;
+				
 				// тут звук нужно добавлять, и каким-то образом ограничивать
 				// возростающую громкость
-
-				bqFloat32 v = *src32;
-
 				*dst32 += v;
 
 				++dst32;
 				++src32;
 			}
 		}
-		
+
 		if (isOnEnd)
 		{
 			m_callback->OnEndSound(this, soundNode.m_sound);
 			isOnEnd = false;
 		}
-
+	}
 		// Вот такая ситуация может быть:
 		/*
 		* Изобразим графически
@@ -452,7 +458,6 @@ void bqSoundMixerImpl::Process()
 //		//}
 //end_sound:;
 //	}
-	}
 
 	//for (size_t ci = 0; ci < m_channels.m_size; ++ci)
 	//{

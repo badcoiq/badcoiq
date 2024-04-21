@@ -225,7 +225,7 @@ class MySoundMixerCallback : public bqSoundMixerCallback
 public:
     MySoundMixerCallback() 
     {
-        m_sound = new bqSound(2, 41000, bqSoundFormat::float32);
+        m_sound = new bqSound(1, 41000, bqSoundFormat::float32);
         //m_sound->Convert(bqSoundFormat::float32);
     }
 
@@ -285,6 +285,9 @@ public:
 
                 m_sound->Append(mixer->GetChannel(0), &inf);
             }
+
+            if (!m_numOfSounds)
+                m_sound->SaveToFile(bqSoundFileType::wav, "test_aftereffect.wav");
         }
     }
 
@@ -298,8 +301,7 @@ public:
         if(m_numOfSounds)
             --m_numOfSounds;
 
-        if(!m_numOfSounds)
-            m_sound->SaveToFile(bqSoundFileType::wav, "test_aftereffect.wav");
+        
     }
 
     virtual void OnFullBuffer(bqSoundMixer* mixer)
@@ -478,13 +480,13 @@ int main()
                     sfx_volume->SetVolume(0.1f);
                     mixer->AddEffect(sfx_volume);
                     
-                    for (int i = 0; i < 8000; ++i)
+                    for (int i = 0; i < 3000; ++i)
                     {
                         mixer->Process();
-
-                        if (!mixerCallback.m_numOfSounds)
-                            break;
                     }
+                    mixerCallback.m_numOfSounds = 0;
+                    mixer->Process();
+
 
                     delete sfx_volume;
                     delete mixer;

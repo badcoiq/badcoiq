@@ -1910,11 +1910,11 @@ void bqSound::Append(bqSoundBufferData* data, bqSoundBufferInfo* info)
 		return;
 	}
 
-	/*if (info->m_channels != m_soundBuffer->m_bufferInfo.m_channels)
+	if (info->m_channels != m_soundBuffer->m_bufferInfo.m_channels)
 	{
-		bqLog::PrintError("%s %i : wrong format\n", BQ_FUNCTION, BQ_LINE);
+		bqLog::PrintError("%s %i : wrong channels\n", BQ_FUNCTION, BQ_LINE);
 		return;
-	}*/
+	}
 
 	// и так-же нужно делать resample
 	if (info->m_sampleRate != m_soundBuffer->m_bufferInfo.m_sampleRate)
