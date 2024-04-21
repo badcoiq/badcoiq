@@ -1749,6 +1749,23 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 
 			if (newDataSize)
 			{
+				if (newDataSize % 4)
+				{
+					++newDataSize;
+					if (newDataSize % 4)
+					{
+						++newDataSize;
+						if (newDataSize % 4)
+						{
+							++newDataSize;
+							if (newDataSize % 4)
+							{
+								//printf("O\n");
+							}
+						}
+					}
+				}
+
 				uint8_t* newData = (uint8_t*)bqMemory::malloc(newDataSize);
 
 				if (m_bufferInfo.m_blockSize && m_bufferData.m_dataSize)
