@@ -229,7 +229,6 @@ void bqSoundMixerImpl::Process()
 
 		// Заполняю временные буферы m_channelsTmp
 		size_t isz = soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;// / sizeof(bqFloat32);
-		//size_t isz = soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize / sizeof(bqFloat32);
 
 		for (size_t i = 0, i_tmp = 0, last = isz - 1; i < isz; ) // проход по звуку. 
 		{
@@ -314,6 +313,9 @@ void bqSoundMixerImpl::Process()
 				// возростающую громкость
 				*dst32 += v;
 
+				if (*dst32 > 1.f) *dst32 = 1.f;
+				if (*dst32 < -1.f) *dst32 = -1.f;
+
 				++dst32;
 				++src32;
 			}
@@ -357,140 +359,41 @@ void bqSoundMixerImpl::Process()
 
 		*/
 
-		// Заполняю каналы миксера по семплам.
-		// Так будет проще распределить каналы звука по каналам миксера.
-		// А так-же сдвиг позиции soundNode.m_position без каких либо трудностей.
-		//size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
-		//for (size_t i = 0; i < isz; ++i)
-		//{
-		//	for (size_t ci = 0; ci < m_channels.m_size; ++ci)
-		//	{
-		//		bool makeSilent = false;
-		//		bqSoundBufferData* _channel = &m_channels.m_data[ci]->m_data;
-
-		//		uint8_t* dataMixer8 = _channel->m_data;
-		//		bqFloat32* dataMixer32 = (bqFloat32*)dataMixer8;
-
-		//		uint8_t* dataSound8 = &soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
-		//		bqFloat32* dataSound32 = (bqFloat32*)dataSound8;
-
-		//		// Надо установить указатель dataSound32 на нужный канал
-		//		// если
-		//		// канал миксера может быть например 2
-		//		// звук одноканальный.
-		//		// тогда ничего не делаем так как всё само заполниться
-
-		//		// если 
-		//		// миксер одноканальный, то надо все каналы звука добавлять в этот канал
-		//		// в этом случае необходимо реализовать отдельный метод в виде указателя на метод
-
-		//		// если миксер и звуки многоканальные
-		//		// копируем звук из канала в канал
-		//		// если каналов в миксере больше то каналы не соответствующие каналам звука будут пустыми
-		//		// если каналов у звука больше то эти каналы будут пропущены
-		//		// данный случай будет реализован по умолчанию 
-		//		if (soundChannelsNum > 1)
-		//		{
-		//			int ch = 0;
-		//			if (ci < soundChannelsNum)
-		//				// например каналов в звуке 2
-		//				// индекс ci равен 1 когда идёт 2й канал миксера
-		//			{
-		//				ch = ci;
-		//			}
-		//			else
-		//			{
-		//				makeSilent = true;
-		//			}
-
-		//			dataSound32 += ch;
-		//		}
-		//}
-
-
-
-
-//				size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
-//				for (size_t i = 0; i < isz; ++i)
-//				{
-//					
-//					if (makeSilent)
-//					{
-//						*dataMixer32 = 0;
-//					}
-//					else
-//					{
-//						*dataMixer32 += (*dataSound32) * soundNode.m_sound->m_volume;
-//
-//						// должно быть выравнивание звука
-//						// примитивное решение - поделить на количество звуков
-//					}
-//					++dataMixer32;
-//
-//					//перемещение soundNode.m_position					
-//					soundNode.m_position += soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_blockSize;
-//					
-//					//printf("POS: %i | %i\n", soundNode.m_position, soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize);
-//
-//			//		m_callback->OnEndMixSound(this, soundNode.m_sound);
-//
-//					//проверка на выход за пределы массива
-//					if (soundNode.m_position >= (soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize - 4))
-//					{
-//						//Если вышли то
-//						//	завершаем обработку текущего звука
-//
-//						m_callback->OnEndSound(this, soundNode.m_sound, ci);
-//
-//						soundNode.m_position = 0;
-//						goto end_sound;
-//
-//						//	или обрабатываем опять если указан repeat \ loop
-//					}
-//					dataSound8 = &soundNode.m_sound->m_soundBuffer->m_bufferData.m_data[soundNode.m_position];
-//					dataSound32 = (bqFloat32*)dataSound8;
-//				}
-//
-//				
-//			//	_processEffects(ci);
-//			//	m_callback->OnFullBuffer(this);
-//			}
-//		//}
-//end_sound:;
-//	}
-
-	//for (size_t ci = 0; ci < m_channels.m_size; ++ci)
-	//{
-	//	bool makeSilent = false;
-	//	bqSoundBufferData* _channel = &m_channels.m_data[ci]->m_data;
-
-	//	uint8_t* dataMixer8 = _channel->m_data;
-	//	bqFloat32* dataMixer32 = (bqFloat32*)dataMixer8;
-	//	if (!makeSilent)
-	//	{
-	//		dataMixer32 = (bqFloat32*)dataMixer8;
-	//		size_t isz = m_bufferSizeForOneChannel / 4; // sizeof(float32)
-	//		for (size_t i = 0; i < isz; ++i)
-	//		{
-	//			*dataMixer32 *= 0.5f;
-
-	//			if (*dataMixer32 > 1.f)
-	//				*dataMixer32 = 1.f;
-	//			if (*dataMixer32 < -1.f)
-	//				*dataMixer32 = -1.f;
-	//			++dataMixer32;
-	//		}
-	//	}
-	//}
-
 	// добавить буферы из других миксеров будет проще
-	// размеры у всех одинаковые
+	// размеры у всех одинаковые (должно быть)
 	// надо только будет распределять каналы
 	for (size_t mi = 0; mi < m_mixers.m_size; ++mi)
 	{
-		auto mixer = m_mixers.m_data[mi];
+		auto input_mixer = reinterpret_cast<bqSoundMixerImpl*>(m_mixers.m_data[mi]);
 
-		//mixer->
+		// по сути надо делать конвертацию если какие-то параметрыне совпадают
+		// Пока без конвертации.
+		// Потом, чтобы не плодить if будет вызываться метод по указателю.
+		
+		if (input_mixer->m_dataInfo.m_format == m_dataInfo.m_format)
+		{
+			if (input_mixer->m_dataInfo.m_sampleRate == m_dataInfo.m_sampleRate)
+			{
+				// далее дублируется код взятый с места смешивания m_channelsTmp с m_channels
+				for (size_t ti = 0; ti < input_mixer->m_channels.m_size; ++ti)
+				{
+					if (ti >= m_channels.m_size)
+						break;
+					auto src = input_mixer->m_channels.m_data[ti];
+					auto dst = m_channels.m_data[ti];
+					bqFloat32* src32 = (bqFloat32*)src->m_data.m_data;
+					bqFloat32* dst32 = (bqFloat32*)dst->m_data.m_data;
+					for (uint32_t i = 0, sz = src->m_data.m_dataSize / sizeof(bqFloat32); i < sz; ++i){
+						bqFloat32 v = *src32;
+						*dst32 += v;
+						if (*dst32 > 1.f) *dst32 = 1.f;
+						if (*dst32 < -1.f) *dst32 = -1.f;
+						++dst32;
+						++src32;
+					}
+				}
+			}
+		}
 	}
 
 	m_callback->OnEndProcess(this);

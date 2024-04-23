@@ -51,6 +51,7 @@ bqSoundSystemImpl::~bqSoundSystemImpl()
 	bqLog::PrintInfo("Shutdown Sound System\n");
 	if (m_WASAPIrenderer) delete m_WASAPIrenderer;
 	if (m_device) m_device->Release();
+	if (m_mainMixer) delete m_mainMixer;
 }
 
 bqSoundSystemDeviceInfo bqSoundSystemImpl::GetDeviceInfo()
@@ -228,6 +229,13 @@ bool bqSoundSystemImpl::Init()
 			m_deviceInfo.m_sampleRate = m_WASAPIrenderer->m_mixFormat->nSamplesPerSec;
 			m_deviceInfo.m_bufferSize = m_WASAPIrenderer->m_bufferSize;
 		}
+
+		int ch = m_deviceInfo.m_channels;
+
+		if (ch > 2)
+			ch = 2;
+
+		m_mainMixer = reinterpret_cast<bqSoundMixerImpl*>(SummonMixer(ch));
 	}
 
 	if (!retValue)
@@ -238,7 +246,6 @@ bool bqSoundSystemImpl::Init()
 			m_device = 0;
 		}
 	}
-
 	return retValue;
 }
 

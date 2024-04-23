@@ -139,6 +139,8 @@ class bqSoundSystemImpl : public bqSoundSystem
 	IMMDevice* m_device = 0;
 	bqWASAPIRenderer* m_WASAPIrenderer = 0;
 	bqSoundSystemDeviceInfo m_deviceInfo;
+
+	bqSoundMixerImpl* m_mainMixer = 0;
 public:
 	bqSoundSystemImpl();
 	virtual ~bqSoundSystemImpl();

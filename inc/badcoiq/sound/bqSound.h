@@ -167,6 +167,7 @@ public:
 
 	bqSoundBuffer* m_soundBuffer = 0;
 	float m_volume = 0.5f;
+	float m_pitch = 1.0f;
 };
 
 #endif
