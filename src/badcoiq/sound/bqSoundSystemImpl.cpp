@@ -51,7 +51,6 @@ bqSoundSystemImpl::~bqSoundSystemImpl()
 	bqLog::PrintInfo("Shutdown Sound System\n");
 	if (m_WASAPIrenderer) delete m_WASAPIrenderer;
 	if (m_device) m_device->Release();
-	if (m_mainMixer) delete m_mainMixer;
 }
 
 bqSoundSystemDeviceInfo bqSoundSystemImpl::GetDeviceInfo()
@@ -211,31 +210,13 @@ bool bqSoundSystemImpl::Init()
 		}
 		else
 		{
-			//WAVE_FORMAT_PCM
-			switch (m_WASAPIrenderer->m_renderSampleType)
-			{
-			case bqWASAPIRenderer::SampleType16BitPCM:
-				m_deviceInfo.m_format = bqSoundFormat::int16;
-				break;
-			case bqWASAPIRenderer::SampleTypeFloat:
-				m_deviceInfo.m_format = bqSoundFormat::float32;
-				break;
-			default:
-				m_deviceInfo.m_format = bqSoundFormat::unsupported;
-				break;
-			}
-
+			m_deviceInfo.m_format = m_WASAPIrenderer->GetFormat();
 			m_deviceInfo.m_channels = m_WASAPIrenderer->m_mixFormat->nChannels;
 			m_deviceInfo.m_sampleRate = m_WASAPIrenderer->m_mixFormat->nSamplesPerSec;
 			m_deviceInfo.m_bufferSize = m_WASAPIrenderer->m_bufferSize;
+
 		}
 
-		int ch = m_deviceInfo.m_channels;
-
-		if (ch > 2)
-			ch = 2;
-
-		m_mainMixer = reinterpret_cast<bqSoundMixerImpl*>(SummonMixer(ch));
 	}
 
 	if (!retValue)
@@ -590,6 +571,17 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 			return false;
 		}
 
+
+		int ch = m_mixFormat->nChannels;
+		if (ch > 2)
+			ch = 2;
+		bqSoundSystemDeviceInfo ssdi;
+		ssdi.m_bufferSize = m_bufferSize;
+		ssdi.m_channels = ch;
+		ssdi.m_format = GetFormat();
+		ssdi.m_sampleRate = m_mixFormat->wBitsPerSample;
+		m_mainMixer = new bqSoundMixerImpl(ch, ssdi);
+
 		m_threadContext.m_run = true;
 		m_tread = new std::thread(&bqWASAPIRenderer::_thread_function, this);
 
@@ -598,13 +590,30 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 	return false;
 }
 
+bqSoundFormat bqWASAPIRenderer::GetFormat()
+{
+	bqSoundFormat f = bqSoundFormat::unsupported;
+
+	switch (m_renderSampleType)
+	{
+	case bqWASAPIRenderer::SampleType16BitPCM:
+		f = bqSoundFormat::int16;
+		break;
+	case bqWASAPIRenderer::SampleTypeFloat:
+		f = bqSoundFormat::float32;
+		break;
+	}
+
+	return f;
+}
+
 void bqWASAPIRenderer::Shutdown()
 {
 	bqLog::PrintInfo("Shutdown WASAPI\n");
 
 	if (m_tread)
 	{
-		bqLog::PrintInfo("Shutdown audio thread...");
+		bqLog::PrintInfo("Shutdown audio thread...\n");
 		m_threadContext.m_run = false;
 
 		if(m_tread->joinable())
@@ -627,13 +636,18 @@ void bqWASAPIRenderer::Shutdown()
 			m_renderClient->Release();
 			m_renderClient = 0;
 		}
-		bqLog::PrintInfo("done\n");
 	}
 
 	if (m_endpoint)
 	{
 		m_endpoint->Release();
 		m_endpoint = 0;
+	}
+
+	if (m_mainMixer)
+	{
+		delete m_mainMixer;
+		m_mainMixer = 0;
 	}
 }
 

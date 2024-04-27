@@ -52,6 +52,8 @@ public:
 	bool Initialize(IMMDevice* Endpoint);
 	void Shutdown();
 
+	bqSoundFormat GetFormat();
+
 	// эти вещи предположительно могут быть в 1м экземпляре
 	IAudioClient* m_audioClient = 0;
 	IAudioRenderClient* m_renderClient = 0;
@@ -113,7 +115,7 @@ private:
 	//HANDLE      _ShutdownEvent;
 	LONG        _EngineLatencyInMS;
 
-	
+	bqSoundMixerImpl* m_mainMixer = 0;
 
 	std::thread* m_tread = 0;
 
@@ -140,7 +142,6 @@ class bqSoundSystemImpl : public bqSoundSystem
 	bqWASAPIRenderer* m_WASAPIrenderer = 0;
 	bqSoundSystemDeviceInfo m_deviceInfo;
 
-	bqSoundMixerImpl* m_mainMixer = 0;
 public:
 	bqSoundSystemImpl();
 	virtual ~bqSoundSystemImpl();
