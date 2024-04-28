@@ -446,7 +446,6 @@ void bqWASAPIRenderer::_thread_function()
 			}
 
 		}
-
 		while (m_threadContext.m_commands.Empty() == false)
 		{
 			auto command = m_threadContext.m_commands.Front();

@@ -315,6 +315,8 @@ public:
     int m_numOfSounds = 0;
 };
 
+#include "badcoiq/containers/bqFixedFIFO.h"
+
 int main()
 {
 

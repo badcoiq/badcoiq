@@ -27,49 +27,83 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __bqThreadFIFO_H__
-#define __bqThreadFIFO_H__
+#ifndef __bqFixedFIFO_H__
+#define __bqFixedFIFO_H__
 
-#include "badcoiq/containers/bqList.h"
-
-#include <mutex>
-template<typename Type, typename ContainerType = bqList<Type>>
-class bqThreadFIFO
+template<typename Type, uint32_t size>
+class bqFixedFIFO
 {
-	ContainerType m_container;
-	std::mutex m_mutex;
+	uint32_t m_cur = 0;
+	uint32_t m_insert = 0;
+	uint32_t m_inUse = 0;
+	Type m_data[size];
 public:
-	bqThreadFIFO() {}
-	~bqThreadFIFO()
+	bqFixedFIFO() 
 	{
-		if (m_mutex.try_lock())
-			m_mutex.unlock();
+	}
+	
+	~bqFixedFIFO()
+	{
 	}
 
 	void Push(const Type& v)
 	{
-		m_mutex.lock();
-		m_container.push_back(v);
-		m_mutex.unlock();
+		m_data[m_insert] = v;
+		
+		if(m_inUse)
+		{
+			if(m_insert == m_cur)
+			{
+				++m_cur;
+				if(m_cur >= size)
+					m_cur = 0;
+			}
+		}
+		else
+		{
+			m_cur = m_insert;
+		}
+		
+		++m_inUse;
+		if(m_inUse >= size)
+			m_inUse = size;
+		
+		++m_insert;
+		if(m_insert == size)
+			m_insert = 0;
+	}
+	
+	bool TryPush(const Type& v)
+	{
+		if (m_inUse != size)
+		{
+			Push(v);
+			return true;
+		}
+		return false;
 	}
 
 	void Pop()
 	{
-		m_mutex.lock();
-		m_container.pop_front();
-		m_mutex.unlock();
+		if (m_inUse)
+		{
+			--m_inUse;
+
+			++m_cur;
+			if (m_cur >= size)
+				m_cur = 0;
+		}
 	}
 
 	Type& Front()
 	{
-		m_mutex.lock();
-		Type& r = m_container.front();
-		m_mutex.unlock();
+		Type& r = m_data[m_cur];
 		return r;
 	}
 
-	bool Empty() { return m_container.empty(); }
-	void Clear() { return m_container.clear(); }
+	bool IsEmpty() { return m_inUse == 0; }
+	void Clear() { return m_inUse = 0; }
+	bool IsFull() { return m_inUse == size; }
 };
 
 

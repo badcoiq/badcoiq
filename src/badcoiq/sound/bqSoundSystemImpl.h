@@ -90,6 +90,9 @@ public:
 		uint32_t m_type = type_null;
 
 		bqSoundObjectImpl* m_sound = 0;
+
+		using method_type = void(bqWASAPIRenderer::*)();
+		method_type m_method = 0;
 	};
 
 	struct _thread_context
