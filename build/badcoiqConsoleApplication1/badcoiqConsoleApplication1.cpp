@@ -319,7 +319,6 @@ public:
 
 int main()
 {
-
     bqFrameworkCallbackCB fcb;
     bqFramework::Start(&fcb);
 
@@ -469,29 +468,28 @@ int main()
                 sound8.m_soundBuffer->Resample(48000);
                 
                 auto soundSystem = bqFramework::GetSoundSystem();
+                bqSoundEffectVolume* sfx_volume = 0;
                 auto mixer = soundSystem->SummonMixer(1);
                 if (mixer)
                 {
-                    mixer->SetCallback(&mixerCallback);
-
-                    mixer->AddSound(&sound7);
-                    mixer->AddSound(&sound8);
+                   // mixer->SetCallback(&mixerCallback);
+                  //  mixer->AddSound(&sound7);
+                    //mixer->AddSound(&sound8);
                     mixerCallback.m_numOfSounds = 2;
 
-                    bqSoundEffectVolume* sfx_volume = soundSystem->SummonEffectVolume();
+                    sfx_volume = soundSystem->SummonEffectVolume();
                     sfx_volume->SetVolume(0.1f);
                     mixer->AddEffect(sfx_volume);
                     
-                    for (int i = 0; i < 3000; ++i)
+                    /*for (int i = 0; i < 3000; ++i)
                     {
                         mixer->Process();
                     }
                     mixerCallback.m_numOfSounds = 0;
-                    mixer->Process();
+                    mixer->Process();*/
 
-
-                    delete sfx_volume;
-                    delete mixer;
+                    soundSystem->AddMixerToProcessing(mixer);
+                    mixer->UseProcessing(true);
                 }
               //  bqFramework::GetSoundSystem()->
                 
@@ -592,6 +590,12 @@ int main()
                 delete model;
                 delete texture;
 
+             //   if (sfx_volume)
+               //     delete sfx_volume;
+
+                //if (mixer) delete mixer;
+
+                soundSystem->Shutdown();
                 gs->Shutdown();
             }
         }

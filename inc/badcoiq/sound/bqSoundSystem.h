@@ -54,7 +54,7 @@ class bqSoundSystem
 public:
 	bqSoundSystem() {};
 	virtual ~bqSoundSystem() {};
-	
+
 	// Создать объект из имеющегося звука
 	virtual bqSoundObject* SummonObject(bqSound*) = 0;
 
@@ -75,8 +75,10 @@ public:
 	// Добавить миксер в аудиодвижок.
 	// Для воспроизведения звука нужно будет добавить.
 	virtual void AddMixerToProcessing(bqSoundMixer*) = 0;
-	
+	virtual void RemoveAllMixersFromProcessing() = 0;
+
 	virtual bqSoundEffectVolume* SummonEffectVolume() = 0;
+
 };
 
 #endif

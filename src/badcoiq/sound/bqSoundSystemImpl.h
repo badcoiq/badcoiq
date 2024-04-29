@@ -78,22 +78,6 @@ public:
 	using ThreadCommanMethodType = void(bqWASAPIRenderer::*)(_thread_command*);
 	struct _thread_command
 	{
-		//enum
-		//{
-		//	type_null,
-		//	
-		//	// Наверно лучше это делать через сам звуковой объект
-		//	/*type_start,
-		//	type_stop,*/
-		//	
-		//	type_stopAll,
-
-		//	type_addSound,
-		//	type_removeSound,
-		//};
-		//uint32_t m_type = type_null;
-
-		//bqSoundObjectImpl* m_sound = 0;
 		void* m_ptr = 0;
 
 		ThreadCommanMethodType m_method = 0;
@@ -101,7 +85,13 @@ public:
 
 	struct _thread_context
 	{
-		bqFixedThreadFIFO<_thread_command, 50> m_commands;
+		// Тут я не знаю как делать так как нет опыта.
+		// Делать бесконечно растущую очередь как мне кажется - плохо.
+		// Поэтому сделал контейнер фиксированного размера.
+		// Какие-то команды должны иметь высокий приоритет.
+		// Возможно для приоритетов достаточно будет ввести несколько контейнеров.
+		// bqFixedThreadFIFO<_thread_command, 150> m_commands[3]; например так
+		bqFixedThreadFIFO<_thread_command, 150> m_commands;
 
 		//	bqArray<bqSoundObjectImpl*> m_sounds;
 		bqArray<bqSoundMixerImpl*> m_mixers;
@@ -125,6 +115,8 @@ public:
 	void ThreadCommandMethod_AddMixer(_thread_command*);
 	void ThreadCommand_SetMainMixer(bqSoundMixerImpl*);
 	void ThreadCommandMethod_SetMainMixer(_thread_command*);
+	void ThreadCommand_RemoveAllMixers();
+	void ThreadCommandMethod_RemoveAllMixers(_thread_command*);
 	void ThreadCommand_CallMethod(ThreadCommanMethodType, _thread_command*);
 
 	void _thread_function();
@@ -178,6 +170,7 @@ public:
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() override;
 	virtual bqSoundMixer* SummonMixer(uint32_t channels) override;
 	virtual void AddMixerToProcessing(bqSoundMixer*) override;
+	virtual void RemoveAllMixersFromProcessing() override;
 	virtual bqSoundEffectVolume* SummonEffectVolume() override;
 };
 

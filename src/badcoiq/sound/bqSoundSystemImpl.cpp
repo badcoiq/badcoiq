@@ -71,6 +71,12 @@ void bqSoundSystemImpl::AddMixerToProcessing(bqSoundMixer* mixer)
 	m_WASAPIrenderer->ThreadCommand_AddMixer(reinterpret_cast<bqSoundMixerImpl*>(mixer));
 }
 
+void bqSoundSystemImpl::RemoveAllMixersFromProcessing()
+{
+	BQ_ASSERT_ST(m_WASAPIrenderer);
+	m_WASAPIrenderer->ThreadCommand_RemoveAllMixers();
+}
+
 bqSoundEffectVolume* bqSoundSystemImpl::SummonEffectVolume()
 {
 	bqSoundEffectVolumeImpl* newEffect = new bqSoundEffectVolumeImpl();
@@ -296,6 +302,17 @@ void bqWASAPIRenderer::ThreadCommandMethod_SetMainMixer(_thread_command* cmd)
 	m_threadContext.m_mainMixer = (bqSoundMixerImpl*)cmd->m_ptr;
 	bqLog::PrintInfo("%s\n", BQ_FUNCTION);
 }
+void bqWASAPIRenderer::ThreadCommand_RemoveAllMixers()
+{
+	_thread_command cmd;
+	cmd.m_ptr = 0;
+	cmd.m_method = &bqWASAPIRenderer::ThreadCommandMethod_RemoveAllMixers;
+	this->m_threadContext.m_commands.Push(cmd);
+}
+void bqWASAPIRenderer::ThreadCommandMethod_RemoveAllMixers(_thread_command* cmd)
+{
+	m_threadContext.m_mainMixer->m_mixers.clear();
+}
 
 void bqWASAPIRenderer::_thread_function()
 {
@@ -313,6 +330,62 @@ void bqWASAPIRenderer::_thread_function()
 			printf("Unable to enable MMCSS on render thread: %d\n", GetLastError());
 		}
 	}*/
+
+	// очистка буфера у m_renderClient
+		// чтобы при старте не проигрывался `мусор`
+	{
+		BYTE* pData;
+		hr = m_renderClient->GetBuffer(m_bufferSize, &pData);
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Failed to get buffer: %x.\n", hr);
+			return;
+		}
+		hr = m_renderClient->ReleaseBuffer(m_bufferSize, AUDCLNT_BUFFERFLAGS_SILENT);
+		if (FAILED(hr))
+		{
+			bqLog::PrintError("Failed to release buffer: %x.\n", hr);
+			return;
+		}
+
+		UINT32 padding = 0;
+		hr = m_audioClient->GetCurrentPadding(&padding);
+		if (SUCCEEDED(hr))
+		{
+			bqLog::Print("first padding is %u\n", padding);
+		}
+	}
+
+	hr = m_audioClient->Start();
+	if (FAILED(hr))
+	{
+		bqLog::Print("Unable to start render client: %x.\n", hr);
+	}
+	else
+	{
+		//sound->m_threadState = bqSoundObjectImpl::ThreadState::ThreadState_play;
+		//sound->m_state = bqSoundObject::state_playing;
+		UINT32 padding = 0;
+		hr = m_audioClient->GetCurrentPadding(&padding);
+		if (SUCCEEDED(hr))
+		{
+			Sleep(50); // должна быть пауза между обновлениями буфера
+			// видимо это то самое (хз что), о котором написано в примере
+			// WASAPIRenderSharedEventDriven в CWASAPIRenderer::Initialize
+			// Engine latency in shared mode timer driven cannot be less than 50ms
+			// 
+
+			bqLog::Print("padding on start is %u\n", padding);
+			// так как обновили буфер из render client и запустили воспроизведение
+			// padding равен какому-то значению, которое означает сколько байтов
+			// осталось воспроизводить.
+			// в буфер нужно послать звук. нужно создать отдельный метод для этого
+			// и вызвать его в нескольких местах
+			// первое место это здесь.
+			// второе ниже, в bqSoundObjectImpl::ThreadState::ThreadState_play:
+		//	sound->_thread_fillRenderBuffer();
+		}
+	}
 
 	while (m_threadContext.m_run)
 	{
@@ -334,6 +407,60 @@ void bqWASAPIRenderer::_thread_function()
 			m_mainMixer->Process();
 		}
 
+		UINT32 padding = 0;
+		hr = m_audioClient->GetCurrentPadding(&padding);
+		if (SUCCEEDED(hr))
+		{
+			//bqLog::Print("padding %u\n", padding);
+			//Sleep(1);
+			//if(!padding)
+			//sound->_thread_fillRenderBuffer();
+
+			UINT32 framesAvailable = m_bufferSize - padding;
+			UINT32 framesToWrite = m_bufferSize / m_frameSize;
+
+			if (m_bufferSize <= (framesAvailable * m_frameSize))
+			{
+				BYTE* pData = 0;
+				hr = m_renderClient->GetBuffer(framesToWrite, &pData);
+				if (SUCCEEDED(hr))
+				{
+					//bqSoundBufferData* soundData = sound->m_bufferData;
+					//memcpy(pData, &soundData->m_data[sound->m_currentPosition], framesToWrite * m_frameSize);
+					//sound->m_currentPosition += framesToWrite * m_frameSize;
+
+					if (m_mixFormat->nChannels == 1)
+					{
+						auto ch = m_mainMixer->GetChannel(0);
+						//	memcpy(pData, ch->m_data, ch->m_dataSize);
+					}
+					else if (m_mixFormat->nChannels == 2)
+					{
+						uint32_t noc = m_mainMixer->GetNumOfChannels();
+						for (uint32_t i = 0; i < noc; ++i)
+						{
+						}
+
+						auto ch = m_mainMixer->GetChannel(0);
+						//	memcpy(pData, ch->m_data, ch->m_dataSize);
+					}
+
+					hr = m_renderClient->ReleaseBuffer(framesToWrite, 0);
+					//printf("done %u\n", sound->m_currentPosition);
+					if (!SUCCEEDED(hr))
+					{
+						//AUDCLNT_E_BUFFER_ERROR
+						printf("Unable to release buffer: %x\n", hr);
+						//	stillPlaying = false;
+					}
+				}
+				else
+				{
+					printf("Unable to get buffer: %x bufferSize: %u\n", hr, m_bufferSize);
+					//	stillPlaying = false;
+				}
+			}
+		}
 		//for (size_t i = 0; i < m_threadContext.m_sounds.m_size; ++i)
 		//{
 		//	bqSoundObjectImpl* sound = m_threadContext.m_sounds.m_data[i];
@@ -490,6 +617,8 @@ void bqWASAPIRenderer::_thread_function()
 		//	}
 		//}
 	}
+
+	hr = m_audioClient->Stop();
 
 	/*if (!DisableMMCSS)
 	{
@@ -665,6 +794,12 @@ void bqWASAPIRenderer::Shutdown()
 
 	if (m_mainMixer)
 	{
+		for (uint32_t i = 0; i < m_mainMixer->m_mixers.m_size; ++i)
+		{
+			delete m_mainMixer->m_mixers.m_data[i];
+		}
+		m_mainMixer->RemoveAllMixers();
+
 		delete m_mainMixer;
 		m_mainMixer = 0;
 	}

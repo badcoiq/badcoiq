@@ -65,6 +65,7 @@ struct bqSoundMixerNode
 
 class bqSoundMixerImpl : public bqSoundMixer
 {
+	friend class bqWASAPIRenderer;
 	bqArray<bqSoundMixerNode> m_sounds;
 	bqArray<bqSoundMixer*> m_mixers;
 	bqList<bqSoundEffect*> m_effects;
@@ -90,7 +91,7 @@ class bqSoundMixerImpl : public bqSoundMixer
 
 	void _processEffects(int channel);
 
-	bool m_useProcessing = true;
+	bool m_useProcessing = false;
 
 	float m_mixerVolume = 1.f;
 public:
