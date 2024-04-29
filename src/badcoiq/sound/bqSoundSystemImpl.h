@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <mutex>
 
 #include "badcoiq/containers/bqThreadFIFO.h"
+#include "badcoiq/containers/bqFixedFIFO.h"
 #include "badcoiq/sound/bqSoundSystem.h"
 
 
@@ -43,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <functiondiscoverykeys.h>
 
 class bqSoundObjectImpl;
+class bqSoundMixerImpl;
 
 class bqWASAPIRenderer : IMMNotificationClient, IAudioSessionEvents
 {
@@ -72,37 +74,58 @@ public:
 	// Когда надо что-то сделать в треде обработки звука
 	// надо послать команду. Команды обрабатываются после
 	// цикла обработки звука.
+	struct _thread_command;
+	using ThreadCommanMethodType = void(bqWASAPIRenderer::*)(_thread_command*);
 	struct _thread_command
 	{
-		enum
-		{
-			type_null,
-			
-			// Наверно лучше это делать через сам звуковой объект
-			/*type_start,
-			type_stop,*/
-			
-			type_stopAll,
+		//enum
+		//{
+		//	type_null,
+		//	
+		//	// Наверно лучше это делать через сам звуковой объект
+		//	/*type_start,
+		//	type_stop,*/
+		//	
+		//	type_stopAll,
 
-			type_addSound,
-			type_removeSound,
-		};
-		uint32_t m_type = type_null;
+		//	type_addSound,
+		//	type_removeSound,
+		//};
+		//uint32_t m_type = type_null;
 
-		bqSoundObjectImpl* m_sound = 0;
+		//bqSoundObjectImpl* m_sound = 0;
+		void* m_ptr = 0;
 
-		using method_type = void(bqWASAPIRenderer::*)();
-		method_type m_method = 0;
+		ThreadCommanMethodType m_method = 0;
 	};
 
 	struct _thread_context
 	{
-		bqThreadFIFO<_thread_command> m_commands;
-		bqArray<bqSoundObjectImpl*> m_sounds;
+		bqFixedThreadFIFO<_thread_command, 50> m_commands;
+
+		//	bqArray<bqSoundObjectImpl*> m_sounds;
+		bqArray<bqSoundMixerImpl*> m_mixers;
+		bqSoundMixerImpl* m_mainMixer = 0;
 		bool m_run = true;
+
+		enum
+		{
+			threadState_play,
+			threadState_notplay
+		};
+		uint32_t m_state = threadState_play;
+
 	}m_threadContext;
 
-	void ThreadAddSound(bqSoundObjectImpl*);
+	bqSoundMixerImpl* m_mainMixer = 0;
+
+	//void ThreadCommand_AddSound(bqSoundObjectImpl*);
+	//void ThreadCommandMethod_AddSound(_thread_command*);
+	void ThreadCommand_AddMixer(bqSoundMixerImpl*);
+	void ThreadCommandMethod_AddMixer(_thread_command*);
+	void ThreadCommand_SetMainMixer(bqSoundMixerImpl*);
+	void ThreadCommandMethod_SetMainMixer(_thread_command*);
+	void ThreadCommand_CallMethod(ThreadCommanMethodType, _thread_command*);
 
 	void _thread_function();
 
@@ -117,8 +140,6 @@ private:
 	//HANDLE      _RenderThread;
 	//HANDLE      _ShutdownEvent;
 	LONG        _EngineLatencyInMS;
-
-	bqSoundMixerImpl* m_mainMixer = 0;
 
 	std::thread* m_tread = 0;
 
@@ -156,6 +177,7 @@ public:
 	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() override;
 	virtual bqSoundMixer* SummonMixer(uint32_t channels) override;
+	virtual void AddMixerToProcessing(bqSoundMixer*) override;
 	virtual bqSoundEffectVolume* SummonEffectVolume() override;
 };
 

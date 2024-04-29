@@ -30,6 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __bqFixedFIFO_H__
 #define __bqFixedFIFO_H__
 
+
+#include <mutex>
+
 template<typename Type, uint32_t size>
 class bqFixedFIFO
 {
@@ -102,8 +105,81 @@ public:
 	}
 
 	bool IsEmpty() { return m_inUse == 0; }
-	void Clear() { return m_inUse = 0; }
+	void Clear() { m_inUse = 0; }
 	bool IsFull() { return m_inUse == size; }
+};
+
+template<typename Type, uint32_t size>
+class bqFixedThreadFIFO
+{
+	bqFixedFIFO<Type, size> m_FIFO;
+	std::mutex m_mutex;
+public:
+	bqFixedThreadFIFO()
+	{
+	}
+
+	~bqFixedThreadFIFO()
+	{
+		if (m_mutex.try_lock())
+			m_mutex.unlock();
+	}
+
+	void Push(const Type& v)
+	{
+		m_mutex.lock();
+		m_FIFO.Push(v);
+		m_mutex.unlock();
+	}
+
+	bool TryPush(const Type& v)
+	{
+		m_mutex.lock();
+		bool r = false;
+		r = m_FIFO.TryPush(v);
+		m_mutex.unlock();
+		return r;
+	}
+
+	void Pop()
+	{
+		m_mutex.lock();
+		m_FIFO.Pop();
+		m_mutex.unlock();
+	}
+
+	Type& Front()
+	{
+		m_mutex.lock();
+		Type& r = m_FIFO.Front();
+		m_mutex.unlock();
+		return r;
+	}
+
+	bool IsEmpty() 
+	{
+		m_mutex.lock();
+		bool r = false;
+		r = m_FIFO.IsEmpty();
+		m_mutex.unlock();
+		return r;
+	}
+
+	void Clear() 
+	{
+		m_mutex.lock();
+		m_FIFO.Clear();
+		m_mutex.unlock();
+	}
+
+	bool IsFull() 
+	{
+		m_mutex.lock();
+		bool r = false;
+		r = m_FIFO.IsFull();
+		m_mutex.unlock();
+		return r;
+	}
 };
 
 

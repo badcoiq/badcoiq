@@ -311,7 +311,7 @@ void bqSoundMixerImpl::Process()
 				
 				// тут звук нужно добавлять, и каким-то образом ограничивать
 				// возростающую громкость
-				*dst32 += v;
+				*dst32 += v * m_mixerVolume;
 
 				if (*dst32 > 1.f) *dst32 = 1.f;
 				if (*dst32 < -1.f) *dst32 = -1.f;
@@ -385,7 +385,7 @@ void bqSoundMixerImpl::Process()
 					bqFloat32* dst32 = (bqFloat32*)dst->m_data.m_data;
 					for (uint32_t i = 0, sz = src->m_data.m_dataSize / sizeof(bqFloat32); i < sz; ++i){
 						bqFloat32 v = *src32;
-						*dst32 += v;
+						*dst32 += v * m_mixerVolume;
 						if (*dst32 > 1.f) *dst32 = 1.f;
 						if (*dst32 < -1.f) *dst32 = -1.f;
 						++dst32;
@@ -479,3 +479,14 @@ void bqSoundMixerImpl::RemoveAllMixers()
 {
 	m_mixers.clear();
 }
+
+void bqSoundMixerImpl::SetVolume(float v)
+{
+	m_mixerVolume = v;
+}
+
+float bqSoundMixerImpl::GetVolume()
+{
+	return m_mixerVolume;
+}
+

@@ -101,6 +101,9 @@ public:
 	virtual void RemoveMixer(bqSoundMixer*) = 0;
 	virtual void RemoveAllMixers() = 0;
 
+	// Громкость миксера.
+	virtual void SetVolume(float) = 0;
+	virtual float GetVolume() = 0;
 };
 
 class bqSoundMixerCallback

@@ -71,6 +71,10 @@ public:
 	// Параметры будут как GetDeviceInfo()
 	// Нужно только указать количество каналов.
 	virtual bqSoundMixer* SummonMixer(uint32_t channels) = 0;
+
+	// Добавить миксер в аудиодвижок.
+	// Для воспроизведения звука нужно будет добавить.
+	virtual void AddMixerToProcessing(bqSoundMixer*) = 0;
 	
 	virtual bqSoundEffectVolume* SummonEffectVolume() = 0;
 };

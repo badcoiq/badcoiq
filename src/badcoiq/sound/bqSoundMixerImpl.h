@@ -91,6 +91,8 @@ class bqSoundMixerImpl : public bqSoundMixer
 	void _processEffects(int channel);
 
 	bool m_useProcessing = true;
+
+	float m_mixerVolume = 1.f;
 public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundMixerImpl);
 	
@@ -119,5 +121,8 @@ public:
 	virtual void AddMixer(bqSoundMixer*) override;
 	virtual void RemoveMixer(bqSoundMixer*) override;
 	virtual void RemoveAllMixers() override;
+
+	virtual void SetVolume(float) override;
+	virtual float GetVolume() override;
 };
 #endif
