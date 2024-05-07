@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <thread>
 #include <mutex>
+#include <atomic>
 
 #include "badcoiq/containers/bqThreadFIFO.h"
 #include "badcoiq/containers/bqFixedFIFO.h"
@@ -104,6 +105,8 @@ public:
 			threadState_notplay
 		};
 		uint32_t m_state = threadState_play;
+
+		std::atomic_uchar m_atomic_onRemoveAllMixers = 0;
 
 	}m_threadContext;
 

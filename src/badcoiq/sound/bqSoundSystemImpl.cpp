@@ -74,6 +74,7 @@ void bqSoundSystemImpl::AddMixerToProcessing(bqSoundMixer* mixer)
 void bqSoundSystemImpl::RemoveAllMixersFromProcessing()
 {
 	BQ_ASSERT_ST(m_WASAPIrenderer);
+
 	m_WASAPIrenderer->ThreadCommand_RemoveAllMixers();
 }
 
@@ -288,7 +289,7 @@ void bqWASAPIRenderer::ThreadCommand_AddMixer(bqSoundMixerImpl* m)
 void bqWASAPIRenderer::ThreadCommandMethod_AddMixer(_thread_command* cmd)
 {
 	m_threadContext.m_mixers.push_back((bqSoundMixerImpl*)cmd->m_ptr);
-	bqLog::PrintInfo("%s\n", BQ_FUNCTION);
+	m_threadContext.m_mainMixer->AddMixer((bqSoundMixerImpl*)cmd->m_ptr);
 }
 void bqWASAPIRenderer::ThreadCommand_SetMainMixer(bqSoundMixerImpl* m)
 {
@@ -300,18 +301,28 @@ void bqWASAPIRenderer::ThreadCommand_SetMainMixer(bqSoundMixerImpl* m)
 void bqWASAPIRenderer::ThreadCommandMethod_SetMainMixer(_thread_command* cmd)
 {
 	m_threadContext.m_mainMixer = (bqSoundMixerImpl*)cmd->m_ptr;
-	bqLog::PrintInfo("%s\n", BQ_FUNCTION);
 }
 void bqWASAPIRenderer::ThreadCommand_RemoveAllMixers()
 {
+	m_threadContext.m_atomic_onRemoveAllMixers.store(1);
+
 	_thread_command cmd;
 	cmd.m_ptr = 0;
 	cmd.m_method = &bqWASAPIRenderer::ThreadCommandMethod_RemoveAllMixers;
 	this->m_threadContext.m_commands.Push(cmd);
+
+	// тут надо подождать thread звука когда он удалит все миксеры
+	while (true)
+	{
+		if(m_threadContext.m_atomic_onRemoveAllMixers.load() == 0)
+			break;
+	}
 }
 void bqWASAPIRenderer::ThreadCommandMethod_RemoveAllMixers(_thread_command* cmd)
 {
+	m_threadContext.m_mixers.clear();
 	m_threadContext.m_mainMixer->m_mixers.clear();
+	m_threadContext.m_atomic_onRemoveAllMixers.store(0);
 }
 
 void bqWASAPIRenderer::_thread_function()

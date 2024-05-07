@@ -49,6 +49,8 @@ struct bqSoundSystemDeviceInfo
 
 // * спрячу реализацию в наследнике
 // Перед использованием нужно инициализировать.
+// Перед завершением работы нужно убрать все миксеры
+//  вызвав RemoveAllMixersFromProcessing()
 class bqSoundSystem
 {
 public:
@@ -75,6 +77,8 @@ public:
 	// Добавить миксер в аудиодвижок.
 	// Для воспроизведения звука нужно будет добавить.
 	virtual void AddMixerToProcessing(bqSoundMixer*) = 0;
+
+	// Перед освобождением ресурсов нужно убрать миксеры из звукового движка
 	virtual void RemoveAllMixersFromProcessing() = 0;
 
 	virtual bqSoundEffectVolume* SummonEffectVolume() = 0;

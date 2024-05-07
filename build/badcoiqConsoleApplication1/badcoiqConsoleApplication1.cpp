@@ -590,12 +590,13 @@ int main()
                 delete model;
                 delete texture;
 
-             //   if (sfx_volume)
-               //     delete sfx_volume;
+                soundSystem->RemoveAllMixersFromProcessing();
 
-                //if (mixer) delete mixer;
+                if (sfx_volume)
+                   delete sfx_volume;
 
-                soundSystem->Shutdown();
+                if (mixer) delete mixer;
+
                 gs->Shutdown();
             }
         }
