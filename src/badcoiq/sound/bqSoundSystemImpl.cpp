@@ -848,6 +848,7 @@ HRESULT bqWASAPIRenderer::OnSessionDisconnected(AudioSessionDisconnectReason Dis
 	}
 	return S_OK;
 }
+
 //  Called when the default render device changed.  We just want to set an event which lets the stream switch logic know that it's ok to 
 //  continue with the stream switch.
 //
@@ -872,15 +873,11 @@ HRESULT bqWASAPIRenderer::OnDefaultDeviceChanged(EDataFlow /*Flow*/, ERole /*Rol
 	return S_OK;
 }
 
-//
 //  IUnknown
-//
 HRESULT bqWASAPIRenderer::QueryInterface(REFIID Iid, void** Object)
 {
 	if (Object == NULL)
-	{
 		return E_POINTER;
-	}
 	*Object = NULL;
 
 	if (Iid == IID_IUnknown)
@@ -899,22 +896,20 @@ HRESULT bqWASAPIRenderer::QueryInterface(REFIID Iid, void** Object)
 		AddRef();
 	}
 	else
-	{
 		return E_NOINTERFACE;
-	}
 	return S_OK;
 }
+
 ULONG bqWASAPIRenderer::AddRef()
 {
 	return InterlockedIncrement(&_RefCount);
 }
+
 ULONG bqWASAPIRenderer::Release()
 {
 	ULONG returnValue = InterlockedDecrement(&_RefCount);
 	if (returnValue == 0)
-	{
 		delete this;
-	}
 	return returnValue;
 }
 
