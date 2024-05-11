@@ -456,6 +456,17 @@ void bqWASAPIRenderer::_thread_function()
 						//	memcpy(pData, ch->m_data, ch->m_dataSize);
 					}
 
+					//uint32_t sampleSize = (m_mixFormat->nBlockAlign / m_mixFormat->nChannels);
+					//uint32_t numOfBlocks = m_bufferSize / m_mixFormat->nBlockAlign;
+					uint32_t numOfSamples = m_bufferSize / m_mixFormat->nBlockAlign;
+					for (uint32_t si = 0; si < numOfSamples; ++si)
+					{
+						for (uint32_t ci = 0; ci < m_mixFormat->nChannels; ++ci)
+						{
+
+						}
+					}
+
 					hr = m_renderClient->ReleaseBuffer(framesToWrite, 0);
 					//printf("done %u\n", sound->m_currentPosition);
 					if (!SUCCEEDED(hr))
