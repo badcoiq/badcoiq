@@ -473,7 +473,7 @@ int main()
                 if (mixer)
                 {
                    // mixer->SetCallback(&mixerCallback);
-                  //  mixer->AddSound(&sound7);
+                    mixer->AddSound(&sound7);
                     //mixer->AddSound(&sound8);
                     mixerCallback.m_numOfSounds = 2;
 

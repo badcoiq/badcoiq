@@ -440,29 +440,50 @@ void bqWASAPIRenderer::_thread_function()
 					//memcpy(pData, &soundData->m_data[sound->m_currentPosition], framesToWrite * m_frameSize);
 					//sound->m_currentPosition += framesToWrite * m_frameSize;
 
-					if (m_mixFormat->nChannels == 1)
-					{
-						auto ch = m_mainMixer->GetChannel(0);
-						//	memcpy(pData, ch->m_data, ch->m_dataSize);
-					}
-					else if (m_mixFormat->nChannels == 2)
-					{
-						uint32_t noc = m_mainMixer->GetNumOfChannels();
-						for (uint32_t i = 0; i < noc; ++i)
-						{
-						}
+					//if (m_mixFormat->nChannels == 1)
+					//{
+					//	auto ch = m_mainMixer->GetChannel(0);
+					//	//	memcpy(pData, ch->m_data, ch->m_dataSize);
+					//}
+					//else if (m_mixFormat->nChannels == 2)
+					//{
+					//	uint32_t noc = m_mainMixer->GetNumOfChannels();
+					//	for (uint32_t i = 0; i < noc; ++i)
+					//	{
+					//	}
 
-						auto ch = m_mainMixer->GetChannel(0);
-						//	memcpy(pData, ch->m_data, ch->m_dataSize);
-					}
+					//	auto ch = m_mainMixer->GetChannel(0);
+					//	//	memcpy(pData, ch->m_data, ch->m_dataSize);
+					//}
 
-					//uint32_t sampleSize = (m_mixFormat->nBlockAlign / m_mixFormat->nChannels);
+					uint32_t sampleSize = (m_mixFormat->nBlockAlign / m_mixFormat->nChannels);
 					//uint32_t numOfBlocks = m_bufferSize / m_mixFormat->nBlockAlign;
+					
+					BYTE* dst = pData;
 					uint32_t numOfSamples = m_bufferSize / m_mixFormat->nBlockAlign;
 					for (uint32_t si = 0; si < numOfSamples; ++si)
 					{
 						for (uint32_t ci = 0; ci < m_mixFormat->nChannels; ++ci)
 						{
+
+							// количество каналов в m_mainMixer или равно количеству каналов m_mixFormat
+							// или 2 если количество каналов в m_mixFormat больше 2х
+							uint32_t cci = ci;
+							if (cci > 2)
+								cci = 2;
+							
+							auto* src = m_mainMixer->GetChannel(cci)->m_data;
+
+							//src += si * sampleSize;
+
+							printf("Sample: %u Channel: %u Value: %f (%u)\n", si, ci, (float)(*src), sampleSize);
+
+							for (uint32_t ssi = 0; ssi < sampleSize; ++ssi)
+							{
+								*dst = *src;
+								++dst;
+								++src;
+							}
 
 						}
 					}
@@ -747,7 +768,7 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 		ssdi.m_bufferSize = m_bufferSize;
 		ssdi.m_channels = ch;
 		ssdi.m_format = GetFormat();
-		ssdi.m_sampleRate = m_mixFormat->wBitsPerSample;
+		ssdi.m_sampleRate = m_mixFormat->nSamplesPerSec;
 		m_mainMixer = new bqSoundMixerImpl(ch, ssdi);
 
 		this->ThreadCommand_SetMainMixer(m_mainMixer);

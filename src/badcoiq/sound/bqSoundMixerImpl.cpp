@@ -419,6 +419,11 @@ void bqSoundMixerImpl::GetSoundBufferInfo(bqSoundBufferInfo& info)
 	info = m_dataInfo;
 }
 
+uint32_t bqSoundMixerImpl::GetBlockSize()
+{
+	return m_dataInfo.m_blockSize;
+}
+
 uint32_t bqSoundMixerImpl::GetNumOfChannels()
 {
 	return (uint32_t)m_channels.m_size;

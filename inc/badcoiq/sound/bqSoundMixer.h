@@ -77,6 +77,7 @@ public:
 
 	// Получить информацию о буфере используемом в миксере
 	virtual void GetSoundBufferInfo(bqSoundBufferInfo&) = 0;
+	virtual uint32_t GetBlockSize() = 0;
 
 	// Получить количество каналов
 	virtual uint32_t GetNumOfChannels() = 0;

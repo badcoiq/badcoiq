@@ -91,7 +91,7 @@ class bqSoundMixerImpl : public bqSoundMixer
 
 	void _processEffects(int channel);
 
-	bool m_useProcessing = false;
+	bool m_useProcessing = true;
 
 	float m_mixerVolume = 1.f;
 public:
@@ -112,6 +112,7 @@ public:
 	virtual void Process() override;
 
 	virtual void GetSoundBufferInfo(bqSoundBufferInfo&) override;
+	virtual uint32_t GetBlockSize() override;
 	virtual uint32_t GetNumOfChannels() override;
 	virtual bqSoundBufferData* GetChannel(uint32_t) override;
 	virtual void SetCallback(bqSoundMixerCallback*) override;
