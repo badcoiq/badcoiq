@@ -407,17 +407,8 @@ void bqWASAPIRenderer::_thread_function()
 			m_threadContext.m_commands.Pop();
 		}
 
-		for (size_t i = 0; i < m_threadContext.m_mixers.m_size; ++i)
-		{
-			auto currentMixer = m_threadContext.m_mixers.m_data[i];
-			currentMixer->Process();
-		}
-
-		if (m_threadContext.m_mixers.m_size)
-		{
-			m_mainMixer->Process();
-		}
-
+		
+		//Sleep(100);
 		UINT32 padding = 0;
 		hr = m_audioClient->GetCurrentPadding(&padding);
 		if (SUCCEEDED(hr))
@@ -432,6 +423,16 @@ void bqWASAPIRenderer::_thread_function()
 
 			if (m_bufferSize <= (framesAvailable * m_frameSize))
 			{
+				for (size_t i = 0; i < m_threadContext.m_mixers.m_size; ++i)
+				{
+					auto currentMixer = m_threadContext.m_mixers.m_data[i];
+					currentMixer->Process();
+				}
+				if (m_threadContext.m_mixers.m_size)
+				{
+					m_mainMixer->Process();
+				}
+
 				BYTE* pData = 0;
 				hr = m_renderClient->GetBuffer(framesToWrite, &pData);
 				if (SUCCEEDED(hr))
@@ -459,8 +460,13 @@ void bqWASAPIRenderer::_thread_function()
 					uint32_t sampleSize = (m_mixFormat->nBlockAlign / m_mixFormat->nChannels);
 					//uint32_t numOfBlocks = m_bufferSize / m_mixFormat->nBlockAlign;
 					
-					BYTE* dst = pData;
+					float* dst = (float*)pData;
+
 					uint32_t numOfSamples = m_bufferSize / m_mixFormat->nBlockAlign;
+					//uint32_t numOfSamplesPerChannel = numOfSamples / m_mixFormat->nChannels;
+					
+					uint32_t srcSampleIndex = 0;
+
 					for (uint32_t si = 0; si < numOfSamples; ++si)
 					{
 						for (uint32_t ci = 0; ci < m_mixFormat->nChannels; ++ci)
@@ -472,20 +478,26 @@ void bqWASAPIRenderer::_thread_function()
 							if (cci > 2)
 								cci = 2;
 							
-							auto* src = m_mainMixer->GetChannel(cci)->m_data;
+							float* src = (float*)m_mainMixer->GetChannel(0)->m_data;
 
 							//src += si * sampleSize;
 
-							printf("Sample: %u Channel: %u Value: %f (%u)\n", si, ci, (float)(*src), sampleSize);
+						//	printf("Sample: %u Channel: %u Value: %f (%u)\n", si, ci, (float)(*src), sampleSize);
 
-							for (uint32_t ssi = 0; ssi < sampleSize; ++ssi)
+							/*for (uint32_t ssi = 0; ssi < sampleSize; ++ssi)
 							{
 								*dst = *src;
 								++dst;
 								++src;
-							}
+							}*/
 
+						//	printf("Sample: %u Channel: %u Value: %f (%u)\n", si, ci, 
+						//		src[srcSampleIndex], sampleSize);
+							*dst = src[srcSampleIndex];
+							++dst;
 						}
+
+						++srcSampleIndex;
 					}
 
 					hr = m_renderClient->ReleaseBuffer(framesToWrite, 0);
@@ -502,6 +514,9 @@ void bqWASAPIRenderer::_thread_function()
 					printf("Unable to get buffer: %x bufferSize: %u\n", hr, m_bufferSize);
 					//	stillPlaying = false;
 				}
+			}
+			else
+			{
 			}
 		}
 		//for (size_t i = 0; i < m_threadContext.m_sounds.m_size; ++i)
@@ -725,7 +740,7 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 			return false;
 		}
 
-		uint32_t EngineLatency = 50;
+		uint32_t EngineLatency = 100;
 
 		REFERENCE_TIME bufferDuration = EngineLatency * 10000;
 		REFERENCE_TIME periodicity = EngineLatency * 10000;

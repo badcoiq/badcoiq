@@ -474,7 +474,7 @@ int main()
                 {
                    // mixer->SetCallback(&mixerCallback);
                     mixer->AddSound(&sound7);
-                    //mixer->AddSound(&sound8);
+                    mixer->AddSound(&sound8);
                     mixerCallback.m_numOfSounds = 2;
 
                     sfx_volume = soundSystem->SummonEffectVolume();
@@ -500,11 +500,30 @@ int main()
                //     BQ_PTR_D(bqSoundObject, so4, se->SummonSoundObject(&sound4));
                //     BQ_PTR_D(bqSoundObject, so5, se->SummonSoundObject(&sound6));
 
-
+                    float* dt_ptr = bqFramework::GetDeltaTime();
                     while (g_run)
                     {
                         bqFramework::Update();
                         bqFramework::UpdateGUI();
+
+                        if (bqInput::IsKeyHit(bqInput::KEY_1))
+                        {
+                            float volume = mixer->GetVolume();
+                            volume -= 1.f * (*dt_ptr);
+                            if (volume < 0.f)
+                                volume = 0.f;
+                            printf("V: %f\n", volume);
+                            mixer->SetVolume(volume);
+                        }
+                        if (bqInput::IsKeyHit(bqInput::KEY_2))
+                        {
+                            float volume = mixer->GetVolume();
+                            volume += 1.f * (*dt_ptr);
+                            if (volume > 1.f)
+                                volume = 1.f;
+                            printf("V: %f\n", volume);
+                            mixer->SetVolume(volume);
+                        }
 
                        /* if (bqInput::IsKeyHit(bqInput::KEY_1))
                             so1->Start();

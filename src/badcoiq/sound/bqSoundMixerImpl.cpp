@@ -383,7 +383,8 @@ void bqSoundMixerImpl::Process()
 					auto dst = m_channels.m_data[ti];
 					bqFloat32* src32 = (bqFloat32*)src->m_data.m_data;
 					bqFloat32* dst32 = (bqFloat32*)dst->m_data.m_data;
-					for (uint32_t i = 0, sz = src->m_data.m_dataSize / sizeof(bqFloat32); i < sz; ++i){
+					for (uint32_t i = 0, sz = src->m_data.m_dataSize / sizeof(bqFloat32); i < sz; ++i)
+					{
 						bqFloat32 v = *src32;
 						*dst32 += v * m_mixerVolume;
 						if (*dst32 > 1.f) *dst32 = 1.f;
