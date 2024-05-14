@@ -84,9 +84,7 @@ bqSoundEffectVolume* bqSoundSystemImpl::SummonEffectVolume()
 	return newEffect;
 }
 
-//
 //  Retrieves the device friendly name for a particular device in a device collection.
-//
 LPWSTR GetDeviceName(IMMDeviceCollection* DeviceCollection, UINT DeviceIndex)
 {
 	IMMDevice* device;
@@ -437,25 +435,6 @@ void bqWASAPIRenderer::_thread_function()
 				hr = m_renderClient->GetBuffer(framesToWrite, &pData);
 				if (SUCCEEDED(hr))
 				{
-					//bqSoundBufferData* soundData = sound->m_bufferData;
-					//memcpy(pData, &soundData->m_data[sound->m_currentPosition], framesToWrite * m_frameSize);
-					//sound->m_currentPosition += framesToWrite * m_frameSize;
-
-					//if (m_mixFormat->nChannels == 1)
-					//{
-					//	auto ch = m_mainMixer->GetChannel(0);
-					//	//	memcpy(pData, ch->m_data, ch->m_dataSize);
-					//}
-					//else if (m_mixFormat->nChannels == 2)
-					//{
-					//	uint32_t noc = m_mainMixer->GetNumOfChannels();
-					//	for (uint32_t i = 0; i < noc; ++i)
-					//	{
-					//	}
-
-					//	auto ch = m_mainMixer->GetChannel(0);
-					//	//	memcpy(pData, ch->m_data, ch->m_dataSize);
-					//}
 
 					uint32_t sampleSize = (m_mixFormat->nBlockAlign / m_mixFormat->nChannels);
 					//uint32_t numOfBlocks = m_bufferSize / m_mixFormat->nBlockAlign;
@@ -480,20 +459,20 @@ void bqWASAPIRenderer::_thread_function()
 							
 							float* src = (float*)m_mainMixer->GetChannel(0)->m_data;
 
-							//src += si * sampleSize;
-
-						//	printf("Sample: %u Channel: %u Value: %f (%u)\n", si, ci, (float)(*src), sampleSize);
-
-							/*for (uint32_t ssi = 0; ssi < sampleSize; ++ssi)
-							{
-								*dst = *src;
-								++dst;
-								++src;
-							}*/
-
 						//	printf("Sample: %u Channel: %u Value: %f (%u)\n", si, ci, 
 						//		src[srcSampleIndex], sampleSize);
-							*dst = src[srcSampleIndex];
+							//*dst = src[srcSampleIndex];
+							//++dst;
+
+							uint8_t* dst8 = (uint8_t*)dst;
+							uint8_t* src8 = (uint8_t*)&src[srcSampleIndex];
+
+							for (uint32_t ssi = 0; ssi < sampleSize; ++ssi)
+							{
+								*dst8 = *src8;
+								++dst8;
+								++src8;
+							}
 							++dst;
 						}
 
@@ -519,161 +498,6 @@ void bqWASAPIRenderer::_thread_function()
 			{
 			}
 		}
-		//for (size_t i = 0; i < m_threadContext.m_sounds.m_size; ++i)
-		//{
-		//	bqSoundObjectImpl* sound = m_threadContext.m_sounds.m_data[i];
-
-		//	switch (sound->m_threadCommand)
-		//	{
-		//	default:
-		//		break;
-		//	case bqSoundObjectImpl::ThreadCommand::ThreadCommand_start:
-		//	{
-		//		// очистка буфера у m_renderClient
-		//		// чтобы при старте не проигрывался `мусор`
-		//		{
-		//			BYTE* pData;
-		//			hr = m_renderClient->GetBuffer(m_bufferSize, &pData);
-		//			if (FAILED(hr))
-		//			{
-		//				bqLog::PrintError("Failed to get buffer: %x.\n", hr);
-		//				return;
-		//			}
-		//			hr = m_renderClient->ReleaseBuffer(m_bufferSize, AUDCLNT_BUFFERFLAGS_SILENT);
-		//			if (FAILED(hr))
-		//			{
-		//				bqLog::PrintError("Failed to release buffer: %x.\n", hr);
-		//				return;
-		//			}
-
-		//			UINT32 padding = 0;
-		//			hr = m_audioClient->GetCurrentPadding(&padding);
-		//			if (SUCCEEDED(hr))
-		//			{
-		//				bqLog::Print("first padding is %u\n", padding);
-		//			}
-		//		}
-
-		//		// сначала надо менять m_threadCommand и m_threadState
-		//		// и после этого менять m_state
-		//		// во всех остальных case так-же
-		//		sound->m_threadCommand = bqSoundObjectImpl::ThreadCommand::ThreadCommand_null;
-
-		//		// Тут всякие проверки
-		//		// 
-		//		// Далее Start и изменяем state
-		//		hr = m_audioClient->Start();
-		//		if (FAILED(hr))
-		//		{
-		//			bqLog::Print("Unable to start render client: %x.\n", hr);
-		//			sound->m_threadState = bqSoundObjectImpl::ThreadState::ThreadState_null;
-		//			sound->m_state = bqSoundObject::state_notplaying;
-		//		}
-		//		else
-		//		{
-		//	//		printf("Start\n");
-		//			sound->m_threadState = bqSoundObjectImpl::ThreadState::ThreadState_play;
-		//			sound->m_state = bqSoundObject::state_playing;
-
-		//			UINT32 padding = 0;
-		//			hr = m_audioClient->GetCurrentPadding(&padding);
-		//			if (SUCCEEDED(hr))
-		//			{
-		//				Sleep(50); // должна быть пауза между обновлениями буфера
-		//				// видимо это то самое (хз что), о котором написано в примере
-		//				// WASAPIRenderSharedEventDriven в CWASAPIRenderer::Initialize
-		//				// Engine latency in shared mode timer driven cannot be less than 50ms
-		//				// 
-
-		//				bqLog::Print("padding on start is %u\n", padding);
-		//				// так как обновили буфер из render client и запустили воспроизведение
-		//				// padding равен какому-то значению, которое означает сколько байтов
-		//				// осталось воспроизводить.
-		//				// в буфер нужно послать звук. нужно создать отдельный метод для этого
-		//				// и вызвать его в нескольких местах
-		//				// первое место это здесь.
-		//				// второе ниже, в bqSoundObjectImpl::ThreadState::ThreadState_play:
-		//				sound->_thread_fillRenderBuffer();
-		//			}
-		//		}
-
-		//	}break;
-		//	case bqSoundObjectImpl::ThreadCommand::ThreadCommand_stop:
-		//	{
-		//		hr = m_audioClient->Stop();
-		//		if (FAILED(hr))
-		//		{
-		//			bqLog::Print("Unable to stop render client: %x.\n", hr);
-		//		}
-		//		else
-		//		{
-		//	//		printf("Stop\n");
-		//		}
-
-		//		sound->m_threadState = bqSoundObjectImpl::ThreadState::ThreadState_null;
-		//		sound->m_threadCommand = bqSoundObjectImpl::ThreadCommand::ThreadCommand_null;
-		//		sound->m_state = bqSoundObject::state_notplaying;
-		//	}break;
-		//	}
-
-
-		//	switch (sound->m_threadState)
-		//	{
-		//	default:
-		//		break;
-		//	case bqSoundObjectImpl::ThreadState::ThreadState_play:
-		//	{
-		//		UINT32 padding = 0;
-		//		hr = m_audioClient->GetCurrentPadding(&padding);
-		//		if (SUCCEEDED(hr))
-		//		{
-		//			//bqLog::Print("padding %u\n", padding);
-		//			//Sleep(1);
-		//			//if(!padding)
-		//			//sound->_thread_fillRenderBuffer();
-		//			
-		//			UINT32 framesAvailable = m_bufferSize - padding;
-		//			UINT32 framesToWrite = m_bufferSize / m_frameSize;
-
-		//			if(m_bufferSize <= (framesAvailable * m_frameSize))
-		//			{
-		//				BYTE* pData = 0;
-		//				hr = m_renderClient->GetBuffer(framesToWrite, &pData);
-		//				if (SUCCEEDED(hr))
-		//				{
-		//					bqSoundBufferData* soundData = sound->m_bufferData;
-
-		//					memcpy(pData, &soundData->m_data[sound->m_currentPosition], framesToWrite * m_frameSize);
-
-		//					sound->m_currentPosition += framesToWrite * m_frameSize;
-
-		//					hr = m_renderClient->ReleaseBuffer(framesToWrite, 0);
-		//					//printf("done %u\n", sound->m_currentPosition);
-		//					if (!SUCCEEDED(hr))
-		//					{
-		//						//AUDCLNT_E_BUFFER_ERROR
-		//						printf("Unable to release buffer: %x\n", hr);
-		//						//	stillPlaying = false;
-		//					}
-		//				}
-		//				else
-		//				{
-		//					printf("Unable to get buffer: %x bufferSize: %u\n", hr, m_bufferSize);
-		//					//	stillPlaying = false;
-		//				}
-		//			}
-
-		//		//	sound->m_threadState = bqSoundObjectImpl::ThreadState::ThreadState_null;
-		//		}
-		//		else
-		//		{
-		//			//bqLog::Print("NOT\n");
-		//			sound->m_state = bqSoundObject::state_notplaying;
-		//			sound->m_threadState = bqSoundObjectImpl::ThreadState::ThreadState_null;
-		//		}
-		//	}break;
-		//	}
-		//}
 	}
 
 	hr = m_audioClient->Stop();
