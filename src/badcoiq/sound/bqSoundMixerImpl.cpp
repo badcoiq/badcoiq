@@ -66,8 +66,8 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 	m_bufferSizeForOneChannel = info.m_bufferSize / info.m_channels;
 
 	m_dataInfo.m_bitsPerSample = 32;
-	m_dataInfo.m_blockSize = 4; // не имеет значения, пусть будет как на 1 канал
-	m_dataInfo.m_bytesPerSample = 4;
+	m_dataInfo.m_bytesPerSample = m_dataInfo.m_bitsPerSample / 8;
+	m_dataInfo.m_blockSize = m_dataInfo.m_bytesPerSample * channels;
 	m_dataInfo.m_channels = channels;
 	m_dataInfo.m_format = bqSoundFormat::float32; // всё миксуется единым форматом
 	m_dataInfo.m_numOfSamples = m_bufferSizeForOneChannel / m_dataInfo.m_blockSize;
@@ -227,6 +227,7 @@ void bqSoundMixerImpl::Process()
 
 		bool isOnEnd = false;
 
+
 		// Заполняю временные буферы m_channelsTmp
 		size_t isz = soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;// / sizeof(bqFloat32);
 
@@ -234,6 +235,9 @@ void bqSoundMixerImpl::Process()
 		{
 			// если заполнили m_channelsTmp то
 			// * выход из цикла
+			//
+			// !!! Размер звука может быть больше размера одного канала
+			// поэтому выход из цикла скорее всего будет здесь
 			if (i >= m_bufferSizeForOneChannel)
 			{
 				break;
@@ -253,10 +257,15 @@ void bqSoundMixerImpl::Process()
 			}
 
 			// далее надо прокрутить sPos
+			// прибавляем m_blockSize потому что 1 или 2 канала взяли, нужно
+			// перейти на след. сампл.
 			sPos += soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_blockSize;
 
 			// i тоже крутим
-			i += soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_blockSize;
+			// тут прибавляем m_bytesPerSample потому что i отвечает за 1 канал
+			// вот такой вот хаос здесь. возможно нужно будет добавить отдельный индекс
+			// пока i играет 2 роли (проход по звуку целиком и выход из цикла при заполнении m_channelsTmp)
+			i += m_dataInfo.m_bytesPerSample;
 
 			// теперь надо передать звук во временный буфер
 			uint8_t* dataTmp8 = (uint8_t*)m_channelsTmp.m_data[0]->m_data.m_data;
@@ -294,31 +303,30 @@ void bqSoundMixerImpl::Process()
 		soundNode.m_position = sPos;
 
 		// теперь смешиваю временные m_channelsTmp с каналами миксера
-		for (size_t ti = 0; ti < m_channelsTmp.m_size; ++ti)
+		for (uint32_t bi = 0; bi < m_bufferSizeForOneChannel; )
 		{
-			if (ti >= m_channels.m_size)
-				break;
-
-			auto src = m_channelsTmp.m_data[ti];
-			auto dst = m_channels.m_data[ti];
-
-			bqFloat32* src32 = (bqFloat32*)src->m_data.m_data;
-			bqFloat32* dst32 = (bqFloat32*)dst->m_data.m_data;
-
-			for (uint32_t i = 0, sz = src->m_data.m_dataSize / sizeof(bqFloat32); i < sz; ++i)
+			for (uint32_t ci = 0; ci < m_channels.m_size; ++ci)
 			{
-				bqFloat32 v = *src32;
-				
-				// тут звук нужно добавлять, и каким-то образом ограничивать
-				// возростающую громкость
-				*dst32 += v * m_mixerVolume;
+				uint8_t* dst8 = (uint8_t*)m_channels.m_data[ci]->m_data.m_data;
+				dst8 += bi;
+				bqFloat32* dst32 = (bqFloat32*)dst8;
 
-				if (*dst32 > 1.f) *dst32 = 1.f;
-				if (*dst32 < -1.f) *dst32 = -1.f;
+				if (ci < m_channelsTmp.m_size)
+				{
+					uint8_t* src8 = (uint8_t*)m_channelsTmp.m_data[ci]->m_data.m_data;
+					src8 += bi;
+					bqFloat32* src32 = (bqFloat32*)src8;
 
-				++dst32;
-				++src32;
+					bqFloat32 v = *src32;
+
+					*dst32 += v * m_mixerVolume;
+
+					if (*dst32 > 1.f) *dst32 = 1.f;
+					if (*dst32 < -1.f) *dst32 = -1.f;
+				}
 			}
+
+			bi += m_dataInfo.m_bytesPerSample;
 		}
 
 		if (isOnEnd)

@@ -458,13 +458,13 @@ int main()
 
                 sound7.LoadFromFile("../data/sounds/Jimbo's_Lullaby_float32_stereo.wav");
                 sound7.m_soundBuffer->Make32bitsFloat();
-                sound7.m_soundBuffer->MakeMono(0);
+             //   sound7.m_soundBuffer->MakeMono(0);
                 sound7.m_soundBuffer->Resample(48000);
                 sound7.SaveToFile(bqSoundFileType::wav, "../data/sounds/Jimbo's_Lullaby_float32_stereo_MONORESAMPLED48000.wav");
 
                 sound8.LoadFromFile("../data/sounds/flute.wav");
                 sound8.m_soundBuffer->Make32bitsFloat();
-                sound8.m_soundBuffer->MakeMono(0);
+             //   sound8.m_soundBuffer->MakeMono(0);
                 sound8.m_soundBuffer->Resample(48000);
                 
                 auto soundSystem = bqFramework::GetSoundSystem();
@@ -472,7 +472,7 @@ int main()
                 auto mixer = soundSystem->SummonMixer(1);
                 if (mixer)
                 {
-                   // mixer->SetCallback(&mixerCallback);
+                    mixer->SetCallback(&mixerCallback);
                     mixer->AddSound(&sound7);
                     mixer->AddSound(&sound8);
                     mixerCallback.m_numOfSounds = 2;
@@ -481,14 +481,14 @@ int main()
                     sfx_volume->SetVolume(0.1f);
                     mixer->AddEffect(sfx_volume);
                     
-                    /*for (int i = 0; i < 3000; ++i)
+                    for (int i = 0; i < 3000; ++i)
                     {
                         mixer->Process();
                     }
                     mixerCallback.m_numOfSounds = 0;
-                    mixer->Process();*/
+                    mixer->Process();
 
-                    soundSystem->AddMixerToProcessing(mixer);
+                  //  soundSystem->AddMixerToProcessing(mixer);
                     mixer->UseProcessing(true);
                 }
               //  bqFramework::GetSoundSystem()->
