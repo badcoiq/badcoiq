@@ -457,7 +457,7 @@ void bqWASAPIRenderer::_thread_function()
 							if (cci > 2)
 								cci = 2;
 							
-							float* src = (float*)m_mainMixer->GetChannel(0)->m_data;
+							float* src = (float*)m_mainMixer->GetChannel(cci)->m_data;
 
 						//	printf("Sample: %u Channel: %u Value: %f (%u)\n", si, ci, 
 						//		src[srcSampleIndex], sampleSize);

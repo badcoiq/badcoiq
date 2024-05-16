@@ -458,7 +458,7 @@ int main()
 
                 sound7.LoadFromFile("../data/sounds/Clearlight.wav");
                 sound7.m_soundBuffer->Make32bitsFloat();
-                sound7.m_soundBuffer->MakeMono(0);
+              //  sound7.m_soundBuffer->MakeMono(0);
                 sound7.m_soundBuffer->Resample(48000);
 
                 sound8.LoadFromFile("../data/sounds/flute.wav");
@@ -468,10 +468,10 @@ int main()
                 
                 auto soundSystem = bqFramework::GetSoundSystem();
                 bqSoundEffectVolume* sfx_volume = 0;
-                auto mixer = soundSystem->SummonMixer(1);
+                auto mixer = soundSystem->SummonMixer(2);
                 if (mixer)
                 {
-                    mixer->SetCallback(&mixerCallback);
+                    //mixer->SetCallback(&mixerCallback);
                     mixer->AddSound(&sound7);
                    // mixer->AddSound(&sound8);
                     mixerCallback.m_numOfSounds = 2;
@@ -487,7 +487,7 @@ int main()
                     mixerCallback.m_numOfSounds = 0;
                     mixer->Process();
 
-                  //  soundSystem->AddMixerToProcessing(mixer);
+                    soundSystem->AddMixerToProcessing(mixer);
                     mixer->UseProcessing(true);
                 }
               //  bqFramework::GetSoundSystem()->
