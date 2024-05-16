@@ -456,11 +456,10 @@ int main()
                 sound6.m_soundBuffer->Resample(100000);
                 sound6.SaveToFile(bqSoundFileType::wav, "../data/sounds/alien_beacon44100_float_resample_100000.wav");
 
-                sound7.LoadFromFile("../data/sounds/Jimbo's_Lullaby_float32_stereo.wav");
+                sound7.LoadFromFile("../data/sounds/Clearlight.wav");
                 sound7.m_soundBuffer->Make32bitsFloat();
-             //   sound7.m_soundBuffer->MakeMono(0);
+                sound7.m_soundBuffer->MakeMono(0);
                 sound7.m_soundBuffer->Resample(48000);
-                sound7.SaveToFile(bqSoundFileType::wav, "../data/sounds/Jimbo's_Lullaby_float32_stereo_MONORESAMPLED48000.wav");
 
                 sound8.LoadFromFile("../data/sounds/flute.wav");
                 sound8.m_soundBuffer->Make32bitsFloat();
@@ -474,7 +473,7 @@ int main()
                 {
                     mixer->SetCallback(&mixerCallback);
                     mixer->AddSound(&sound7);
-                    mixer->AddSound(&sound8);
+                   // mixer->AddSound(&sound8);
                     mixerCallback.m_numOfSounds = 2;
 
                     sfx_volume = soundSystem->SummonEffectVolume();

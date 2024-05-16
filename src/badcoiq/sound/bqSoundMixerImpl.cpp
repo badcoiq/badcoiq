@@ -319,6 +319,17 @@ void bqSoundMixerImpl::Process()
 
 					bqFloat32 v = *src32;
 
+					// Если миксер имеет 1 канал а звук более 1го то нужно
+					// присваивать сумму значений.
+					// В данном случае используется временные каналы, их 2 штуки.
+					if (m_channels.m_size == 1)
+					{
+						src8 = (uint8_t*)m_channelsTmp.m_data[ci+1]->m_data.m_data;
+						src8 += bi;
+						src32 = (bqFloat32*)src8;
+						v += *src32;
+					}
+
 					*dst32 += v * m_mixerVolume;
 
 					if (*dst32 > 1.f) *dst32 = 1.f;
