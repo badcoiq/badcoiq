@@ -76,6 +76,14 @@ void bqSound::PlaybackSet(float minutes, float seconds)
 
 void bqSound::PlaybackSet(float secondsOnly)
 {
+	if (secondsOnly == 0.f)
+	{
+		m_playbackPosition = 0;
+	}
+	else
+	{
+
+	}
 }
 
 void bqSound::SetLoop(uint32_t v)

@@ -78,6 +78,8 @@ class bqSound
 	};
 	uint32_t m_state = state_notPlaying;
 
+	uint32_t m_playbackPosition = 0;
+
 	// если m_loop == -1
 	// то повторение бесконечное
 	uint32_t m_loop = 0;
@@ -92,6 +94,8 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqSound);
 
 	bool IsPlaying() { return m_state == state_playing; }
+	uint32_t GetPlaybackPosition() { return m_playbackPosition; }
+	void SetPlaybackPosition(uint32_t v) { m_playbackPosition = v; }
 
 	void PlaybackStart();
 	void PlaybackStop();

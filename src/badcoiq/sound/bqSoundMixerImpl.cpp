@@ -165,9 +165,7 @@ void bqSoundMixerImpl::AddSound(bqSound* sound)
 		return;
 	}
 
-	bqSoundMixerNode node;
-	node.m_sound = sound;
-	m_sounds.push_back(node);
+	m_sounds.push_back(sound);
 }
 
 void bqSoundMixerImpl::RemoveSound(bqSound* sound)
@@ -176,15 +174,13 @@ void bqSoundMixerImpl::RemoveSound(bqSound* sound)
 
 	struct _compare
 	{
-		bool operator()(const bqSoundMixerNode& a, const bqSoundMixerNode& b) const
+		bool operator()(bqSound* a, bqSound* b) const
 		{
-			return a.m_sound == b.m_sound;
+			return a == b;
 		}
 	}compare;
 
-	bqSoundMixerNode node;
-	node.m_sound = sound;
-	while (m_sounds.erase_first(node, compare));
+	while (m_sounds.erase_first(sound, compare));
 }
 
 void bqSoundMixerImpl::RemoveAllSounds()
@@ -219,20 +215,20 @@ void bqSoundMixerImpl::Process()
 
 	for (size_t si = 0; si < m_sounds.m_size; ++si)
 	{
-		bqSoundMixerNode& soundNode = m_sounds.m_data[si];
+		bqSound* sound = m_sounds.m_data[si];
 
-		if (!soundNode.m_sound->IsPlaying())
+		if (!sound->IsPlaying())
 			continue;
 
-		auto soundChannelsNum = soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_channels;
+		auto soundChannelsNum = sound->m_soundBuffer->m_bufferInfo.m_channels;
 
-		uint32_t sPos = soundNode.m_position; // в байтах
+		uint32_t sPos = sound->GetPlaybackPosition(); // в байтах
 
 		bool isOnEnd = false;
 
 
 		// Заполняю временные буферы m_channelsTmp
-		size_t isz = soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize;// / sizeof(bqFloat32);
+		size_t isz = sound->m_soundBuffer->m_bufferData.m_dataSize;// / sizeof(bqFloat32);
 
 		for (size_t i = 0, i_tmp = 0, last = isz - 1; i < isz; ) // проход по звуку. 
 		{
@@ -246,23 +242,23 @@ void bqSoundMixerImpl::Process()
 				break;
 			}
 
-			uint8_t* dataSound8 = soundNode.m_sound->m_soundBuffer->m_bufferData.m_data;
+			uint8_t* dataSound8 = sound->m_soundBuffer->m_bufferData.m_data;
 			bqFloat32* dataSound32 = (bqFloat32*)(&dataSound8[sPos]);
 
 			// Сразу возьму звук. + умножу на значение громкости
-			bqFloat32 ch1 = *dataSound32 * soundNode.m_sound->m_volume;
+			bqFloat32 ch1 = *dataSound32 * sound->m_volume;
 			bqFloat32 ch2 = ch1;
 			// Если каналов больше то беру второй
 			if (soundChannelsNum > 1)
 			{
 				++dataSound32;
-				ch2 = *dataSound32 * soundNode.m_sound->m_volume;
+				ch2 = *dataSound32 * sound->m_volume;
 			}
 
 			// далее надо прокрутить sPos
 			// прибавляем m_blockSize потому что 1 или 2 канала взяли, нужно
 			// перейти на след. сампл.
-			sPos += soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_blockSize;
+			sPos += sound->m_soundBuffer->m_bufferInfo.m_blockSize;
 
 			// i тоже крутим
 			// тут прибавляем m_bytesPerSample потому что i отвечает за 1 канал
@@ -282,7 +278,7 @@ void bqSoundMixerImpl::Process()
 			++i_tmp;
 
 			// Если позиция звука вышла за пределы массива звука
-			if (sPos >= soundNode.m_sound->m_soundBuffer->m_bufferData.m_dataSize)
+			if (sPos >= sound->m_soundBuffer->m_bufferData.m_dataSize)
 			{
 				// если вышла за пределы то обнуление
 				// при pitch нужно ли что-то иное пока хз
@@ -303,7 +299,7 @@ void bqSoundMixerImpl::Process()
 		// Для pitch нужно будет по особому изменять значение soundNode.m_position
 		// Для простоты буду использовать sPos
 		// Типа, произвёл все действия, и присвоил это soundNode.m_position
-		soundNode.m_position = sPos;
+		sound->SetPlaybackPosition(sPos);
 
 		// теперь смешиваю временные m_channelsTmp с каналами миксера
 		for (uint32_t bi = 0; bi < m_bufferSizeForOneChannel; )
@@ -345,7 +341,20 @@ void bqSoundMixerImpl::Process()
 
 		if (isOnEnd)
 		{
-			m_callback->OnEndSound(this, soundNode.m_sound);
+			auto loop = sound->GetLoopNumber();
+			if (loop)
+			{
+				if (loop != (uint32_t)-1)
+				{
+					sound->SetLoop(--loop);
+				}
+			}
+			else
+			{
+				sound->PlaybackStop();
+			}
+
+			m_callback->OnEndSound(this, sound);
 			isOnEnd = false;
 		}
 	}

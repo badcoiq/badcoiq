@@ -37,36 +37,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // каждый миксер будет воспроизводить его по своему
 // надо знать определённые вещи у звука
 // например позиция воспроизведения
-struct bqSoundMixerNode
-{
-	bqSound* m_sound = 0;
-	uint32_t m_position = 0;
-
-
-	bqSoundMixerNode& operator=(const bqSoundMixerNode& other) 
-	{
-		m_sound = other.m_sound;
-		m_position = other.m_position;
-		return *this; 
-	}
-
-	bqSoundMixerNode& operator=(int) 
-	{
-		zero();
-		return *this; 
-	}
-
-	void zero()
-	{
-		m_sound = 0;
-		m_position = 0;
-	}
-};
+//struct bqSoundMixerNode
+//{
+//	bqSound* m_sound = 0;
+//	//uint32_t m_position = 0;
+//
+//
+//	bqSoundMixerNode& operator=(const bqSoundMixerNode& other) 
+//	{
+//		m_sound = other.m_sound;
+//		m_position = other.m_position;
+//		return *this; 
+//	}
+//
+//	bqSoundMixerNode& operator=(int) 
+//	{
+//		zero();
+//		return *this; 
+//	}
+//
+//	void zero()
+//	{
+//		m_sound = 0;
+//		m_position = 0;
+//	}
+//};
 
 class bqSoundMixerImpl : public bqSoundMixer
 {
 	friend class bqWASAPIRenderer;
-	bqArray<bqSoundMixerNode> m_sounds;
+	//bqArray<bqSoundMixerNode> m_sounds;
+	bqArray<bqSound*> m_sounds;
+
 	bqArray<bqSoundMixer*> m_mixers;
 	bqList<bqSoundEffect*> m_effects;
 

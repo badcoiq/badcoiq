@@ -436,6 +436,7 @@ int main()
                 bqSound sound5;
                 bqSound sound6;
                 bqSound sound7;
+                bqSound sound7b;
                 bqSound sound8;
                 uint32_t Hz = 440;
 
@@ -453,8 +454,11 @@ int main()
                 sound5.m_hasItsOwnSound = true;
                 sound6.m_soundBuffer = new bqSoundBuffer;
                 sound6.m_hasItsOwnSound = true;
+                
                 sound7.m_soundBuffer = new bqSoundBuffer;
                 sound7.m_hasItsOwnSound = true;
+                sound7b.m_soundBuffer = sound7.m_soundBuffer;
+
                 sound8.m_soundBuffer = new bqSoundBuffer;
                 sound8.m_hasItsOwnSound = true;
 
@@ -489,7 +493,9 @@ int main()
                 if (mixer)
                 {
                     //mixer->SetCallback(&mixerCallback);
+                    //sound7.SetLoop(1);
                     mixer->AddSound(&sound7);
+                    mixer->AddSound(&sound7b);
                    // mixer->AddSound(&sound8);
                     mixerCallback.m_numOfSounds = 2;
 
@@ -545,9 +551,14 @@ int main()
                         {
                             sound7.PlaybackStart();
                         }
+                        if (bqInput::IsKeyHit(bqInput::KEY_W))
+                        {
+                            sound7b.PlaybackStart();
+                        }
                         if (bqInput::IsKeyHit(bqInput::KEY_E))
                         {
                             sound7.PlaybackStop();
+                            sound7b.PlaybackStop();
                         }
 
                        /* if (bqInput::IsKeyHit(bqInput::KEY_1))
