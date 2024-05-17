@@ -44,12 +44,6 @@ enum class bqSoundWaveType
 	saw
 };
 
-struct bqSoundBufferData
-{
-	uint8_t* m_data = 0;
-	uint32_t m_dataSize = 0;
-};
-
 enum class bqSoundFormat
 {
 	uint8,
@@ -61,113 +55,63 @@ enum class bqSoundFormat
 	unsupported
 };
 
-// по умолчанию звук формата float
-struct bqSoundBufferInfo
-{
-	bqSoundFormat m_format = bqSoundFormat::float32;
+#include "badcoiq/sound/bqSoundBuffer.h"
 
-	// всё должно быть вычислено правильно.
-	// используется в генерации, конвертации и эффектах
-
-	uint32_t m_sampleRate = 44100;
-	uint32_t m_channels = 1;
-	uint32_t m_bitsPerSample = 32;
-
-	float m_time = 0.f;
-	
-	uint32_t m_numOfSamples = 0;// когда 2 канала это 2 сэмпла или 1?
-	                            // ответ - у каждого канала свой сэмпл.
-								// при проигрывании имеем столько-то сэмплов 
-								// сколько и каналов, но переменная m_numOfSamples
-								// отвечает только за 1 канал, как и m_sampleRate.
-	// количество самплов есть количество блоков
-	//uint32_t numOfBlocks = m_soundBuffer->m_bufferData.m_dataSize / m_soundBuffer->m_bufferInfo.m_blockSize;
-	// на основе времени
-	// newSound->m_bufferInfo.m_numOfSamples = (uint32_t)ceil((float)newSound->m_bufferInfo.m_sampleRate * time);
-
-	uint32_t m_bytesPerSample = 0; // m_bitsPerSample / 8;
-	
-	// nBlockAlign
-	// блоком называется текущий сэмпл на каждый канал
-	// размер в байтах
-	uint32_t m_blockSize = 0;// m_bytesPerSample * m_channels;
-};
-
-// возможно лучше это сунуть в bqSound
-// думал что bqSound будет выступать в качестве управляющего объекта
-// но теперь есть bqSoundObject
-class bqSoundBuffer
-{
-public:
-	bqSoundBuffer();
-	~bqSoundBuffer();
-	BQ_PLACEMENT_ALLOCATOR(bqSoundBuffer);
-
-	bqSoundBufferData m_bufferData;
-	bqSoundBufferInfo m_bufferInfo;
-	
-	// Всё не поддерживаемое должно конвертироваться в поддерживаемое
-	//bqSoundFormat m_format = bqSoundFormat::uint16_mono_44100;
-
-	
-	// how:
-	//  0 - использовать первый канал
-	//  1 - использовать второй канал
-	void MakeMono(uint32_t how);
-
-	void Make8bits();
-	void Make16bits();
-	void Make32bitsFloat();
-
-	void Resample(uint32_t newSampleRate);
-};
-
-// звук загружается сюда
+// По умолчанию bqSound не удаляет m_soundBuffer
+// так как предполагается что звук из m_soundBuffer
+// может быть использован во множестве bqSound.
+// Если bqSound создан с использованием спец. конструктора
+// то деструктор уничтожит m_soundBuffer. Этот спец.конструктор
+// создан для упрощённого тестирования функциональности. 
+//
 class bqSound
 {
-	void _reallocate(uint32_t);
-	bool _saveWav(const char* fn);
-	bool _loadWav(const char* fn);
-	bool _loadWav(uint8_t* buffer, uint32_t bufferSz);
+
+// В основе воспроизведения стоит миксер, который использует
+// m_soundBuffer. Воспроизведение будет бесконечным.
+// Для управления воспроизведением дополнительные нужны данные,
+// например,чтобы миксер знал, нужно ли "играть" данный звук.
+	enum
+	{
+		state_notPlaying,
+		state_playing,
+	};
+	uint32_t m_state = state_notPlaying;
+
+	// если m_loop == -1
+	// то повторение бесконечное
+	uint32_t m_loop = 0;
+
+	bool m_useRegion = false;
+	uint32_t m_regionBegin = 0;
+	uint32_t m_regionEnd = 0;
 public:
 	bqSound();
 	bqSound(uint32_t channels, uint32_t samplerate, bqSoundFormat, float time = 0.001f);
 	virtual ~bqSound();
 	BQ_PLACEMENT_ALLOCATOR(bqSound);
 
-	// Создать пустой bqSoundSource
-	// time - время, должно быть больше 0
-	// channels - 1 моно, 2 стерео, но можно указывать и более, только тогда хрен это проиграть
-	// sampleRate - желательно 44100. тоже как channels, можно указать иное значение, но наверно не проиграть
-	// format - format
-	// метод просто выделяет память и вычисляет остальные значения для bqSoundSource
-	//       поэтому можно указывать почти любые значения, но для воспроизведения нужны правильные
-	//       значения. channels 1/2; sampleRate 44100; format bqSoundFormat::float32
-	void Create(float time, uint32_t channels, uint32_t sampleRate, bqSoundFormat format);
+	bool IsPlaying() { return m_state == state_playing; }
 
-	// loudness - громкость, от 0 до 1
-	void Generate(bqSoundWaveType, float time, uint32_t frequency, float loudness = 0.5f);
+	void PlaybackStart();
+	void PlaybackStop();
+	void PlaybackReset();
+	void PlaybackSet(float minutes, float seconds);
+	void PlaybackSet(float secondsOnly);
 
-	// расширение надо указывать в fn
-	bool SaveToFile(bqSoundFileType, const char* fn);
-	bool SaveToFile(bqSoundFileType, const bqStringA& fn);
-	
-	bool LoadFromFile(const char* fn);
-	bool LoadFromFile(const bqStringA& fn);
+	void SetLoop(uint32_t);
+	uint32_t GetLoopNumber();
 
-	void Clear();
-
-	void Convert(bqSoundFormat);
-
-	// Вычислить время по битрейту и прочим параметрам
-	float CalculateTime();
-
-	void Append(bqSoundBuffer*);
-	void Append(bqSoundBufferData*, bqSoundBufferInfo*);
+	void SetRegion(float minutesStart, float secondsStart,
+		float minutesStop, float secondsStop);
+	void SetRegion(float secondsStart, float secondsStop);
 
 	bqSoundBuffer* m_soundBuffer = 0;
+	bool m_hasItsOwnSound = false;
+
 	float m_volume = 0.5f;
 	float m_pitch = 1.0f;
+
 };
 
 #endif

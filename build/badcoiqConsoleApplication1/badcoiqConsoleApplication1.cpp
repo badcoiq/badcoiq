@@ -283,11 +283,11 @@ public:
 
                 m_sound->m_soundBuffer->Resample(bqFramework::GetSoundSystem()->GetDeviceInfo().m_sampleRate);
 
-                m_sound->Append(mixer->GetChannel(0), &inf);
+                m_sound->m_soundBuffer->Append(mixer->GetChannel(0), &inf);
             }
 
             if (!m_numOfSounds)
-                m_sound->SaveToFile(bqSoundFileType::wav, "test_aftereffect.wav");
+                m_sound->m_soundBuffer->SaveToFile(bqSoundFileType::wav, "test_aftereffect.wav");
         }
     }
 
@@ -441,27 +441,44 @@ int main()
 
                 float time = 0.5f;
                 float loudness = 0.5f;
-                sound1.Generate(bqSoundWaveType::sin, time, Hz, loudness);
-                sound2.Generate(bqSoundWaveType::square, time, Hz, loudness);
-                sound3.Generate(bqSoundWaveType::triangle, time, Hz, loudness);
-                sound4.Generate(bqSoundWaveType::saw, time, Hz, loudness);
-                sound5.Create(1.f, 2, 44100, bqSoundFormat::int16);
+                sound1.m_soundBuffer = new bqSoundBuffer;
+                sound1.m_hasItsOwnSound = true;
+                sound2.m_soundBuffer = new bqSoundBuffer;
+                sound2.m_hasItsOwnSound = true;
+                sound3.m_soundBuffer = new bqSoundBuffer;
+                sound3.m_hasItsOwnSound = true;
+                sound4.m_soundBuffer = new bqSoundBuffer;
+                sound4.m_hasItsOwnSound = true;
+                sound5.m_soundBuffer = new bqSoundBuffer;
+                sound5.m_hasItsOwnSound = true;
+                sound6.m_soundBuffer = new bqSoundBuffer;
+                sound6.m_hasItsOwnSound = true;
+                sound7.m_soundBuffer = new bqSoundBuffer;
+                sound7.m_hasItsOwnSound = true;
+                sound8.m_soundBuffer = new bqSoundBuffer;
+                sound8.m_hasItsOwnSound = true;
+
+                sound1.m_soundBuffer->Generate(bqSoundWaveType::sin, time, Hz, loudness);
+                sound2.m_soundBuffer->Generate(bqSoundWaveType::square, time, Hz, loudness);
+                sound3.m_soundBuffer->Generate(bqSoundWaveType::triangle, time, Hz, loudness);
+                sound4.m_soundBuffer->Generate(bqSoundWaveType::saw, time, Hz, loudness);
+                sound5.m_soundBuffer->Create(1.f, 2, 44100, bqSoundFormat::int16);
 
               //  sound2.SaveToFile(bqSoundFileType::wav, "square.wav");
               //  sound3.SaveToFile(bqSoundFileType::wav, "triangle.wav");
               //  sound4.SaveToFile(bqSoundFileType::wav, "saw.wav");
               //  sound5.SaveToFile(bqSoundFileType::wav, "2channels.wav");
 
-                sound6.LoadFromFile("../data/sounds/alien_beacon44100_float.wav");
+                sound6.m_soundBuffer->LoadFromFile("../data/sounds/alien_beacon44100_float.wav");
                 sound6.m_soundBuffer->Resample(100000);
-                sound6.SaveToFile(bqSoundFileType::wav, "../data/sounds/alien_beacon44100_float_resample_100000.wav");
+                sound6.m_soundBuffer->SaveToFile(bqSoundFileType::wav, "../data/sounds/alien_beacon44100_float_resample_100000.wav");
 
-                sound7.LoadFromFile("../data/sounds/Clearlight.wav");
+                sound7.m_soundBuffer->LoadFromFile("../data/sounds/Clearlight.wav");
                 sound7.m_soundBuffer->Make32bitsFloat();
               //  sound7.m_soundBuffer->MakeMono(0);
                 sound7.m_soundBuffer->Resample(48000);
 
-                sound8.LoadFromFile("../data/sounds/flute.wav");
+                sound8.m_soundBuffer->LoadFromFile("../data/sounds/flute.wav");
                 sound8.m_soundBuffer->Make32bitsFloat();
              //   sound8.m_soundBuffer->MakeMono(0);
                 sound8.m_soundBuffer->Resample(48000);
@@ -524,6 +541,15 @@ int main()
                             mixer->SetVolume(volume);
                         }
 
+                        if (bqInput::IsKeyHit(bqInput::KEY_Q))
+                        {
+                            sound7.PlaybackStart();
+                        }
+                        if (bqInput::IsKeyHit(bqInput::KEY_E))
+                        {
+                            sound7.PlaybackStop();
+                        }
+
                        /* if (bqInput::IsKeyHit(bqInput::KEY_1))
                             so1->Start();
                         if (bqInput::IsKeyHit(bqInput::KEY_2))
@@ -543,10 +569,10 @@ int main()
                             if (Hz < 5)
                                 Hz = 5;
                             printf("Hz: %u\n", Hz);
-                            sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
-                            sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
-                            sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
-                            sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
+                            sound1.m_soundBuffer->Generate(bqSoundWaveType::sin, 1.f, Hz);
+                            sound2.m_soundBuffer->Generate(bqSoundWaveType::square, 1.f, Hz);
+                            sound3.m_soundBuffer->Generate(bqSoundWaveType::triangle, 1.f, Hz);
+                            sound4.m_soundBuffer->Generate(bqSoundWaveType::saw, 1.f, Hz);
                         }
 
                         if (bqInput::IsKeyHit(bqInput::KEY_PGUP))
@@ -555,10 +581,10 @@ int main()
                             if (Hz > 20000)
                                 Hz = 20000;
                             printf("Hz: %u\n", Hz);
-                            sound1.Generate(bqSoundWaveType::sin, 1.f, Hz);
-                            sound2.Generate(bqSoundWaveType::square, 1.f, Hz);
-                            sound3.Generate(bqSoundWaveType::triangle, 1.f, Hz);
-                            sound4.Generate(bqSoundWaveType::saw, 1.f, Hz);
+                            sound1.m_soundBuffer->Generate(bqSoundWaveType::sin, 1.f, Hz);
+                            sound2.m_soundBuffer->Generate(bqSoundWaveType::square, 1.f, Hz);
+                            sound3.m_soundBuffer->Generate(bqSoundWaveType::triangle, 1.f, Hz);
+                            sound4.m_soundBuffer->Generate(bqSoundWaveType::saw, 1.f, Hz);
                         }
 
                         gs->BeginDraw();

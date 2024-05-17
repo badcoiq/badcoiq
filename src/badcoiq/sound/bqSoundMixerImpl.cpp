@@ -221,6 +221,9 @@ void bqSoundMixerImpl::Process()
 	{
 		bqSoundMixerNode& soundNode = m_sounds.m_data[si];
 
+		if (!soundNode.m_sound->IsPlaying())
+			continue;
+
 		auto soundChannelsNum = soundNode.m_sound->m_soundBuffer->m_bufferInfo.m_channels;
 
 		uint32_t sPos = soundNode.m_position; // в байтах

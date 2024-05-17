@@ -87,8 +87,9 @@ bool ExampleBasicsSound::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_sound1 = new bqSound();
-	m_sound1->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1_float32_48000_mono.wav");
-	
+	m_sound1->m_soundBuffer = new bqSoundBuffer;
+	m_sound1->m_soundBuffer->LoadFromFile(bqFramework::GetAppPathA() + "../data/sounds/song1_float32_48000_mono.wav");
+	m_sound1->m_hasItsOwnSound = true;
 	
 	auto ss = bqFramework::GetSoundSystem();
 
