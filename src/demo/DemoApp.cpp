@@ -32,6 +32,74 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 BQ_LINK_LIBRARY("badcoiq");
 
+class textureExample : public DemoExample
+{
+	bqCamera* m_camera = 0;
+public:
+	textureExample(DemoApp*app) :
+		DemoExample(app)
+	{}
+	virtual ~textureExample() {}
+	BQ_PLACEMENT_ALLOCATOR(textureExample);
+
+	virtual bool Init() override 
+	{
+		bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/sprites/22 TorchDrippingYellow.png").c_str());
+		if (image)
+		{
+			bqTextureInfo info;
+			info.m_adrMode = bqTextureAddressMode::Wrap;
+			info.m_anisotropicLevel = 1;
+			info.m_cmpFnc = bqTextureComparisonFunc::Always;
+			info.m_filter = bqTextureFilter::PPP;
+			info.m_generateMipmaps = true;
+
+			m_texture = m_app->GetGS()->SummonTexture(image, info);
+
+			delete image;
+
+			if(m_texture)
+				return true;
+		}
+
+		return false;
+	}
+	virtual void Shutdown() override 
+	{
+		if (m_texture)
+		{
+			delete m_texture;
+			m_texture = 0;
+		}
+	}
+	virtual void OnDraw() override 
+	{
+		if (bqInput::IsKeyHit(bqInput::KEY_ESCAPE))
+		{
+			m_app->StopExample();
+			return;
+		}
+
+		m_gs->BeginGUI();
+		m_gs->EndGUI();
+
+		m_gs->BeginDraw();
+		m_gs->ClearAll();
+
+		if (m_texture)
+		{
+			m_gs->DrawGUIRectangle(m_rect, bq::ColorWhite, bq::ColorWhite, m_texture, &m_uv );
+		}
+
+		m_gs->EndDraw();
+		m_gs->SwapBuffers();
+	}
+
+	bqVec4f m_rect = bqVec4f(0.f, 0.f, 300.f, 300.f);
+	bqTexture* m_texture = 0;
+	bqVec4f m_uv = bqVec4f(0.f, 0.f, 1.f, 1.f);
+};
+
 class MyStaticText : public bqGUIStaticText
 {
 public:
@@ -151,6 +219,9 @@ bool DemoApp::Init()
 	}
 
 	m_currentCategory = &m_rootCategory;
+	
+	AddExample(new textureExample(this), U"IMAGE/TEXTURE", "/", U"Для проверки bqImage и текстур");
+
 	AddExample(new ExampleBasics3DLineAndCamera(this), U"3D линия и камера", "basics/", U"Основы. Надо хотьчто-то нарисовать и уметь перемещаться нажимая кнопки. Используй WASDQE");
 	AddExample(new ExampleBasicsRayFromCursor(this), U"Луч от курсора", "basics/", U"Кликаем ЛКМ, перемещаемся WASDQE, и видим созданные лучи");
 	AddExample(new ExampleBasicsMshGnrtr(this), U"Генератор моделей", "basics/", U"Основа работы с генератором моделей. Вместо мучений с загрузкой файлов проще что нибудь сгенерировать.");

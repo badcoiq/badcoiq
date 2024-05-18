@@ -108,7 +108,7 @@ public:
 // ширина и высота w h
 // проверок нет. проход по data в соответствии с шириной и высотой
 // where... указывает в какое место копировать данные. перехода на строку ниже нет
- void Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint32_t whereX, uint32_t whereY);
+	void Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint32_t whereX, uint32_t whereY);
 };
 
 #endif

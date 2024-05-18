@@ -477,17 +477,18 @@ int main()
                 sound6.m_soundBuffer->Resample(100000);
                 sound6.m_soundBuffer->SaveToFile(bqSoundFileType::wav, "../data/sounds/alien_beacon44100_float_resample_100000.wav");
 
+                auto soundSystem = bqFramework::GetSoundSystem();
+                auto soundDeviceInfo = soundSystem->GetDeviceInfo();
                 sound7.m_soundBuffer->LoadFromFile("../data/sounds/Clearlight.wav");
                 sound7.m_soundBuffer->Make32bitsFloat();
               //  sound7.m_soundBuffer->MakeMono(0);
-                sound7.m_soundBuffer->Resample(48000);
+                sound7.m_soundBuffer->Resample(soundDeviceInfo.m_sampleRate);
 
                 sound8.m_soundBuffer->LoadFromFile("../data/sounds/flute.wav");
                 sound8.m_soundBuffer->Make32bitsFloat();
              //   sound8.m_soundBuffer->MakeMono(0);
-                sound8.m_soundBuffer->Resample(48000);
-                
-                auto soundSystem = bqFramework::GetSoundSystem();
+                sound8.m_soundBuffer->Resample(soundDeviceInfo.m_sampleRate);
+                bqImage
                 bqSoundEffectVolume* sfx_volume = 0;
                 auto mixer = soundSystem->SummonMixer(2);
                 if (mixer)
