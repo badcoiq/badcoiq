@@ -26,10 +26,10 @@ https://badcoiq.ucoz.net/forum/
 
 
 0. Ваша идея.
-1. IMAGE. Изменение размера картинки - уменьшение https://github.com/badcoiq/badcoiq/issues/1
+1. ВЗЯТО (18 мая) IMAGE. Изменение размера картинки - уменьшение https://github.com/badcoiq/badcoiq/issues/1
 	Выделяем память для картинки меньшего размера. Заполняем. Удаляем старую картинку.
 	Работаем только с r8g8b8a и r8g8b8
-2. IMAGE. Изменение размера картинки - увеличение https://github.com/badcoiq/badcoiq/issues/2
+2. ВЗЯТО (18 мая) IMAGE. Изменение размера картинки - увеличение https://github.com/badcoiq/badcoiq/issues/2
 	Работаем только с r8g8b8a и r8g8b8
 3. IMAGE. Слияние двух картинок в одну - https://github.com/badcoiq/badcoiq/issues/3
 	Работаем только с r8g8b8a и r8g8b8
