@@ -78,6 +78,7 @@ class bqSound
 	};
 	uint32_t m_state = state_notPlaying;
 
+	// Указывает на байт находящийся в начале блока.
 	uint32_t m_playbackPosition = 0;
 
 	// если m_loop == -1
@@ -100,14 +101,14 @@ public:
 	void PlaybackStart();
 	void PlaybackStop();
 	void PlaybackReset();
-	void PlaybackSet(float minutes, float seconds);
+	void PlaybackSet(uint32_t minutes, float seconds);
 	void PlaybackSet(float secondsOnly);
 
 	void SetLoop(uint32_t);
 	uint32_t GetLoopNumber();
 
-	void SetRegion(float minutesStart, float secondsStart,
-		float minutesStop, float secondsStop);
+	void SetRegion(uint32_t minutesStart, float secondsStart,
+		uint32_t minutesStop, float secondsStop);
 	void SetRegion(float secondsStart, float secondsStop);
 
 	bqSoundBuffer* m_soundBuffer = 0;

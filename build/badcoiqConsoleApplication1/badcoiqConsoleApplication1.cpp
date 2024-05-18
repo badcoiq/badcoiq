@@ -488,7 +488,7 @@ int main()
                 sound8.m_soundBuffer->Make32bitsFloat();
              //   sound8.m_soundBuffer->MakeMono(0);
                 sound8.m_soundBuffer->Resample(soundDeviceInfo.m_sampleRate);
-                bqImage
+                
                 bqSoundEffectVolume* sfx_volume = 0;
                 auto mixer = soundSystem->SummonMixer(2);
                 if (mixer)
@@ -554,7 +554,7 @@ int main()
                         }
                         if (bqInput::IsKeyHit(bqInput::KEY_W))
                         {
-                            sound7b.PlaybackStart();
+                            sound7.PlaybackSet(17.5f);
                         }
                         if (bqInput::IsKeyHit(bqInput::KEY_E))
                         {

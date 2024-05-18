@@ -32,6 +32,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/math/bqMath.h"
 #include "badcoiq/common/bqFileBuffer.h"
 
+uint32_t bqSound_GetPlaybackPosition(bqFloat64 secondsOnly, const bqSoundBufferInfo& info)
+{
+	// Если m_sampleRate == 41000
+	// То при 1 секунде значение должно стать 41000 
+	//    если однобайтовый и одноканальный
+	// f = SRate * Sec * BSize
+
+	bqFloat64 f = (bqFloat64)info.m_sampleRate;
+	f = f * (bqFloat64)secondsOnly;
+	f = f * (bqFloat64)info.m_blockSize;
+	return (uint32_t)floor(f);
+}
+
 bqSound::bqSound()
 {
 }
@@ -70,19 +83,23 @@ void bqSound::PlaybackReset()
 	PlaybackSet(0.f);
 }
 
-void bqSound::PlaybackSet(float minutes, float seconds)
+void bqSound::PlaybackSet(uint32_t minutes, float seconds)
 {
+	if (seconds > 60.f)	seconds = 0.f;
+	PlaybackSet(seconds + ((float)minutes * 60.f));
 }
 
 void bqSound::PlaybackSet(float secondsOnly)
 {
+	BQ_ASSERT_ST(m_soundBuffer);
+
 	if (secondsOnly == 0.f)
 	{
 		m_playbackPosition = 0;
 	}
 	else
 	{
-
+		m_playbackPosition = bqSound_GetPlaybackPosition(secondsOnly, m_soundBuffer->m_bufferInfo);
 	}
 }
 
@@ -97,13 +114,39 @@ uint32_t bqSound::GetLoopNumber()
 }
 
 
-void bqSound::SetRegion(float minutesStart, float secondsStart,
-	float minutesStop, float secondsStop)
+void bqSound::SetRegion(uint32_t minutesStart, float secondsStart,
+	uint32_t minutesStop, float secondsStop)
 {
+	if (secondsStart > 60.f)	secondsStart = 0.f;
+	if (secondsStop > 60.f)	secondsStop = 0.f;
+	SetRegion(secondsStart + ((float)minutesStart * 60.f),
+		secondsStop + ((float)minutesStop * 60.f));
 }
 
 void bqSound::SetRegion(float secondsStart, float secondsStop)
 {
+	m_useRegion = true;
+	m_regionBegin = m_regionEnd = 0;
+
+	if (secondsStart < 0.f)
+		secondsStart = 0.f;
+	if (secondsStop < 0.f)
+		secondsStop = 0.f;
+
+	if (secondsStart >= secondsStop)
+	{
+		secondsStart = 0.f;
+		secondsStop = 0.f;
+	}
+
+	if(secondsStart == 0.f && secondsStop == 0.f)
+		m_useRegion = false;
+
+	if (m_useRegion)
+	{
+		m_regionBegin = bqSound_GetPlaybackPosition(secondsStart, m_soundBuffer->m_bufferInfo);
+		m_regionEnd = bqSound_GetPlaybackPosition(secondsStop, m_soundBuffer->m_bufferInfo);
+	}
 }
 
 
