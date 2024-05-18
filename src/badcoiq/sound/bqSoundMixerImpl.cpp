@@ -339,6 +339,14 @@ void bqSoundMixerImpl::Process()
 			bi += m_dataInfo.m_bytesPerSample;
 		}
 
+		if (sound->IsRegion())
+		{
+			if (sound->GetPlaybackPosition() >= sound->GetRegionEnd())
+			{
+				sound->PlaybackSet(sound->GetRegionBegin());
+			}
+		}
+
 		if (isOnEnd)
 		{
 			auto loop = sound->GetLoopNumber();
@@ -352,6 +360,11 @@ void bqSoundMixerImpl::Process()
 			else
 			{
 				sound->PlaybackStop();
+			}
+
+			if (sound->IsRegion())
+			{
+				sound->PlaybackSet(sound->GetRegionBegin());
 			}
 
 			m_callback->OnEndSound(this, sound);

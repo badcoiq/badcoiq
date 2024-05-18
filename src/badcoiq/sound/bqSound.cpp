@@ -146,6 +146,7 @@ void bqSound::SetRegion(float secondsStart, float secondsStop)
 	{
 		m_regionBegin = bqSound_GetPlaybackPosition(secondsStart, m_soundBuffer->m_bufferInfo);
 		m_regionEnd = bqSound_GetPlaybackPosition(secondsStop, m_soundBuffer->m_bufferInfo);
+		PlaybackSet(m_regionBegin);
 	}
 }
 

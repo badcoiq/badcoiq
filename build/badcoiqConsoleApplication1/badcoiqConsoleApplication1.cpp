@@ -561,6 +561,14 @@ int main()
                             sound7.PlaybackStop();
                             sound7b.PlaybackStop();
                         }
+                        if (bqInput::IsKeyHit(bqInput::KEY_R))
+                        {
+                            sound7.SetRegion(0.f, 0.5f);
+                        }
+                        if (bqInput::IsKeyHit(bqInput::KEY_T))
+                        {
+                            sound7.SetRegion(0.f, 0.f);
+                        }
 
                        /* if (bqInput::IsKeyHit(bqInput::KEY_1))
                             so1->Start();

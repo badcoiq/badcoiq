@@ -110,6 +110,9 @@ public:
 	void SetRegion(uint32_t minutesStart, float secondsStart,
 		uint32_t minutesStop, float secondsStop);
 	void SetRegion(float secondsStart, float secondsStop);
+	bool IsRegion() { return m_useRegion; }
+	uint32_t GetRegionBegin() { return m_regionBegin; }
+	uint32_t GetRegionEnd() { return m_regionEnd; }
 
 	bqSoundBuffer* m_soundBuffer = 0;
 	bool m_hasItsOwnSound = false;
