@@ -39,9 +39,10 @@ https://badcoiq.ucoz.net/forum/
 7. MODEL. Генерация текстурных координат для цилиндра - https://github.com/badcoiq/badcoiq/issues/7
 8. MODEL. Генерация других 3D примитивов - https://github.com/badcoiq/badcoiq/issues/8
 9. MODEL. Генерация 3D объекта на основе сплайна - https://github.com/badcoiq/badcoiq/issues/9
+	Типа модификатор Lathe в 3Ds Max. Линия - набор точек.
 10. SOUND. Добавление звука - https://github.com/badcoiq/badcoiq/issues/10
 11. SOUND. Сделать интерполяцию при увеличении samplerate.
-12. IMAGE. Сохранение картинки в файл. 2 типа файла. 24бит .BMP, RGBA8 .DDS. Нужен метов в bqImage
+12. ВЗЯТО (19 мая) IMAGE. Сохранение картинки в файл. 2 типа файла. 24бит .BMP, RGBA8 .DDS. Нужен метов в bqImage
 	bqImage::SaveToFile
 	Он принимает enum 
 	enum bqImageFileFormat{
