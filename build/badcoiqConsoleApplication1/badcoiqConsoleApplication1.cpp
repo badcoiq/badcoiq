@@ -548,6 +548,43 @@ int main()
                             mixer->SetVolume(volume);
                         }
 
+                        if (bqInput::IsKeyHit(bqInput::KEY_3))
+                        {
+                            sound7.m_pitch -= 0.01f;
+                            printf("Pitch: %f\n", sound7.m_pitch);
+                        }
+                        if (bqInput::IsKeyHit(bqInput::KEY_4))
+                        {
+                            sound7.m_pitch += 0.01f;
+                            printf("Pitch: %f\n", sound7.m_pitch);
+                        }
+                        if (bqInput::IsKeyHit(bqInput::KEY_5))
+                        {
+                            sound7.m_pitchLimitDown -= 0.01f;
+                            printf("PitchLimitD: %f\n", sound7.m_pitchLimitDown);
+                        }
+                        if (bqInput::IsKeyHit(bqInput::KEY_6))
+                        {
+                            sound7.m_pitchLimitDown += 0.01f;
+                            printf("PitchLimitD: %f\n", sound7.m_pitchLimitDown);
+                        }
+                        if (bqInput::IsKeyHit(bqInput::KEY_7))
+                        {
+                            sound7.m_pitchLimitUp -= 0.01f;
+                            printf("PitchLimitU: %f\n", sound7.m_pitchLimitUp);
+                        }
+                        if (bqInput::IsKeyHit(bqInput::KEY_8))
+                        {
+                            sound7.m_pitchLimitUp += 0.01f;
+                            printf("PitchLimitU: %f\n", sound7.m_pitchLimitUp);
+                        }
+                        if (bqInput::IsKeyHit(bqInput::KEY_9))
+                        {
+                            sound7.m_pitch = 1.0f;
+                            sound7.m_pitchLimitUp = 3.0f;
+                            sound7.m_pitchLimitDown = 3.0f;
+                        }
+
                         if (bqInput::IsKeyHit(bqInput::KEY_Q))
                         {
                             sound7.PlaybackStart();

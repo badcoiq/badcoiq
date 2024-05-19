@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #ifndef __BQ_SS_H__
 #define __BQ_SS_H__
+#ifdef BQ_WITH_SOUND
 
 #include "bqSound.h"
 #include "bqSoundObject.h"
@@ -85,6 +86,7 @@ public:
 
 };
 
+#endif
 #endif
 
 

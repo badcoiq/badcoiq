@@ -29,6 +29,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_Sound_H__
 #define __BQ_Sound_H__
 
+#ifdef BQ_WITH_SOUND
+
 #include "badcoiq/containers/bqArray.h"
 
 enum class bqSoundFileType
@@ -118,10 +120,13 @@ public:
 	bool m_hasItsOwnSound = false;
 
 	float m_volume = 0.5f;
+	
 	float m_pitch = 1.0f;
+	float m_pitchLimitUp = 3.f;
+	float m_pitchLimitDown = 3.f;
 
 };
 
 #endif
 
-
+#endif

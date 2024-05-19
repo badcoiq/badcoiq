@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SFile_H__
 #define __BQ_SFile_H__
 
+#ifdef BQ_WITH_SOUND
+
 // Этот класс будет открывать файлы со звуком
 class bqSoundFile
 {
@@ -87,7 +89,7 @@ private:
 };
 
 
-
+#endif
 #endif
 
 

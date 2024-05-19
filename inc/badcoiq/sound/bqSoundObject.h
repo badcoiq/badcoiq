@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SOUNDOBJECT_H__
 #define __BQ_SOUNDOBJECT_H__
 
+#ifdef BQ_WITH_SOUND
+
 class bqSoundObjectCallback
 {
 public:
@@ -91,5 +93,5 @@ public:
 
 
 #endif
-
+#endif
 

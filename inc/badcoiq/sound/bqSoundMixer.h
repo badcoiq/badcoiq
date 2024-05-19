@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SOUNDMIXER_H__
 #define __BQ_SOUNDMIXER_H__
 
+#ifdef BQ_WITH_SOUND
+
 class bqSoundMixerCallback;
 
 // Класс который смешивает звуки в одно целое.
@@ -141,5 +143,7 @@ public:
 	// Когда буфер миксера заполнен
 //	virtual void OnFullBuffer(bqSoundMixer*) = 0;
 };
+
+#endif
 
 #endif

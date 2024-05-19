@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SoundBuffer_H__
 #define __BQ_SoundBuffer_H__
 
+#ifdef BQ_WITH_SOUND
 #include "badcoiq/containers/bqArray.h"
 
 struct bqSoundBufferData
@@ -132,6 +133,7 @@ public:
 	void Append(bqSoundBufferData*, bqSoundBufferInfo*);
 };
 
+#endif
 #endif
 
 

@@ -232,6 +232,13 @@ void bqSoundMixerImpl::Process()
 		// Заполняю временные буферы m_channelsTmp
 		size_t isz = sound->m_soundBuffer->m_bufferData.m_dataSize;// / sizeof(bqFloat32);
 
+
+		// Надо знать какой по счёту идёт блок из sound->m_soundBuffer
+		uint32_t blockCounter = 0;
+		float pitchCounter = 0.f;
+		
+		
+
 		for (size_t i = 0, i_tmp = 0, last = isz - 1; i < isz; ) // проход по звуку. 
 		{
 			// если заполнили m_channelsTmp то
@@ -267,8 +274,29 @@ void bqSoundMixerImpl::Process()
 			{
 				if (sound->m_pitch < 0.001f)
 					sound->m_pitch = 0.001f;
-				if (sound->m_pitch > 2.00f)
-					sound->m_pitch = 2.00f;
+				if (sound->m_pitch > 10.00f)
+					sound->m_pitch = 10.00f;
+
+				if (sound->m_pitch > 1.f)
+				{
+					if (pitchCounter > sound->m_pitchLimitUp)
+					{
+						sPos += sound->m_soundBuffer->m_bufferInfo.m_blockSize;
+						pitchCounter = 0;
+					}
+				//	i += m_dataInfo.m_bytesPerSample;
+					pitchCounter += sound->m_pitch - 1.f;
+				}
+				else
+				{
+					if (pitchCounter > sound->m_pitchLimitDown)
+					{
+						sPos -= sound->m_soundBuffer->m_bufferInfo.m_blockSize;
+						pitchCounter = 0;
+					}
+					//	i += m_dataInfo.m_bytesPerSample;
+					pitchCounter += 1.f - sound->m_pitch;
+				}
 			}
 
 			// i тоже крутим
@@ -305,6 +333,8 @@ void bqSoundMixerImpl::Process()
 				isOnEnd = true;
 				break;
 			}
+
+			++blockCounter;
 		}
 
 		

@@ -30,6 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SOUNDEFFECT_VOLUME_H__
 #define __BQ_SOUNDEFFECT_VOLUME_H__
 
+#ifdef BQ_WITH_SOUND
+
+
 class bqSoundEffectVolume : public bqSoundEffect
 {
 public:
@@ -40,4 +43,5 @@ public:
 	virtual float GetVolume() = 0;
 };
 
+#endif
 #endif
