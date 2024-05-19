@@ -260,6 +260,15 @@ void bqSoundMixerImpl::Process()
 			// перейти на след. сампл.
 			sPos += sound->m_soundBuffer->m_bufferInfo.m_blockSize;
 
+			// для pitch скорее всего достаточно модифицировать sPos
+			if (sound->m_pitch != 1.f)
+			{
+				if (sound->m_pitch < 0.001f)
+					sound->m_pitch = 0.001f;
+				if (sound->m_pitch > 2.00f)
+					sound->m_pitch = 2.00f;
+			}
+
 			// i тоже крутим
 			// тут прибавляем m_bytesPerSample потому что i отвечает за 1 канал
 			// вот такой вот хаос здесь. возможно нужно будет добавить отдельный индекс
@@ -295,6 +304,8 @@ void bqSoundMixerImpl::Process()
 				break;
 			}
 		}
+
+		
 
 		// Для pitch нужно будет по особому изменять значение soundNode.m_position
 		// Для простоты буду использовать sPos
