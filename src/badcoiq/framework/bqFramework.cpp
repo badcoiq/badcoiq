@@ -1132,6 +1132,7 @@ void bqFramework::SetActiveCursor(bqCursor* c)
 	g_framework->m_activeCursor = c;	
 }
 
+#ifdef BQ_WITH_SOUND
 bqSoundSystem* bqFramework::GetSoundSystem()
 {
 	if (!g_framework->m_soundSystem)
@@ -1146,3 +1147,4 @@ bqSoundSystem* bqFramework::GetSoundSystem()
 
 	return g_framework->m_soundSystem;
 }
+#endif

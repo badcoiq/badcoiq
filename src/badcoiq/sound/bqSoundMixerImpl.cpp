@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_SOUND
+
 #include "badcoiq/sound/bqSoundSystem.h"
 
 #include "bqSoundMixerImpl.h"
@@ -551,3 +553,4 @@ float bqSoundMixerImpl::GetVolume()
 	return m_mixerVolume;
 }
 
+#endif

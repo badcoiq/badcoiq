@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../../DemoApp.h"
 
+#ifdef BQ_WITH_SOUND
+
 //#include "badcoiq/scene/bqSprite.h"
 #include "badcoiq/sound/bqSoundSystem.h"
 
@@ -248,3 +250,5 @@ void ExampleBasicsSound::OnDraw()
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();
 }
+
+#endif

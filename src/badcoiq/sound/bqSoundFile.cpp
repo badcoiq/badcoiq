@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_SOUND
+
 #include "badcoiq/sound/bqSoundSystem.h"
 
 #include "../framework/bqFrameworkImpl.h"
@@ -212,3 +214,5 @@ void bqSoundFile::Seek(long v)
 {
 	fseek(m_file, v, SEEK_SET);
 }
+
+#endif

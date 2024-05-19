@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_SOUND
+
 #include "badcoiq/sound/bqSoundSystem.h"
 
 #include "bqSoundObjectImpl.h"
@@ -122,3 +124,5 @@ void bqSoundObjectImpl::_thread_fillRenderBuffer()
 	////	stillPlaying = false;
 	//}
 }
+
+#endif

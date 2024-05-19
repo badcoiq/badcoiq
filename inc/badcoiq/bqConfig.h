@@ -26,61 +26,12 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "badcoiq.h"
+#pragma once
+#ifndef __BQ_BADCOIQCONFIG_H__
+#define __BQ_BADCOIQCONFIG_H__
 
-#ifdef BQ_WITH_SOUND
-
-#include "badcoiq/sound/bqSoundSystem.h"
-
-#include "bqSoundEffectVolumeImpl.h"
-
-#include "../framework/bqFrameworkImpl.h"
-extern bqFrameworkImpl* g_framework;
-
-bqSoundEffectVolumeImpl::bqSoundEffectVolumeImpl()
-{
-}
-
-bqSoundEffectVolumeImpl::~bqSoundEffectVolumeImpl()
-{
-}
-
-void bqSoundEffectVolumeImpl::SetVolume(float v)
-{
-	m_volume = v;
-	if (m_volume < 0.f)
-		m_volume = 0.f;
-	if (m_volume > 1.f)
-		m_volume = 1.f;
-}
-
-float bqSoundEffectVolumeImpl::GetVolume()
-{
-	return m_volume;
-}
-
-void bqSoundEffectVolumeImpl::Process(bqSoundBuffer* v)
-{
-	BQ_ASSERT_ST(v);
-	Process(&v->m_bufferData, &v->m_bufferInfo);
-}
-
-void bqSoundEffectVolumeImpl::Process(bqSoundBufferData* data, bqSoundBufferInfo* info)
-{
-	BQ_ASSERT_ST(data);
-	BQ_ASSERT_ST(info);
-
-	if (info->m_format == bqSoundFormat::float32)
-	{
-		bqFloat32* data32 = (bqFloat32*)data->m_data;
-		uint32_t dataSize = data->m_dataSize / sizeof(bqFloat32);
-
-		for (uint32_t i = 0; i < dataSize; ++i)
-		{
-			*data32 *= m_volume;
-			++data32;
-		}
-	}
-}
+// Компилировать со звуком
+#define BQ_WITH_SOUND
 
 #endif
+

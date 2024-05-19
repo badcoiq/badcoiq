@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma warning( disable : 4820 ) // <число> padding что-то там. например если добавлен bool в класс
 #pragma warning( disable : 4365 ) // выдаёт xmemory. conversion from 'long' to 'unsigned int', signed/unsigned mismatch
 
+#include "badcoiq/bqConfig.h"
 #include "badcoiq/common/bqDefines.h"
 #include "badcoiq/common/bqUserData.h"
 #include "badcoiq/common/bqMemory.h"

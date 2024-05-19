@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_SOUND
+
 #include "badcoiq/sound/bqSoundSystem.h"
 #include "badcoiq/math/bqMath.h"
 #include "badcoiq/common/bqFileBuffer.h"
@@ -1827,3 +1829,5 @@ void bqSoundBuffer::Append(bqSoundBufferData* data, bqSoundBufferInfo* info)
 
 	CalculateTime();
 }
+
+#endif
