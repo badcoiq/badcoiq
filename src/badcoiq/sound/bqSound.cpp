@@ -154,6 +154,18 @@ void bqSound::SetRegion(float secondsStart, float secondsStop)
 
 void bqSound::Update3D()
 {
+	m_volume3DLeft = 0.f;
+	m_volume3DRight = 0.f;
+	bqVec4 relPos = m_positionSound - m_listenerPosition;
+	bqReal distance = bqMath::Distance(bqZeroVector, relPos);
+	if (distance <= m_3DFar)
+	{
+		relPos.Normalize();
+		m_listenerDirection.Normalize();
+
+		auto dot = bqMath::Dot(relPos, m_listenerDirection);
+		printf("DOT %f\n", dot);
+	}
 }
 
 #endif

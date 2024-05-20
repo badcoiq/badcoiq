@@ -50,6 +50,7 @@ const double PIPI = 6.283185307179586476925286766559;
 
 const bqVec4 bqVec4fFltMax = bqVec4(DBL_MAX);
 const bqVec4 bqVec4fFltMaxNeg = bqVec4(-DBL_MAX);
+const bqVec4 bqZeroVector = bqVec4(0.0,0.0,0.0,0.0);
 
 class bqMath
 {

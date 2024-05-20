@@ -296,6 +296,7 @@ public:
 #include "examples/meshgen/ex_mshgn_box.h"
 #include "examples/scene/camera/ex_sc_camera_fly.h"
 #include "examples/scene/camera/ex_sc_camera_editor.h"
+#include "examples/sound/ex_snd_3d.h"
 #include "examples/games/mario/ex_g_mario.h"
 
 #endif

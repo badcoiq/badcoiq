@@ -37,6 +37,7 @@
     <ClCompile Include="..\..\src\demo\examples\meshgen\ex_mshgn_box.cpp" />
     <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_editor.cpp" />
     <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_fly.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_3d.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

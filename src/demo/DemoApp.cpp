@@ -236,6 +236,7 @@ bool DemoApp::Init()
 	AddExample(new ExampleBasicsSkeletalAnimation2(this), U"Скелетная анимация 2/2", "basics/", U"Загрузка SMD. Множество файлов, отдельно геометрия отдельно анимации.");
 #ifdef BQ_WITH_SOUND
 	AddExample(new ExampleBasicsSound(this), U"Звук", "basics/", U"...");
+	AddExample(new ExampleSound3D(this), U"3D", "sound/", U"3D Sound");
 #endif
 	
 	AddExample(new ExampleMshGnBox(this), U"Box", "generators/mesh", U"Всё о создании коробки");

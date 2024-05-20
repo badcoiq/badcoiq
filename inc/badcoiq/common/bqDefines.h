@@ -53,10 +53,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Для координат в 3D, матриц и  т.д. надо дать возможность указать что использовать, double или float.
 // Такому типу обычно дают имя `real`
-#define bqReal double
+using bqReal = double;
 
-#define bqFloat32 float
-#define bqFloat64 double
+using bqFloat32 = float;
+using bqFloat64 = double;
 
 // Определяем платформу
 #if defined(WIN32) | defined(_WIN64) | defined(_WIN32)
