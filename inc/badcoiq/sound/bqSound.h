@@ -125,6 +125,13 @@ public:
 	float m_pitchLimitUp = 3.f;
 	float m_pitchLimitDown = 3.f;
 
+// 3D
+bool m_use3D = false;
+bqVec4 m_positionSound;
+bqVec4 m_positionListener;
+bool m_useDoppler = false;
+float m_Doppler = 1.f;
+
 };
 
 #endif
