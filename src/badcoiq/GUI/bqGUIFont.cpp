@@ -28,6 +28,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_GUI
+
+
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/math/bqMath.h"
 
@@ -89,3 +92,4 @@ void bqGUIFont::AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& cha
 	AddGlyph(glyph);
 }
 
+#endif

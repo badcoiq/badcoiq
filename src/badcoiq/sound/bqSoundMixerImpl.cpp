@@ -264,6 +264,12 @@ void bqSoundMixerImpl::Process()
 				ch2 = *dataSound32 * sound->m_volume;
 			}
 
+			if (sound->m_use3D)
+			{
+				ch1 *= sound->m_volume3DLeft;
+				ch2 *= sound->m_volume3DRight;
+			}
+
 			// далее надо прокрутить sPos
 			// прибавляем m_blockSize потому что 1 или 2 канала взяли, нужно
 			// перейти на след. сампл.

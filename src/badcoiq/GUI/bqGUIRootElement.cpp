@@ -28,6 +28,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_GUI
+
+
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/system/bqWindow.h"
 
@@ -101,3 +104,5 @@ void bqGUIRootElement::UpdateContentSize()
 
 	bqGUICommon::UpdateScrollLimit();
 }
+
+#endif

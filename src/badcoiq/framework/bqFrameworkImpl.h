@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/containers/bqList.h"
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/system/bqCursor.h"
+#include "badcoiq/math/bqMath.h"
 #include <vector>
 #include <thread>
 #include <deque>
@@ -77,7 +78,6 @@ public:
 	std::vector<bqMeshLoader*> m_meshLoaders;
 	
 	bqArray<bqTexture*> m_texturesForDestroy;
-	bqArray<bqGUIFont*> m_defaultFonts;
 
 	bqStringA m_fileExistString;
 	bqStringA m_fileSizeString;
@@ -93,6 +93,8 @@ public:
 
 	void OnDestroy();
 
+#ifdef BQ_WITH_GUI
+	bqArray<bqGUIFont*> m_defaultFonts;
 	bqGUIStyle m_themeLight;
 	bqGUIStyle m_themeDark;
 	void _initGUIThemes();
@@ -108,6 +110,7 @@ public:
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_slider = 0;
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_staticText = 0;
 	bqGUIDrawTextCallback* m_defaultTextDrawCallback_window = 0;
+#endif
 
 	bqCursor* m_defaultCursors[(uint32_t)bqCursorType::_count] = {0};
 	bqCursor* m_activeCursor = 0;

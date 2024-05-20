@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_GUI
+
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/input/bqInputEx.h"
@@ -266,3 +268,4 @@ void bqGUISlider::SetMinMaxInt(int32_t mn, int32_t mx)
 	Rebuild();
 }
 
+#endif

@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #ifndef __BQ_GUICMN_H__
 #define __BQ_GUICMN_H__
+
+#ifdef BQ_WITH_GUI
+
 
 
 // Данные которые есть и у GUI элементов и у GUI окна
@@ -184,4 +187,4 @@ public:
 };
 
 #endif
-
+#endif

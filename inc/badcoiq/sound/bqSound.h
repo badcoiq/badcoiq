@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef BQ_WITH_SOUND
 
 #include "badcoiq/containers/bqArray.h"
+#include "badcoiq/math/bqMath.h"
 
 enum class bqSoundFileType
 {
@@ -125,12 +126,18 @@ public:
 	float m_pitchLimitUp = 3.f;
 	float m_pitchLimitDown = 3.f;
 
-// 3D
-bool m_use3D = false;
-bqVec4 m_positionSound;
-bqVec4 m_positionListener;
-bool m_useDoppler = false;
-float m_Doppler = 1.f;
+	// 3D
+	bool m_use3D = false;
+	bqVec4 m_positionSound;
+	bqVec4 m_positionListener;
+	bool m_useDoppler = false;
+	float m_Doppler = 1.f;
+	// эти значения вычисляются в Update3D();
+	float m_volume3DLeft = 1.f;
+	float m_volume3DRight = 1.f;
+	void Update3D();
+
+public:
 
 };
 

@@ -152,4 +152,8 @@ void bqSound::SetRegion(float secondsStart, float secondsStop)
 	}
 }
 
+void bqSound::Update3D()
+{
+}
+
 #endif

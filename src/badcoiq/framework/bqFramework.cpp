@@ -49,12 +49,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 
+#ifdef BQ_WITH_GUI
 static uint8_t g_defaultFontPNG[] = {
 	#include "../_data/font.inl"
 };
 static uint8_t g_defaultIconsPNG[] = {
 	#include "../_data/defaultIcons.inl"
 };
+#endif
 
 class bqSoundObjectImpl;
 
@@ -118,8 +120,11 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 	if (!g_framework)
 	{
 		g_framework = new bqFrameworkImpl();
+
+#ifdef BQ_WITH_GUI
 		g_framework->_initGUIThemes();
 		g_framework->_initGUITextDrawCallbacks();
+#endif
 
 #ifdef BQ_PLATFORM_WINDOWS
 		wchar_t pth[1000];
@@ -192,15 +197,6 @@ void bqFrameworkImpl::OnDestroy()
 		}
 		m_texturesForDestroy.clear();
 	}
-	if (g_framework->m_defaultFonts.m_size)
-	{
-		for (size_t i = 0; i < m_defaultFonts.m_size; ++i)
-		{
-			if (m_defaultFonts.m_data[i])
-				delete m_defaultFonts.m_data[i];
-		}
-		m_defaultFonts.clear();
-	}
 
 	if (g_framework->m_imageLoaders.size())
 	{
@@ -220,6 +216,16 @@ void bqFrameworkImpl::OnDestroy()
 		g_framework->m_meshLoaders.clear();
 	}
 
+#ifdef BQ_WITH_GUI
+	if (g_framework->m_defaultFonts.m_size)
+	{
+		for (size_t i = 0; i < m_defaultFonts.m_size; ++i)
+		{
+			if (m_defaultFonts.m_data[i])
+				delete m_defaultFonts.m_data[i];
+		}
+		m_defaultFonts.clear();
+	}
 	if (g_framework->m_GUIWindows.m_head)
 	{
 		// надо собрать все окна в массив
@@ -248,8 +254,9 @@ void bqFrameworkImpl::OnDestroy()
 			bqFramework::Destroy(allWindows.m_data[i]);
 		}
 	}
-
 	_onDestroy_GUITextDrawCallbacks();
+#endif
+
 	_onDestroy_archive();
 
 	if (g_framework->m_gss.size())
@@ -572,6 +579,7 @@ bqStringA bqFramework::GetPath(const bqString& v)
 	return stra;
 }
 
+#ifdef BQ_WITH_GUI
 bqGUIFont* bqFramework::GetDefaultFont(bqGUIDefaultFont t)
 {
 	if ((uint32_t)t >= g_framework->m_defaultFonts.m_size)
@@ -1072,6 +1080,7 @@ void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 	delete m_defaultTextDrawCallback_slider; m_defaultTextDrawCallback_slider = 0;
 	delete m_defaultTextDrawCallback_staticText; m_defaultTextDrawCallback_staticText = 0;
 }
+#endif
 
 bqCursor* bqFramework::SummonCursor(const char* fn)
 {

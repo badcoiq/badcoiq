@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_GUI
+
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/math/bqMath.h"
 
@@ -202,3 +204,5 @@ void bqGUIElement::Update()
 	}
 	m_activeRect = m_clipRect;
 }
+
+#endif

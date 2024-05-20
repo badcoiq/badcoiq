@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_GUI
+
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/gs/bqGS.h"
 
@@ -284,3 +286,4 @@ void bqGUIListBox::RemoveItem(bqGUIListBoxItem* it)
 	bqDestroy(it);
 }
 
+#endif

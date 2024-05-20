@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_GUI
+
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/input/bqInputEx.h"
@@ -990,3 +992,4 @@ void bqGUIWindow::Collapse()
 	m_windowFlagsInternal &= ~windowFlagInternal_isExpand;
 }
 
+#endif

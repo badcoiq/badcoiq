@@ -140,10 +140,10 @@ public:
 	static bqStringA GetAppPathA();
 	static bqStringA GetPath(const bqString& v);
 
+#ifdef BQ_WITH_GUI
 	static void InitDefaultFonts(bqGS* gs);
 	static bqGUIFont* SummonFont();
 	static bqGUIFont* GetDefaultFont(bqGUIDefaultFont);
-
 	static bqGUIStyle* GetGUIStyle(bqGUIStyleTheme);
 	static bqGUIWindow* SummonGUIWindow(bqWindow* window, const bqVec2f& position, const bqVec2f& size);
 	static void UpdateGUI();
@@ -151,7 +151,8 @@ public:
 	static void RebuildGUI();
 	static void Destroy(bqGUIWindow*);
 	static void Destroy(bqGUIElement*);
-	
+#endif
+
 	static bqCursor* SummonCursor(const char* fn);
 	static bqCursor* GetDefaultCursor(bqCursorType);
 	static bqCursor* GetActiveCursor();

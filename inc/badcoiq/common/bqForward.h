@@ -69,6 +69,24 @@ class bqMeshLoader;
 class bqMeshLoaderCallback;
 struct bqCompressionInfo;
 struct bqArchiveZipFile;
+class bqTriangle;
+class bqSprite;
+class bqAabb;
+class bqCursor;
+enum class bqCursorType : uint32_t;
+class bqSceneObject;
+class bqSkeleton;
+class bqSkeletonAnimation;
+
+#ifdef BQ_WITH_SOUND
+class bqSound;
+class bqSoundSystem;
+struct bqSoundBufferInfo;
+class bqSoundObject;
+#endif
+
+#ifdef BQ_WITH_GUI
+class bqGUIScrollbar;
 class bqGUIFont;
 class bqGUIDrawTextCallback;
 enum class bqGUIStyleTheme;
@@ -80,19 +98,7 @@ class bqGUICommon;
 class bqGUIButton;
 enum class bqGUIDefaultFont;
 class bqGUITextEditor;
-class bqTriangle;
-class bqSprite;
-class bqAabb;
-class bqCursor;
-enum class bqCursorType : uint32_t;
-class bqGUIScrollbar;
-class bqSound;
-class bqSoundSystem;
-class bqSceneObject;
-class bqSoundObject;
-class bqSkeleton;
-class bqSkeletonAnimation;
-struct bqSoundBufferInfo;
+#endif
 
 #endif
 

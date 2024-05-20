@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_GUIFONT_H__
 #define __BQ_GUIFONT_H__
 
+#ifdef BQ_WITH_GUI
+
 #include "badcoiq/containers/bqArray.h"
 #include "badcoiq/math/bqMath.h"
 
@@ -113,4 +115,4 @@ enum class bqGUIDefaultIconID
 };
 
 #endif
-
+#endif

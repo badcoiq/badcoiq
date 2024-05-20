@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_GUICBS_H_
 
 #include "badcoiq.h"
+
+#ifdef BQ_WITH_GUI
 
 #include "badcoiq/GUI/bqGUI.h"
 
@@ -142,5 +144,5 @@ public:
 	virtual bqColor* OnColor(uint32_t r, char32_t) override;
 };
 
-
+#endif
 #endif

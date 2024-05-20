@@ -109,6 +109,7 @@ void meshLoaderCallback::OnMesh(bqMesh* newMesh, bqString* name, bqString* mater
 
 #include <Windows.h>
 
+#ifdef BQ_WITH_GUI
 class MyGUIDrawTextCallback : public bqGUIDrawTextCallback
 {
     bqColor m_colorBlack;
@@ -218,6 +219,7 @@ public:
     virtual ~TestGUIScrollbar() {}
     BQ_PLACEMENT_ALLOCATOR(TestGUIScrollbar);
 };
+#endif
 
 class MySoundMixerCallback : public bqSoundMixerCallback
 {
@@ -372,6 +374,7 @@ int main()
                // m.m_maps[0].m_texture = texture;
                 gs->SetMaterial(&m);
 
+#ifdef BQ_WITH_GUI
                 bqFramework::InitDefaultFonts(gs);
                 MyGUIDrawTextCallback tdcb;
                 tdcb.SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
@@ -428,6 +431,7 @@ int main()
                 testScrollbar->m_alignment = bqGUIElement::Alignment::Left;*/
                 sld->m_alignment = bqGUIElement::Alignment::Center;
                 bqFramework::RebuildGUI();
+#endif
 
                 bqSound sound1;
                 bqSound sound2;
@@ -527,7 +531,9 @@ int main()
                     while (g_run)
                     {
                         bqFramework::Update();
+#ifdef BQ_WITH_GUI
                         bqFramework::UpdateGUI();
+#endif
 
                         if (bqInput::IsKeyHit(bqInput::KEY_1))
                         {
@@ -678,11 +684,13 @@ int main()
                             gs->Draw();
                         }
 
+#ifdef BQ_WITH_GUI
                         gs->BeginGUI();
                         gs->DrawGUIRectangle(bqVec4f(0.f, 0.f, 100.f, 20.f), bq::ColorRed, bq::ColorYellow, 0, 0);
                         gs->DrawGUIText(U"Hello!!!", 9, bqVec2f(10.f), &tdcb);
                         bqFramework::DrawGUI(gs);
                         gs->EndGUI();
+#endif
 
                         gs->EndDraw();
                         gs->SwapBuffers();

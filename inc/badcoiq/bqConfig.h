@@ -33,5 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Компилировать со звуком
 #define BQ_WITH_SOUND
 
+// Компилировать с GUI
+#define BQ_WITH_GUI
+
 #endif
 
