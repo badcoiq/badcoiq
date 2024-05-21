@@ -44,7 +44,7 @@ public:
 
 	virtual bool Init() override 
 	{
-		bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/sprites/22 TorchDrippingYellow.png").c_str());
+		bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/images/editor/ear.png").c_str());
 		if (image)
 		{
 			bqTextureInfo info;
@@ -53,6 +53,8 @@ public:
 			info.m_cmpFnc = bqTextureComparisonFunc::Always;
 			info.m_filter = bqTextureFilter::PPP;
 			info.m_generateMipmaps = true;
+
+			image->Resize(128, 128);
 
 			m_texture = m_app->GetGS()->SummonTexture(image, info);
 

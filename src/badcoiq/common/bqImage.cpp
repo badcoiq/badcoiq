@@ -553,6 +553,14 @@ void bqImage::Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint
 
 void bqImage::Resize(uint32_t newWidth, uint32_t newHeight)
 {
+	BQ_ASSERT_ST(m_info.m_format == bqImageFormat::r8g8b8a8);
+
+	if (m_info.m_format != bqImageFormat::r8g8b8a8)
+	{
+		bqLog::PrintWarning("Unable to resize image: format is not r8g8b8a8\n");
+		return;
+	}
+
 	if (newHeight <= 0) newHeight = 1;
 	if (newWidth <= 0) newWidth = 1;
 
