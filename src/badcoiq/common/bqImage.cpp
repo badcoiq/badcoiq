@@ -551,7 +551,7 @@ void bqImage::Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint
 
 }
 
-void bqImage::Resize(uint32_t newWidth, uint32_t newHeight)
+void bqImage::Resize(uint32_t newWidth, uint32_t newHeight, bool useFilter)
 {
 	BQ_ASSERT_ST(m_info.m_format == bqImageFormat::r8g8b8a8);
 
@@ -605,10 +605,17 @@ void bqImage::Resize(uint32_t newWidth, uint32_t newHeight)
 			auto color01 = oldDataRGBA[precalcWidthIdxs[w] + offsetByHeight + m_info.m_width];
 			auto color11 = oldDataRGBA[precalcWidthIdxs[w] + 1 + offsetByHeight + m_info.m_width];
 
-			dataRGBA->r = BiLerp(color00.r, color10.r, color01.r, color11.r, precalcWidthFrac[w], heightFrac);
-			dataRGBA->g = BiLerp(color00.g, color10.g, color01.g, color11.g, precalcWidthFrac[w], heightFrac);
-			dataRGBA->b = BiLerp(color00.b, color10.b, color01.b, color11.b, precalcWidthFrac[w], heightFrac);
-			dataRGBA->a = BiLerp(color00.a, color10.a, color01.a, color11.a, precalcWidthFrac[w], heightFrac);
+			if (useFilter)
+			{
+				dataRGBA->r = BiLerp(color00.r, color10.r, color01.r, color11.r, precalcWidthFrac[w], heightFrac);
+				dataRGBA->g = BiLerp(color00.g, color10.g, color01.g, color11.g, precalcWidthFrac[w], heightFrac);
+				dataRGBA->b = BiLerp(color00.b, color10.b, color01.b, color11.b, precalcWidthFrac[w], heightFrac);
+				dataRGBA->a = BiLerp(color00.a, color10.a, color01.a, color11.a, precalcWidthFrac[w], heightFrac);
+			}
+			else
+			{
+				*dataRGBA = color00;
+			}
 
 			dataRGBA++;
 		}

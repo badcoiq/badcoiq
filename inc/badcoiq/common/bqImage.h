@@ -111,7 +111,7 @@ public:
 	void Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint32_t whereX, uint32_t whereY);
 
 	// Only for r8g8b8a8
-	void Resize(uint32_t newWidth, uint32_t newHeight);
+	void Resize(uint32_t newWidth, uint32_t newHeight, bool useFilter);
 };
 
 #endif

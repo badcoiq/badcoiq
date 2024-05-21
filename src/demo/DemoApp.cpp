@@ -54,7 +54,7 @@ public:
 			info.m_filter = bqTextureFilter::PPP;
 			info.m_generateMipmaps = true;
 
-			image->Resize(128, 128);
+			image->Resize(128, 128, false);
 
 			m_texture = m_app->GetGS()->SummonTexture(image, info);
 
