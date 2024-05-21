@@ -550,3 +550,70 @@ void bqImage::Fill(bqColor* palette, uint8_t* data, uint32_t w, uint32_t h, uint
 	}
 
 }
+
+void bqImage::Resize(uint32_t newWidth, uint32_t newHeight)
+{
+	if (newHeight <= 0) newHeight = 1;
+	if (newWidth <= 0) newWidth = 1;
+
+	// Size does not change
+	if (newHeight == m_info.m_height && newWidth == m_info.m_width) return;
+
+	uint32_t newPitch = newWidth * 4;
+	uint32_t newDataSize = newHeight * newPitch;
+	auto newData = static_cast<uint8_t*>(bqMemory::malloc(newDataSize));
+	auto oldDataRGBA = reinterpret_cast<r8g8b8a8*>(m_data);
+	auto dataRGBA = reinterpret_cast<r8g8b8a8*>(newData);
+
+	// Optimization precalc width indexes
+	auto precalcWidthIdxs = static_cast<uint32_t*>(bqMemory::malloc(sizeof(uint32_t) * newWidth));
+	auto precalcWidthFrac = static_cast<float*>(bqMemory::malloc(sizeof(float) * newWidth));
+	for (uint32_t w = 0; w < newWidth; ++w)
+	{
+		auto oldWidth = (static_cast<float>(w)) / newWidth * (m_info.m_width - 1);
+		precalcWidthIdxs[w] = static_cast<uint32_t>(oldWidth);
+		precalcWidthFrac[w] = oldWidth - precalcWidthIdxs[w];
+	}
+
+	auto BiLerp = [](uint8_t c00, uint8_t c10, uint8_t c01, uint8_t c11, float fracX, float fracY) -> uint8_t
+		{
+			return static_cast<uint8_t>(bqMath::Lerp1(
+				bqMath::Lerp1(c00, c10, fracX),
+				bqMath::Lerp1(c01, c11, fracX),
+				fracY));
+		};
+
+	// Create new rgba data
+	for (uint32_t h = 0; h < newHeight; ++h)
+	{
+		auto oldHeight = (static_cast<float>(h)) / newHeight * (m_info.m_height - 1);
+		auto oldHeightIndex = static_cast<uint32_t>(oldHeight);
+		float heightFrac = oldHeight - oldHeightIndex;
+		uint32_t offsetByHeight = oldHeightIndex * m_info.m_width;
+		for (uint32_t w = 0; w < newWidth; ++w)
+		{
+			auto color00 = oldDataRGBA[precalcWidthIdxs[w] + offsetByHeight];
+			auto color10 = oldDataRGBA[precalcWidthIdxs[w] + 1 + offsetByHeight];
+			auto color01 = oldDataRGBA[precalcWidthIdxs[w] + offsetByHeight + m_info.m_width];
+			auto color11 = oldDataRGBA[precalcWidthIdxs[w] + 1 + offsetByHeight + m_info.m_width];
+
+			dataRGBA->r = BiLerp(color00.r, color10.r, color01.r, color11.r, precalcWidthFrac[w], heightFrac);
+			dataRGBA->g = BiLerp(color00.g, color10.g, color01.g, color11.g, precalcWidthFrac[w], heightFrac);
+			dataRGBA->b = BiLerp(color00.b, color10.b, color01.b, color11.b, precalcWidthFrac[w], heightFrac);
+			dataRGBA->a = BiLerp(color00.a, color10.a, color01.a, color11.a, precalcWidthFrac[w], heightFrac);
+
+			dataRGBA++;
+		}
+	}
+
+	bqMemory::free(precalcWidthIdxs);
+	bqMemory::free(precalcWidthFrac);
+
+	// Set new data
+	bqMemory::free(m_data);
+	m_data = newData;
+	m_dataSize = newDataSize;
+	m_info.m_height = newHeight;
+	m_info.m_width = newWidth;
+	m_info.m_pitch = newPitch;
+}
