@@ -34,6 +34,10 @@ class DemoApp;
 class ExampleSound3D : public DemoExample
 {
 	bqCamera* m_camera = 0;
+	bqSprite* m_spriteSpeaker = 0;
+	bqArray<bqTexture*> m_loadedTextures;
+	bqSound* m_sound = 0;
+	bqSoundMixer* m_mixer = 0;
 public:
 	ExampleSound3D(DemoApp*);
 	virtual ~ExampleSound3D();

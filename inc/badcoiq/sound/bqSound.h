@@ -128,9 +128,8 @@ public:
 
 	// 3D
 	bool m_use3D = false;
-	bqVec4 m_positionSound;
+	bqVec4 m_soundPosition;
 	bqVec4 m_listenerPosition;
-	bqVec4 m_listenerDirection;
 	bool m_useDoppler = false;
 	float m_Doppler = 1.f;
 	// Far - с какого расстояния начинает слышится звук
@@ -140,7 +139,7 @@ public:
 	// эти значения вычисляются в Update3D();
 	float m_volume3DLeft = 1.f;
 	float m_volume3DRight = 1.f;
-	void Update3D();
+	void Update3D(const bqMat4& view);
 
 public:
 

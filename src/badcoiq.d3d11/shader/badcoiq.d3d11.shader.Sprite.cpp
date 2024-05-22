@@ -98,31 +98,31 @@ bool bqD3D11ShaderSprite::Init(){
 		"   double4 v1 = double4(Corners.x, Corners.y, 0.0, 1.0);\n"
 		"   double4 v2 = double4(Corners.z, Corners.w, 0.0, 1.0);\n"
 
-		"	Out.pos   =  mul(W, mul(V2,double4(v2.x, v2.y,  0.0, 1.0)));\n"
-		"	Out.pos   =  mul(V, Out.pos);\n"
-		"	Out.pos   =  mul(P, Out.pos);\n"
-		"	Out.uv = float2(UVs.x,UVs.y);\n" // 2
-		"	Out.color = Color1;\n"
-		"	TriStream.Append(Out);\n"
-
-		"	Out.pos   =  mul(W, mul(V2,double4(v1.x, v2.y, 0.0,1.0)));\n"
-		"	Out.pos   =  mul(V, Out.pos);\n"
-		"	Out.pos   =  mul(P, Out.pos);\n"
-		"	Out.uv = float2(UVs.z,UVs.y);\n" // 1
-		"	Out.color = Color1;\n"
-		"	TriStream.Append(Out);\n"
-
 		"	Out.pos   =  mul(W, mul(V2,double4(v2.x, v1.y, 0.0, 1.0)));\n"
 		"	Out.pos   =  mul(V, Out.pos);\n"
 		"	Out.pos   =  mul(P, Out.pos);\n"
-		"	Out.uv = float2(UVs.x,UVs.w);\n"// 4
+		"	Out.uv = float2(UVs.z,UVs.w);\n" // 3
 		"	Out.color = Color1;\n"
 		"	TriStream.Append(Out);\n"
 
 		"	Out.pos   =  mul(W, mul(V2,double4(v1.x, v1.y, 0.0, 1.0)));\n"
 		"	Out.pos   =  mul(V, Out.pos);\n"
 		"	Out.pos   =  mul(P, Out.pos);\n"
-		"	Out.uv = float2(UVs.z,UVs.w);\n" // 3
+		"	Out.uv = float2(UVs.x,UVs.w);\n"// 4
+		"	Out.color = Color1;\n"
+		"	TriStream.Append(Out);\n"
+
+		"	Out.pos   =  mul(W, mul(V2,double4(v2.x, v2.y,  0.0, 1.0)));\n"
+		"	Out.pos   =  mul(V, Out.pos);\n"
+		"	Out.pos   =  mul(P, Out.pos);\n"
+		"	Out.uv = float2(UVs.z,UVs.y);\n" // 1
+		"	Out.color = Color1;\n"
+		"	TriStream.Append(Out);\n"
+
+		"	Out.pos   =  mul(W, mul(V2,double4(v1.x, v2.y, 0.0,1.0)));\n"
+		"	Out.pos   =  mul(V, Out.pos);\n"
+		"	Out.pos   =  mul(P, Out.pos);\n"
+		"	Out.uv = float2(UVs.x,UVs.y);\n" // 2
 		"	Out.color = Color1;\n"
 		"	TriStream.Append(Out);\n"
 

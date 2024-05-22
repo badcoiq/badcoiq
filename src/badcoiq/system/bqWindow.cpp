@@ -116,7 +116,7 @@ bqWindow::bqWindow(bqWindowCallback* cb)
 
     bqWindowWin32_findCurrentSize(this, w32);
 
-    SetWindowLongPtr(w32->m_hWnd, GWL_USERDATA, reinterpret_cast<LONG_PTR>(this));
+    SetWindowLongPtr(w32->m_hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 #endif
 
     m_data.m_cb = cb;

@@ -152,19 +152,61 @@ void bqSound::SetRegion(float secondsStart, float secondsStop)
 	}
 }
 
-void bqSound::Update3D()
+void bqSound::Update3D(const bqMat4& view)
 {
 	m_volume3DLeft = 0.f;
 	m_volume3DRight = 0.f;
-	bqVec4 relPos = m_positionSound - m_listenerPosition;
-	bqReal distance = bqMath::Distance(bqZeroVector, relPos);
+	bqVec4 relPos = m_soundPosition - m_listenerPosition;
+	bqReal distance = bqMath::Distance(bqZeroVector4, relPos);
+//	printf("Distance %f; RP %f %f %f\n", distance, relPos.x, relPos.y, relPos.z);
 	if (distance <= m_3DFar)
 	{
-		relPos.Normalize();
-		m_listenerDirection.Normalize();
 
-		auto dot = bqMath::Dot(relPos, m_listenerDirection);
-		printf("DOT %f\n", dot);
+		float vvv = 1.f / (m_3DFar - m_3DNear);
+
+		relPos.w = 1.f;
+		relPos.Normalize();
+		
+		bqMat4 V = view;
+		V.m_data[3].Set(0.f, 0.f, 0.f, 1.);
+		
+		bqVec4 out;
+		bqMath::Mul(V, relPos, out);
+		out.w = 1.f;
+		out.Normalize();
+
+	//	printf("out %f %f %f\n", out.x, out.y, out.z);
+
+		m_volume3DLeft = abs(((out.x + 1.f) * 0.5) - 1.f);
+		m_volume3DRight = abs(((out.z + 1.f) * 0.5) - 1.f);
+		
+		m_volume3DLeft *= 1.f - (distance * vvv);
+		m_volume3DRight *= 1.f - (distance * vvv);
+		
+		if (m_volume3DLeft > 1.f)
+			m_volume3DLeft = 1.f;
+		if (m_volume3DRight > 1.f)
+			m_volume3DRight = 1.f;
+		if (m_volume3DLeft < 0.f)
+			m_volume3DLeft = 0.f;
+		if (m_volume3DRight < 0.f)
+			m_volume3DRight = 0.f;
+
+		// Если объект рядом и поворачиваемся спиной то громкость будет убавлена
+		// Чтобы этого избежать можно добавить ограничитель
+		// Должно быть что-то другое, не m_3DNear, отдельное значение
+		if (distance < m_3DNear)
+		{
+			float m_3DNearVolume = 0.6f;
+			// надо добавить интерполяцию и всё будет опупенно
+
+			// ну или написать нормальный 3D звук...
+
+			if (m_volume3DLeft < m_3DNearVolume)
+				m_volume3DLeft = m_3DNearVolume;
+			if (m_volume3DRight < m_3DNearVolume)
+				m_volume3DRight = m_3DNearVolume;
+		}
 	}
 }
 
