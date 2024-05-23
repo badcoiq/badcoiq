@@ -132,6 +132,9 @@ public:
 	bqVec4 m_listenerPosition;
 	bool m_useDoppler = false;
 	float m_Doppler = 1.f;
+	float m_DopplerTimer = 0.f;
+	bqReal m_distanceToListener = 0.f;
+	bqReal m_distanceToListenerOld = 0.f;
 	// Far - с какого расстояния начинает слышится звук
 	// Near - с какого расстояния звук слишится на полную громкость
 	float m_3DFar = 10.f;

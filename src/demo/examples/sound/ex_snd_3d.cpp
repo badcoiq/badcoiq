@@ -102,6 +102,7 @@ bool ExampleSound3D::Init()
 	m_sound->SetLoop(-1);
 	m_sound->PlaybackStart();
 	m_sound->m_use3D = true;
+	m_sound->m_useDoppler = true;
 
 	return true;
 }

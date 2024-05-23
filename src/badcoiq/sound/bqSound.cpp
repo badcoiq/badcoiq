@@ -34,6 +34,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/math/bqMath.h"
 #include "badcoiq/common/bqFileBuffer.h"
 
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
+
 uint32_t bqSound_GetPlaybackPosition(bqFloat64 secondsOnly, const bqSoundBufferInfo& info)
 {
 	// Если m_sampleRate == 41000
@@ -157,9 +160,11 @@ void bqSound::Update3D(const bqMat4& view)
 	m_volume3DLeft = 0.f;
 	m_volume3DRight = 0.f;
 	bqVec4 relPos = m_soundPosition - m_listenerPosition;
-	bqReal distance = bqMath::Distance(bqZeroVector4, relPos);
+
+	m_distanceToListenerOld = m_distanceToListener;
+	m_distanceToListener = bqMath::Distance(bqZeroVector4, relPos);
 //	printf("Distance %f; RP %f %f %f\n", distance, relPos.x, relPos.y, relPos.z);
-	if (distance <= m_3DFar)
+	if (m_distanceToListener <= m_3DFar)
 	{
 
 		float vvv = 1.f / (m_3DFar - m_3DNear);
@@ -180,8 +185,8 @@ void bqSound::Update3D(const bqMat4& view)
 		m_volume3DLeft = abs(((out.x + 1.f) * 0.5) - 1.f);
 		m_volume3DRight = abs(((out.z + 1.f) * 0.5) - 1.f);
 		
-		m_volume3DLeft *= 1.f - (distance * vvv);
-		m_volume3DRight *= 1.f - (distance * vvv);
+		m_volume3DLeft *= 1.f - (m_distanceToListener * vvv);
+		m_volume3DRight *= 1.f - (m_distanceToListener * vvv);
 		
 		if (m_volume3DLeft > 1.f)
 			m_volume3DLeft = 1.f;
@@ -195,7 +200,7 @@ void bqSound::Update3D(const bqMat4& view)
 		// Если объект рядом и поворачиваемся спиной то громкость будет убавлена
 		// Чтобы этого избежать можно добавить ограничитель
 		// Должно быть что-то другое, не m_3DNear, отдельное значение
-		if (distance < m_3DNear)
+		if (m_distanceToListener < m_3DNear)
 		{
 			float m_3DNearVolume = 0.6f;
 			// надо добавить интерполяцию и всё будет опупенно
@@ -206,6 +211,18 @@ void bqSound::Update3D(const bqMat4& view)
 				m_volume3DLeft = m_3DNearVolume;
 			if (m_volume3DRight < m_3DNearVolume)
 				m_volume3DRight = m_3DNearVolume;
+		}
+
+		if (m_useDoppler)
+		{
+			m_DopplerTimer += g_framework->m_deltaTime;
+
+			if (m_DopplerTimer > 0.05f)
+			{
+				m_DopplerTimer = 0.f;
+				auto delta = m_distanceToListenerOld - m_distanceToListener;
+				m_pitch = 1.f + (delta * m_Doppler);
+			}
 		}
 	}
 }
