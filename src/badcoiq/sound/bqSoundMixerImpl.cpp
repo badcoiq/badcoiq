@@ -452,6 +452,8 @@ void bqSoundMixerImpl::Process()
 
 		*/
 
+	_processEffects();
+
 	// добавить буферы из других миксеров будет проще
 	// размеры у всех одинаковые (должно быть)
 	// надо только будет распределять каналы
@@ -490,21 +492,24 @@ void bqSoundMixerImpl::Process()
 		}
 	}
 
+
 	m_callback->OnEndProcess(this);
 }
 
-void bqSoundMixerImpl::_processEffects(int channel)
+void bqSoundMixerImpl::_processEffects()
 {
-	auto channelData = GetChannel(channel);
-
-	auto curr = m_effects.m_head;
-	auto end = m_effects.m_head->m_left;
-	while(true)
+//	auto channelData = GetChannel();
+	if (m_effects.m_head)
 	{
-		curr->m_data->Process(channelData, &this->m_dataInfo);
-		curr = curr->m_right;
-		if (curr == end)
-			break;
+		auto curr = m_effects.m_head;
+		auto end = m_effects.m_head->m_left;
+		while (true)
+		{
+			curr->m_data->Process(this);
+			curr = curr->m_right;
+			if (curr == end)
+				break;
+		}
 	}
 }
 

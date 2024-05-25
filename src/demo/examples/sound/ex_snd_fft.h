@@ -1,4 +1,4 @@
-/*
+﻿/*
 BSD 2-Clause License
 
 Copyright (c) 2024, badcoiq
@@ -25,28 +25,24 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_SOUNDEFFECT_H__
-#define __BQ_SOUNDEFFECT_H__
+#ifndef _EXsndfft_H_
+#define _EXsndfft_H_
 
-#ifdef BQ_WITH_SOUND
-
-
-// Базовый класс для звуковых эффектов
-
-class bqSoundEffect
+class DemoExample;
+class DemoApp;
+class ExampleSoundFFT : public DemoExample
 {
+	bqSound* m_sound = 0;
+	bqSoundMixer* m_mixer = 0;
 public:
-	bqSoundEffect(){}
-	virtual ~bqSoundEffect(){}
+	ExampleSoundFFT(DemoApp*);
+	virtual ~ExampleSoundFFT();
+	BQ_PLACEMENT_ALLOCATOR(ExampleSoundFFT);
 
-	virtual void Process(bqSoundMixer*) = 0;
-	//virtual void Process(bqSoundBuffer*) = 0;
-	//virtual void Process(bqSoundBufferData*, bqSoundBufferInfo*) = 0;
+	virtual bool Init() override;
+	virtual void Shutdown() override;
+	virtual void OnDraw() override;
 };
 
-#include "bqSoundEffectVolume.h"
-
-#endif
 #endif

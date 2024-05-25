@@ -239,6 +239,7 @@ bool DemoApp::Init()
 #ifdef BQ_WITH_SOUND
 	AddExample(new ExampleBasicsSound(this), U"Звук", "basics/", U"...");
 	AddExample(new ExampleSound3D(this), U"3D", "sound/", U"3D Sound");
+	AddExample(new ExampleSoundFFT(this), U"FFT", "sound/", U"...");
 #endif
 	
 	AddExample(new ExampleMshGnBox(this), U"Box", "generators/mesh", U"Всё о создании коробки");

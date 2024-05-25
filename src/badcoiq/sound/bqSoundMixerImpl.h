@@ -91,7 +91,7 @@ class bqSoundMixerImpl : public bqSoundMixer
 
 	bqSoundMixerCallback* m_callback = 0;
 
-	void _processEffects(int channel);
+	void _processEffects();
 
 	bool m_useProcessing = true;
 

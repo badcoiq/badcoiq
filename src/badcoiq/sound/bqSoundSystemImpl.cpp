@@ -431,69 +431,69 @@ void bqWASAPIRenderer::_thread_function()
 				if (m_threadContext.m_mixers.m_size)
 				{
 					m_mainMixer->Process();
-				}
 
-				BYTE* pData = 0;
-				hr = m_renderClient->GetBuffer(framesToWrite, &pData);
-				if (SUCCEEDED(hr))
-				{
-
-					uint32_t sampleSize = (m_mixFormat->nBlockAlign / m_mixFormat->nChannels);
-					//uint32_t numOfBlocks = m_bufferSize / m_mixFormat->nBlockAlign;
-					
-					float* dst = (float*)pData;
-
-					uint32_t numOfSamples = m_bufferSize / m_mixFormat->nBlockAlign;
-					//uint32_t numOfSamplesPerChannel = numOfSamples / m_mixFormat->nChannels;
-					
-					uint32_t srcSampleIndex = 0;
-
-					for (uint32_t si = 0; si < numOfSamples; ++si)
+					BYTE* pData = 0;
+					hr = m_renderClient->GetBuffer(framesToWrite, &pData);
+					if (SUCCEEDED(hr))
 					{
-						for (uint32_t ci = 0; ci < m_mixFormat->nChannels; ++ci)
+
+						uint32_t sampleSize = (m_mixFormat->nBlockAlign / m_mixFormat->nChannels);
+						//uint32_t numOfBlocks = m_bufferSize / m_mixFormat->nBlockAlign;
+
+						float* dst = (float*)pData;
+
+						uint32_t numOfSamples = m_bufferSize / m_mixFormat->nBlockAlign;
+						//uint32_t numOfSamplesPerChannel = numOfSamples / m_mixFormat->nChannels;
+
+						uint32_t srcSampleIndex = 0;
+
+						for (uint32_t si = 0; si < numOfSamples; ++si)
 						{
-
-							// количество каналов в m_mainMixer или равно количеству каналов m_mixFormat
-							// или 2 если количество каналов в m_mixFormat больше 2х
-							uint32_t cci = ci;
-							if (cci > 2)
-								cci = 2;
-							
-							float* src = (float*)m_mainMixer->GetChannel(cci)->m_data;
-
-						//	printf("Sample: %u Channel: %u Value: %f (%u)\n", si, ci, 
-						//		src[srcSampleIndex], sampleSize);
-							//*dst = src[srcSampleIndex];
-							//++dst;
-
-							uint8_t* dst8 = (uint8_t*)dst;
-							uint8_t* src8 = (uint8_t*)&src[srcSampleIndex];
-
-							for (uint32_t ssi = 0; ssi < sampleSize; ++ssi)
+							for (uint32_t ci = 0; ci < m_mixFormat->nChannels; ++ci)
 							{
-								*dst8 = *src8;
-								++dst8;
-								++src8;
+
+								// количество каналов в m_mainMixer или равно количеству каналов m_mixFormat
+								// или 2 если количество каналов в m_mixFormat больше 2х
+								uint32_t cci = ci;
+								if (cci > 2)
+									cci = 2;
+
+								float* src = (float*)m_mainMixer->GetChannel(cci)->m_data;
+
+								//	printf("Sample: %u Channel: %u Value: %f (%u)\n", si, ci, 
+								//		src[srcSampleIndex], sampleSize);
+									//*dst = src[srcSampleIndex];
+									//++dst;
+
+								uint8_t* dst8 = (uint8_t*)dst;
+								uint8_t* src8 = (uint8_t*)&src[srcSampleIndex];
+
+								for (uint32_t ssi = 0; ssi < sampleSize; ++ssi)
+								{
+									*dst8 = *src8;
+									++dst8;
+									++src8;
+								}
+								++dst;
 							}
-							++dst;
+
+							++srcSampleIndex;
 						}
 
-						++srcSampleIndex;
+						hr = m_renderClient->ReleaseBuffer(framesToWrite, 0);
+						//printf("done %u\n", sound->m_currentPosition);
+						if (!SUCCEEDED(hr))
+						{
+							//AUDCLNT_E_BUFFER_ERROR
+							printf("Unable to release buffer: %x\n", hr);
+							//	stillPlaying = false;
+						}
 					}
-
-					hr = m_renderClient->ReleaseBuffer(framesToWrite, 0);
-					//printf("done %u\n", sound->m_currentPosition);
-					if (!SUCCEEDED(hr))
+					else
 					{
-						//AUDCLNT_E_BUFFER_ERROR
-						printf("Unable to release buffer: %x\n", hr);
+						printf("Unable to get buffer: %x bufferSize: %u\n", hr, m_bufferSize);
 						//	stillPlaying = false;
 					}
-				}
-				else
-				{
-					printf("Unable to get buffer: %x bufferSize: %u\n", hr, m_bufferSize);
-					//	stillPlaying = false;
 				}
 			}
 			else

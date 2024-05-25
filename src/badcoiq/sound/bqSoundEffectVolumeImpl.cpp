@@ -59,6 +59,19 @@ float bqSoundEffectVolumeImpl::GetVolume()
 	return m_volume;
 }
 
+void bqSoundEffectVolumeImpl::Process(bqSoundMixer* mixer)
+{
+	BQ_ASSERT_ST(mixer);
+	uint32_t noc = mixer->GetNumOfChannels();
+	for (uint32_t i = 0; i < noc; ++i)
+	{
+		bqSoundBufferData* ch = mixer->GetChannel(i);
+		bqSoundBufferInfo inf;
+		mixer->GetSoundBufferInfo(inf);
+		Process(ch, &inf);
+	}
+}
+
 void bqSoundEffectVolumeImpl::Process(bqSoundBuffer* v)
 {
 	BQ_ASSERT_ST(v);

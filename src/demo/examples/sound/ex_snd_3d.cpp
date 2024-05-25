@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/sound/bqSoundSystem.h"
 
 
+#ifdef BQ_WITH_SOUND
 ExampleSound3D::ExampleSound3D(DemoApp* app)
 	:
 	DemoExample(app)
@@ -215,3 +216,5 @@ void ExampleSound3D::OnDraw()
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();
 }
+
+#endif
