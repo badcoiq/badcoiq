@@ -84,6 +84,7 @@ class bqSoundSystem;
 struct bqSoundBufferInfo;
 class bqSoundObject;
 class bqSoundMixer;
+class bqSoundEffect;
 #endif
 
 #ifdef BQ_WITH_GUI

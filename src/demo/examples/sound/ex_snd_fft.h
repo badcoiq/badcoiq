@@ -35,6 +35,7 @@ class ExampleSoundFFT : public DemoExample
 {
 	bqSound* m_sound = 0;
 	bqSoundMixer* m_mixer = 0;
+	bqSoundEffect* m_effect = 0;
 public:
 	ExampleSoundFFT(DemoApp*);
 	virtual ~ExampleSoundFFT();
