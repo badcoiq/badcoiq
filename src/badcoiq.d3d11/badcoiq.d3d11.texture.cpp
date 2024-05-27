@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_GS
 
 #include "badcoiq.d3d11impl.h"
 
@@ -41,3 +42,5 @@ bqGSD3D11Texture::~bqGSD3D11Texture()
 	BQD3DSAFE_RELEASE(m_textureResView);
 	BQD3DSAFE_RELEASE(m_texture);
 }
+#endif
+

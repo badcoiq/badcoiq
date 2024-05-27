@@ -31,6 +31,8 @@
 
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_IMAGE_BMP
+
 #include "badcoiq.imageloader.h"
 #include "badcoiq/common/bqFileBuffer.h"
 
@@ -463,3 +465,4 @@ bqImage* bqImageLoaderImpl_LoadBMP(bqFileBuffer* file)
 
 	return image;
 }
+#endif

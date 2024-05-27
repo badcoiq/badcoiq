@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_SPRITE
+
 #include "badcoiq/scene/bqSprite.h"
 #include "badcoiq/gs/bqTexture.h"
 
@@ -143,3 +145,5 @@ void bqSpriteState::AnimationUpdate(float dt)
 		}
 	}
 }
+
+#endif

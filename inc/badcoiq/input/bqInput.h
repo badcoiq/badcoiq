@@ -66,7 +66,9 @@ class bqInput
 public:
 	static bqInputData* GetData();
 	static bqPointf& GetMousePosition();
+#ifdef BQ_WITH_WINDOW
 	static void SetMousePosition(bqWindow*, int32_t x, int32_t y);
+#endif
 
 	static void SetKeyHit(uint32_t, bool);
 	static void SetKeyHold(uint32_t, bool);

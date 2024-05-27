@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #ifndef __BQ_SCENESprt_H__
 #define __BQ_SCENESprt_H__
+
+#ifdef BQ_WITH_SPRITE
 
 #include "badcoiq/common/bqColor.h"
 #include "badcoiq/containers/bqArray.h"
@@ -117,5 +119,6 @@ public:
 	void CreateAnimation(uint32_t numFrames, const bqVec2f& frameSize, const bqVec2f& startPosition);
 };
 
+#endif
 #endif
 

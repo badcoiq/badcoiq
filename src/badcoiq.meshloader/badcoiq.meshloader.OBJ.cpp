@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.meshloader.h"
+#ifdef BQ_WITH_MESH
 
 #include "badcoiq/common/bqTextBufferReader.h"
 #include "badcoiq/geometry/bqMeshCreator.h"
@@ -607,4 +608,4 @@ bqPolygonMesh* bqMeshLoaderImpl::_obj_createModel(
 
 	return polygonMesh;
 }
-
+#endif

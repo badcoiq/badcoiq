@@ -25,47 +25,25 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_MESHCREATOR_H__
-#define __BQ_MESHCREATOR_H__
+#ifndef _EXsnddelay_H_
+#define _EXsnddelay_H_
 
-#ifdef BQ_WITH_MESH
-
-#include "badcoiq/geometry/bqPolygonMesh.h"
-
-class bqMeshPolygonCreator
+class DemoExample;
+class DemoApp;
+class ExampleSoundDelay : public DemoExample
 {
-	bqVertexTriangleSkinned m_vertexData;
-	bqPolygonMeshPolygon* m_polygon = 0;
-	void _createPolygon();
-	uint32_t m_size = 0;
+	bqSound* m_sound = 0;
+	bqSoundMixer* m_mixer = 0;
+	bqSoundEffect* m_effect = 0;
 public:
-	bqMeshPolygonCreator();
-	~bqMeshPolygonCreator();
+	ExampleSoundDelay(DemoApp*);
+	virtual ~ExampleSoundDelay();
+	BQ_PLACEMENT_ALLOCATOR(ExampleSoundDelay);
 
-	// set vertex data using this
-	void SetPosition(const bqVec3f&);
-	void SetNormal(const bqVec3f&);
-	void SetBinormal(const bqVec3f&);
-	void SetTangent(const bqVec3f&);
-	void SetColor(const bqVec4f&);
-	void SetUV(const bqVec2f&);
-	void SetBoneInds(const bqVec4_t<uint8_t>&);
-	void SetBoneWeights(const bqVec4f&);
-	// or this
-	void SetVertex(const bqVertexTriangle&);
-	// then call this
-
-	void AddVertex();
-	uint32_t Size();
-
-	void Mul(const bqMat4& m);
-
-	void Clear();
-	bqPolygonMeshPolygon* DropPolygon();
+	virtual bool Init() override;
+	virtual void Shutdown() override;
+	virtual void OnDraw() override;
 };
 
 #endif
-#endif
-

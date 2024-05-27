@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_POLYGONMESH_H__
 #define __BQ_POLYGONMESH_H__
 
+#ifdef BQ_WITH_MESH
+
 #include "badcoiq/geometry/bqMesh.h"
 
 #include "badcoiq/containers/bqList.h"
@@ -135,5 +137,6 @@ public:
 	bqAabb m_aabb;
 };
 
+#endif
 #endif
 

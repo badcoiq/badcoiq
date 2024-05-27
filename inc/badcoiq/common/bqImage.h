@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -53,6 +53,7 @@ struct bqImageInfo
 	bqImageFormat m_format = bqImageFormat::r8g8b8a8;
 };
 
+#ifdef BQ_WITH_IMAGE
 enum class bqImageFillType
 {
 	// Params in ""
@@ -114,5 +115,6 @@ public:
 	void Resize(uint32_t newWidth, uint32_t newHeight, bool useFilter);
 };
 
+#endif
 #endif
 

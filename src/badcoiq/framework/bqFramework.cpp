@@ -27,20 +27,42 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+
+#ifdef BQ_WITH_WINDOW
 #include "badcoiq/system/bqWindow.h"
+#endif
 #include "badcoiq/system/bqWindowWin32.h"
+
+#ifdef BQ_WITH_GS
 #include "badcoiq/gs/bqGS.h"
+#endif
+
+#ifdef BQ_WITH_GUI
 #include "badcoiq/GUI/bqGUI.h"
+#include "../GUI/bqGUIDefaultTextDrawCallbacks.h"
+#endif
+
+#ifdef BQ_WITH_IMAGE
 #include "badcoiq/common/bqImageLoader.h"
+#endif
+
+#ifdef BQ_WITH_MESH
 #include "badcoiq/geometry/bqPolygonMesh.h"
 #include "badcoiq/geometry/bqMeshLoader.h"
+#endif
+
+#ifdef BQ_WITH_SOUND
 #include "badcoiq/sound/bqSoundSystem.h"
 #include "../sound/bqSoundSystemImpl.h"
+class bqSoundObjectImpl;
+#endif
 
 #include "badcoiq/common/bqTextBufferReader.h"
-#include "badcoiq/archive/bqArchive.h"
 
-#include "../GUI/bqGUIDefaultTextDrawCallbacks.h"
+#ifdef BQ_WITH_ARCHIVE
+#include "badcoiq/archive/bqArchive.h"
+#endif
+
 #include "../system/bqCursorWin32.h"
 
 #include "bqFrameworkImpl.h"
@@ -49,7 +71,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 
-#ifdef BQ_WITH_GUI
+#ifdef BQ_WITH_IMAGE_PNG
 static uint8_t g_defaultFontPNG[] = {
 	#include "../_data/font.inl"
 };
@@ -58,7 +80,6 @@ static uint8_t g_defaultIconsPNG[] = {
 };
 #endif
 
-class bqSoundObjectImpl;
 
 //
 //  Lowercases string
@@ -84,13 +105,29 @@ std::basic_string<T> uppercase(const std::basic_string<T>& s)
 
 extern "C"
 {
+#ifdef BQ_WITH_GS
 	bqGS* BQ_CDECL bqGSD3D11_create();
+#endif
+
+#ifdef BQ_WITH_IMAGE
 	bqImageLoader* BQ_CDECL bqImageLoaderDefault_create();
+#endif
+
+#ifdef BQ_WITH_MESH
 	bqMeshLoader* BQ_CDECL bqMeshLoaderDefault_create();
+#endif
 }
+
+
+#ifdef BQ_WITH_GS
 BQ_LINK_LIBRARY("badcoiq.d3d11");
+#endif
+#ifdef BQ_WITH_IMAGE
 BQ_LINK_LIBRARY("badcoiq.imageloader");
+#endif
+#ifdef BQ_WITH_MESH
 BQ_LINK_LIBRARY("badcoiq.meshloader");
+#endif
 
 void bqInputUpdatePre();
 void bqInputUpdatePost();
@@ -151,12 +188,19 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 
 		g_framework->_initDefaultCursors();
 
+#ifdef BQ_WITH_GS
 		g_framework->m_gss.push_back(bqGSD3D11_create());
 		//g_framework->m_gss.push_back(bqGSD3D12_create());
 		//g_framework->m_gss.push_back(bqGSVulkan_create());
+#endif
 
+#ifdef BQ_WITH_IMAGE
 		g_framework->m_imageLoaders.push_back(bqImageLoaderDefault_create());
+#endif
+
+#ifdef BQ_WITH_MESH
 		g_framework->m_meshLoaders.push_back(bqMeshLoaderDefault_create());
+#endif
 
 		bqLog::PrintInfo("App path : %s\n", g_framework->m_appPathA.c_str());
 	}
@@ -176,11 +220,13 @@ void bqFramework::Stop()
 
 void bqFrameworkImpl::OnDestroy()
 {
+#ifdef BQ_WITH_SOUND
 	if (m_soundSystem)
 	{
 		bqDestroy(m_soundSystem);
 		m_soundSystem = 0;
 	}
+#endif
 
 	for (uint32_t i = 0; i < (uint32_t)bqCursorType::_count; ++i)
 	{
@@ -188,6 +234,7 @@ void bqFrameworkImpl::OnDestroy()
 			delete m_defaultCursors[i];
 	}
 
+#ifdef BQ_WITH_IMAGE
 	if (m_texturesForDestroy.m_size)
 	{
 		for (size_t i = 0; i < m_texturesForDestroy.m_size; ++i)
@@ -206,7 +253,9 @@ void bqFrameworkImpl::OnDestroy()
 		}
 		g_framework->m_imageLoaders.clear();
 	}
+#endif
 
+#ifdef BQ_WITH_MESH
 	if (g_framework->m_meshLoaders.size())
 	{
 		for (auto o : g_framework->m_meshLoaders)
@@ -215,6 +264,7 @@ void bqFrameworkImpl::OnDestroy()
 		}
 		g_framework->m_meshLoaders.clear();
 	}
+#endif
 
 #ifdef BQ_WITH_GUI
 	if (g_framework->m_defaultFonts.m_size)
@@ -257,8 +307,11 @@ void bqFrameworkImpl::OnDestroy()
 	_onDestroy_GUITextDrawCallbacks();
 #endif
 
+#ifdef BQ_WITH_ARCHIVE
 	_onDestroy_archive();
+#endif
 
+#ifdef BQ_WITH_GS
 	if (g_framework->m_gss.size())
 	{
 		for (auto o : g_framework->m_gss)
@@ -268,6 +321,7 @@ void bqFrameworkImpl::OnDestroy()
 		}
 		g_framework->m_gss.clear();
 	}
+#endif
 
 #ifdef BQ_PLATFORM_WINDOWS
 	CoUninitialize();
@@ -281,6 +335,7 @@ void bqFramework::Update()
 	bqInputUpdatePre();
 
 #ifdef BQ_PLATFORM_WINDOWS
+#ifdef BQ_WITH_WINDOW
 	// без этого окно не будет реагировать
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
@@ -289,6 +344,7 @@ void bqFramework::Update()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+#endif
 #endif
 
 	bqInputUpdatePost();
@@ -306,14 +362,17 @@ float* bqFramework::GetDeltaTime()
 	return &g_framework->m_deltaTime;
 }
 
+#ifdef BQ_WITH_WINDOW
 bqWindow* bqFramework::SummonWindow(bqWindowCallback* cb)
 {
 	BQ_ASSERT_STC(g_framework, "This method must be called only after framework initialization (bqFramework::Start)");
 	BQ_ASSERT_STC(cb, "You need to create callback class for window");
 	return new bqWindow(cb);
 }
+#endif
 
 // =========== GS
+#ifdef BQ_WITH_GS
 uint32_t bqFramework::GetGSNum()
 {
 	return (uint32_t)g_framework->m_gss.size();
@@ -367,6 +426,7 @@ bqGS* bqFramework::SummonGS(bqUID id, const char* _name)
 	}
 	return 0;
 }
+#endif
 
 bool bqFramework::CompareUIDs(const bqUID& id1, const bqUID& id2)
 {
@@ -390,10 +450,12 @@ void bqFramework::SetMatrix(bqMatrixType t, bqMat4* m)
 	g_framework->m_matrixPtrs[(uint32_t)t] = m;
 }
 
+#ifdef BQ_WITH_MESH
 bqMat4* bqFramework::GetMatrixSkinned()
 {
 	return &g_framework->m_matrixSkinned[0];
 }
+#endif
 
 uint8_t* bqFramework::SummonFileBuffer(const char* path, uint32_t* szOut, bool isText)
 {
@@ -434,9 +496,14 @@ uint8_t* bqFramework::SummonFileBuffer(const char* path, uint32_t* szOut, bool i
 			}
 		}
 	}
+#ifdef BQ_WITH_ARCHIVE
 	return bqArchiveSystem::ZipUnzip(path, szOut, 0);
+#else
+	return nullptr;
+#endif
 }
 
+#ifdef BQ_WITH_IMAGE
 uint32_t bqFramework::GetImageLoadersNum()
 {
 	return (uint32_t)g_framework->m_imageLoaders.size();
@@ -474,6 +541,8 @@ bqImage* bqFramework::SummonImage(const char* path)
 	}
 	return NULL;
 }
+#endif
+
 
 bool bqFramework::FileExist(const char* p)
 {
@@ -499,6 +568,7 @@ uint64_t bqFramework::FileSize(const bqString& p)
 	return (uint64_t)std::filesystem::file_size(g_framework->m_fileSizeString.data());
 }
 
+#ifdef BQ_WITH_MESH
 bqPolygonMesh* bqFramework::SummonPolygonMesh()
 {
 	return bqCreate<bqPolygonMesh>();
@@ -540,6 +610,7 @@ void bqFramework::SummonMesh(const char* path, bqMeshLoaderCallback* cb)
 		}
 	}
 }
+#endif
 
 bqString bqFramework::GetAppPath()
 {

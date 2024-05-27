@@ -33,8 +33,36 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Компилировать со звуком
 #define BQ_WITH_SOUND
 
+// Использовать bqImage и текстуры
+#define BQ_WITH_IMAGE
+
+#ifdef BQ_WITH_IMAGE
+
 // Компилировать с GUI
 #define BQ_WITH_GUI
+
+#define BQ_WITH_IMAGE_BMP
+
+// Для GUI нужен PNG
+#define BQ_WITH_IMAGE_PNG
+
+#define BQ_WITH_IMAGE_JPG
+#define BQ_WITH_IMAGE_TGA
+#endif
+
+#define BQ_WITH_ARCHIVE
+#define BQ_WITH_MESH
+
+#define BQ_WITH_WINDOW
+#if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_WINDOW)
+#define BQ_WITH_GS
+#endif
+
+#if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_GS)
+#define BQ_WITH_SPRITE
+#endif
+
+#define BQ_WITH_SCENE
 
 #endif
 

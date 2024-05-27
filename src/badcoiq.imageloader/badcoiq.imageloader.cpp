@@ -28,11 +28,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.imageloader.h"
 
-#ifdef USE_PNG
+#ifdef BQ_WITH_IMAGE
+
+#ifdef BQ_WITH_IMAGE_PNG
 BQ_LINK_LIBRARY("libpng");
 #endif
 
-#ifdef USE_JPEG
+#ifdef BQ_WITH_IMAGE_JPG
 BQ_LINK_LIBRARY("jpeglib");
 #endif
 
@@ -44,4 +46,5 @@ extern "C"
 		return il;
 	}
 }
+#endif
 

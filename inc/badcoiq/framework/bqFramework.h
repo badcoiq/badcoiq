@@ -87,9 +87,12 @@ public:
 
 	static float* GetDeltaTime();
 
+#ifdef BQ_WITH_WINDOW
 	// Создать окно
 	static bqWindow* SummonWindow(bqWindowCallback*);
+#endif
 
+#ifdef BQ_WITH_GS
 	// Получить количество реализаций графических систем
 	static uint32_t GetGSNum();
 	// Получить имя реализации графической стсиемы. Надо указать индекс.
@@ -102,6 +105,7 @@ public:
 	static bqGS* SummonGS(const char*);
 	// Получить графическую систему указав имя и ID
 	static bqGS* SummonGS(bqUID, const char*);
+#endif
 
 	// Сравнить UID
 	static bool CompareUIDs(const bqUID&, const bqUID&);
@@ -109,8 +113,14 @@ public:
 	// Получить указатель на матрицу
 	static bqMat4* GetMatrix(bqMatrixType);
 
+#ifdef BQ_WITH_MESH
 	// Получить указатель на первую из 255 матриц для скелета
 	static bqMat4* GetMatrixSkinned();
+	static bqPolygonMesh* SummonPolygonMesh();
+	static uint32_t GetMeshLoadersNum();
+	static bqMeshLoader* GetMeshLoader(uint32_t);
+	static void SummonMesh(const char*, bqMeshLoaderCallback*);
+#endif
 
 	// Установить указатель на матрицу
 	static void SetMatrix(bqMatrixType, bqMat4*);
@@ -120,21 +130,17 @@ public:
 	// Функция выделит память для буфера. Использовать bqMemory::free для освобождения.
 	static uint8_t* SummonFileBuffer(const char* path, uint32_t* szOut, bool isText);
 
+#ifdef BQ_WITH_IMAGE
 	static uint32_t GetImageLoadersNum();
 	static bqImageLoader* GetImageLoader(uint32_t);
 	static bqImage* SummonImage(const char*);
+#endif
 
 	static bool FileExist(const char*);
 	static bool FileExist(const bqString&);
 
 	static uint64_t FileSize(const char*);
 	static uint64_t FileSize(const bqString&);
-
-	static bqPolygonMesh* SummonPolygonMesh();
-
-	static uint32_t GetMeshLoadersNum();
-	static bqMeshLoader* GetMeshLoader(uint32_t);
-	static void SummonMesh(const char*, bqMeshLoaderCallback*);
 
 	static bqString GetAppPath();
 	static bqStringA GetAppPathA();

@@ -30,8 +30,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_FORWARD_H__
 #define __BQ_FORWARD_H__
 
-class bqWindow;
-class bqWindowCallback;
 
 template<typename T>
 class bqVec2_t;
@@ -53,30 +51,43 @@ using bqVec4f = bqVec4_t<float>;
 using bqVec4i = bqVec4_t<int32_t>;
 using bqMat4  = bqMatrix4_t<bqReal>;
 
-class bqGS;
 class bqMaterial;
+class bqColor;
+class bqAabb;
+class bqCursor;
+enum class bqCursorType : uint32_t;	
+
+#ifdef BQ_WITH_SCENE
+class bqSceneObject;
+#endif
+
+#ifdef BQ_WITH_WINDOW
+class bqWindow;
+class bqWindowCallback;
+#endif
+
+#ifdef BQ_WITH_GS
+class bqGS;
+#endif
+
+#ifdef BQ_WITH_MESH
 class bqPolygonMeshPolygon;
 class bqMeshPolygonCreator;
 class bqPolygonMeshControlPoint;
 class bqGPUMesh;
 class bqMesh;
-class bqTexture;
-class bqColor;
-class bqImage;
-class bqImageLoader;
 class bqPolygonMesh;
 class bqMeshLoader;
 class bqMeshLoaderCallback;
-struct bqCompressionInfo;
-struct bqArchiveZipFile;
 class bqTriangle;
-class bqSprite;
-class bqAabb;
-class bqCursor;
-enum class bqCursorType : uint32_t;
-class bqSceneObject;
 class bqSkeleton;
 class bqSkeletonAnimation;
+#endif
+
+#ifdef BQ_WITH_ARCHIVE
+struct bqCompressionInfo;
+struct bqArchiveZipFile;
+#endif
 
 #ifdef BQ_WITH_SOUND
 class bqSound;
@@ -85,6 +96,16 @@ struct bqSoundBufferInfo;
 class bqSoundObject;
 class bqSoundMixer;
 class bqSoundEffect;
+#endif
+
+#ifdef BQ_WITH_IMAGE
+class bqImage;
+class bqTexture;
+class bqImageLoader;
+#endif
+
+#ifdef BQ_WITH_SPRITE
+class bqSprite;
 #endif
 
 #ifdef BQ_WITH_GUI

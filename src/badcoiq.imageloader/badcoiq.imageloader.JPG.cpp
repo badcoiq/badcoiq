@@ -27,10 +27,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.imageloader.h"
+#ifdef BQ_WITH_IMAGE_JPG
 
 #include "badcoiq/common/bqFileBuffer.h"
-
-#ifdef USE_JPEG
 
 #include "jpeglib.h"
 #include <setjmp.h>

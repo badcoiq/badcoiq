@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_GS
 
 #include "../badcoiq.d3d11impl.h"
 #include "badcoiq/gs/bqMaterial.h"
@@ -157,4 +158,4 @@ void bqD3D11ShaderGUIRectangle::SetOnElement(bqGSD3D11Texture* texture)
 	m_gs->m_d3d11DevCon->Unmap(m_cbElement, 0);
 	m_gs->m_d3d11DevCon->GSSetConstantBuffers(1, 1, &m_cbElement);
 }
-
+#endif

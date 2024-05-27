@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_SCENE
+
 #include "badcoiq/scene/bqCamera.h"
 
 bqCamera::bqCamera()
@@ -361,4 +363,4 @@ void bqCamera::UpdateFrustum()
 {
 	m_frustum.CalculateFrustum(m_projectionMatrix, m_viewMatrix);
 }
-
+#endif

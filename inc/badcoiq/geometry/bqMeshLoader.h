@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #ifndef __BQ_MESHLOADER_H__
 #define __BQ_MESHLOADER_H__
+#ifdef BQ_WITH_MESH
 
 #include "badcoiq/geometry/bqMesh.h"
 #include "badcoiq/geometry/bqSkeleton.h"
@@ -94,5 +95,6 @@ public:
 	virtual void Load(const char* path, bqMeshLoaderCallback*, uint8_t* buffer, uint32_t bufferSz) = 0;
 };
 
+#endif
 #endif
 

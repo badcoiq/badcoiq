@@ -27,7 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
-
+#ifdef BQ_WITH_GS
 #include "../badcoiq.d3d11impl.h"
 #include "badcoiq/gs/bqMaterial.h"
 
@@ -124,8 +124,12 @@ void bqD3D11ShaderEndDraw::SetConstants(bqMaterial* material)
 {
 	m_gs->m_d3d11DevCon->PSSetShaderResources(0, 1, &m_gs->m_mainTargetRTT->m_textureResView);
 	m_gs->m_d3d11DevCon->PSSetSamplers(0, 1, &m_gs->m_mainTargetRTT->m_samplerState);
+
+#ifdef BQ_WITH_GUI
 	m_gs->m_d3d11DevCon->PSSetShaderResources(1, 1, &m_gs->m_GUIRTT->m_textureResView);
 	m_gs->m_d3d11DevCon->PSSetSamplers(1, 1, &m_gs->m_GUIRTT->m_samplerState);
+#endif
+
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		D3D11_BUFFER_DESC d;
@@ -136,3 +140,4 @@ void bqD3D11ShaderEndDraw::SetConstants(bqMaterial* material)
 		m_gs->m_d3d11DevCon->PSSetConstantBuffers(0, 1, &m_cbP);
 	}
 }
+#endif

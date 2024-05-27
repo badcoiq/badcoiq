@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_GS
 
 #include "badcoiq.d3d11impl.h"
 
@@ -295,6 +296,7 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 		return false;
 	}
 
+#ifdef BQ_WITH_IMAGE
 	{
 		bqImage img;
 		img.Create(2, 2);
@@ -302,24 +304,33 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 		bqTextureInfo tinf;
 		m_whiteTexture = (bqGSD3D11Texture*)SummonTexture(&img, tinf);
 	}
+#endif
 
+#ifdef BQ_WITH_GUI
 	_recalculateGUIMatrix();
+#endif
 
 	return true;
 }
 
 void bqGSD3D11::Shutdown()
 {
+#ifdef BQ_WITH_IMAGE
 	BQSAFE_DESTROY2(m_whiteTexture);
+#endif
 	BQSAFE_DESTROY2(m_shaderLine3D);
 	BQSAFE_DESTROY2(m_shaderStandart);
 	BQSAFE_DESTROY2(m_shaderEndDraw);
 	BQSAFE_DESTROY2(m_shaderGUIRectangle);
+#ifdef BQ_WITH_SPRITE
 	BQSAFE_DESTROY2(m_shaderSprite);
+#endif
 	BQSAFE_DESTROY2(m_shaderOcl);
 
 	BQSAFE_DESTROY2(m_mainTargetRTT);
+#ifdef BQ_WITH_GUI
 	BQSAFE_DESTROY2(m_GUIRTT);
+#endif
 
 	BQD3DSAFE_RELEASE(m_blendStateAlphaDisabled);
 	BQD3DSAFE_RELEASE(m_blendStateAlphaEnabled);
@@ -702,9 +713,11 @@ bool bqGSD3D11::CreateShaders()
 	if (!m_shaderGUIRectangle->Init())
 		return false;
 
+#ifdef BQ_WITH_SPRITE
 	m_shaderSprite = bqCreate<bqD3D11ShaderSprite>(this);
 	if (!m_shaderSprite->Init())
 		return false;
+#endif
 
 	m_shaderOcl = bqCreate<bqD3D11ShaderOcclusion>(this);
 	if (!m_shaderOcl->Init())
@@ -739,11 +752,15 @@ void bqGSD3D11::SetShader(bqShaderType t, uint32_t userShaderIndex)
 		m_d3d11DevCon->IASetInputLayout(m_shaderStandartSk->m_vLayout);
 		m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		break;
+
+#ifdef BQ_WITH_SPRITE
 	case bqShaderType::Sprite:
 		SetActiveShader(m_shaderSprite);
 		m_d3d11DevCon->IASetInputLayout(NULL);
 		m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		break;
+#endif
+
 	case bqShaderType::User:
 		break;
 	default:
@@ -1297,18 +1314,14 @@ void bqGSD3D11::SetScissorRect(const bqVec4f& rect)
 	m_d3d11DevCon->RSSetScissorRects(1, &r);
 }
 
-void bqGSD3D11::_recalculateGUIMatrix()
-{
-	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[0].Set(2.0f / m_windowCurrentSize->x, 0.0f, 0.0f, 0.0f);
-	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[1].Set(0.0f, 2.0f / -m_windowCurrentSize->y, 0.0f, 0.0f);
-	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[2].Set(0.0f, 0.0f, 0.5f, 0.0f);
-	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[3].Set(-1.f, 1.f, 0.5f, 1.0f);
-}
+
 
 void bqGSD3D11::OnWindowSize()
 {
+#ifdef BQ_WITH_GUI
 	// тут будет вызов метода для обновления матрицы для GUI
 	_recalculateGUIMatrix();
+#endif
 
 	m_d3d11DevCon->OMSetRenderTargets(0, 0, 0);
 
@@ -1382,7 +1395,9 @@ bool bqGSD3D11::_createWindowBuffers(int32_t x, int32_t y)
 void bqGSD3D11::_updateMainTarget()
 {
 	BQSAFE_DESTROY2(m_mainTargetRTT);
+#ifdef BQ_WITH_GUI
 	BQSAFE_DESTROY2(m_GUIRTT);
+#endif
 
 	bqTextureInfo tinf;
 	tinf.m_filter = bqTextureFilter::PPP;
@@ -1390,9 +1405,11 @@ void bqGSD3D11::_updateMainTarget()
 		bqPoint((uint32_t)m_mainTargetSize.x, (uint32_t)m_mainTargetSize.y),
 		tinf);
 
+#ifdef BQ_WITH_GUI
 	m_GUIRTT = (bqGSD3D11Texture*)SummonRTT(
 		bqPoint((uint32_t)m_windowCurrentSize->x, (uint32_t)m_windowCurrentSize->y),
 		tinf);
+#endif
 }
 
 void bqGSD3D11::SetMainTargetSize(const bqPoint& p)
@@ -1400,6 +1417,15 @@ void bqGSD3D11::SetMainTargetSize(const bqPoint& p)
 	m_mainTargetSize = p;
 	// возможно сперва надо вызвать m_d3d11DevCon->OMSetRenderTargets(0, 0, 0);
 	_updateMainTarget();
+}
+
+#ifdef BQ_WITH_GUI
+void bqGSD3D11::_recalculateGUIMatrix()
+{
+	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[0].Set(2.0f / m_windowCurrentSize->x, 0.0f, 0.0f, 0.0f);
+	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[1].Set(0.0f, 2.0f / -m_windowCurrentSize->y, 0.0f, 0.0f);
+	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[2].Set(0.0f, 0.0f, 0.5f, 0.0f);
+	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[3].Set(-1.f, 1.f, 0.5f, 1.0f);
 }
 
 void bqGSD3D11::BeginGUI()
@@ -1491,6 +1517,7 @@ void bqGSD3D11::DrawGUIText(
 		}
 	}
 }
+#endif
 
 void bqGSD3D11::EnableBackFaceCulling()
 {
@@ -1502,6 +1529,7 @@ void bqGSD3D11::DisableBackFaceCulling()
 	m_d3d11DevCon->RSSetState(m_RasterizerSolidNoBackFaceCulling);
 }
 
+#ifdef BQ_WITH_SPRITE
 void bqGSD3D11::DrawSprite(bqSprite* s)
 {
 	BQ_ASSERT_ST(s);
@@ -1542,6 +1570,7 @@ void bqGSD3D11::_drawSprite(const bqColor& color, const bqVec4& corners, const b
 	m_d3d11DevCon->Draw(1, 0);
 }
 
+#ifdef BQ_WITH_GUI
 void bqGSD3D11::DrawText3D(
 	const bqVec4& pos, 
 	const char32_t* text, 
@@ -1597,6 +1626,8 @@ void bqGSD3D11::DrawText3D(
 		}
 	}
 }
+#endif
+#endif
 
 bqGPUOcclusionObject* bqGSD3D11::SummonOcclusionObject()
 {
@@ -1669,3 +1700,5 @@ void bqGSD3D11::OcclusionResult(bqGPUOcclusionObject* o)
 	while (m_d3d11DevCon->GetData(ocl->m_query, (void*)&vis, sizeof(vis), 0) == S_FALSE);
 	ocl->m_visible = vis != 0;
 }
+
+#endif

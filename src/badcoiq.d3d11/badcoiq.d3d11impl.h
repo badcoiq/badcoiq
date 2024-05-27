@@ -28,10 +28,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #ifndef _BQ_D3D11IMPL_H_
 #define _BQ_D3D11IMPL_H_
+#ifdef BQ_WITH_GS
 
 #include <d3d11.h>
 
+#ifdef BQ_WITH_MESH
 #include "badcoiq/geometry/bqMesh.h"
+#endif
+
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/gs/bqShader.h"
 #include "badcoiq/math/bqMath.h"
@@ -58,7 +62,9 @@ class bqGSD3D11 : public bqGS
 	friend class bqD3D11ShaderStandartSkinned;
 	friend class bqD3D11ShaderEndDraw;
 	friend class bqD3D11ShaderGUIRectangle;
+#ifdef BQ_WITH_SPRITE
 	friend class bqD3D11ShaderSprite;
+#endif
 	friend class bqD3D11ShaderOcclusion;
 
 	bqGSD3D11ShaderBase* m_activeShader = 0;
@@ -67,7 +73,9 @@ class bqGSD3D11 : public bqGS
 	bqD3D11ShaderStandartSkinned* m_shaderStandartSk = 0;
 	bqD3D11ShaderEndDraw* m_shaderEndDraw = 0;
 	bqD3D11ShaderGUIRectangle* m_shaderGUIRectangle = 0;
+#ifdef BQ_WITH_SPRITE
 	bqD3D11ShaderSprite* m_shaderSprite = 0;
+#endif
 	bqD3D11ShaderOcclusion* m_shaderOcl = 0;
 
 	bqWindow* m_activeWindow = 0;
@@ -93,20 +101,27 @@ class bqGSD3D11 : public bqGS
 	// bool m_vsync = true; // можно же сделать по другому.
 	UINT m_vsync = 1;       // m_SwapChain->Present(m_vsync, 0);
 
+#ifdef BQ_WITH_MESH
 	bqGSD3D11Mesh* m_currMesh = 0;
+#endif
+
 	bqMaterial* m_currMaterial = 0;
 	bqGSD3D11Texture* m_whiteTexture = 0;
-
 	bool _createWindowBuffers(int32_t x, int32_t y);
 	void _updateMainTarget();
 
 	bqGSD3D11Texture* m_mainTargetRTT = 0;
+#ifdef BQ_WITH_GUI
+	bqGSD3D11Texture* m_GUIRTT = 0;
+#endif
+
 	bqPoint m_mainTargetSize;
 	ID3D11RenderTargetView* m_currentTargetView = 0;
 	ID3D11DepthStencilView* m_currentDepthStencilView = 0;
-	bqGSD3D11Texture* m_GUIRTT = 0;
 
+#ifdef BQ_WITH_GUI
 	void _recalculateGUIMatrix();
+#endif
 
 public:
 	bqGSD3D11();
@@ -131,9 +146,11 @@ public:
 	virtual void DrawLine3D(const bqVec4& p1, const bqVec4& p2, const bqColor& c) final;
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) final;
 
+#ifdef BQ_WITH_MESH
 	virtual bqGPUMesh* SummonMesh(bqMesh* m) final;
-
 	virtual void SetMesh(bqGPUMesh* m) final;
+#endif
+
 	virtual void SetMaterial(bqMaterial* m) final;
 	virtual void Draw() final;
 	virtual void SetRasterizerState(bqGSRasterizerState) final;
@@ -160,18 +177,24 @@ public:
 
 	virtual void SetMainTargetSize(const bqPoint&) final;
 	
+#ifdef BQ_WITH_GUI
 	virtual void BeginGUI() final;
 	virtual void EndGUI() final;
 	virtual void DrawGUIRectangle(const bqVec4f& rect, const bqColor& color1, const bqColor& color2,
 		bqTexture* t, bqVec4f* UVs) final;
 	virtual void DrawGUIText(const char32_t* text, uint32_t textSz, const bqVec2f& position,
 		bqGUIDrawTextCallback*) final;
-
-	virtual void DrawSprite(bqSprite*) final;
-	void _drawSprite(const bqColor& color, const bqVec4& corners, const bqVec4f& UVs, float alphaDiscard, bqGSD3D11Texture* t);
+#ifdef BQ_WITH_SPRITE
 	virtual void DrawText3D(const bqVec4& pos, const char32_t* text, size_t textLen,
 		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) final;
-	
+#endif
+#endif
+
+#ifdef BQ_WITH_SPRITE
+	virtual void DrawSprite(bqSprite*) final;
+	void _drawSprite(const bqColor& color, const bqVec4& corners, const bqVec4f& UVs, float alphaDiscard, bqGSD3D11Texture* t);
+#endif
+
 	virtual bqGPUOcclusionObject* SummonOcclusionObject() final;
 	virtual void OcclusionBegin() final;
 	virtual void OcclusionEnd() final;
@@ -204,4 +227,5 @@ public:
 	bool CreateShaders();
 };
 
+#endif
 #endif

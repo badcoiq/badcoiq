@@ -27,94 +27,41 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "../../DemoApp.h"
-#include "badcoiq/scene/bqSprite.h"
 #include "badcoiq/sound/bqSoundSystem.h"
 
 //#include "../src/kissfft/kiss_fft.h"
 
 #ifdef BQ_WITH_SOUND
 
-class ExampleSoundFFTSoundEffect : public bqSoundEffect
+class ExampleSoundEffectDelay : public bqSoundEffect
 {
 public:
-	ExampleSoundFFTSoundEffect()
+	ExampleSoundEffectDelay()
 	{
 
 	}
 
-	//kiss_fft_cpx* m_fftDataIn = 0;
-	//kiss_fft_cpx* m_fftDataOut = 0;
-
-	virtual ~ExampleSoundFFTSoundEffect()
+	virtual ~ExampleSoundEffectDelay()
 	{
-	//	if (m_fftDataIn) delete[]m_fftDataIn;
-	//	if (m_fftDataOut) delete[]m_fftDataOut;
 	}
 
 	virtual void Process(bqSoundMixer* mixer) override
 	{
-	//	auto bd = mixer->GetChannel(0);
-	//	float* data32 = (float*)bd->m_data;
-	//	
-	//	bqSoundBufferInfo bufferInfo;
-	//	mixer->GetSoundBufferInfo(bufferInfo);
-	//	uint32_t samples = bd->m_dataSize / 4;
-	////	printf("samples = %u\n", samples);
-
-	////	samples = 512;
-
-	//	kiss_fft_cfg cfg = kiss_fft_alloc(samples, 0, 0, 0);
-	//	
-	//	if (!m_fftDataIn)
-	//	{
-	//		m_fftDataIn = new kiss_fft_cpx[samples];
-	//		m_fftDataOut = new kiss_fft_cpx[samples];
-	//	}
-
-	//	for (int i = 0; i < samples; ++i)
-	//	{
-	//		m_fftDataIn[i].i = 0;
-	//		m_fftDataIn[i].r = data32[i];
-
-	//		m_fftDataOut[i].i = 0;
-	//		m_fftDataOut[i].r = 0;
-	//	}
-
-	//	kiss_fft(cfg, m_fftDataIn, m_fftDataOut);
-
-	////	if (FFT(m_rPart, m_iPart, samples, 10, FT_DIRECT))
-	//	{
-
-	//		FILE* f = 0;
-	//		fopen_s(&f, "spectrum.txt", "w");
-	//		for (int i = 0; i < samples; i++)
-	//		{
-	//			fprintf(f, "SAMPLE: %10.6f %10.6f  %10.6f  %10.6f\n",
-	//				data32[i],
-	//				m_fftDataOut[i].r,
-	//				m_fftDataOut[i].i,
-	//				m_fftDataOut[i].r * m_fftDataOut[i].r 
-	//				+ m_fftDataOut[i].i * m_fftDataOut[i].i);
-	//		}
-	//		fclose(f);
-	//	}
-
-
 	}
 };
 
-ExampleSoundFFT::ExampleSoundFFT(DemoApp* app)
+ExampleSoundDelay::ExampleSoundDelay(DemoApp* app)
 	:
 	DemoExample(app)
 {
 }
 
-ExampleSoundFFT::~ExampleSoundFFT()
+ExampleSoundDelay::~ExampleSoundDelay()
 {
 }
 
 
-bool ExampleSoundFFT::Init()
+bool ExampleSoundDelay::Init()
 {
 	auto soundSystem = bqFramework::GetSoundSystem();
 	auto soundDeviceInfo = soundSystem->GetDeviceInfo();
@@ -143,13 +90,13 @@ bool ExampleSoundFFT::Init()
 	m_sound->SetLoop(-1);
 	m_sound->PlaybackStart();
 
-	m_effect = new ExampleSoundFFTSoundEffect;
+	m_effect = new ExampleSoundEffectDelay;
 	m_mixer->AddEffect(m_effect);
 
 	return true;
 }
 
-void ExampleSoundFFT::Shutdown()
+void ExampleSoundDelay::Shutdown()
 {
 	bqFramework::GetSoundSystem()->RemoveAllMixersFromProcessing();
 
@@ -158,7 +105,7 @@ void ExampleSoundFFT::Shutdown()
 	BQ_SAFEDESTROY(m_effect);
 }
 
-void ExampleSoundFFT::OnDraw()
+void ExampleSoundDelay::OnDraw()
 {
 	if (bqInput::IsKeyHit(bqInput::KEY_ESCAPE))
 	{
@@ -166,34 +113,7 @@ void ExampleSoundFFT::OnDraw()
 		return;
 	}
 
-	ExampleSoundFFTSoundEffect* ef = dynamic_cast<ExampleSoundFFTSoundEffect*>(m_effect);
-
 	m_gs->BeginGUI();
-	//if (ef->m_fftDataOut)
-	//{
-	//	float Y = 1.f;
-	//	float X = 0.f;
-	//	auto f = [&](int i)
-	//	{
-	//		float V = ef->m_fftDataOut[i].r * ef->m_fftDataOut[i].r + 
-	//			ef->m_fftDataOut[i].i * ef->m_fftDataOut[i].i;
-
-	//		bqVec4f r;
-	//		r.x = X;
-	//		r.w = 300;
-	//		r.y = r.w - 10 - (Y * V);
-	//		r.z = r.x + 2;
-	//		m_gs->DrawGUIRectangle(r, bq::ColorWhite, bq::ColorWhite, 0, 0);
-	//	//	Y += 10.f;
-	//		X += 3.f;
-	//	};
-
-	//	for (int i = 0; i < 500; ++i)
-	//	{
-	//		f(i);
-	//	}
-	//}
-
 	m_gs->EndGUI();
 
 	m_gs->BeginDraw();

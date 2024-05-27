@@ -69,10 +69,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include "badcoiq.imageloader.h"
+#ifdef BQ_WITH_IMAGE_TGA
 
 #include "badcoiq/common/bqFileBuffer.h"
-
-#ifdef USE_TGA
 
 typedef struct {
 	int idlen;                 // 1 byte

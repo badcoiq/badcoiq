@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_GPUMESH_H__
 #define __BQ_GPUMESH_H__
 
+#ifdef BQ_WITH_MESH
+
 #include "badcoiq/geometry/bqMesh.h"
 
 class bqGPUMesh
@@ -42,5 +44,6 @@ public:
 	bqMeshInfo m_meshInfo;
 };
 
+#endif
 #endif
 

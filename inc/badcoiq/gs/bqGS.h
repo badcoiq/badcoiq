@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #ifndef __BQ_GS_H__
 #define __BQ_GS_H__
+
+#ifdef BQ_WITH_GS
 
 #include "badcoiq/string/bqString.h"
 #include "badcoiq/common/bqColor.h"
@@ -107,11 +109,14 @@ public:
 	// Если bqShaderType::User то необходимо указать индекс шейдера
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) = 0;
 
+#ifdef BQ_WITH_MESH
 	// Создать GPU модель для рисования
 	virtual bqGPUMesh* SummonMesh(bqMesh* m) = 0;
 
 	// Установить текущую модель
 	virtual void SetMesh(bqGPUMesh* m) = 0;
+#endif
+
 	// Установить текущий материал
 	virtual void SetMaterial(bqMaterial* m) = 0;
 	// Установить как рисовать треугольники
@@ -119,6 +124,7 @@ public:
 	// Нарисовать
 	virtual void Draw() = 0;
 
+#ifdef BQ_WITH_IMAGE
 	// Создать текстуру
 	virtual bqTexture* SummonTexture(bqImage*, const bqTextureInfo&) = 0;
 	virtual bqTexture* SummonTexture(bqImage* i)
@@ -127,11 +133,11 @@ public:
 		return SummonTexture(i, ti);
 	}
 
-
 	// Создать Render Target Texture/Frame Buffer Object
 	virtual bqTexture* SummonRTT(const bqPoint& size, const bqTextureInfo&) = 0;
 	// Установить текстуру для рисования.
 	virtual void SetRenderTarget(bqTexture* t) = 0;
+#endif
 	virtual void SetRenderTargetDefault() = 0;
 
 	virtual void UseVSync(bool) = 0;
@@ -155,7 +161,9 @@ public:
 	virtual void EnableBackFaceCulling() = 0;
 	virtual void DisableBackFaceCulling() = 0;
 
+#ifdef BQ_WITH_SPRITE
 	virtual void DrawSprite(bqSprite*) = 0;
+#endif
 
 #ifdef BQ_WITH_GUI
 	virtual void BeginGUI() = 0;
@@ -164,6 +172,7 @@ public:
 		bqTexture* t, bqVec4f* UVs) = 0;
 	virtual void DrawGUIText(const char32_t* text, uint32_t textSz, const bqVec2f& position,
 		bqGUIDrawTextCallback*) = 0;
+#ifdef BQ_WITH_SPRITE
 	// textSizeInPixels - опционально. Он определяет точку вокруг которой будет вращаться текст.
 	//                    чисто технически (по умолчанию), текст крутится так как будто точка
 	//                    находится в левом нижнем углу. Решение - надо просто сдвинуть текст
@@ -172,6 +181,7 @@ public:
 	//                    который вернёт длинну в пикселях. Если метода нет то его надо написать.
 	virtual void DrawText3D(const bqVec4& pos, const char32_t* text, size_t textLen,
 		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) = 0;
+#endif
 #endif
 
 	// 
@@ -187,5 +197,6 @@ public:
 
 };
 
+#endif
 #endif
 

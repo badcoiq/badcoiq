@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_MESH
 
 #include "badcoiq/geometry/bqSkeleton.h"
 
@@ -292,4 +293,4 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 	if (m_frameCurr >= m_frameMax)
 		m_frameCurr = 0.f;
 }
-
+#endif

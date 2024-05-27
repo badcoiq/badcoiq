@@ -27,8 +27,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_GS
 
 #include "badcoiq.d3d11impl.h"
+#ifdef BQ_WITH_MESH
 
 bqGSD3D11Mesh::bqGSD3D11Mesh() {}
 
@@ -37,3 +39,6 @@ bqGSD3D11Mesh::~bqGSD3D11Mesh()
 	BQD3DSAFE_RELEASE(m_vBuffer);
 	BQD3DSAFE_RELEASE(m_iBuffer);
 }
+#endif
+#endif
+

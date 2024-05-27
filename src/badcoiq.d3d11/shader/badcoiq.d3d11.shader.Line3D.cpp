@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_GS
 
 #include "../badcoiq.d3d11impl.h"
 
@@ -115,4 +116,4 @@ void bqD3D11ShaderLine3D::SetConstants(bqMaterial* material){
 	memcpy(mappedResource.pData, &m_cbData, d.ByteWidth);
 	m_gs->m_d3d11DevCon->Unmap(m_cb, 0);
 }
-
+#endif

@@ -27,10 +27,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_GS
 
 #include "../badcoiq.d3d11impl.h"
 #include "badcoiq/gs/bqMaterial.h"
 
+#ifdef BQ_WITH_SPRITE
 
 bqD3D11ShaderSprite::bqD3D11ShaderSprite(bqGSD3D11* gs)
 	:
@@ -169,3 +171,6 @@ void bqD3D11ShaderSprite::SetOnElement(bqGSD3D11Texture* _t)
 		m_gs->m_d3d11DevCon->PSSetConstantBuffers(0, 1, &m_cbElement);
 	}
 }
+
+#endif
+#endif

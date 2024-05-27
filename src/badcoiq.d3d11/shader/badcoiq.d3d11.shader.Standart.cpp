@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_GS
 
 #include "../badcoiq.d3d11impl.h"
 #include "badcoiq/gs/bqMaterial.h"
@@ -222,3 +223,4 @@ void bqD3D11ShaderStandartSkinned::SetConstants(bqMaterial* material)
 		m_gs->m_d3d11DevCon->PSSetConstantBuffers(0, 1, &m_cbP);
 	}
 }
+#endif

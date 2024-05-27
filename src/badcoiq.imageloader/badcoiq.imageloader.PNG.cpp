@@ -27,10 +27,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.imageloader.h"
+#ifdef BQ_WITH_IMAGE_PNG
 
 #include "badcoiq/common/bqFileBuffer.h"
 
-#ifdef USE_PNG
 #include <png.h>
 #include <zlib.h>
 

@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,35 +30,42 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_IMGLDRIMPL_H__
 
 #include "badcoiq.h"
+
+#ifdef BQ_WITH_IMAGE
 #include "badcoiq/common/bqImage.h"
 #include "badcoiq/common/bqImageLoader.h"
 
 class bqImageLoaderImpl : public bqImageLoader
 {
-	enum class extension { _bad, bmp, 
-#ifdef USE_PNG
+	enum class extension { _bad, 
+#ifdef BQ_WITH_IMAGE_BMP
+		bmp,
+#endif
+#ifdef BQ_WITH_IMAGE_PNG
 		png,
 #endif
-#ifdef USE_JPEG
+#ifdef BQ_WITH_IMAGE_JPG
 		jpg,
 #endif
-#ifdef USE_TGA
+#ifdef BQ_WITH_IMAGE_TGA
 		tga 
 #endif
 	};
 	extension _GetExtension(const char* path);
 
+#ifdef BQ_WITH_IMAGE_BMP
 	bqImage* LoadBMP(const char* path);
 	bqImage* LoadBMP(const char* path, uint8_t* buffer, uint32_t bufferSz);
-#ifdef USE_PNG
+#endif
+#ifdef BQ_WITH_IMAGE_PNG
 	bqImage* LoadPNG(const char* path);
 	bqImage* LoadPNG(const char* path, uint8_t* buffer, uint32_t bufferSz);
 #endif
-#ifdef USE_JPEG
+#ifdef BQ_WITH_IMAGE_JPG
 	bqImage* LoadJPG(const char* path);
 	bqImage* LoadJPG(const char* path, uint8_t* buffer, uint32_t bufferSz);
 #endif
-#ifdef USE_TGA
+#ifdef BQ_WITH_IMAGE_TGA
 	bqImage* LoadTGA(const char* path);
 	bqImage* LoadTGA(const char* path, uint8_t* buffer, uint32_t bufferSz);
 #endif
@@ -74,4 +81,5 @@ public:
 	virtual bqImage* Load(const char* path, uint8_t* buffer, uint32_t bufferSz) final;
 };
 
+#endif
 #endif

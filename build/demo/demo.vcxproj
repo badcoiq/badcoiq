@@ -38,6 +38,7 @@
     <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_editor.cpp" />
     <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_fly.cpp" />
     <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_3d.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_delay.cpp" />
     <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_fft.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

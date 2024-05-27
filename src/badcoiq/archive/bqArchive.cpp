@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_ARCHIVE
 
 #include "badcoiq/archive/bqArchive.h"
 
@@ -338,3 +339,5 @@ void bqArchiveSystem::GetFileList(bqArchiveZipFile* f, bqArray<bqStringA>& a)
 		bqMemory::free(fileName);
 	}
 }
+
+#endif

@@ -29,6 +29,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _BQ_D3D11MESH_H_
 #define _BQ_D3D11MESH_H_
 
+#ifdef BQ_WITH_MESH
+
 #include <d3d11.h>
 
 #include "badcoiq/gs/bqGPUMesh.h"
@@ -47,4 +49,5 @@ public:
 	DXGI_FORMAT m_indexType = DXGI_FORMAT_R16_UINT;
 };
 
+#endif
 #endif

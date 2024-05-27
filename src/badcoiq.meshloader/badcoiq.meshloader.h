@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_MSHLDR_H__
 
 #include "badcoiq.h"
+
+#ifdef BQ_WITH_MESH
+
 #include "badcoiq/containers/bqArray.h"
 #include "badcoiq/geometry/bqMeshLoader.h"
 
@@ -62,4 +65,5 @@ public:
 };
 
 
+#endif
 #endif

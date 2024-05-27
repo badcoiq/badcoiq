@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #ifndef __BQ_ARCHIVE_H__
 #define __BQ_ARCHIVE_H__
+#ifdef BQ_WITH_ARCHIVE
 
 #include "badcoiq/string/bqString.h"
 #include "badcoiq/containers/bqArray.h"
@@ -115,5 +116,6 @@ public:
     static bool Decompress(bqCompressionInfo* info, bqArray<uint8_t>& toArray);
 };
 
+#endif
 #endif
 

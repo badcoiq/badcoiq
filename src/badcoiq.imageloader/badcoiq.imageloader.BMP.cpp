@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.imageloader.h"
 
+#ifdef BQ_WITH_IMAGE_BMP
+
 #include "badcoiq/common/bqFileBuffer.h"
 
 bqImage* bqImageLoaderImpl_LoadBMP(bqFileBuffer*);
@@ -63,3 +65,4 @@ bqImage* bqImageLoaderImpl::LoadBMP(const char* path, uint8_t* buffer, uint32_t 
 
 	return bqImageLoaderImpl_LoadBMP(&file);
 }
+#endif

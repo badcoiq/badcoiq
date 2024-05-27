@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_SCENE
+
 #include "badcoiq/scene/bqCamera.h"
 #include "badcoiq/geometry/bqAABB.h"
 
@@ -247,3 +249,6 @@ void bqCameraFrustum::CalculateFrustum(bqMat4& P, bqMat4& V)
 	m_planes[FRONT].w = (clip[15u] + clip[14u]);
 	NormalizePlane(m_planes[FRONT]);
 }
+
+#endif
+

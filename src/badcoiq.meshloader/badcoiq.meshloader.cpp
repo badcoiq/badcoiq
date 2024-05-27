@@ -27,7 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.meshloader.h"
-
+#ifdef BQ_WITH_MESH
 extern "C"
 {
 	bqMeshLoader* BQ_CDECL bqMeshLoaderDefault_create()
@@ -137,4 +137,4 @@ void bqMeshLoaderImpl::Load(const char* path, bqMeshLoaderCallback* cb, uint8_t*
 		break;
 	}
 }
-
+#endif

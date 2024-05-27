@@ -27,41 +27,46 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.imageloader.h"
+#ifdef BQ_WITH_IMAGE
 
 const char* g_badcoiqIMGLoaderFileExt[] =
 {
+#ifdef BQ_WITH_IMAGE_BMP
 	"bmp",
+#endif
 
-#ifdef USE_PNG
+#ifdef BQ_WITH_IMAGE_PNG
 	"png",
 #endif
 
-#ifdef USE_JPEG
+#ifdef BQ_WITH_IMAGE_JPG
 	"jpg",
 	"jpeg",
 	"jfif",
 #endif
 
-#ifdef USE_TGA
+#ifdef BQ_WITH_IMAGE_TGA
 	"tga",
 #endif
 };
 
 const char* g_badcoiqIMGLoaderFileName[] =
 {
+#ifdef BQ_WITH_IMAGE_BMP
 	"Windows Bitmap",
+#endif
 
-#ifdef USE_PNG
+#ifdef BQ_WITH_IMAGE_PNG
 	"Portable Network Graphics",
 #endif
 
-#ifdef USE_JPEG
+#ifdef BQ_WITH_IMAGE_JPG
 	"JPEG",
 	"JPEG",
 	"JPEG",
 #endif
 
-#ifdef USE_TGA
+#ifdef BQ_WITH_IMAGE_TGA
 	"Truevision TGA",
 #endif
 };
@@ -110,17 +115,19 @@ bqImageLoaderImpl::extension bqImageLoaderImpl::_GetExtension(const char* path)
 		}
 		if (last_dot)
 		{
+#ifdef BQ_WITH_IMAGE_BMP
 			if (strcmp(".bmp", &path[last_dot]) == 0)
 				return bqImageLoaderImpl::extension::bmp;
-#ifdef USE_PNG
+#endif
+#ifdef BQ_WITH_IMAGE_PNG
 			if (strcmp(".png", &path[last_dot]) == 0)
 				return bqImageLoaderImpl::extension::png;
 #endif
-#ifdef USE_TGA
+#ifdef BQ_WITH_IMAGE_TGA
 			if (strcmp(".tga", &path[last_dot]) == 0)
 				return bqImageLoaderImpl::extension::tga;
 #endif
-#ifdef USE_JPEG
+#ifdef BQ_WITH_IMAGE_JPG
 			if (strcmp(".jpeg", &path[last_dot]) == 0)
 				return bqImageLoaderImpl::extension::jpg;
 			if (strcmp(".jpg", &path[last_dot]) == 0)
@@ -140,17 +147,19 @@ bqImage* bqImageLoaderImpl::Load(const char* path)
 	{
 	case bqImageLoaderImpl::extension::_bad:
 		break;
+#ifdef BQ_WITH_IMAGE_BMP
 	case bqImageLoaderImpl::extension::bmp:
 		return LoadBMP(path);
-#ifdef USE_JPEG
+#endif
+#ifdef BQ_WITH_IMAGE_JPG
 	case bqImageLoaderImpl::extension::jpg:
 		return LoadJPG(path);
 #endif
-#ifdef USE_PNG
+#ifdef BQ_WITH_IMAGE_PNG
 	case bqImageLoaderImpl::extension::png:
 		return LoadPNG(path);
 #endif
-#ifdef USE_TGA
+#ifdef BQ_WITH_IMAGE_TGA
 	case bqImageLoaderImpl::extension::tga:
 		return LoadTGA(path);
 #endif
@@ -165,20 +174,24 @@ bqImage* bqImageLoaderImpl::Load(const char* path, uint8_t* buffer, uint32_t buf
 	{
 	case bqImageLoaderImpl::extension::_bad:
 		break;
+#ifdef BQ_WITH_IMAGE_BMP
 	case bqImageLoaderImpl::extension::bmp:
 		return LoadBMP(path, buffer, bufferSz);
-#ifdef USE_JPEG
+#endif
+#ifdef BQ_WITH_IMAGE_JPG
 	case bqImageLoaderImpl::extension::jpg:
 		return LoadJPG(path, buffer, bufferSz);
 #endif
-#ifdef USE_PNG
+#ifdef BQ_WITH_IMAGE_PNG
 	case bqImageLoaderImpl::extension::png:
 		return LoadPNG(path, buffer, bufferSz);
 #endif
-#ifdef USE_TGA
+#ifdef BQ_WITH_IMAGE_TGA
 	case bqImageLoaderImpl::extension::tga:
 		return LoadTGA(path, buffer, bufferSz);
 #endif
 	}
 	return nullptr;
 }
+
+#endif

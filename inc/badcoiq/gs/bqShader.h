@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SHADER_H__
 #define __BQ_SHADER_H__
 
+ 
+//не нужно #ifdef BQ_WITH_GS
+
 enum class bqShaderType
 {
 	// 3D objects
@@ -37,7 +40,10 @@ enum class bqShaderType
 	StandartSkinned,
 
 	Line3D,
+
+#ifdef BQ_WITH_SPRITE
 	Sprite,
+#endif
 
 	User,
 };

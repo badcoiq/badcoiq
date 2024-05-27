@@ -295,24 +295,32 @@ bool bqInput::IsKeyHit(uint32_t i)
 {
 	BQ_ASSERT_ST(g_framework);
 
+#ifdef BQ_WITH_WINDOW
 	uint64_t bit = g_keyToBin[i];
 
 	if (i < bqInput::KEY_NUM_1) // первый uint64_t
 		return (g_framework->m_input.m_keyFlagsHit[0] & bit);
 	else
 		return (g_framework->m_input.m_keyFlagsHit[1] & bit);
+#else
+	return GetAsyncKeyState(i);
+#endif
 }
 
 bool bqInput::IsKeyHold(uint32_t i)
 {
 	BQ_ASSERT_ST(g_framework);
 
+#ifdef BQ_WITH_WINDOW
 	uint64_t bit = g_keyToBin[i];
 
 	if (i < bqInput::KEY_NUM_1) // первый uint64_t
 		return (g_framework->m_input.m_keyFlagsHold[0] & bit);
 	else
 		return (g_framework->m_input.m_keyFlagsHold[1] & bit);
+#else
+	return GetAsyncKeyState(i);
+#endif
 }
 
 bool bqInput::IsKeyRelease(uint32_t i)
@@ -381,6 +389,7 @@ bool bqInput::IsX2MBRelease() { return (g_framework->m_input.m_mouseButtonFlags 
 //	return g_keyToBin;
 //}
 
+#ifdef BQ_WITH_WINDOW
 void bqInput::SetMousePosition(bqWindow* w, int32_t x, int32_t y)
 {
 
@@ -395,6 +404,7 @@ void bqInput::SetMousePosition(bqWindow* w, int32_t x, int32_t y)
 #error Need implementation
 #endif
 }
+#endif
 
 bool bqInput::IsAlt()
 {

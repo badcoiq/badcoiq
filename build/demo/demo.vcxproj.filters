@@ -57,6 +57,9 @@
     <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_fft.cpp">
       <Filter>examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_delay.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">

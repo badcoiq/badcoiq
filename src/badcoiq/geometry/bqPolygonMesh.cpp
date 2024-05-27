@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_MESH
+
 #include "badcoiq/geometry/bqMeshCreator.h"
 #include "badcoiq/geometry/bqPolygonMesh.h"
 #include "badcoiq/containers/bqArray.h"
@@ -931,3 +933,5 @@ void bqPolygonMesh::AddCylinder(
 		AddPolygon(&pc, true);
 	}
 }
+
+#endif

@@ -34,6 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string.h>
 
+#ifdef BQ_WITH_IMAGE
+
 struct r5g6b5
 {
 	union {
@@ -632,3 +634,5 @@ void bqImage::Resize(uint32_t newWidth, uint32_t newHeight, bool useFilter)
 	m_info.m_width = newWidth;
 	m_info.m_pitch = newPitch;
 }
+
+#endif

@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
+#ifdef BQ_WITH_WINDOW
+
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/math/bqMath.h"
 #include "badcoiq/input/bqInput.h"
@@ -612,3 +614,4 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
+#endif
