@@ -113,6 +113,16 @@ public:
 
 	// Only for r8g8b8a8
 	void Resize(uint32_t newWidth, uint32_t newHeight, bool useFilter);
+
+	enum class SaveFileFormat
+	{
+#ifdef BQ_WITH_IMAGE_BMP
+		bmp24,
+#endif
+		ddsRGBA8,
+		null
+	};
+	bool SaveToFile(SaveFileFormat format, const char* path);
 };
 
 #endif

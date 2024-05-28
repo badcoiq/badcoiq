@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq.imageloader\badcoiq.imageloader.BMP.cpp" />
     <ClCompile Include="..\..\src\badcoiq.imageloader\badcoiq.imageloader.cpp" />
+    <ClCompile Include="..\..\src\badcoiq.imageloader\badcoiq.imageloader.DDS.cpp" />
     <ClCompile Include="..\..\src\badcoiq.imageloader\badcoiq.imageloader.JPG.cpp" />
     <ClCompile Include="..\..\src\badcoiq.imageloader\badcoiq.imageloader.PNG.cpp" />
     <ClCompile Include="..\..\src\badcoiq.imageloader\badcoiq.imageloader.TGA.cpp" />

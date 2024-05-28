@@ -27,6 +27,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#ifdef BQ_WITH_IMAGE
+
 #include "badcoiq/common/bqImage.h"
 #include "badcoiq/common/bqImageLoader.h"
 #include "badcoiq/common/bqColor.h"
@@ -34,7 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string.h>
 
-#ifdef BQ_WITH_IMAGE
+
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
 
 struct r5g6b5
 {
@@ -633,6 +637,22 @@ void bqImage::Resize(uint32_t newWidth, uint32_t newHeight, bool useFilter)
 	m_info.m_height = newHeight;
 	m_info.m_width = newWidth;
 	m_info.m_pitch = newPitch;
+}
+
+bool bqImage::SaveToFile(SaveFileFormat format, const char* path)
+{
+	BQ_ASSERT_ST(path);
+	BQ_ASSERT_ST(format != SaveFileFormat::null);
+	if ((format != SaveFileFormat::null) && path)
+	{
+		for (auto o : g_framework->m_imageLoaders)
+		{
+			if (o->IsSupportSaveFormat(format))
+				return o->Save(this, format, path);
+		}
+	}
+
+	return false;
 }
 
 #endif

@@ -56,6 +56,7 @@ class bqImageLoaderImpl : public bqImageLoader
 #ifdef BQ_WITH_IMAGE_BMP
 	bqImage* LoadBMP(const char* path);
 	bqImage* LoadBMP(const char* path, uint8_t* buffer, uint32_t bufferSz);
+	bool SaveBMP(bqImage* image, bqImage::SaveFileFormat format, const char* path);
 #endif
 #ifdef BQ_WITH_IMAGE_PNG
 	bqImage* LoadPNG(const char* path);
@@ -69,16 +70,20 @@ class bqImageLoaderImpl : public bqImageLoader
 	bqImage* LoadTGA(const char* path);
 	bqImage* LoadTGA(const char* path, uint8_t* buffer, uint32_t bufferSz);
 #endif
+	bool SaveDDS(bqImage* image, bqImage::SaveFileFormat format, const char* path);
 public:
 	bqImageLoaderImpl();
 	virtual ~bqImageLoaderImpl();
 
-	virtual uint32_t GetSupportedFilesCount() final;
-	virtual bqString GetSupportedFileExtension(uint32_t) final;
-	virtual bqString GetSupportedFileName(uint32_t) final;
+	virtual uint32_t GetSupportedFilesCount() override;
+	virtual bqString GetSupportedFileExtension(uint32_t) override;
+	virtual bqString GetSupportedFileName(uint32_t) override;
 
-	virtual bqImage* Load(const char* path) final;
-	virtual bqImage* Load(const char* path, uint8_t* buffer, uint32_t bufferSz) final;
+	virtual bqImage* Load(const char* path) override;
+	virtual bqImage* Load(const char* path, uint8_t* buffer, uint32_t bufferSz) override;
+
+	virtual bool IsSupportSaveFormat(bqImage::SaveFileFormat) override;
+	virtual bool Save(bqImage* image, bqImage::SaveFileFormat format, const char* path) override;
 };
 
 #endif

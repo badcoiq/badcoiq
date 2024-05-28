@@ -66,13 +66,17 @@ https://badcoiq.ucoz.net/forum/
 	Типа модификатор Lathe в 3Ds Max. Линия - набор точек.
 10. SOUND. Добавление звука - https://github.com/badcoiq/badcoiq/issues/10
 11. SOUND. Сделать интерполяцию при увеличении samplerate.
-12. ВЗЯТО (19 мая) IMAGE. Сохранение картинки в файл. 2 типа файла. 24бит .BMP, RGBA8 .DDS. Нужен метов в bqImage
-	bqImage::SaveToFile
-	Он принимает enum 
-	enum bqImageFileFormat{
+12. ВЗЯТО (19 мая) IMAGE. Сохранение картинки в файл. 2 типа файла. 24бит .BMP, RGBA8 .DDS. Есть метод в bqImage
+	enum class SaveFileFormat
+	{
+#ifdef BQ_WITH_IMAGE_BMP
 		bmp24,
-		ddsRGBA8
-	bqImage::SaveToFile(bqImageFileFormat format, const char* path)
+#endif
+		ddsRGBA8,
+		null
+	};
+	bool SaveToFile(SaveFileFormat format, const char* path);
+	
 	Задача лёгкая. Нужно лишь правильно сохранять заголовки, и у BMP делать выравнивание.
 	Выравнивание 24бит BMP означает что на каждую линию отводятся столько байт, что деление на 4 даст 0.
 	Картинка 3 на 3 будет иметь такой вид
@@ -82,6 +86,10 @@ https://badcoiq.ucoz.net/forum/
 	
 	ddsRGBA это просто обычный массив картинки как есть. bqImage по умолчанию имеет формат r8g8b8a8. Остаётся записать в файл DDS заголовок и массив.
 	Возможно что перед сохранением в файл нужно сделать проверку на формат, и сохранять только если формат картинки r8g8b8 или r8g8b8a8.
+	
+	Реализация метода для BMP (SaveBMP) находится в файле badcoiq.imageloader.BMP.cpp
+	DDS (SaveDDS) в файле badcoiq.imageloader.DDS.cpp
+	
 13. IMAGE. Аналогично с пунктом 12, сохранить в PNG, JPEG, TGA, не забыв добавить новые поля в bqImageFileFormat
 		для PNG и JPEG есть библиотеки, там должны быть способы записи в файл. Надо изучать их документацию.
 		для TGA нужно делать самому. Можно найти реализацию записи в интернете. Нужна версия с сжатием данных, и чтобы лицензия MIT или BSD или подобная.

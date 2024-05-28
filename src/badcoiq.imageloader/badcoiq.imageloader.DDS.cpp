@@ -28,45 +28,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.imageloader.h"
 
-#ifdef BQ_WITH_IMAGE_BMP
+//#ifdef BQ_WITH_IMAGE_BMP
 
-#include "badcoiq/common/bqFileBuffer.h"
+//#include "badcoiq/common/bqFileBuffer.h"
 
-bqImage* bqImageLoaderImpl_LoadBMP(bqFileBuffer*);
-
-bqImage* bqImageLoaderImpl::LoadBMP(const char* path)
-{
-	BQ_ASSERT_ST(path);
-
-	bqImage* img = 0;
-	uint32_t file_size = 0;
-	uint8_t* ptr = bqFramework::SummonFileBuffer(path, &file_size, false);
-	if (ptr)
-	{
-		img = LoadBMP(path, ptr, (uint32_t)file_size);
-		bqDestroy(ptr);
-	}
-	return img;
-}
-
-// 32bitRGBA
-// 32bitRGB
-// 24bit
-// 16bit565RGB
-// 16bit5551RGBA
-// 16bit5551RGB
-bqImage* bqImageLoaderImpl::LoadBMP(const char* path, uint8_t* buffer, uint32_t bufferSz)
-{
-	BQ_ASSERT_ST(path);  // Нафига вообще нужен path? 
-	BQ_ASSERT_ST(buffer);
-	BQ_ASSERT_ST(bufferSz);
-
-	bqFileBuffer file(buffer, bufferSz);
-
-	return bqImageLoaderImpl_LoadBMP(&file);
-}
-
-bool bqImageLoaderImpl::SaveBMP(bqImage* image, bqImage::SaveFileFormat format, const char* path)
+bool bqImageLoaderImpl::SaveDDS(bqImage* image, bqImage::SaveFileFormat format, const char* path)
 {
 	BQ_ASSERT_ST(image);
 	BQ_ASSERT_ST(path);
@@ -75,4 +41,4 @@ bool bqImageLoaderImpl::SaveBMP(bqImage* image, bqImage::SaveFileFormat format, 
 	return true;
 }
 
-#endif
+//#endif

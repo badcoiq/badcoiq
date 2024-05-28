@@ -85,6 +85,43 @@ bqImageLoaderImpl::bqImageLoaderImpl()
 }
 bqImageLoaderImpl::~bqImageLoaderImpl() {}
 
+bool bqImageLoaderImpl::IsSupportSaveFormat(bqImage::SaveFileFormat f)
+{
+	switch (f)
+	{
+#ifdef BQ_WITH_IMAGE_BMP
+	case bqImage::SaveFileFormat::bmp24:
+#endif
+	case bqImage::SaveFileFormat::ddsRGBA8:
+		return true;
+	case bqImage::SaveFileFormat::null:
+	default:
+		break;
+	}
+
+	return false;
+}
+
+bool bqImageLoaderImpl::Save(bqImage* image, bqImage::SaveFileFormat format, const char* path)
+{
+	switch (format)
+	{
+#ifdef BQ_WITH_IMAGE_BMP
+	case bqImage::SaveFileFormat::bmp24:
+		return SaveBMP(image, format, path);
+		break;
+#endif
+	case bqImage::SaveFileFormat::ddsRGBA8:
+		return SaveDDS(image, format, path);
+		break;
+	case bqImage::SaveFileFormat::null:
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}
 
 uint32_t bqImageLoaderImpl::GetSupportedFilesCount()
 {
@@ -193,5 +230,6 @@ bqImage* bqImageLoaderImpl::Load(const char* path, uint8_t* buffer, uint32_t buf
 	}
 	return nullptr;
 }
+
 
 #endif

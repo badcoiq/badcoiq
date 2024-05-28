@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_IMAGE_LOADER_H__
 #define __BQ_IMAGE_LOADER_H__
 #ifdef BQ_WITH_IMAGE
+#include "bqImage.h"
 
 // Класс для загрузки изображения.
 // Библиотеки, загружающие картинки, должны реализовать производный класс.
@@ -55,6 +56,9 @@ public:
 
 	// Загрузить из памяти
 	virtual bqImage* Load(const char* path, uint8_t* buffer, uint32_t bufferSz) = 0;
+
+	virtual bool IsSupportSaveFormat(bqImage::SaveFileFormat) = 0;
+	virtual bool Save(bqImage* image, bqImage::SaveFileFormat format, const char* path) = 0;
 };
 
 #endif
