@@ -33,12 +33,48 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_SOUND
 
+// Класс который будет задерживать сигнал
+// Если всё будет ОК, то нужно будет убрать в .h файл
+// Так-же и эффек. Если получится реализовать, убрать всё во внутрь движка.
+template<typename _Type>
+class BlockQueue
+{
+	_Type** m_dataPtr = 0;
+	uint32_t m_numOfBlocks = 0;
+	BlockQueue() = delete;
+public:
+	BlockQueue(uint32_t blockSize, uint32_t numOfBlocks)
+		:
+		m_numOfBlocks(numOfBlocks)
+	{
+		m_dataPtr = (_Type**)bqMemory::malloc(numOfBlocks * sizeof(_Type*));
+		for (size_t i = 0; i < m_numOfBlocks; ++i)
+		{
+			m_dataPtr[i] = (_Type*)bqMemory::malloc(blockSize * sizeof(_Type));
+		}
+	}
+
+	~BlockQueue()
+	{
+		for (size_t i = 0; i < m_numOfBlocks; ++i)
+		{
+			bqMemory::free(m_dataPtr[i]);
+		}
+		bqMemory::free(m_dataPtr);
+	}
+
+	bool Put(_Type* blockIn, _Type* blockOut)
+	{
+		// Сначала надо передать blockOut
+
+	}
+};
+
 class ExampleSoundEffectDelay : public bqSoundEffect
 {
 public:
 	ExampleSoundEffectDelay()
 	{
-
 	}
 
 	virtual ~ExampleSoundEffectDelay()
@@ -67,6 +103,7 @@ bool ExampleSoundDelay::Init()
 	auto soundDeviceInfo = soundSystem->GetDeviceInfo();
 
 	m_sound = new bqSound;
+	BlockQueue<float> b(3, 2);
 
 	// Загрузка звука должна происходить по другому.
 	// Пока вручную создаю буфер и указываю m_hasItsOwnSound

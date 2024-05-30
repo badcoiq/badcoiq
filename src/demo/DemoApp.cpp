@@ -55,7 +55,7 @@ public:
 			info.m_generateMipmaps = true;
 
 			image->Resize(128, 128, false);
-
+			
 			m_texture = m_app->GetGS()->SummonTexture(image, info);
 
 			delete image;
