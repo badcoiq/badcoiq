@@ -27,62 +27,60 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "../../DemoApp.h"
+#include "badcoiq/containers/bqBlockQueue.h"
 #include "badcoiq/sound/bqSoundSystem.h"
 
 //#include "../src/kissfft/kiss_fft.h"
 
 #ifdef BQ_WITH_SOUND
 
-// Класс который будет задерживать сигнал
-// Если всё будет ОК, то нужно будет убрать в .h файл
-// Так-же и эффек. Если получится реализовать, убрать всё во внутрь движка.
-template<typename _Type>
-class BlockQueue
-{
-	_Type** m_dataPtr = 0;
-	uint32_t m_numOfBlocks = 0;
-	BlockQueue() = delete;
-public:
-	BlockQueue(uint32_t blockSize, uint32_t numOfBlocks)
-		:
-		m_numOfBlocks(numOfBlocks)
-	{
-		m_dataPtr = (_Type**)bqMemory::malloc(numOfBlocks * sizeof(_Type*));
-		for (size_t i = 0; i < m_numOfBlocks; ++i)
-		{
-			m_dataPtr[i] = (_Type*)bqMemory::malloc(blockSize * sizeof(_Type));
-		}
-	}
-
-	~BlockQueue()
-	{
-		for (size_t i = 0; i < m_numOfBlocks; ++i)
-		{
-			bqMemory::free(m_dataPtr[i]);
-		}
-		bqMemory::free(m_dataPtr);
-	}
-
-	bool Put(_Type* blockIn, _Type* blockOut)
-	{
-		// Сначала надо передать blockOut
-
-	}
-};
 
 class ExampleSoundEffectDelay : public bqSoundEffect
 {
+	bqBlockQueue<bqFloat32>* m_delayBuffers[2];
+	bqFloat32* m_blockOut = 0;
 public:
 	ExampleSoundEffectDelay()
 	{
+		auto soundSystem = bqFramework::GetSoundSystem();
+		auto soundDeviceInfo = soundSystem->GetDeviceInfo();
+
+		// Размер в семплах на 1 канал
+		auto blockSize = soundDeviceInfo.m_bufferSize 
+			/ (soundDeviceInfo.m_bitsPerSample / 8)
+			/ soundDeviceInfo.m_channels;
+		m_delayBuffers[0] = new bqBlockQueue<bqFloat32>(blockSize, 20);
+		m_delayBuffers[1] = new bqBlockQueue<bqFloat32>(blockSize, 20);
+
+		m_blockOut = new bqFloat32[blockSize];
 	}
 
 	virtual ~ExampleSoundEffectDelay()
 	{
+		if (m_delayBuffers[0]) delete m_delayBuffers[0];
+		if (m_delayBuffers[1]) delete m_delayBuffers[1];
+		if (m_blockOut) delete m_blockOut;
 	}
 
 	virtual void Process(bqSoundMixer* mixer) override
 	{
+		auto numOfChannels = mixer->GetNumOfChannels();
+		for (uint32_t i = 0; i < numOfChannels; ++i)
+		{
+			if (i == 2)
+				break;
+
+			auto channel = mixer->GetChannel(i);
+			m_delayBuffers[i]->Put((bqFloat32*)channel->m_data, m_blockOut);
+
+			bqFloat32* dst32 = (bqFloat32*)channel->m_data;
+			for (size_t o = 0; o < m_delayBuffers[i]->BlockSize(); ++o)
+			{
+				dst32[o] += m_blockOut[o];
+				if (dst32[o] > 1.f) dst32[o] = 1.f;
+				if (dst32[o] < -1.f) dst32[o] = -1.f;
+			}
+		}
 	}
 };
 
@@ -103,7 +101,6 @@ bool ExampleSoundDelay::Init()
 	auto soundDeviceInfo = soundSystem->GetDeviceInfo();
 
 	m_sound = new bqSound;
-	BlockQueue<float> b(3, 2);
 
 	// Загрузка звука должна происходить по другому.
 	// Пока вручную создаю буфер и указываю m_hasItsOwnSound

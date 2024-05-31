@@ -45,7 +45,9 @@ struct bqSoundSystemDeviceInfo
 	uint32_t m_channels = 0;
 
 	// размер того буфера который передаётся в звуковой драйвер
+	// Со всеми каналами
 	uint32_t m_bufferSize = 0;
+	uint32_t m_bitsPerSample = 0;
 };
 
 // * спрячу реализацию в наследнике

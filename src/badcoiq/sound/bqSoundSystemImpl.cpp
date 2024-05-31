@@ -228,6 +228,7 @@ bool bqSoundSystemImpl::Init()
 			m_deviceInfo.m_channels = m_WASAPIrenderer->m_mixFormat->nChannels;
 			m_deviceInfo.m_sampleRate = m_WASAPIrenderer->m_mixFormat->nSamplesPerSec;
 			m_deviceInfo.m_bufferSize = m_WASAPIrenderer->m_bufferSize;
+			m_deviceInfo.m_bitsPerSample = m_WASAPIrenderer->m_mixFormat->wBitsPerSample;
 
 		}
 
