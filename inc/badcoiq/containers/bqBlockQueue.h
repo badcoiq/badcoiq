@@ -87,6 +87,8 @@ public:
 	}
 
 	uint32_t BlockSize()const { return m_blockSize; }
+
+	_Type* GetCurrentData() { return m_blocks[m_putIndex].m_data; }
 };
 
 

@@ -30,59 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/containers/bqBlockQueue.h"
 #include "badcoiq/sound/bqSoundSystem.h"
 
-//#include "../src/kissfft/kiss_fft.h"
-
 #ifdef BQ_WITH_SOUND
-
-
-class ExampleSoundEffectDelay : public bqSoundEffect
-{
-	bqBlockQueue<bqFloat32>* m_delayBuffers[2];
-	bqFloat32* m_blockOut = 0;
-public:
-	ExampleSoundEffectDelay()
-	{
-		auto soundSystem = bqFramework::GetSoundSystem();
-		auto soundDeviceInfo = soundSystem->GetDeviceInfo();
-
-		// Размер в семплах на 1 канал
-		auto blockSize = soundDeviceInfo.m_bufferSize 
-			/ (soundDeviceInfo.m_bitsPerSample / 8)
-			/ soundDeviceInfo.m_channels;
-		m_delayBuffers[0] = new bqBlockQueue<bqFloat32>(blockSize, 20);
-		m_delayBuffers[1] = new bqBlockQueue<bqFloat32>(blockSize, 20);
-
-		m_blockOut = new bqFloat32[blockSize];
-	}
-
-	virtual ~ExampleSoundEffectDelay()
-	{
-		if (m_delayBuffers[0]) delete m_delayBuffers[0];
-		if (m_delayBuffers[1]) delete m_delayBuffers[1];
-		if (m_blockOut) delete m_blockOut;
-	}
-
-	virtual void Process(bqSoundMixer* mixer) override
-	{
-		auto numOfChannels = mixer->GetNumOfChannels();
-		for (uint32_t i = 0; i < numOfChannels; ++i)
-		{
-			if (i == 2)
-				break;
-
-			auto channel = mixer->GetChannel(i);
-			m_delayBuffers[i]->Put((bqFloat32*)channel->m_data, m_blockOut);
-
-			bqFloat32* dst32 = (bqFloat32*)channel->m_data;
-			for (size_t o = 0; o < m_delayBuffers[i]->BlockSize(); ++o)
-			{
-				dst32[o] += m_blockOut[o];
-				if (dst32[o] > 1.f) dst32[o] = 1.f;
-				if (dst32[o] < -1.f) dst32[o] = -1.f;
-			}
-		}
-	}
-};
 
 ExampleSoundDelay::ExampleSoundDelay(DemoApp* app)
 	:
@@ -124,7 +72,7 @@ bool ExampleSoundDelay::Init()
 	m_sound->SetLoop(-1);
 	m_sound->PlaybackStart();
 
-	m_effect = new ExampleSoundEffectDelay;
+	m_effect = soundSystem->SummonEffectDelay(2, 30);
 	m_mixer->AddEffect(m_effect);
 
 	return true;
@@ -145,6 +93,19 @@ void ExampleSoundDelay::OnDraw()
 	{
 		m_app->StopExample();
 		return;
+	}
+
+	if (bqInput::IsKeyHit(bqInput::KEY_Q))
+	{
+		m_sound->PlaybackStart();
+	}
+	if (bqInput::IsKeyHit(bqInput::KEY_W))
+	{
+		m_sound->PlaybackSet(17.5f);
+	}
+	if (bqInput::IsKeyHit(bqInput::KEY_E))
+	{
+		m_sound->PlaybackStop();
 	}
 
 	m_gs->BeginGUI();

@@ -86,6 +86,11 @@ public:
 
 	virtual bqSoundEffectVolume* SummonEffectVolume() = 0;
 
+	// time - какая-то величина, не связана с реальным отсчётом времени
+	// чем выше тем дольше задержка между получившимся `эхо`
+	// steps - количество `эхо`. Ограничен 10 максимум.
+	virtual bqSoundEffectDelay* SummonEffectDelay(uint32_t steps, uint32_t time) = 0;
+
 };
 
 #endif

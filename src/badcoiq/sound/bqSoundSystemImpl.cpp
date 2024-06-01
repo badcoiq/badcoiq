@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bqSoundSystemImpl.h"
 #include "bqSoundMixerImpl.h"
 #include "bqSoundEffectVolumeImpl.h"
+#include "bqSoundEffectDelayImpl.h"
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
@@ -83,6 +84,12 @@ void bqSoundSystemImpl::RemoveAllMixersFromProcessing()
 bqSoundEffectVolume* bqSoundSystemImpl::SummonEffectVolume()
 {
 	bqSoundEffectVolumeImpl* newEffect = new bqSoundEffectVolumeImpl();
+	return newEffect;
+}
+
+bqSoundEffectDelay* bqSoundSystemImpl::SummonEffectDelay(uint32_t steps, uint32_t time)
+{
+	bqSoundEffectDelayImpl* newEffect = new bqSoundEffectDelayImpl(steps, time);
 	return newEffect;
 }
 

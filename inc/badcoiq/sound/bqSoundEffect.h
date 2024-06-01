@@ -40,13 +40,13 @@ class bqSoundEffect
 public:
 	bqSoundEffect(){}
 	virtual ~bqSoundEffect(){}
+	BQ_PLACEMENT_ALLOCATOR(bqSoundEffect);
 
 	virtual void Process(bqSoundMixer*) = 0;
-	//virtual void Process(bqSoundBuffer*) = 0;
-	//virtual void Process(bqSoundBufferData*, bqSoundBufferInfo*) = 0;
 };
 
 #include "bqSoundEffectVolume.h"
+#include "bqSoundEffectDelay.h"
 
 #endif
 #endif

@@ -38,6 +38,7 @@ class bqSoundEffectVolume : public bqSoundEffect
 public:
 	bqSoundEffectVolume(){}
 	virtual ~bqSoundEffectVolume(){}
+	BQ_PLACEMENT_ALLOCATOR(bqSoundEffectVolume);
 
 	virtual void SetVolume(float) = 0;
 	virtual float GetVolume() = 0;

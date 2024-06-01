@@ -177,5 +177,8 @@
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundBuffer.cpp">
       <Filter>Source Files\sound</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundEffectDelayImpl.cpp">
+      <Filter>Source Files\sound</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -175,6 +175,7 @@ public:
 	virtual void AddMixerToProcessing(bqSoundMixer*) override;
 	virtual void RemoveAllMixersFromProcessing() override;
 	virtual bqSoundEffectVolume* SummonEffectVolume() override;
+	virtual bqSoundEffectDelay* SummonEffectDelay(uint32_t steps, uint32_t time) override;
 };
 
 #endif

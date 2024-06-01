@@ -205,6 +205,7 @@
     <ClCompile Include="..\..\src\badcoiq\scene\bqSprite.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSound.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundBuffer.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundEffectDelayImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundEffectVolumeImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundFile.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundMixerImpl.cpp" />
