@@ -40,7 +40,6 @@ extern bqFrameworkImpl* g_framework;
 
 bqGUISliderTextDrawCallback::bqGUISliderTextDrawCallback()
 {
-	m_color = bq::ColorBlack;
 }
 
 bqGUISliderTextDrawCallback::~bqGUISliderTextDrawCallback()
@@ -49,22 +48,21 @@ bqGUISliderTextDrawCallback::~bqGUISliderTextDrawCallback()
 
 bqGUIFont* bqGUISliderTextDrawCallback::OnFont(uint32_t, char32_t)
 {
-	return m_font;
+	return m_element->GetStyle()->m_staticTextFont;
 }
 
 bqColor* bqGUISliderTextDrawCallback::OnColor(uint32_t, char32_t)
 {
-	return &m_color;
+	return &m_element->GetStyle()->m_sliderTextColor;
 }
 
 bqGUISlider::bqGUISlider(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
 	:
 	bqGUIElement(w, position, size)
 {
-	bqGUISliderTextDrawCallback* cb = (bqGUISliderTextDrawCallback*)g_framework->m_defaultTextDrawCallback_slider;
-	cb->SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
-
-	m_textDrawCallback = cb;
+//	bqGUISliderTextDrawCallback* cb = (bqGUISliderTextDrawCallback*)g_framework->m_defaultTextDrawCallback_slider;
+//	cb->SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
+	m_textDrawCallback = g_framework->m_defaultTextDrawCallback_slider;
 
 	SetDrawBG(false);
 }
@@ -149,6 +147,7 @@ void bqGUISlider::Update()
 void bqGUISlider::Rebuild()
 {
 	bqGUIElement::Rebuild();
+	m_textDrawCallback->m_element = this;
 
 	auto H = m_buildRect.w - m_buildRect.y;
 
@@ -166,6 +165,7 @@ void bqGUISlider::Rebuild()
 
 void bqGUISlider::Draw(bqGS* gs, float)
 {
+	m_textDrawCallback->m_element = this;
 	gs->SetScissorRect(m_clipRect);
 
 	gs->DrawGUIRectangle(m_axisRect, m_style->m_sliderAxisEmtpyColor, m_style->m_sliderAxisEmtpyColor, 0, 0);

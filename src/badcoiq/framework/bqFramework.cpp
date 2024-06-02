@@ -1130,15 +1130,19 @@ void bqFrameworkImpl::_initGUITextDrawCallbacks()
 	m_defaultTextDrawCallback_icons = new bqGUICheckRadioBoxTextDrawCallback;
 	m_defaultTextDrawCallback_textEditor = new bqGUITextEditorTextDrawCallback;
 	m_defaultTextDrawCallback_listbox = new bqGUIListBoxTextDrawCallback;
-	m_defaultTextDrawCallback_slider = new bqGUISliderTextDrawCallback;
+
 
 	// далее коллбеки работающие чуть по иному
 	// в таких коллбэках нужно будет указывать m_element, внутри этого элемента
 	// это позволяет использовать m_style - темы
 	// надо инициилизировать шрифты - в том месте где шрифты создаются bqFramework::InitDefaultFonts
-	// надо переделать остальные коллбэки
+	// надо переделать остальные коллбэки.
+	// При Rebuild и Draw надо указать
+	// m_textDrawCallback->m_element = this;
 	m_defaultTextDrawCallback_staticText = new bqGUIStaticTextTextDrawCallback;
 	m_defaultTextDrawCallback_window = new bqGUIWindowTextDrawCallback;
+	
+	m_defaultTextDrawCallback_slider = new bqGUISliderTextDrawCallback;
 }
 
 void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
@@ -1151,6 +1155,7 @@ void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 	delete m_defaultTextDrawCallback_slider; m_defaultTextDrawCallback_slider = 0;
 	delete m_defaultTextDrawCallback_staticText; m_defaultTextDrawCallback_staticText = 0;
 }
+
 #endif
 
 bqCursor* bqFramework::SummonCursor(const char* fn)

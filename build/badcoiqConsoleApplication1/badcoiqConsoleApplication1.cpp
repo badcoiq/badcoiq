@@ -8,7 +8,7 @@ BQ_LINK_LIBRARY("badcoiq");
 //#include "almostnothin.cpp"
 
 // Только звук
-#include "onlysound.cpp"
+//#include "onlysound.cpp"
 
-//#include "other.cpp"
+#include "other.cpp"
 

@@ -38,3 +38,5 @@ data/sounds/Reload44100.wav
 data/sounds/alien_beacon44100_float_resample_100000.wav
 data/sounds/song1_MakeStereo_float32_resampled50000.wav
 bin32/test_aftereffect.wav
+tools/ModelEditor/Debug
+tools/ModelEditor/Release
