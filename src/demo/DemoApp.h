@@ -303,6 +303,10 @@ public:
 #include "examples/sound/ex_snd_delay.h"
 #endif
 
+#ifdef BQ_WITH_GUI
+#include "examples/GUI/ex_GUI_systemMenu.h"
+#endif
+
 #include "examples/games/mario/ex_g_mario.h"
 
 #endif

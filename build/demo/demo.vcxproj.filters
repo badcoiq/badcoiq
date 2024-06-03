@@ -60,6 +60,9 @@
     <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_delay.cpp">
       <Filter>examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\GUI\ex_GUI_systemMenu.cpp">
+      <Filter>examples\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">
@@ -67,6 +70,9 @@
     </Filter>
     <Filter Include="mario">
       <UniqueIdentifier>{58bcb126-0e70-4bee-8e12-cef87b6303e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\GUI">
+      <UniqueIdentifier>{5d38c672-b130-48d8-a261-726e3299b2c4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

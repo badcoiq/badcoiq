@@ -242,7 +242,9 @@ bool DemoApp::Init()
 	AddExample(new ExampleSoundFFT(this), U"FFT", "sound/", U"...");
 	AddExample(new ExampleSoundDelay(this), U"Delay", "sound/", U"...");
 #endif
-	
+#ifdef BQ_WITH_GUI
+	AddExample(new ExampleGUISystemMenu(this), U"System Menu", "GUI/", U"Обычное системное меню что вверху окна");
+#endif
 	AddExample(new ExampleMshGnBox(this), U"Box", "generators/mesh", U"Всё о создании коробки");
 	
 	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
