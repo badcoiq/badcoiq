@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/sound/bqSoundSystem.h"
 
-#include "bqSoundObjectImpl.h"
+#include "bqSoundStreamImpl.h"
 #include "bqSoundSystemImpl.h"
 #include "bqSoundMixerImpl.h"
 #include "bqSoundEffectVolumeImpl.h"
@@ -252,24 +252,9 @@ bool bqSoundSystemImpl::Init()
 	return retValue;
 }
 
-bqSoundObject* bqSoundSystemImpl::SummonObject(bqSound* sound)
+bqSoundStream* bqSoundSystemImpl::SummonStream()
 {
-	BQ_ASSERT_ST(sound);
-	BQ_PTR_D(bqSoundObjectImpl,newO,new bqSoundObjectImpl);
-	if (newO->Init(m_WASAPIrenderer->GetEndpoint(), sound))
-		return newO.Drop();
-	return 0;
-}
-
-bqSoundStreamObject* bqSoundSystemImpl::SummonStreamObject(const char* fn)
-{
-	BQ_ASSERT_ST(fn);
-	return 0;
-}
-
-bqSoundStreamObject* bqSoundSystemImpl::SummonStreamObject(const bqStringA& str)
-{
-	return SummonStreamObject(str.c_str());
+	return new bqSoundStreamImpl;
 }
 
 bqWASAPIRenderer::bqWASAPIRenderer()

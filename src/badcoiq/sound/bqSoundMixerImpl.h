@@ -71,6 +71,7 @@ class bqSoundMixerImpl : public bqSoundMixer
 
 	bqArray<bqSoundMixer*> m_mixers;
 	bqList<bqSoundEffect*> m_effects;
+	bqArray<bqSoundStream*> m_streams;
 
 	uint32_t m_bufferSizeForOneChannel = 0;
 	bqSoundBufferInfo m_dataInfo;
@@ -110,6 +111,9 @@ public:
 	virtual void AddSound(bqSound*) override;
 	virtual void RemoveSound(bqSound*) override;
 	virtual void RemoveAllSounds() override;
+
+	virtual void AddStream(bqSoundStream*) override;
+	virtual void RemoveAllStreams() override;
 
 	virtual void Process() override;
 

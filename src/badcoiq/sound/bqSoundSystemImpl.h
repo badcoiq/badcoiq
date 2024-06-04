@@ -167,9 +167,7 @@ public:
 
 	bool Init();
 
-	virtual bqSoundObject* SummonObject(bqSound*) override;
-	virtual bqSoundStreamObject* SummonStreamObject(const char*) override;
-	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) override;
+	virtual bqSoundStream* SummonStream() override;
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() override;
 	virtual bqSoundMixer* SummonMixer(uint32_t channels) override;
 	virtual void AddMixerToProcessing(bqSoundMixer*) override;

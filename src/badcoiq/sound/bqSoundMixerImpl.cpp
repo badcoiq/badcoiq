@@ -99,6 +99,7 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 
 bqSoundMixerImpl::~bqSoundMixerImpl()
 {
+	RemoveAllStreams();
 	RemoveAllSounds();
 	RemoveAllEffects();
 
@@ -189,6 +190,18 @@ void bqSoundMixerImpl::RemoveAllSounds()
 {
 	m_sounds.free_memory();
 }
+
+void bqSoundMixerImpl::AddStream(bqSoundStream* stream)
+{
+	BQ_ASSERT_ST(stream);
+	m_streams.push_back(stream);
+}
+
+void bqSoundMixerImpl::RemoveAllStreams()
+{
+	m_streams.free_memory();
+}
+
 
 void bqSoundMixerImpl::Process()
 {

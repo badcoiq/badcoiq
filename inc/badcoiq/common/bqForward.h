@@ -93,7 +93,7 @@ struct bqArchiveZipFile;
 class bqSound;
 class bqSoundSystem;
 struct bqSoundBufferInfo;
-class bqSoundObject;
+class bqSoundStream;
 class bqSoundMixer;
 class bqSoundEffect;
 #endif

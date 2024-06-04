@@ -70,8 +70,8 @@ public:
 	// Убрать все звуки
 	virtual void RemoveAllSounds() = 0;
 
-virtual void AddStream(bqSoundStream*) = 0);
-virtual void RemoveAllStreams() = 0;
+	virtual void AddStream(bqSoundStream*) = 0;
+	virtual void RemoveAllStreams() = 0;
 
 	// Миксер имеет буферы. отдельный на каждый канал.
 	// Эти буферы надо заполнить звуками и обработать эффектами.

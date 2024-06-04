@@ -121,35 +121,6 @@ bool ExampleBasicsSound::Init()
 	}
 
 
-	//m_sound1->Generate(bqSoundWaveType::sin, 10.f, 440);
-	//m_sound1->Convert(bqSoundFormat::float32_mono_44100);
-
-	m_soundObject = ss->SummonObject(m_sound1);
-
-	// Звуковые объекты созданные напрямую звуковым движком
-	// играются напрямую этим движком
-	/*m_soundObjectE = m_soundEngine->SummonObject(m_sound1);
-	if (!m_soundObjectE)
-	{
-		bqLog::PrintError("Can't create sound object\n");
-		return false;
-	}
-	
-	m_soundObjectEloop = m_soundEngine->SummonObject(m_sound1);
-	if (!m_soundObjectEloop)
-	{
-		bqLog::PrintError("Can't create sound object\n");
-		return false;
-	}
-	m_soundObjectEloop->Loop(2);*/
-
-//	m_soundObjectEloop->Use3D(true);
-//	m_soundObjectEloop->SetEmitterPosition(bqVec3());
-
-//	m_soundObjectStream = m_soundEngine->SummonStreamObject(bqFramework::GetAppPathA() + "../data/sounds/16bit2ch_MakeMono.wav");
-	//4m_soundObjectStream->Loop(1);
-	//m_soundObjectStream->SetVolume(0.19);
-
 	m_gs->DisableBackFaceCulling();
 	return true;
 }
@@ -157,8 +128,6 @@ bool ExampleBasicsSound::Init()
 void ExampleBasicsSound::Shutdown()
 {
 	BQ_SAFEDESTROY(m_soundObjectStream);
-	BQ_SAFEDESTROY(m_soundObjectEloop);
-	BQ_SAFEDESTROY(m_soundObject);
 	BQ_SAFEDESTROY(m_sound1);
 	BQ_SAFEDESTROY(m_camera);
 }
@@ -173,54 +142,6 @@ void ExampleBasicsSound::OnDraw()
 
 	_onCamera();
 	
-//	m_soundObjectEloop->SetListenerPosition(bqVec3(m_camera->m_position.x, m_camera->m_position.y, m_camera->m_position.z));
-//	m_soundObjectEloop->Update3D();
-
-	//m_soundEngine->Test(m_camera->m_position.GetVec3());
-
-	if (bqInput::IsKeyHit(bqInput::KEY_1))
-	{
-		m_soundObject->Play();
-	}
-	if (bqInput::IsKeyHit(bqInput::KEY_2))
-	{
-		m_soundObject->Stop();
-	}
-	//if (bqInput::IsKeyHit(bqInput::KEY_2))
-	//{
-	//	m_soundObjectEloop->Play();
-	//}
-	//if (bqInput::IsKeyHit(bqInput::KEY_3))
-	//{
-	//	m_soundObjectEloop->Stop();
-	//}
-
-	//if (bqInput::IsKeyHit(bqInput::KEY_Z))
-	//{
-	//	m_soundObjectStream->Play();
-	//}
-	//if (bqInput::IsKeyHit(bqInput::KEY_X))
-	//{
-	//	m_soundObjectStream->Stop();
-	//}
-	//if (bqInput::IsKeyHit(bqInput::KEY_C))
-	//{
-	//	m_soundObjectStream->Pause();
-	//}
-
-	static float volume = 0.5f;
-	if (bqInput::IsKeyHold(bqInput::KEY_NUM_ADD))
-	{
-		volume += 0.01f;
-		if (volume > 1.f) volume = 1.f;
-//		m_soundObjectE->SetVolume(volume);
-	}
-	if (bqInput::IsKeyHold(bqInput::KEY_NUM_SUB))
-	{
-		volume -= 0.01f;
-		if (volume < 0.f) volume = 0.f;
-//		m_soundObjectE->SetVolume(volume);
-	}
 
 
 	m_gs->BeginGUI();

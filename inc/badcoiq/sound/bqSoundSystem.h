@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef BQ_WITH_SOUND
 
 #include "bqSound.h"
-#include "bqSoundObject.h"
+#include "bqSoundStream.h"
 #include "bqSoundEffect.h"
 #include "bqSoundMixer.h"
 #include "bqSoundFile.h"
@@ -60,15 +60,11 @@ public:
 	bqSoundSystem() {};
 	virtual ~bqSoundSystem() {};
 
-	// Создать объект из имеющегося звука
-	virtual bqSoundObject* SummonObject(bqSound*) = 0;
-
 	// Создать объект для воспроизведения звука в отдельной нитке.
 	// Файл будет открыт для чтения и потихоньку будет происходить
 	// чтение.
 	// чтото пока не реализовано
-	virtual bqSoundStream* SummonStreamObject() = 0;
-	//virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
+	virtual bqSoundStream* SummonStream() = 0;
 
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() = 0;
 

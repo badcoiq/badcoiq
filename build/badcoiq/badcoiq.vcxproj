@@ -209,7 +209,7 @@
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundEffectVolumeImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundFile.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundMixerImpl.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundObjectImpl.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundStreamImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundSystemImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp" />
     <ClCompile Include="..\..\src\badcoiq\system\bqCursorWin32.cpp" />

@@ -25,63 +25,43 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 #pragma once
-#ifndef _BQ_SNDOBJIMPL_H_
-#define _BQ_SNDOBJIMPL_H_
+#ifndef __BQ_SOUNStream_H__
+#define __BQ_SOUNStream_H__
 
-#include <Windows.h>
-#include <MMDeviceAPI.h>
-#include <AudioClient.h>
-#include <AudioPolicy.h>
-#include <functiondiscoverykeys.h>
+#ifdef BQ_WITH_SOUND
 
-#include "badcoiq/sound/bqSoundSystem.h"
 
-class bqSoundObjectImpl : public bqSoundObject
+class bqSoundStream
 {
-	friend class bqWASAPIRenderer;
-
-	//IAudioClient* m_audioClient = 0;
-	//IAudioRenderClient* m_renderClient = 0;
-	//WAVEFORMATEX* m_mixFormat = 0;
-
-	/*UINT32      m_frameSize = 0;
-	UINT32      m_bufferSize = 0;*/
-
-	uint32_t m_currentPosition = 0;
-
-	void _thread_fillRenderBuffer();
-
-	
-
-	// Управляем воспроизведением `передавая` команды
-	enum ThreadCommand
-	{
-		ThreadCommand_null,
-		ThreadCommand_start,
-		ThreadCommand_stop,
-	};
-	ThreadCommand m_threadCommand = ThreadCommand::ThreadCommand_null;
-
-	// `Передавая` команды, должно изменяться состояние воспроизведения
-	enum ThreadState
-	{
-		ThreadState_null,
-		ThreadState_play,
-	};
-	ThreadState m_threadState = ThreadState::ThreadState_null;
-
 public:
-	bqSoundObjectImpl();
-	virtual ~bqSoundObjectImpl();
-	BQ_PLACEMENT_ALLOCATOR(bqSoundObjectImpl);
+	bqSoundStream() {}
+	virtual ~bqSoundStream() {}
+	BQ_PLACEMENT_ALLOCATOR(bqSoundStream);
 
-	virtual void Play() override;
-	virtual void Stop() override;
-	virtual void Pause() override;
-	virtual void Loop(bool) override;
+	virtual void PlaybackStart() = 0;
+	virtual void PlaybackStop() = 0;
+	virtual void PlaybackReset()= 0;
+	virtual void PlaybackSet(uint32_t minutes, float seconds)= 0;
+	virtual void PlaybackSet(float secondsOnly)= 0;
+	
+	// открыть/закрыть файл
+	virtual bool Open(const char*) = 0;
+	virtual void Close() = 0;
+	virtual bool IsOpened() = 0;
 
-	bool Init(IMMDevice* , bqSound*);
+	enum
+	{
+		state_notPlaying,
+		state_playing,
+	};
+	uint32_t m_state = state_notPlaying;
+
+	bool m_loop = false;
 };
 
+
 #endif
+#endif
+

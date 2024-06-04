@@ -25,74 +25,32 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_SOUNDOBJECT_H__
-#define __BQ_SOUNDOBJECT_H__
+#ifndef _BQ_SNDSTREAMIMPL_H_
+#define _BQ_SNDSTREAMIMPL_H_
 
-#ifdef BQ_WITH_SOUND
+#include "badcoiq/sound/bqSoundSystem.h"
 
-
-
-функции этого класса выполняет bqSound
-необходимо удалить лишнее и оставить
-stream object
-
-class bqSoundObject
+class bqSoundStreamImpl : public bqSoundStream
 {
+	FILE* m_file = 0;
+	std::thread* m_thread = 0;
+
+	bool _check_riff();
+
 public:
-	bqSoundObject() {}
-	virtual ~bqSoundObject() {}
-	BQ_PLACEMENT_ALLOCATOR(bqSoundObject);
+	bqSoundStreamImpl();
+	virtual ~bqSoundStreamImpl();
+	BQ_PLACEMENT_ALLOCATOR(bqSoundStreamImpl);
 
-	virtual void Play() = 0;
-	virtual void Stop() = 0;
-	virtual void Pause() = 0;
-	virtual void Loop(bool) = 0;
-
-	bqSoundObjectCallback* m_callback = 0;
-
-	enum
-	{
-		state_notplaying,
-		state_playing,
-	};
-	uint32_t m_state = state_notplaying;
-
-	bqSoundBufferData* m_bufferData = 0;
+	virtual void PlaybackStart() override;
+	virtual void PlaybackStop() override;
+	virtual void PlaybackReset() override;
+	virtual void PlaybackSet(uint32_t minutes, float seconds) override;
+	virtual void PlaybackSet(float secondsOnly) override;
+	virtual bool Open(const char*) override;
+	virtual void Close() override;
+	virtual bool IsOpened() override;
 };
 
-пусть имеет имя без слова object 
-class bqSoundStream
-{
-public:
-	bqSoundStream() {}
-	virtual ~bqSoundStream() {}
-	BQ_PLACEMENT_ALLOCATOR(bqSoundStream);
-
-	virtual void PlaybackStart() = 0;
-	virtual void PlaybackStop() = 0;
-	virtual void PlaybackReset()= 0;
-	virtual void PlaybackSet(uint32_t minutes, float seconds)= 0;
-	virtual void PlaybackSet(float secondsOnly)= 0;
-	
-// открыть/закрыть файл
-virtual bool Open(const char*) = 0;
-virtual void Close() = 0;
-
-
-
-	enum
-	{
-		state_notPlaying,
-		state_playing,
-	};
-	uint32_t m_state = state_notPlaying;
-
-bool m_loop = false;
-};
-
-
 #endif
-#endif
-
