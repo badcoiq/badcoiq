@@ -67,8 +67,8 @@ public:
 	// Файл будет открыт для чтения и потихоньку будет происходить
 	// чтение.
 	// чтото пока не реализовано
-	virtual bqSoundStreamObject* SummonStreamObject(const char*) = 0;
-	virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
+	virtual bqSoundStream* SummonStreamObject() = 0;
+	//virtual bqSoundStreamObject* SummonStreamObject(const bqStringA&) = 0;
 
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() = 0;
 
