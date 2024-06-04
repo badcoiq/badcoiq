@@ -76,6 +76,11 @@ public:
 	virtual void PlaybackSet(uint32_t minutes, float seconds)= 0;
 	virtual void PlaybackSet(float secondsOnly)= 0;
 	
+// открыть/закрыть файл
+virtual bool Open(const char*) = 0;
+virtual void Close() = 0;
+
+
 
 	enum
 	{
