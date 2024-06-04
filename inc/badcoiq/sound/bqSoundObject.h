@@ -32,17 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_SOUND
 
-class bqSoundObjectCallback
-{
-public:
-	bqSoundObjectCallback() {}
-	virtual ~bqSoundObjectCallback() {}
 
-	virtual void OnStart() {}
-	virtual void OnStop() {}
-
-	void* m_context = 0;
-};
 
 функции этого класса выполняет bqSound
 необходимо удалить лишнее и оставить
@@ -80,10 +70,12 @@ public:
 	virtual ~bqSoundStreamObject() {}
 	BQ_PLACEMENT_ALLOCATOR(bqSoundStreamObject);
 
-	virtual void Play() = 0;
-	virtual void Stop() = 0;
-	virtual void Pause() = 0;
-	virtual void Loop(bool) = 0;
+	virtual void PlaybackStart() = 0;
+	virtual void PlaybackStop() = 0;
+	virtual void PlaybackReset()= 0;
+	virtual void PlaybackSet(uint32_t minutes, float seconds)= 0;
+	virtual void PlaybackSet(float secondsOnly)= 0;
+	
 
 	enum
 	{
