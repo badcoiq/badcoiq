@@ -44,6 +44,10 @@ public:
 	void* m_context = 0;
 };
 
+функции этого класса выполняет bqSound
+необходимо удалить лишнее и оставить
+stream object
+
 class bqSoundObject
 {
 public:
@@ -68,7 +72,8 @@ public:
 	bqSoundBufferData* m_bufferData = 0;
 };
 
-class bqSoundStreamObject
+пусть имеет имя без слова object 
+class bqSoundStream
 {
 public:
 	bqSoundStreamObject() {}
