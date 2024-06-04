@@ -66,9 +66,9 @@ public:
 class bqSoundStream
 {
 public:
-	bqSoundStreamObject() {}
-	virtual ~bqSoundStreamObject() {}
-	BQ_PLACEMENT_ALLOCATOR(bqSoundStreamObject);
+	bqSoundStream() {}
+	virtual ~bqSoundStream() {}
+	BQ_PLACEMENT_ALLOCATOR(bqSoundStream);
 
 	virtual void PlaybackStart() = 0;
 	virtual void PlaybackStop() = 0;
@@ -79,13 +79,12 @@ public:
 
 	enum
 	{
-		state_notplaying,
+		state_notPlaying,
 		state_playing,
 	};
-	uint32_t m_state = state_notplaying;
+	uint32_t m_state = state_notPlaying;
 
-	//bqSoundFormat m_format = bqSoundFormat::unsupported;
-	bool m_loop = true;
+bool m_loop = false;
 };
 
 
