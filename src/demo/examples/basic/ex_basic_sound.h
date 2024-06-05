@@ -31,15 +31,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class DemoExample;
 class DemoApp;
-class bqSoundStreamObject;
 class ExampleBasicsSound : public DemoExample
 {
 	bqCamera* m_camera = 0;
 
 	bqSound* m_sound1 = 0;
 	
-	bqSoundStreamObject* m_soundObjectStream = 0;
-
     void _onCamera();
 public:
 	ExampleBasicsSound(DemoApp*);

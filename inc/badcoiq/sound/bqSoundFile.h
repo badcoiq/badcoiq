@@ -41,8 +41,6 @@ class bqSoundFile
 	long m_firstDataBlock = 0;
 	long m_currentDataBlock = 0;
 
-	bool _openWav(const char*);
-
 	using read_method = size_t(bqSoundFile::*)(void* buffer, size_t size);
 
 	enum class file_type
@@ -54,7 +52,9 @@ class bqSoundFile
 	read_method m_readMethod = 0;
 
 	size_t _ReadWav(void* buffer, size_t size);
+	size_t _ReadNull(void* buffer, size_t size);
 
+	bool _OpenWAV(const char*);
 
 public:
 	bqSoundFile();
@@ -62,8 +62,8 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundFile);
 
 	bool Open(const char*);
-	bool Open(const bqStringA&);
-	bool IsGood() { return m_file != 0; }
+	bool IsOpened() { return m_file != 0; }
+	void Close();
 
 	size_t Read(void* buffer, size_t size);
 

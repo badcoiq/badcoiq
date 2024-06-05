@@ -33,10 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class bqSoundStreamImpl : public bqSoundStream
 {
-	FILE* m_file = 0;
+	bqSoundFile* m_file = 0;
 	std::thread* m_thread = 0;
-
-	bool _check_riff();
 
 public:
 	bqSoundStreamImpl();

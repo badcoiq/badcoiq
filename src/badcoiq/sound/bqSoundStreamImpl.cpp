@@ -39,10 +39,13 @@ extern bqFrameworkImpl* g_framework;
 
 bqSoundStreamImpl::bqSoundStreamImpl()
 {
+	m_file = new bqSoundFile;
 }
 
 bqSoundStreamImpl::~bqSoundStreamImpl()
 {
+	Close();
+	delete m_file;
 }
 
 
@@ -75,86 +78,20 @@ bool bqSoundStreamImpl::Open(const char* path)
 	if (!path)
 		return false;
 
-	fopen_s(&m_file, path, "rb");
-	if(!m_file)
-		return false;
+	if (m_file->Open(path))
+		return true;
 
-	// надо проверить тип файла, поддерживает ли движок аудио данные и т.д.
-	// скорее всего лучше проверять по содержимому, игнорировать расширение файла.
-
-	char first4bytes[4] = { 0,0,0,0 };
-	if (fread(first4bytes, 1, 4, m_file) != 4)
-	{
-		Close();
-		return false;
-	}
-
-	enum class file_type
-	{
-		null,
-		riff,
-	}
-	fileType = file_type::null;
-
-	if (strcmp(first4bytes, "RIFF") == 0)
-	{
-		fileType = file_type::riff;
-	}
-
-	if (fileType == file_type::null)
-	{
-		Close();
-		return false;
-	}
-
-	bool checkResult = false;
-	switch (fileType)
-	{
-	case file_type::riff:
-		checkResult = _check_riff();
-		break;
-	default:
-		break;
-	}
-
-	if (!checkResult)
-	{
-		Close();
-		return false;
-	}
-
-	switch (fileType)
-	{
-	case file_type::riff:
-		
-		// тут установка указателя на метод для чтения WAV
-
-		break;
-	default:
-		break;
-	}
-
-	return true;
+	return false;
 }
 
 void bqSoundStreamImpl::Close()
 {
-	if (m_file)
-	{
-		fclose(m_file);
-		m_file = 0;
-	}
+	m_file->Close();
 }
 
 bool bqSoundStreamImpl::IsOpened()
 {
-	return m_file != 0;
-}
-
-bool bqSoundStreamImpl::_check_riff()
-{
-	// проверяем формат WAV, поддерживаем ли его
-	return false;
+	return m_file->IsOpened();
 }
 
 #endif

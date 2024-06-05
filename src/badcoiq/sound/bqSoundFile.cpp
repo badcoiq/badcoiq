@@ -37,137 +37,52 @@ extern bqFrameworkImpl* g_framework;
 
 bqSoundFile::bqSoundFile()
 {
-	m_readMethod = &bqSoundFile::_ReadWav;
+	m_readMethod = &bqSoundFile::_ReadNull;
 }
 
 bqSoundFile::~bqSoundFile()
 {
-	if (m_file)
-	{
-		fclose(m_file);
-	}
+	Close();
 }
 
-bool bqSoundFile::_openWav(const char* fn)
+void bqSoundFile::Close()
 {
-	fopen_s(&m_file, fn, "rb");
-
-	bool good = false;
-
 	if (m_file)
-	{
-		char riff[5] = { 0,0,0,0,0 };
-		fread(riff, 1, 4, m_file);
-
-		if (strcmp(riff, "RIFF") == 0)
-		{
-			uint32_t RIFFChunkSize = 0;
-			fread(&RIFFChunkSize, 1, 4, m_file);
-
-			char wave[5] = { 0,0,0,0,0 };
-			fread(wave, 1, 4, m_file);
-			if (strcmp(wave, "WAVE") == 0)
-			{
-				char fmt[5] = { 0,0,0,0,0 };
-				fread(fmt, 1, 4, m_file);
-				if (strcmp(fmt, "fmt ") == 0)
-				{
-					uint32_t FMTChunkSize = 0;
-					fread(&FMTChunkSize, 1, 4, m_file);
-
-					uint16_t format = 0;
-					fread(&format, 1, 2, m_file);
-
-					uint16_t channels = 0;
-					fread(&channels, 1, 2, m_file);
-
-					uint32_t sampleRate = 0;
-					fread(&sampleRate, 1, 4, m_file);
-
-					uint32_t byteRate = 0;
-					fread(&byteRate, 1, 4, m_file);
-
-					uint16_t blockAlign = 0;
-					fread(&blockAlign, 1, 2, m_file);
-
-					uint16_t bitsPerSample = 0;
-					fread(&bitsPerSample, 1, 2, m_file);
-
-					if (FMTChunkSize > 16)
-					{
-						uint16_t extraFormatInfoSz = 0;
-						fread(&extraFormatInfoSz, 1, 2, m_file);
-					}
-
-					char data[5] = { 0,0,0,0,0 };
-					fread(data, 1, 4, m_file);
-					if (strcmp(data, "data") == 0)
-					{
-						m_dataSize = 0;
-
-						uint32_t dataSize = 0;
-						fread(&dataSize, 1, 4, m_file);
-						if (dataSize)
-						{
-							m_dataSize = dataSize;
-							//Create(0.1f, channels, sampleRate, bitsPerSample);
-							//if (m_soundSource->m_sourceData.m_dataSize < dataSize)
-								//_reallocate(dataSize);
-
-							//fread(.m_data, 1, m_dataSize, m_file);
-
-							m_info.m_bitsPerSample = bitsPerSample;
-							m_info.m_blockSize = blockAlign;
-							m_info.m_bytesPerSample = bitsPerSample / 8;
-							m_info.m_channels = channels;
-							m_info.m_numOfSamples = dataSize / blockAlign;
-							m_info.m_sampleRate = sampleRate;
-							m_info.m_time = float(m_info.m_numOfSamples) / float(sampleRate);
-
-							m_firstDataBlock = ftell(m_file);
-							m_currentDataBlock = m_firstDataBlock;
-
-						//	printf("TIME: %f\n", m_info.m_time);
-
-							good = true;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if (!good && m_file)
 	{
 		fclose(m_file);
 		m_file = 0;
 	}
-
-	return good;
-}
-
-bool bqSoundFile::Open(const bqStringA& stra)
-{
-	return Open(stra.c_str());
 }
 
 bool bqSoundFile::Open(const char* fn)
 {
 	BQ_ASSERT_ST(fn);
 	BQ_ASSERT_ST(!m_file);
+	m_readMethod = &bqSoundFile::_ReadNull;
+
 	if (!m_file)
 	{
 		fopen_s(&m_file, fn, "rb");
 
 		if (m_file)
 		{
+			char name[4] = { 0,0,0,0 };
+			fread(name, 1, 4, m_file);
 			fclose(m_file);
 			m_file = 0;
 
-			bqStringA stra;
+			/*bqStringA stra;
 			stra = fn;
 			if (stra.extension(".wav"))
-				return _openWav(fn);
+				return _openWav(fn);*/
+			if (strcmp(name, "RIFF") == 0)
+			{
+				if (_OpenWAV(fn))
+				{
+					m_readMethod = &bqSoundFile::_ReadWav;
+					return true;
+				}
+			}
 		}
 		else
 		{
@@ -178,6 +93,182 @@ bool bqSoundFile::Open(const char* fn)
 	return false;
 }
 
+// код чтения надо брать из bqSoundBuffer
+bool bqSoundFile::_OpenWAV(const char* fn)
+{
+	fopen_s(&m_file, fn, "rb");
+	if (m_file)
+	{
+		bool isGood = false;
+		bqSoundFormat format = bqSoundFormat::unsupported;
+
+		uint32_t RIFFChunkSize = 0;
+		fread(&RIFFChunkSize, 1, 4, m_file);
+
+		char wave[5] = { 0,0,0,0,0 };
+		fread(wave, 1, 4, m_file);
+		if (strcmp(wave, "WAVE") == 0)
+		{
+			char fmt[5] = { 0,0,0,0,0 };
+			fread(fmt, 1, 4, m_file);
+			if (strcmp(fmt, "fmt ") == 0)
+			{
+				uint32_t FMTChunkSize = 0;
+				fread(&FMTChunkSize, 1, 4, m_file);
+
+				uint16_t TYPE = 0;
+				fread(&TYPE, 1, 2, m_file);
+
+				switch (TYPE)
+				{
+				case 1:
+					format = bqSoundFormat::int16;
+					break;
+				case 3:
+					format = bqSoundFormat::float32; // я пока ХЗ на счёт float64
+					break;
+				}
+
+				uint16_t channels = 0;
+				fread(&channels, 1, 2, m_file);
+				uint32_t sampleRate = 0;
+				fread(&sampleRate, 1, 4, m_file);
+				uint32_t nAvgBytesPerSec = 0;
+				fread(&nAvgBytesPerSec, 1, 4, m_file);
+				uint16_t blockSize = 0;
+				fread(&blockSize, 1, 2, m_file);
+				uint16_t bitsPerSample = 0;
+				fread(&bitsPerSample, 1, 2, m_file);
+				if (format == bqSoundFormat::int16)
+				{
+					switch (bitsPerSample)
+					{
+					case 8:
+						format = bqSoundFormat::uint8;
+						break;
+					case 24:
+						format = bqSoundFormat::int24;
+						break;
+					case 32:
+						format = bqSoundFormat::int32;
+						break;
+					}
+				}
+				else if (format == bqSoundFormat::float32)
+				{
+					// возможно можно определить так
+					//if (bitsPerSample == 64)
+					//	format = bqSoundFormat::float64;
+				}
+				if (FMTChunkSize > 16)
+				{
+					uint16_t extraFormatInfoSz = 0;
+					fread(&extraFormatInfoSz, 1, 2, m_file);
+					if (extraFormatInfoSz == 22)
+					{
+						uint16_t wValidBitsPerSample = 0;
+						uint32_t dwChannelMask = 0;
+						uint8_t SubFormat[16];
+						fread(&wValidBitsPerSample, 1, 2, m_file);
+						fread(&dwChannelMask, 1, 4, m_file);
+						fread(SubFormat, 1, 16, m_file);
+					}
+				}
+
+				while (!feof(m_file))
+				{
+					char chunkName[5] = { 0,0,0,0,0 };
+					fread(chunkName, 1, 4, m_file);
+
+					if (TYPE != 1)
+					{
+						if (strcmp(chunkName, "fact") == 0)
+						{
+							uint32_t factcksize = 0;
+							fread(&factcksize, 1, 4, m_file);
+							if (factcksize < 4)
+								return false;
+
+							for (uint32_t i = 0, sz = factcksize / 4; i < sz; ++i)
+							{
+								uint32_t factdwSampleLength = 0;
+								fread(&factdwSampleLength, 1, 4, m_file);
+							}
+						}
+					}
+
+					if (strcmp(chunkName, "PEAK") == 0)
+					{
+						uint32_t peakchunkDataSize = 0;
+						uint32_t peakversion = 0;
+						uint32_t peaktimeStamp = 0;
+						struct PositionPeak
+						{
+							float   value;    /* signed value of peak */
+							uint32_t position; /* the sample frame for the peak */
+						};
+
+						fread(&peakchunkDataSize, 1, 4, m_file);
+						fread(&peakversion, 1, 4, m_file);
+						fread(&peaktimeStamp, 1, 4, m_file);
+
+						if (peakchunkDataSize > 8)// надо ли это делать?
+						{
+							PositionPeak peak;
+							for (uint32_t i = 0; i < channels; ++i)
+							{
+								fread(&peak.value, 1, 4, m_file);
+								fread(&peak.position, 1, 4, m_file);
+							}
+						}
+					}
+
+					if (strcmp(chunkName, "data") == 0)
+					{
+						uint32_t dataSize = 0;
+						fread(&dataSize, 1, 4, m_file);
+						if (dataSize)
+						{
+							if (format != bqSoundFormat::unsupported)
+							{
+								/*Create(0.1f, channels, sampleRate, format);
+								if (m_bufferData.m_dataSize < dataSize)
+									_reallocate(dataSize);
+
+								m_bufferInfo.m_format = format;
+
+								file.Read(m_bufferData.m_data, m_bufferData.m_dataSize);*/
+
+								//Convert();
+
+								//CalculateTime();
+								//return true;
+
+//тут проверка поддерживаемого формата
+// если всё ОК то isGood = true;
+									//isGood = true;
+							}
+							else
+							{
+								bqLog::PrintWarning("Unsupported sound file format\n");
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (!isGood)
+		{
+			fclose(m_file);
+			m_file = 0;
+			return false;
+		}
+		return true;
+	}
+	return false;
+}
+
 size_t bqSoundFile::_ReadWav(void* buffer, size_t size)
 {
 	size_t rn = fread(buffer, 1, size, m_file);
@@ -185,6 +276,11 @@ size_t bqSoundFile::_ReadWav(void* buffer, size_t size)
 	m_currentDataBlock = ftell(m_file);
 
 	return rn;
+}
+
+size_t bqSoundFile::_ReadNull(void*, size_t)
+{
+	return 0;
 }
 
 size_t bqSoundFile::Read(void* buffer, size_t size)

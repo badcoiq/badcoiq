@@ -127,7 +127,6 @@ bool ExampleBasicsSound::Init()
 
 void ExampleBasicsSound::Shutdown()
 {
-	BQ_SAFEDESTROY(m_soundObjectStream);
 	BQ_SAFEDESTROY(m_sound1);
 	BQ_SAFEDESTROY(m_camera);
 }
