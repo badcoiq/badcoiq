@@ -608,7 +608,7 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 		this->ThreadCommand_SetMainMixer(m_mainMixer);
 
 		m_threadContext.m_run = true;
-		m_tread = new std::thread(&bqWASAPIRenderer::_thread_function, this);
+		m_thread = new std::thread(&bqWASAPIRenderer::_thread_function, this);
 
 		return true;
 	}
@@ -636,19 +636,19 @@ void bqWASAPIRenderer::Shutdown()
 {
 	bqLog::PrintInfo("Shutdown WASAPI\n");
 
-	if (m_tread)
+	if (m_thread)
 	{
 		bqLog::PrintInfo("Shutdown audio thread...\n");
 		m_threadContext.m_run = false;
 
-		if(m_tread->joinable())
-			m_tread->join();
+		if(m_thread->joinable())
+			m_thread->join();
 
 		m_threadContext.m_commands.Clear();
 		m_threadContext.m_mixers.clear();
 
-		delete m_tread;
-		m_tread = 0;
+		delete m_thread;
+		m_thread = 0;
 
 		if (m_audioClient)
 		{

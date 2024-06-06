@@ -79,14 +79,53 @@ bool bqSoundStreamImpl::Open(const char* path)
 		return false;
 
 	if (m_file->Open(path))
-		return true;
+	{
+		// 1 секунда
+		m_soundDataSize = m_file->GetBufferInfo().m_sampleRate
+			* m_file->GetBufferInfo().m_blockSize;
+
+		m_soundData = new uint8_t[m_soundDataSize];
+
+		m_thread = new std::thread(&bqSoundStreamImpl::_thread_function, this);
+
+		if (m_thread)
+			return true;
+
+		Close();
+	}
 
 	return false;
 }
 
+void bqSoundStreamImpl::_thread_function()
+{
+	while (m_threadContext.m_run)
+	{
+		if (!m_file->eof())
+		{
+
+		}
+	}
+}
+
 void bqSoundStreamImpl::Close()
 {
+	if (m_soundData)
+	{
+		delete[]m_soundData;
+		m_soundData = 0;
+	}
+
 	m_file->Close();
+	// завершение thread тоже здесь
+	m_threadContext.m_run = false;
+	if (m_thread)
+	{
+		if (m_thread->joinable())
+			m_thread->join();
+		delete m_thread;
+		m_thread = 0;
+	}
 }
 
 bool bqSoundStreamImpl::IsOpened()

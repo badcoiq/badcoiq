@@ -136,7 +136,7 @@ private:
 	//HANDLE      _ShutdownEvent;
 	LONG        _EngineLatencyInMS;
 
-	std::thread* m_tread = 0;
+	std::thread* m_thread = 0;
 
 	//  IUnknown
 	STDMETHOD(QueryInterface)(REFIID iid, void** pvObject);

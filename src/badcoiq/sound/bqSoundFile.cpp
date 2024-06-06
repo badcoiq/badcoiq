@@ -52,6 +52,7 @@ void bqSoundFile::Close()
 		fclose(m_file);
 		m_file = 0;
 	}
+	m_readMethod = &bqSoundFile::_ReadNull;
 }
 
 bool bqSoundFile::Open(const char* fn)
@@ -246,7 +247,22 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 
 //тут проверка поддерживаемого формата
 // если всё ОК то isGood = true;
-									//isGood = true;
+								// Пока читаю только float32
+								if (format == bqSoundFormat::float32)
+								{
+									m_info.m_bitsPerSample = 32;
+									m_info.m_bytesPerSample = 4;
+									m_info.m_channels = channels;
+									m_info.m_sampleRate = sampleRate;
+									m_info.m_blockSize = m_info.m_bytesPerSample * m_info.m_channels;
+									m_info.m_numOfSamples = dataSize / m_info.m_blockSize;
+									m_info.m_time = ceil((float)dataSize / (float)m_info.m_channels)
+										/ (float)(m_info.m_sampleRate * m_info.m_bytesPerSample);
+
+									m_firstDataBlock = ftell(m_file);
+									m_currentDataBlock = m_firstDataBlock;
+									isGood = true;
+								}
 							}
 							else
 							{
@@ -271,6 +287,7 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 
 size_t bqSoundFile::_ReadWav(void* buffer, size_t size)
 {
+	BQ_ASSERT_ST(m_file);
 	size_t rn = fread(buffer, 1, size, m_file);
 
 	m_currentDataBlock = ftell(m_file);
@@ -297,18 +314,27 @@ const bqSoundBufferInfo& bqSoundFile::GetBufferInfo()
 
 void bqSoundFile::MoveToFirstDataBlock()
 {
+	BQ_ASSERT_ST(m_file);
 	m_currentDataBlock = m_firstDataBlock;
 	fseek(m_file, m_currentDataBlock, SEEK_SET);
 }
 
 long bqSoundFile::Tell()
 {
+	BQ_ASSERT_ST(m_file);
 	return ftell(m_file);
 }
 
 void bqSoundFile::Seek(long v)
 {
+	BQ_ASSERT_ST(m_file);
 	fseek(m_file, v, SEEK_SET);
+}
+
+bool bqSoundFile::eof()
+{
+	BQ_ASSERT_ST(m_file);
+	return feof(m_file);
 }
 
 #endif

@@ -35,7 +35,13 @@ class bqSoundStreamImpl : public bqSoundStream
 {
 	bqSoundFile* m_file = 0;
 	std::thread* m_thread = 0;
-
+	void _thread_function();
+	struct _thread_context
+	{
+		bool m_run = true;
+	}m_threadContext;
+	uint8_t* m_soundData = 0;
+	uint32_t m_soundDataSize = 0;
 public:
 	bqSoundStreamImpl();
 	virtual ~bqSoundStreamImpl();

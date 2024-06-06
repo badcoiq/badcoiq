@@ -84,6 +84,8 @@ public:
 	long Tell();
 	void Seek(long);
 
+	bool eof();
+
 private:
 	Type m_type = Type::Wav;
 };
