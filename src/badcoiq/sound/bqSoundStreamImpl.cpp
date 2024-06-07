@@ -81,10 +81,31 @@ bool bqSoundStreamImpl::Open(const char* path)
 	if (m_file->Open(path))
 	{
 		// 1 секунда
-		m_soundDataSize = m_file->GetBufferInfo().m_sampleRate
-			* m_file->GetBufferInfo().m_blockSize;
+		//m_soundDataSize = m_file->GetBufferInfo().m_sampleRate
+		//	* m_file->GetBufferInfo().m_blockSize;
+		//m_soundData = new uint8_t[m_soundDataSize];
+		
+		// Данные которые читаются из файла
+		m_dataFromFile.m_size = m_file->GetBufferInfo().m_sampleRate * m_file->GetBufferInfo().m_blockSize;
+		m_dataFromFile.reserve(m_dataFromFile.m_size);
+		
+		bqSoundSystemDeviceInfo deviceInfo = bqFramework::GetSoundSystem()->GetDeviceInfo();
 
-		m_soundData = new uint8_t[m_soundDataSize];
+		// нужно сконвертировать это (m_dataFromFile) в формат миксера
+		// формат миксера устанавливается в соответствии с bqSoundSystemDeviceInfo
+		//    только используется bqSoundFormat::float32
+		// 2 канала - прописано для главного миксера. нет желания реализовывать более.
+		auto mixerChannels = deviceInfo.m_channels;
+		if (mixerChannels > 2)
+			mixerChannels = 2;
+		m_dataAfterConvert.m_size = m_file->GetBufferInfo().m_sampleRate * sizeof(bqFloat32) * mixerChannels;
+		m_dataAfterConvert.reserve(m_dataAfterConvert.m_size);
+		
+		// resample требует массива иного размера
+		// как видно из m_dataAfterConvert там используется sample rate файла
+		// здесь же используется значение из bqSoundSystemDeviceInfo
+		m_dataAfterResample.m_size = deviceInfo.m_sampleRate * (deviceInfo.m_bitsPerSample / 8) * mixerChannels;
+		m_dataAfterResample.reserve(m_dataAfterResample.m_size);
 
 		m_thread = new std::thread(&bqSoundStreamImpl::_thread_function, this);
 
@@ -103,18 +124,27 @@ void bqSoundStreamImpl::_thread_function()
 	{
 		if (!m_file->eof())
 		{
+			m_file->Read(m_dataFromFile.m_data, m_dataFromFile.m_size);
 
+			// Конвертация
+			// Resample
+			// Передача в миксер
+			// Заполнение второго буфера
+			// Если два буфера заполнены, то ожидаем когда завершитсч воспроизведение первого
 		}
 	}
 }
 
 void bqSoundStreamImpl::Close()
 {
-	if (m_soundData)
-	{
-		delete[]m_soundData;
-		m_soundData = 0;
-	}
+	//if (m_soundData)
+	//{
+	//	delete[]m_soundData;
+	//	m_soundData = 0;
+	//}
+	m_dataFromFile.free_memory();
+	m_dataAfterConvert.free_memory();
+	m_dataAfterResample.free_memory();
 
 	m_file->Close();
 	// завершение thread тоже здесь

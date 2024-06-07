@@ -40,8 +40,24 @@ class bqSoundStreamImpl : public bqSoundStream
 	{
 		bool m_run = true;
 	}m_threadContext;
-	uint8_t* m_soundData = 0;
-	uint32_t m_soundDataSize = 0;
+	
+	// Нужно несколько буферов. Потому что:
+	// Формат звука в файле может отличаться от формата миксера (миксер всегда float32)
+	// Действия:
+	//  - читаем из файла в буфер для `данных из файла`
+	//  - конвертируем в float32, нужен для этого новый буфер 'после конвертации'
+	//  - изменяем sample rate, так-же нужен будет отдельный буфер `после resample`
+	// Всё это в случае если форматы разные и sample rate не совпадает
+	// А может быть так что что-то совпадает, форматы разные, а sample rate одинаковый.
+	// Или наоборот, или всё совпадает (тогда надо игнорировать буферы 'после конвертации'
+	// `после resample`).
+	 
+	//uint8_t* m_fileData = 0;
+	//uint32_t m_fileDataSize = 0;
+	bqArray<uint8_t> m_dataFromFile;
+	bqArray<uint8_t> m_dataAfterConvert;
+	bqArray<uint8_t> m_dataAfterResample;
+
 public:
 	bqSoundStreamImpl();
 	virtual ~bqSoundStreamImpl();
