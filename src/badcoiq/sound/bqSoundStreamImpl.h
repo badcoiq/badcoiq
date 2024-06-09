@@ -58,6 +58,21 @@ class bqSoundStreamImpl : public bqSoundStream
 	bqArray<uint8_t> m_dataAfterConvert;
 	bqArray<uint8_t> m_dataAfterResample;
 
+	// смотри код чтения, конвертирования в thread методе для ясности
+	// типа, текущий указатель.
+	// Он пойдёт в миксер.
+	bqArray<uint8_t>* m_dataPointer = 0;
+
+	// чтобы определить нужна ли конвертация использую указатель на метод
+	// если указатель == 0 то конвертация не нужна
+	// если != 0 то вызываем метод который и будет делать конвертацию
+	// устанавливаться данный указатель должен в моменте открытия файла
+	using _convertMethod = void(bqSoundStreamImpl::*)();
+	_convertMethod _convert = 0;
+
+	bqSoundSystemDeviceInfo m_deviceInfo;
+	uint32_t m_fileSampleRate = 0;
+
 public:
 	bqSoundStreamImpl();
 	virtual ~bqSoundStreamImpl();

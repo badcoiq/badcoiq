@@ -85,27 +85,34 @@ bool bqSoundStreamImpl::Open(const char* path)
 		//	* m_file->GetBufferInfo().m_blockSize;
 		//m_soundData = new uint8_t[m_soundDataSize];
 		
+		m_fileSampleRate = m_file->GetBufferInfo().m_sampleRate;
+
 		// Данные которые читаются из файла
-		m_dataFromFile.m_size = m_file->GetBufferInfo().m_sampleRate * m_file->GetBufferInfo().m_blockSize;
+		m_dataFromFile.m_size = m_fileSampleRate * m_file->GetBufferInfo().m_blockSize;
 		m_dataFromFile.reserve(m_dataFromFile.m_size);
+
 		
-		bqSoundSystemDeviceInfo deviceInfo = bqFramework::GetSoundSystem()->GetDeviceInfo();
+		m_deviceInfo = bqFramework::GetSoundSystem()->GetDeviceInfo();
 
 		// нужно сконвертировать это (m_dataFromFile) в формат миксера
 		// формат миксера устанавливается в соответствии с bqSoundSystemDeviceInfo
 		//    только используется bqSoundFormat::float32
 		// 2 канала - прописано для главного миксера. нет желания реализовывать более.
-		auto mixerChannels = deviceInfo.m_channels;
+		auto mixerChannels = m_deviceInfo.m_channels;
 		if (mixerChannels > 2)
 			mixerChannels = 2;
-		m_dataAfterConvert.m_size = m_file->GetBufferInfo().m_sampleRate * sizeof(bqFloat32) * mixerChannels;
+		m_dataAfterConvert.m_size = m_fileSampleRate * sizeof(bqFloat32) * mixerChannels;
 		m_dataAfterConvert.reserve(m_dataAfterConvert.m_size);
 		
 		// resample требует массива иного размера
 		// как видно из m_dataAfterConvert там используется sample rate файла
 		// здесь же используется значение из bqSoundSystemDeviceInfo
-		m_dataAfterResample.m_size = deviceInfo.m_sampleRate * (deviceInfo.m_bitsPerSample / 8) * mixerChannels;
+		m_dataAfterResample.m_size = m_deviceInfo.m_sampleRate * (m_deviceInfo.m_bitsPerSample / 8) * mixerChannels;
 		m_dataAfterResample.reserve(m_dataAfterResample.m_size);
+
+		// конвертации пока нет
+		// читаем float32
+		_convert = 0;
 
 		m_thread = new std::thread(&bqSoundStreamImpl::_thread_function, this);
 
@@ -126,9 +133,30 @@ void bqSoundStreamImpl::_thread_function()
 		{
 			m_file->Read(m_dataFromFile.m_data, m_dataFromFile.m_size);
 
+			m_dataPointer = &m_dataFromFile;
+
 			// Конвертация
+			if (_convert)
+			{
+				(this->*_convert)(); // конвертация будет сохранятся в m_dataAfterConvert
+				m_dataPointer = &m_dataAfterConvert;
+			}
+			 
 			// Resample
+			if (m_fileSampleRate != m_deviceInfo.m_sampleRate)
+			{
+				//m_dataAfterResample уже должен иметь нужный размер для звука
+				// с новым sample rate
+
+
+				m_dataPointer = &m_dataAfterResample;
+			}
+			
 			// Передача в миксер
+			// Миксер будет обрабатывать bqSoundStream отдельно от bqSound
+			// Он будет брать указатель на буфер из которого нужно будет
+			// скопировать звук - m_dataPointer
+
 			// Заполнение второго буфера
 			// Если два буфера заполнены, то ожидаем когда завершитсч воспроизведение первого
 		}
@@ -137,6 +165,7 @@ void bqSoundStreamImpl::_thread_function()
 
 void bqSoundStreamImpl::Close()
 {
+	_convert = 0;
 	//if (m_soundData)
 	//{
 	//	delete[]m_soundData;
