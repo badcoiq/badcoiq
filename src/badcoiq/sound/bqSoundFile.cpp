@@ -53,6 +53,7 @@ void bqSoundFile::Close()
 		m_file = 0;
 	}
 	m_readMethod = &bqSoundFile::_ReadNull;
+	m_setPlaybackPosition_method = &bqSoundFile::_SetPlaybackPositionNull;
 }
 
 bool bqSoundFile::Open(const char* fn)
@@ -60,6 +61,7 @@ bool bqSoundFile::Open(const char* fn)
 	BQ_ASSERT_ST(fn);
 	BQ_ASSERT_ST(!m_file);
 	m_readMethod = &bqSoundFile::_ReadNull;
+	m_setPlaybackPosition_method = &bqSoundFile::_SetPlaybackPositionNull;
 
 	if (!m_file)
 	{
@@ -67,7 +69,7 @@ bool bqSoundFile::Open(const char* fn)
 
 		if (m_file)
 		{
-			char name[4] = { 0,0,0,0 };
+			char name[5] = { 0,0,0,0,0 };
 			fread(name, 1, 4, m_file);
 			fclose(m_file);
 			m_file = 0;
@@ -81,6 +83,7 @@ bool bqSoundFile::Open(const char* fn)
 				if (_OpenWAV(fn))
 				{
 					m_readMethod = &bqSoundFile::_ReadWav;
+					m_setPlaybackPosition_method = &bqSoundFile::_SetPlaybackPositionWav;
 					return true;
 				}
 			}
@@ -102,6 +105,9 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 	{
 		bool isGood = false;
 		bqSoundFormat format = bqSoundFormat::unsupported;
+
+		char riff[5] = { 0,0,0,0,0 };
+		fread(riff, 1, 4, m_file);
 
 		uint32_t RIFFChunkSize = 0;
 		fread(&RIFFChunkSize, 1, 4, m_file);
@@ -230,6 +236,8 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 						fread(&dataSize, 1, 4, m_file);
 						if (dataSize)
 						{
+							m_dataSize = dataSize;
+
 							if (format != bqSoundFormat::unsupported)
 							{
 								/*Create(0.1f, channels, sampleRate, format);
@@ -270,6 +278,9 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 							}
 						}
 					}
+
+					if (isGood)
+						break;
 				}
 			}
 		}
@@ -298,6 +309,16 @@ size_t bqSoundFile::_ReadWav(void* buffer, size_t size)
 size_t bqSoundFile::_ReadNull(void*, size_t)
 {
 	return 0;
+}
+
+void bqSoundFile::_SetPlaybackPositionWav(uint64_t v)
+{
+	fseek(m_file, m_firstDataBlock + v, SEEK_SET);
+	//printf("_SetPlaybackPositionWav %llu\n", v);
+}
+
+void bqSoundFile::_SetPlaybackPositionNull(uint64_t)
+{
 }
 
 size_t bqSoundFile::Read(void* buffer, size_t size)
@@ -334,7 +355,14 @@ void bqSoundFile::Seek(long v)
 bool bqSoundFile::eof()
 {
 	BQ_ASSERT_ST(m_file);
-	return feof(m_file);
+	auto f = feof(m_file);
+	return f != 0;
+}
+
+void bqSoundFile::SetPlaybackPosition(uint64_t v)
+{
+	BQ_ASSERT_ST(m_file);
+	return (this->*m_setPlaybackPosition_method)(v);
 }
 
 #endif

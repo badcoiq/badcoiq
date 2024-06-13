@@ -41,6 +41,7 @@
     <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_3d.cpp" />
     <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_delay.cpp" />
     <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_fft.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_stream.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

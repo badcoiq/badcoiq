@@ -51,17 +51,20 @@
     <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_sound.cpp">
       <Filter>examples</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_3d.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_fft.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_delay.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\demo\examples\GUI\ex_GUI_systemMenu.cpp">
       <Filter>examples\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_3d.cpp">
+      <Filter>examples\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_delay.cpp">
+      <Filter>examples\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_fft.cpp">
+      <Filter>examples\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_stream.cpp">
+      <Filter>examples\sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +76,9 @@
     </Filter>
     <Filter Include="examples\GUI">
       <UniqueIdentifier>{5d38c672-b130-48d8-a261-726e3299b2c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\sound">
+      <UniqueIdentifier>{3d3715a9-164e-44a8-9c1c-9938793a596c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -89,6 +89,7 @@ class bqSoundMixerImpl : public bqSoundMixer
 	// Если звук момно то моно копируется в оба канала.
 	// Если звук имеет 2 и более каналов то копируется только 2 канала
 	bqArray<_channel*> m_channelsTmp;
+	void _mixTmp();
 
 	bqSoundMixerCallback* m_callback = 0;
 

@@ -237,6 +237,26 @@ bool bqSoundSystemImpl::Init()
 			m_deviceInfo.m_bufferSize = m_WASAPIrenderer->m_bufferSize;
 			m_deviceInfo.m_bitsPerSample = m_WASAPIrenderer->m_mixFormat->wBitsPerSample;
 
+			bqLog::PrintInfo("Channels: %u\n", m_deviceInfo.m_channels);
+			bqLog::PrintInfo("Samplerate: %u\n", m_deviceInfo.m_sampleRate);
+			bqLog::PrintInfo("Bits: %u\n", m_deviceInfo.m_bitsPerSample);
+
+			bqLog::PrintInfo("Format: ");
+			switch (m_deviceInfo.m_format)
+			{
+			default:
+			case bqSoundFormat::unsupported:
+				bqLog::Print("unsupported");
+				break;
+			case bqSoundFormat::float32:
+				bqLog::Print("float32");
+				break;
+			case bqSoundFormat::int16:
+				bqLog::Print("int16");
+				break;
+			}
+			bqLog::Print("\n");
+
 		}
 
 	}

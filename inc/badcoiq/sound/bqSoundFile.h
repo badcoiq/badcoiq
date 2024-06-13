@@ -37,11 +37,12 @@ class bqSoundFile
 {
 	bqSoundBufferInfo m_info;
 	FILE* m_file = 0;
-	size_t m_dataSize = 0;
+	uint64_t m_dataSize = 0;
 	long m_firstDataBlock = 0;
 	long m_currentDataBlock = 0;
 
 	using read_method = size_t(bqSoundFile::*)(void* buffer, size_t size);
+	using setPlaybackPosition_method = void(bqSoundFile::*)(uint64_t size);
 
 	enum class file_type
 	{
@@ -50,9 +51,13 @@ class bqSoundFile
 	m_fileType = file_type::wav;
 	
 	read_method m_readMethod = 0;
+	setPlaybackPosition_method m_setPlaybackPosition_method = 0;
 
 	size_t _ReadWav(void* buffer, size_t size);
 	size_t _ReadNull(void* buffer, size_t size);
+
+	void _SetPlaybackPositionWav(uint64_t);
+	void _SetPlaybackPositionNull(uint64_t);
 
 	bool _OpenWAV(const char*);
 
@@ -76,7 +81,7 @@ public:
 
 	Type GetType() { return m_type; }
 
-	size_t GetDataSize() { return m_dataSize; }
+	uint64_t GetDataSize() { return m_dataSize; }
 	
 	bqSoundFormat GetFormat();
 
@@ -85,6 +90,8 @@ public:
 	void Seek(long);
 
 	bool eof();
+
+	void SetPlaybackPosition(uint64_t);
 
 private:
 	Type m_type = Type::Wav;

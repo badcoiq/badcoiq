@@ -112,8 +112,6 @@ public:
 
 	bqSoundMixerImpl* m_mainMixer = 0;
 
-	//void ThreadCommand_AddSound(bqSoundObjectImpl*);
-	//void ThreadCommandMethod_AddSound(_thread_command*);
 	void ThreadCommand_AddMixer(bqSoundMixerImpl*);
 	void ThreadCommandMethod_AddMixer(_thread_command*);
 	void ThreadCommand_SetMainMixer(bqSoundMixerImpl*);

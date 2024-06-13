@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/sound/bqSoundSystem.h"
 
 #include "bqSoundMixerImpl.h"
+#include "bqSoundStreamImpl.h"
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
@@ -247,10 +248,10 @@ void bqSoundMixerImpl::Process()
 
 
 		// Надо знать какой по счёту идёт блок из sound->m_soundBuffer
-		uint32_t blockCounter = 0;
+	//	uint32_t blockCounter = 0;
+		// видимо больше не надо
+
 		float pitchCounter = 0.f;
-		
-		
 
 		for (size_t i = 0, i_tmp = 0, last = isz - 1; i < isz; ) // проход по звуку. 
 		{
@@ -353,7 +354,7 @@ void bqSoundMixerImpl::Process()
 				break;
 			}
 
-			++blockCounter;
+	//		++blockCounter;
 		}
 
 		
@@ -364,42 +365,7 @@ void bqSoundMixerImpl::Process()
 		sound->SetPlaybackPosition(sPos);
 
 		// теперь смешиваю временные m_channelsTmp с каналами миксера
-		for (uint32_t bi = 0; bi < m_bufferSizeForOneChannel; )
-		{
-			for (uint32_t ci = 0; ci < m_channels.m_size; ++ci)
-			{
-				uint8_t* dst8 = (uint8_t*)m_channels.m_data[ci]->m_data.m_data;
-				dst8 += bi;
-				bqFloat32* dst32 = (bqFloat32*)dst8;
-
-				if (ci < m_channelsTmp.m_size)
-				{
-					uint8_t* src8 = (uint8_t*)m_channelsTmp.m_data[ci]->m_data.m_data;
-					src8 += bi;
-					bqFloat32* src32 = (bqFloat32*)src8;
-
-					bqFloat32 v = *src32;
-
-					// Если миксер имеет 1 канал а звук более 1го то нужно
-					// присваивать сумму значений.
-					// В данном случае используется временные каналы, их 2 штуки.
-					if (m_channels.m_size == 1)
-					{
-						src8 = (uint8_t*)m_channelsTmp.m_data[ci+1]->m_data.m_data;
-						src8 += bi;
-						src32 = (bqFloat32*)src8;
-						v += *src32;
-					}
-
-					*dst32 += v * m_mixerVolume;
-
-					if (*dst32 > 1.f) *dst32 = 1.f;
-					if (*dst32 < -1.f) *dst32 = -1.f;
-				}
-			}
-
-			bi += m_dataInfo.m_bytesPerSample;
-		}
+		_mixTmp();
 
 		if (sound->IsRegion())
 		{
@@ -465,6 +431,93 @@ void bqSoundMixerImpl::Process()
 
 		*/
 
+
+	// Добавляю потоковое воспроизведение
+	// По сути stream это типа bqSound, только размер буфера
+	// в нём фиксированный (читаем данные из файла по 1й секунде)
+	// Делать какую-то абстракцию чтобы обрабатывать bqSound и bqSoundStream
+	// одним кодом ненадо. Пусть bqSound и bqSoundStream будут разными сущностями,
+	// даже если код добавления в миксер будет одинаковым.
+	// Может быть использовать отдельную функцию и вызывать её 
+	// и для bqSound и для bqSoundStream?
+	// По крайней мере код где копируется временный буфер в миксер 100%
+	// подойдёт к обоим, bqSound и bqSoundStream.
+	for (size_t si = 0; si < m_streams.m_size; ++si)
+	{
+		auto stream = (bqSoundStreamImpl*)m_streams.m_data[si];
+
+		if (!stream->IsPlaying())
+			continue;
+
+		if(!stream->m_dataPointer)
+			continue;
+
+		auto soundChannelsNum = stream->GetNumOfChannels();
+		
+		auto streamBuffer = stream->GetActiveBuffer();
+		if (!streamBuffer)
+			continue;
+
+		//uint32_t sPos = stream->GetPlaybackPosition(); // в байтах
+		// нужен другой метод так как GetPlaybackPosition
+		// вернёт значение относительно всего файла/потока
+		uint32_t sPos = stream->m_dataPosition; // в байтах
+		bool isOnEnd = false;
+		size_t isz = streamBuffer->m_size;
+		for (size_t i = 0, i_tmp = 0, last = isz - 1; i < isz; ) // проход по звуку. 
+		{
+			if (i >= m_bufferSizeForOneChannel)
+				break;
+			uint8_t* dataSound8 = streamBuffer->m_data;
+			bqFloat32* dataSound32 = (bqFloat32*)(&dataSound8[sPos]);
+			bqFloat32 ch1 = *dataSound32 * stream->m_volume;
+			bqFloat32 ch2 = ch1;
+			// Если каналов больше то беру второй
+			if (soundChannelsNum > 1)
+			{
+				++dataSound32;
+				ch2 = *dataSound32 * stream->m_volume;
+			}
+
+			/*if (stream->m_use3D)
+			{
+				ch1 *= stream->m_volume3DLeft;
+				ch2 *= stream->m_volume3DRight;
+			}*/
+			sPos += stream->GetBufferInfo().m_blockSize;
+			i += m_dataInfo.m_bytesPerSample;
+			uint8_t* dataTmp8 = (uint8_t*)m_channelsTmp.m_data[0]->m_data.m_data;
+			bqFloat32* dataTmp32 = (bqFloat32*)dataTmp8;
+			dataTmp32[i_tmp] = ch1;
+			dataTmp8 = (uint8_t*)m_channelsTmp.m_data[1]->m_data.m_data;
+			dataTmp32 = (bqFloat32*)dataTmp8;
+			dataTmp32[i_tmp] = ch2;
+			++i_tmp;
+			if (sPos >= streamBuffer->m_size)
+			{
+				sPos = 0;
+				isOnEnd = true;
+				break;
+			}
+			if (i >= last)
+			{
+				isOnEnd = true;
+				break;
+			}
+		}
+
+		// sPos и stream->m_dataPosition это позиция относительно
+		// того кусочка что хранит stream
+		stream->m_dataPosition = sPos;
+
+		_mixTmp();
+		if (isOnEnd)
+		{
+			printf("end %i\n", stream->m_activeBufferIndex);
+			stream->_OnEndBuffer();
+		}
+	}
+
 	_processEffects();
 
 	// добавить буферы из других миксеров будет проще
@@ -474,7 +527,7 @@ void bqSoundMixerImpl::Process()
 	{
 		auto input_mixer = reinterpret_cast<bqSoundMixerImpl*>(m_mixers.m_data[mi]);
 
-		// по сути надо делать конвертацию если какие-то параметрыне совпадают
+		// по сути надо делать конвертацию если какие-то параметры не совпадают
 		// Пока без конвертации.
 		// Потом, чтобы не плодить if будет вызываться метод по указателю.
 		
@@ -507,6 +560,46 @@ void bqSoundMixerImpl::Process()
 
 
 	m_callback->OnEndProcess(this);
+}
+
+void bqSoundMixerImpl::_mixTmp()
+{
+	for (uint32_t bi = 0; bi < m_bufferSizeForOneChannel; )
+	{
+		for (uint32_t ci = 0; ci < m_channels.m_size; ++ci)
+		{
+			uint8_t* dst8 = (uint8_t*)m_channels.m_data[ci]->m_data.m_data;
+			dst8 += bi;
+			bqFloat32* dst32 = (bqFloat32*)dst8;
+
+			if (ci < m_channelsTmp.m_size)
+			{
+				uint8_t* src8 = (uint8_t*)m_channelsTmp.m_data[ci]->m_data.m_data;
+				src8 += bi;
+				bqFloat32* src32 = (bqFloat32*)src8;
+
+				bqFloat32 v = *src32;
+
+				// Если миксер имеет 1 канал а звук более 1го то нужно
+				// присваивать сумму значений.
+				// В данном случае используется временные каналы, их 2 штуки.
+				if (m_channels.m_size == 1)
+				{
+					src8 = (uint8_t*)m_channelsTmp.m_data[ci + 1]->m_data.m_data;
+					src8 += bi;
+					src32 = (bqFloat32*)src8;
+					v += *src32;
+				}
+
+				*dst32 += v * m_mixerVolume;
+
+				if (*dst32 > 1.f) *dst32 = 1.f;
+				if (*dst32 < -1.f) *dst32 = -1.f;
+			}
+		}
+
+		bi += m_dataInfo.m_bytesPerSample;
+	}
 }
 
 void bqSoundMixerImpl::_processEffects()

@@ -40,6 +40,16 @@ public:
 	virtual ~bqSoundStream() {}
 	BQ_PLACEMENT_ALLOCATOR(bqSoundStream);
 
+	bool IsPlaying() { return m_state == state_playing; }
+
+	virtual uint64_t GetPlaybackPosition() = 0;
+	virtual void SetPlaybackPosition(uint64_t v) = 0;
+
+	// размер аудио данных целиком
+	// в распакованном виде.
+	// нужно вычислять при открытии файла
+	virtual uint64_t GetDataSize() = 0;
+
 	virtual void PlaybackStart() = 0;
 	virtual void PlaybackStop() = 0;
 	virtual void PlaybackReset()= 0;
@@ -51,6 +61,10 @@ public:
 	virtual void Close() = 0;
 	virtual bool IsOpened() = 0;
 
+	// вернёт 2
+	virtual uint32_t GetNumOfChannels() = 0;
+	virtual const bqSoundBufferInfo& GetBufferInfo() = 0;
+
 	enum
 	{
 		state_notPlaying,
@@ -59,6 +73,8 @@ public:
 	uint32_t m_state = state_notPlaying;
 
 	bool m_loop = false;
+	float m_volume = 0.5f;
+	bool m_use3D = false;
 };
 
 
