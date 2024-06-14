@@ -32,6 +32,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_SOUND
 
+class bqSoundStreamCallback
+{
+public:
+	bqSoundStreamCallback() {}
+	virtual ~bqSoundStreamCallback() {}
+
+
+	virtual void OnEndStream() = 0;
+};
 
 class bqSoundStream
 {
@@ -41,9 +50,6 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqSoundStream);
 
 	bool IsPlaying() { return m_state == state_playing; }
-
-	virtual uint64_t GetPlaybackPosition() = 0;
-	virtual void SetPlaybackPosition(uint64_t v) = 0;
 
 	// размер аудио данных целиком
 	// в распакованном виде.
@@ -60,10 +66,12 @@ public:
 	virtual bool Open(const char*) = 0;
 	virtual void Close() = 0;
 	virtual bool IsOpened() = 0;
-
+	
 	// вернёт 2
 	virtual uint32_t GetNumOfChannels() = 0;
 	virtual const bqSoundBufferInfo& GetBufferInfo() = 0;
+	
+	virtual void SetCallback(bqSoundStreamCallback*) = 0;
 
 	enum
 	{

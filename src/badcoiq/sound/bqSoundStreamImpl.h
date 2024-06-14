@@ -101,6 +101,8 @@ class bqSoundStreamImpl : public bqSoundStream
 
 	bqArray<uint8_t>* m_dataActiveBufferPointer[2];
 
+	bqSoundStreamCallback* m_callback = 0;
+
 public:
 	bqSoundStreamImpl();
 	virtual ~bqSoundStreamImpl();
@@ -112,8 +114,6 @@ public:
 	void ThreadCommand_SetPlaybackPostion(uint64_t);
 	void ThreadCommandMethod_SetPlaybackPostion(_thread_command*);
 
-	virtual uint64_t GetPlaybackPosition() override;
-	virtual void SetPlaybackPosition(uint64_t v) override;
 	virtual uint64_t GetDataSize() override;
 	virtual void PlaybackStart() override;
 	virtual void PlaybackStop() override;
@@ -125,10 +125,7 @@ public:
 	virtual bool IsOpened() override;
 	virtual uint32_t GetNumOfChannels() override;
 	virtual const bqSoundBufferInfo& GetBufferInfo() override;
-
-	// Позиция с которой будет начинаться воспроизведение
-	// В байтах
-	uint64_t m_playbackPosition = 0;
+	virtual void SetCallback(bqSoundStreamCallback*) override;
 
 	// для гибкости при конвертировании и resample
 	bqArray<uint8_t>* m_dataPointer = 0;
@@ -140,13 +137,22 @@ public:
 	// если в миксере позиция ушла за пределы значит завершили обработку
 	uint32_t m_dataPosition = 0;
 	// позиция в файле перед началом воспроизведения секунды
-	uint64_t m_dataPositionInFile[2];
+	//uint64_t m_dataPositionInFile[2];
 	uint64_t m_currentDataPositionInFile = 0;
 	// надо бы что-то сделать с этими массивами по 2 штуки которые
+	//bool m_lastBuffer = false;
+	// будет структура
+	struct _playbackInfo
+	{
+	//	uint64_t m_dataPositionInFile = 0;
+		bool m_lastBuffer = false;
+	};
+	_playbackInfo m_playbackInfo[2];
 	
 	// Тот буфер который будет использован в миксере.
 	// Сначала 0, потом 1 потом опять 0 потом опять 1 и т.д.
 	int m_activeBufferIndex = -1;
+
 
 	void _OnEndBuffer();
 };

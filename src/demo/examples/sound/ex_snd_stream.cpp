@@ -60,6 +60,7 @@ bool ExampleSoundStream::Init()
 	m_mixer->AddStream(m_stream);
 	soundSystem->AddMixerToProcessing(m_mixer);
 	
+	m_stream->m_loop = true;
 	m_stream->PlaybackStart();
 
 	return true;

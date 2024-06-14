@@ -515,6 +515,7 @@ void bqSoundMixerImpl::Process()
 		{
 			printf("end %i\n", stream->m_activeBufferIndex);
 			stream->_OnEndBuffer();
+			
 		}
 	}
 

@@ -76,15 +76,10 @@ void bqSoundStreamImpl::PlaybackSet(float secondsOnly)
 	if (m_file)
 	{
 		m_file->MoveToFirstDataBlock();
+
+
+		//this->ThreadCommand_SetPlaybackPostion(v);
 	}
-	/*if (secondsOnly == 0.f)
-	{
-		m_playbackPosition = 0;
-	}
-	else
-	{
-		m_playbackPosition = bqSound_GetPlaybackPosition(secondsOnly, m_soundBuffer->m_bufferInfo);
-	}*/
 }
 
 bool bqSoundStreamImpl::Open(const char* path)
@@ -167,7 +162,6 @@ void bqSoundStreamImpl::ThreadCommandMethod_SetPlaybackPostion(_thread_command* 
 {
 	//printf("SPP %llu\n", c->_64bit);
 
-	m_playbackPosition = c->_64bit;
 	m_file->SetPlaybackPosition(c->_64bit);
 }
 
@@ -175,6 +169,25 @@ void bqSoundStreamImpl::_OnEndBuffer()
 {
 	if(m_numOfPreparedBuffers)
 		--m_numOfPreparedBuffers;
+
+	if (m_playbackInfo[m_activeBufferIndex].m_lastBuffer)
+	{
+		//printf("PlaybackStop\n");
+		//memset(m_dataFromFile[0].m_data, 0, m_dataFromFile[0].m_size);
+		//memset(m_dataFromFile[1].m_data, 0, m_dataFromFile[1].m_size);
+
+		if (m_loop)
+		{
+			m_file->MoveToFirstDataBlock();
+		}
+		else
+		{
+			PlaybackStop();
+		}
+
+		if (m_callback)
+			m_callback->OnEndStream();
+	}
 
 	/*SetPlaybackPosition(sPos + m_dataPositionInFile[stream->m_activeBufferIndex]);
 	if (stream->GetPlaybackPosition() >= stream->GetDataSize())
@@ -206,9 +219,29 @@ void bqSoundStreamImpl::_thread_function()
 			{
 			//	printf("prep %u %u\n", m_prepareBufferIndex, m_numOfPreparedBuffers);
 
-				m_dataPositionInFile[m_prepareBufferIndex] = m_file->Tell();
-				m_file->Read(m_dataFromFile[m_prepareBufferIndex].m_data, m_dataFromFile[m_prepareBufferIndex].m_size);
+			//	m_playbackInfo[m_prepareBufferIndex].m_dataPositionInFile = m_file->Tell();
+				memset(m_dataFromFile[m_prepareBufferIndex].m_data, 0, m_dataFromFile[m_prepareBufferIndex].m_size);
+				size_t numRead = m_file->Read(m_dataFromFile[m_prepareBufferIndex].m_data, m_dataFromFile[m_prepareBufferIndex].m_size);
 
+				// надо определить есть ли ещё данные
+				// если нет то этот буфер последний
+				auto tell = m_file->Tell();
+				uint8_t ch = 0;
+				if (m_file->Read(&ch, 1))
+				{
+					m_file->Seek(tell);
+					m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = false;
+				}
+				else
+				{
+					m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = true;
+				//	printf("LAST\n");
+
+					if (numRead < m_dataFromFile[m_prepareBufferIndex].m_size)
+					{
+						auto v = m_dataFromFile[m_prepareBufferIndex].m_size - numRead;
+					}
+				}
 
 				m_dataPointer = &m_dataFromFile[m_prepareBufferIndex];
 
@@ -241,6 +274,11 @@ void bqSoundStreamImpl::_thread_function()
 					m_prepareBufferIndex = 0;
 
 			}
+		}
+		else
+		{
+			//m_file->MoveToFirstDataBlock();
+			//printf("END\n");
 		}
 	}
 }
@@ -301,18 +339,6 @@ uint64_t bqSoundStreamImpl::GetDataSize()
 	return m_dataSize;
 }
 
-void bqSoundStreamImpl::SetPlaybackPosition(uint64_t v)
-{
-	printf("SPP %llu\n", v);
-
-	if (m_file)
-		this->ThreadCommand_SetPlaybackPostion(v);
-}
-
-uint64_t bqSoundStreamImpl::GetPlaybackPosition()
-{
-	return m_playbackPosition;
-}
 
 bqArray<uint8_t>* bqSoundStreamImpl::GetActiveBuffer()
 {
@@ -321,5 +347,9 @@ bqArray<uint8_t>* bqSoundStreamImpl::GetActiveBuffer()
 	return 0;
 }
 
+void bqSoundStreamImpl::SetCallback(bqSoundStreamCallback* cb)
+{
+	m_callback = cb;
+}
 
 #endif
