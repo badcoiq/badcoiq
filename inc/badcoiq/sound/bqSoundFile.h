@@ -37,8 +37,11 @@ class bqSoundFile
 {
 	bqSoundBufferInfo m_info;
 	FILE* m_file = 0;
+	// размер звуковых данных
 	uint64_t m_dataSize = 0;
+
 	long m_firstDataBlock = 0;
+	long m_lastDataBlock = 0;
 	long m_currentDataBlock = 0;
 
 	using read_method = size_t(bqSoundFile::*)(void* buffer, size_t size);

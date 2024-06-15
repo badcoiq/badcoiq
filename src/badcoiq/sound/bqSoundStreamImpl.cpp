@@ -183,6 +183,7 @@ void bqSoundStreamImpl::_OnEndBuffer()
 		else
 		{
 			PlaybackStop();
+			printf("stop\n");
 		}
 
 		if (m_callback)
@@ -219,29 +220,22 @@ void bqSoundStreamImpl::_thread_function()
 			{
 			//	printf("prep %u %u\n", m_prepareBufferIndex, m_numOfPreparedBuffers);
 
-			//	m_playbackInfo[m_prepareBufferIndex].m_dataPositionInFile = m_file->Tell();
+				// сохраняю позицию перед чтением
+				// потом сделаю проверку, сколько было прочитано байт
+				auto beforeRead = m_file->Tell();
 				memset(m_dataFromFile[m_prepareBufferIndex].m_data, 0, m_dataFromFile[m_prepareBufferIndex].m_size);
 				size_t numRead = m_file->Read(m_dataFromFile[m_prepareBufferIndex].m_data, m_dataFromFile[m_prepareBufferIndex].m_size);
 
-				// надо определить есть ли ещё данные
-				// если нет то этот буфер последний
-				auto tell = m_file->Tell();
-				uint8_t ch = 0;
-				if (m_file->Read(&ch, 1))
+				if (numRead < m_dataFromFile[m_prepareBufferIndex].m_size)
 				{
-					m_file->Seek(tell);
-					m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = false;
+					// прочитали меньше, конец файла
+					m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = true;
 				}
 				else
 				{
-					m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = true;
-				//	printf("LAST\n");
-
-					if (numRead < m_dataFromFile[m_prepareBufferIndex].m_size)
-					{
-						auto v = m_dataFromFile[m_prepareBufferIndex].m_size - numRead;
-					}
+					m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = false;
 				}
+
 
 				m_dataPointer = &m_dataFromFile[m_prepareBufferIndex];
 
@@ -257,7 +251,8 @@ void bqSoundStreamImpl::_thread_function()
 				{
 					//m_dataAfterResample уже должен иметь нужный размер для звука
 					// с новым sample rate
-
+					uint32_t numOfBlocksOld = m_dataPointer->m_size / m_bufferInfo.m_blockSize;
+					uint32_t numOfBlocksNew = newDataSize / m_bufferInfo.m_blockSize;
 
 					m_dataPointer = &m_dataAfterResample[m_prepareBufferIndex];
 				}
@@ -298,7 +293,6 @@ void bqSoundStreamImpl::Close()
 		m_dataAfterResample[i].free_memory();
 	}
 
-	m_file->Close();
 	// завершение thread тоже здесь
 	m_threadContext.m_run = false;
 	if (m_thread)
@@ -308,6 +302,8 @@ void bqSoundStreamImpl::Close()
 		delete m_thread;
 		m_thread = 0;
 	}
+
+	m_file->Close();
 }
 
 bool bqSoundStreamImpl::IsOpened()

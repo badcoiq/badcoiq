@@ -237,7 +237,7 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 						if (dataSize)
 						{
 							m_dataSize = dataSize;
-
+							printf("DATA SIZE: %u\n", m_dataSize);
 							if (format != bqSoundFormat::unsupported)
 							{
 								/*Create(0.1f, channels, sampleRate, format);
@@ -269,6 +269,7 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 
 									m_firstDataBlock = ftell(m_file);
 									m_currentDataBlock = m_firstDataBlock;
+									m_lastDataBlock = m_firstDataBlock + m_dataSize;
 									isGood = true;
 								}
 							}
@@ -299,6 +300,23 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 size_t bqSoundFile::_ReadWav(void* buffer, size_t size)
 {
 	BQ_ASSERT_ST(m_file);
+
+	
+
+	// при чтении может быть такое что в файле после звука идут
+// ещё другие данные. 
+// Необходимо не давать читать файл после звуковых данных
+	size_t newPosition = m_currentDataBlock + size;
+	if (newPosition >= m_lastDataBlock)
+	{
+		size = m_lastDataBlock - m_currentDataBlock;
+	//	printf("SIZE %u\n", size);
+		if (!size)
+		{
+			return 0;
+		}
+	}
+
 	size_t rn = fread(buffer, 1, size, m_file);
 
 	m_currentDataBlock = ftell(m_file);
@@ -325,6 +343,13 @@ size_t bqSoundFile::Read(void* buffer, size_t size)
 {
 	BQ_ASSERT_ST(buffer);
 	BQ_ASSERT_ST(size);
+
+	if (m_currentDataBlock >= m_lastDataBlock)
+	{
+		printf("m_currentDataBlock >= m_lastDataBlock\n");
+		return 0;
+	}
+
 	return (this->*m_readMethod)(buffer, size);
 }
 
@@ -356,7 +381,7 @@ bool bqSoundFile::eof()
 {
 	BQ_ASSERT_ST(m_file);
 	auto f = feof(m_file);
-	return f != 0;
+	return (f != 0);
 }
 
 void bqSoundFile::SetPlaybackPosition(uint64_t v)
