@@ -1175,7 +1175,7 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 							++newDataSize;
 							if (newDataSize % 4)
 							{
-								//printf("O\n");
+								//printf(" (╯°□°)╯︵ ┻━┻ \n");
 							}
 						}
 					}

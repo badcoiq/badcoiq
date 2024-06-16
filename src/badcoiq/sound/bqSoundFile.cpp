@@ -240,22 +240,8 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 						//	printf("DATA SIZE: %u\n", m_dataSize);
 							if (format != bqSoundFormat::unsupported)
 							{
-								/*Create(0.1f, channels, sampleRate, format);
-								if (m_bufferData.m_dataSize < dataSize)
-									_reallocate(dataSize);
-
-								m_bufferInfo.m_format = format;
-
-								file.Read(m_bufferData.m_data, m_bufferData.m_dataSize);*/
-
-								//Convert();
-
-								//CalculateTime();
-								//return true;
-
-//тут проверка поддерживаемого формата
-// если всё ОК то isGood = true;
-								// Пока читаю только float32
+					//тут проверка поддерживаемого формата
+					// если всё ОК то isGood = true;
 								m_info.m_format = format;
 								if (format == bqSoundFormat::float32)
 								{

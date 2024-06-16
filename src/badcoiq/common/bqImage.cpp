@@ -643,6 +643,15 @@ bool bqImage::SaveToFile(SaveFileFormat format, const char* path)
 {
 	BQ_ASSERT_ST(path);
 	BQ_ASSERT_ST(format != SaveFileFormat::null);
+
+	if (m_info.m_height == 0
+		|| m_info.m_width == 0)
+		return false;
+
+	if (m_info.m_format != bqImageFormat::r8g8b8
+		&& m_info.m_format != bqImageFormat::r8g8b8a8)
+		return false;
+
 	if ((format != SaveFileFormat::null) && path)
 	{
 		for (auto o : g_framework->m_imageLoaders)

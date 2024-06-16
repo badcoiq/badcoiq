@@ -57,6 +57,7 @@ class bqImageLoaderImpl : public bqImageLoader
 	bqImage* LoadBMP(const char* path);
 	bqImage* LoadBMP(const char* path, uint8_t* buffer, uint32_t bufferSz);
 	bool SaveBMP(bqImage* image, bqImage::SaveFileFormat format, const char* path);
+	bool _save_bmp24(bqImage* image, const char* path);
 #endif
 #ifdef BQ_WITH_IMAGE_PNG
 	bqImage* LoadPNG(const char* path);
@@ -71,6 +72,7 @@ class bqImageLoaderImpl : public bqImageLoader
 	bqImage* LoadTGA(const char* path, uint8_t* buffer, uint32_t bufferSz);
 #endif
 	bool SaveDDS(bqImage* image, bqImage::SaveFileFormat format, const char* path);
+	bool _save_ddsRGBA8(bqImage* image, const char* path);
 public:
 	bqImageLoaderImpl();
 	virtual ~bqImageLoaderImpl();

@@ -44,7 +44,7 @@ public:
 
 	virtual bool Init() override 
 	{
-		bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/images/editor/ear.png").c_str());
+		bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/images/img.bmp").c_str());
 		if (image)
 		{
 			bqTextureInfo info;
@@ -54,7 +54,9 @@ public:
 			info.m_filter = bqTextureFilter::PPP;
 			info.m_generateMipmaps = true;
 
-			image->Resize(128, 128, false);
+			image->Resize(126, 126, false);
+			image->SaveToFile(bqImage::SaveFileFormat::bmp24, "test.bmp");
+			image->SaveToFile(bqImage::SaveFileFormat::ddsRGBA8, "test.dds");
 			
 			m_texture = m_app->GetGS()->SummonTexture(image, info);
 
@@ -87,6 +89,7 @@ public:
 
 		m_gs->BeginDraw();
 		m_gs->ClearAll();
+		m_gs->SetClearColor(1.f, 0, 0, 0.f);
 
 		if (m_texture)
 		{
