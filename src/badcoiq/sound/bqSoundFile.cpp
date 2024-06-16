@@ -237,7 +237,7 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 						if (dataSize)
 						{
 							m_dataSize = dataSize;
-							printf("DATA SIZE: %u\n", m_dataSize);
+						//	printf("DATA SIZE: %u\n", m_dataSize);
 							if (format != bqSoundFormat::unsupported)
 							{
 								/*Create(0.1f, channels, sampleRate, format);
@@ -256,10 +256,28 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 //тут проверка поддерживаемого формата
 // если всё ОК то isGood = true;
 								// Пока читаю только float32
+								m_info.m_format = format;
 								if (format == bqSoundFormat::float32)
 								{
 									m_info.m_bitsPerSample = 32;
 									m_info.m_bytesPerSample = 4;
+									isGood = true;
+								}
+								else if (format == bqSoundFormat::int16)
+								{
+									m_info.m_bitsPerSample = 16;
+									m_info.m_bytesPerSample = 2;
+									isGood = true;
+								}
+								else if (format == bqSoundFormat::uint8)
+								{
+									m_info.m_bitsPerSample = 8;
+									m_info.m_bytesPerSample = 1;
+									isGood = true;
+								}
+
+								if (isGood)
+								{
 									m_info.m_channels = channels;
 									m_info.m_sampleRate = sampleRate;
 									m_info.m_blockSize = m_info.m_bytesPerSample * m_info.m_channels;
@@ -270,8 +288,8 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 									m_firstDataBlock = ftell(m_file);
 									m_currentDataBlock = m_firstDataBlock;
 									m_lastDataBlock = m_firstDataBlock + m_dataSize;
-									isGood = true;
 								}
+
 							}
 							else
 							{

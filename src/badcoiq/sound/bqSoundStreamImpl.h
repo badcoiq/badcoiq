@@ -63,6 +63,7 @@ class bqSoundStreamImpl : public bqSoundStream
 	// Формат звука в файле может отличаться от формата миксера (миксер всегда float32)
 	// Действия:
 	//  - читаем из файла в буфер для `данных из файла`
+	//  - делаем звук двуканальным (засовываем в m_dataAfterChannels)
 	//  - конвертируем в float32, нужен для этого новый буфер 'после конвертации'
 	//  - изменяем sample rate, так-же нужен будет отдельный буфер `после resample`
 	// Всё это в случае если форматы разные и sample rate не совпадает
@@ -75,6 +76,7 @@ class bqSoundStreamImpl : public bqSoundStream
 	// Пока одна секунда будет играть, можно заранее прочитать ещё одну.
 	// Необходимо определять сколько буферов готово для воспроизведения
 	bqArray<uint8_t> m_dataFromFile[2];
+	bqArray<uint8_t> m_dataAfterChannels[2];
 	bqArray<uint8_t> m_dataAfterConvert[2];
 	bqArray<uint8_t> m_dataAfterResample[2];
 	
@@ -93,6 +95,8 @@ class bqSoundStreamImpl : public bqSoundStream
 	// устанавливаться данный указатель должен в моменте открытия файла
 	using _convertMethod = void(bqSoundStreamImpl::*)();
 	_convertMethod _convert = 0;
+	void _convertUint8();
+	void _convertInt16();
 
 	bqSoundSystemDeviceInfo m_deviceInfo;
 	uint32_t m_fileSampleRate = 0;
@@ -124,11 +128,15 @@ public:
 	virtual void Close() override;
 	virtual bool IsOpened() override;
 	virtual uint32_t GetNumOfChannels() override;
-	virtual const bqSoundBufferInfo& GetBufferInfo() override;
+	//virtual const bqSoundBufferInfo& GetBufferInfo() override;
+	virtual uint32_t GetBlockSize() override;
 	virtual void SetCallback(bqSoundStreamCallback*) override;
 
 	// для гибкости при конвертировании и resample
 	bqArray<uint8_t>* m_dataPointer = 0;
+	uint32_t m_blockSize = 0;
+
+	uint32_t m_blockSizeCurrent[2];
 
 	bqArray<uint8_t>* GetActiveBuffer();// { return m_dataActiveBufferPointer[m_activeBufferIndex]; }
 

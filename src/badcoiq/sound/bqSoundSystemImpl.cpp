@@ -376,7 +376,7 @@ void bqWASAPIRenderer::_thread_function()
 		hr = m_audioClient->GetCurrentPadding(&padding);
 		if (SUCCEEDED(hr))
 		{
-			bqLog::Print("first padding is %u\n", padding);
+	//		bqLog::Print("first padding is %u\n", padding);
 		}
 	}
 
@@ -399,7 +399,7 @@ void bqWASAPIRenderer::_thread_function()
 			// Engine latency in shared mode timer driven cannot be less than 50ms
 			// 
 
-			bqLog::Print("padding on start is %u\n", padding);
+	//		bqLog::Print("padding on start is %u\n", padding);
 			// так как обновили буфер из render client и запустили воспроизведение
 			// padding равен какому-то значению, которое означает сколько байтов
 			// осталось воспроизводить.

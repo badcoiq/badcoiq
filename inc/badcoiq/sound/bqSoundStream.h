@@ -69,7 +69,8 @@ public:
 	
 	// вернёт 2
 	virtual uint32_t GetNumOfChannels() = 0;
-	virtual const bqSoundBufferInfo& GetBufferInfo() = 0;
+	//	virtual const bqSoundBufferInfo& GetBufferInfo() = 0;
+	virtual uint32_t GetBlockSize() = 0;
 	
 	virtual void SetCallback(bqSoundStreamCallback*) = 0;
 

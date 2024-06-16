@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef BQ_WITH_SOUND
 
 #include "badcoiq/sound/bqSoundSystem.h"
+#include "badcoiq/sound/bqSoundLab.h"
 
 #include "bqSoundStreamImpl.h"
 
@@ -85,6 +86,8 @@ void bqSoundStreamImpl::PlaybackSet(float secondsOnly)
 bool bqSoundStreamImpl::Open(const char* path)
 {
 	BQ_ASSERT_ST(path);
+	bqLog::PrintInfo("Sound Stream: open file [%s]\n", path);
+
 	if (IsOpened())
 		return false;
 
@@ -93,6 +96,7 @@ bool bqSoundStreamImpl::Open(const char* path)
 
 	if (m_file->Open(path))
 	{
+
 		// 1 секунда
 		//m_soundDataSize = m_file->GetBufferInfo().m_sampleRate
 		//	* m_file->GetBufferInfo().m_blockSize;
@@ -105,6 +109,15 @@ bool bqSoundStreamImpl::Open(const char* path)
 		{
 			m_dataFromFile[i].m_size = m_fileSampleRate * m_file->GetBufferInfo().m_blockSize;
 			m_dataFromFile[i].reserve(m_dataFromFile[i].m_size);
+
+			if (m_file->GetBufferInfo().m_channels != 2)
+			{
+			//	// изменение каналов будет идти после конвертации
+				m_dataAfterChannels[i].m_size = m_fileSampleRate;
+				m_dataAfterChannels[i].m_size *= m_file->GetBufferInfo().m_bitsPerSample / 8;
+				m_dataAfterChannels[i].m_size *= 2;
+				m_dataAfterChannels[i].reserve(m_dataAfterChannels[i].m_size);
+			}
 		}
 
 		
@@ -114,9 +127,7 @@ bool bqSoundStreamImpl::Open(const char* path)
 		// формат миксера устанавливается в соответствии с bqSoundSystemDeviceInfo
 		//    только используется bqSoundFormat::float32
 		// 2 канала - прописано для главного миксера. нет желания реализовывать более.
-		auto mixerChannels = m_deviceInfo.m_channels;
-		if (mixerChannels > 2)
-			mixerChannels = 2;
+		auto mixerChannels = 2;
 
 		for (int i = 0; i < 2; ++i)
 		{
@@ -134,19 +145,31 @@ bool bqSoundStreamImpl::Open(const char* path)
 		}
 
 		m_dataSize = m_file->GetDataSize();
+		m_blockSize = m_file->GetBufferInfo().m_blockSize;
 
 		// конвертации пока нет
 		// читаем float32
 		_convert = 0;
+		switch (m_file->GetBufferInfo().m_format)
+		{
+			case bqSoundFormat::uint8:
+				_convert = &bqSoundStreamImpl::_convertUint8;
+				break;
+			case bqSoundFormat::int16:
+				_convert = &bqSoundStreamImpl::_convertInt16;
+				break;
+		}
 
 		m_thread = new std::thread(&bqSoundStreamImpl::_thread_function, this);
 
 		if (m_thread)
 			return true;
 
+		bqLog::PrintInfo("Sound Stream: FAIL\n");
 		Close();
 	}
 
+	bqLog::PrintInfo("Sound Stream: FAIL\n");
 	return false;
 }
 
@@ -183,18 +206,11 @@ void bqSoundStreamImpl::_OnEndBuffer()
 		else
 		{
 			PlaybackStop();
-			printf("stop\n");
 		}
 
 		if (m_callback)
 			m_callback->OnEndStream();
 	}
-
-	/*SetPlaybackPosition(sPos + m_dataPositionInFile[stream->m_activeBufferIndex]);
-	if (stream->GetPlaybackPosition() >= stream->GetDataSize())
-	{
-		stream->SetPlaybackPosition(stream->GetDataSize() - 1);
-	}*/
 }
 
 void bqSoundStreamImpl::_thread_function()
@@ -219,6 +235,12 @@ void bqSoundStreamImpl::_thread_function()
 			if (m_numOfPreparedBuffers < 2)
 			{
 			//	printf("prep %u %u\n", m_prepareBufferIndex, m_numOfPreparedBuffers);
+				auto fileBufferInfo = m_file->GetBufferInfo();
+
+		//		printf("blockSize %u, fileBufferInfo.m_bytesPerSample %u, fileBufferInfo.m_blockSize %u \n", 
+		//			m_blockSize, 
+		//			fileBufferInfo.m_bytesPerSample,
+		//			fileBufferInfo.m_blockSize);
 
 				// сохраняю позицию перед чтением
 				// потом сделаю проверку, сколько было прочитано байт
@@ -238,6 +260,43 @@ void bqSoundStreamImpl::_thread_function()
 
 
 				m_dataPointer = &m_dataFromFile[m_prepareBufferIndex];
+				m_blockSize = m_file->GetBufferInfo().m_blockSize;
+
+				// делаю стерео
+				if (fileBufferInfo.m_channels != 2)
+				{
+					auto dstBlock = m_dataAfterChannels[m_prepareBufferIndex].m_data;
+
+					auto numOfBlocks = m_dataFromFile->m_size / fileBufferInfo.m_blockSize;
+					uint8_t* srcBlock = &m_dataPointer->m_data[0];
+
+				//	memcpy(dstBlock, srcBlock, m_dataPointer->m_size);
+				//	memcpy(&dstBlock[m_dataPointer->m_size], srcBlock, m_dataPointer->m_size);
+
+					for (uint32_t di = 0; di < numOfBlocks; ++di)
+					{
+						if (fileBufferInfo.m_channels < 2)
+						{
+							for (uint32_t si = 0; si < fileBufferInfo.m_bytesPerSample; ++si)
+							{
+								dstBlock[si] = srcBlock[si];
+								dstBlock[fileBufferInfo.m_bytesPerSample + si] = srcBlock[si];
+							}
+							dstBlock += fileBufferInfo.m_bytesPerSample * 2;
+						}
+						else
+						{
+
+						}
+
+						srcBlock += fileBufferInfo.m_blockSize;
+					}
+
+					m_blockSize = fileBufferInfo.m_bytesPerSample * 2;
+					m_dataPointer = &m_dataAfterChannels[m_prepareBufferIndex];
+				}
+
+				// в данном месте m_dataPointer уже должен быть 2х канальным
 
 				// Конвертация
 				if (_convert)
@@ -249,16 +308,53 @@ void bqSoundStreamImpl::_thread_function()
 				// Resample
 				if (m_fileSampleRate != m_deviceInfo.m_sampleRate)
 				{
+					uint32_t newSampleRate = m_deviceInfo.m_sampleRate;
+					uint32_t numOfChannels = 2;
+
 					//m_dataAfterResample уже должен иметь нужный размер для звука
 					// с новым sample rate
-					uint32_t numOfBlocksOld = m_dataPointer->m_size / m_bufferInfo.m_blockSize;
-					uint32_t numOfBlocksNew = newDataSize / m_bufferInfo.m_blockSize;
+					uint32_t numOfBlocksOld = m_dataPointer->m_size / m_blockSize;
+					uint32_t numOfBlocksNew = m_dataAfterResample[m_prepareBufferIndex].m_size / m_blockSize;
+
+					double _m = (double)numOfBlocksOld / (double)numOfBlocksNew;
+
+					for (uint32_t ic = 0; ic < numOfChannels; ++ic)
+					{
+						bqFloat32* ptrNew = (bqFloat32*)m_dataAfterResample[m_prepareBufferIndex].m_data;
+						bqFloat32* ptrOld = (bqFloat32*)m_dataPointer->m_data;
+
+						for (uint32_t ib = 0; ib < numOfBlocksNew; /*++ib*/)
+						{
+
+							uint32_t indexNewNoChannels = 0;
+							uint32_t indexNew = 0;
+
+							uint32_t _1_second = newSampleRate;
+							if ((numOfBlocksNew - ib) < _1_second)
+								_1_second = numOfBlocksNew - ib;
+
+							for (uint32_t i = 0; i < _1_second; ++i)
+							{
+								double _v = (double)indexNewNoChannels * _m;
+								uint32_t indexOld = (uint32_t)floor(_v) * numOfChannels;
+								indexOld += ic;
+
+								ptrNew[indexNew + ic] = ptrOld[indexOld];
+								indexNew += numOfChannels;
+								++indexNewNoChannels;
+							}
+
+							ib += _1_second;
+							ptrNew += newSampleRate * numOfChannels;
+							ptrOld += m_deviceInfo.m_sampleRate * numOfChannels;
+						}
+					}
 
 					m_dataPointer = &m_dataAfterResample[m_prepareBufferIndex];
 				}
 
 				m_dataActiveBufferPointer[m_prepareBufferIndex] = m_dataPointer;
-
+				m_blockSizeCurrent[m_prepareBufferIndex] = m_blockSize;
 
 				m_activeBufferIndex = m_prepareBufferIndex;
 
@@ -281,16 +377,12 @@ void bqSoundStreamImpl::_thread_function()
 void bqSoundStreamImpl::Close()
 {
 	_convert = 0;
-	//if (m_soundData)
-	//{
-	//	delete[]m_soundData;
-	//	m_soundData = 0;
-	//}
 	for (int i = 0; i < 2; ++i)
 	{
 		m_dataFromFile[i].free_memory();
 		m_dataAfterConvert[i].free_memory();
 		m_dataAfterResample[i].free_memory();
+		m_dataAfterChannels[i].free_memory();
 	}
 
 	// завершение thread тоже здесь
@@ -316,18 +408,55 @@ uint32_t bqSoundStreamImpl::GetNumOfChannels()
 	return 2;
 }
 
-const bqSoundBufferInfo& bqSoundStreamImpl::GetBufferInfo()
+uint32_t bqSoundStreamImpl::GetBlockSize()
 {
-	if (m_file)
-		return m_file->GetBufferInfo();
+	return m_blockSizeCurrent[m_activeBufferIndex];
+}
 
-	static bqSoundBufferInfo info;
-	if (info.m_format == bqSoundFormat::float32)
+void bqSoundStreamImpl::_convertUint8()
+{
+	auto fileBufferInfo = m_file->GetBufferInfo();
+	auto numBlocks = m_dataFromFile->m_size / fileBufferInfo.m_blockSize;
+
+	uint8_t* dst_block = m_dataAfterConvert[m_prepareBufferIndex].m_data;
+	uint8_t* src_block = m_dataPointer->m_data;
+
+	for (uint32_t i = 0; i < numBlocks; ++i)
 	{
-		memset(&info, 0, sizeof(bqSoundBufferInfo));
-		info.m_format = bqSoundFormat::unsupported;
+		bqSoundSample_32bitFloat* dst_32bit = (bqSoundSample_32bitFloat*)dst_block;
+		bqSoundSample_8bit* _8bit = (bqSoundSample_8bit*)src_block;
+
+		dst_32bit[0] = bqSoundLab::SampleTo32bitFloat(_8bit[0]);
+		dst_32bit[1] = bqSoundLab::SampleTo32bitFloat(_8bit[1]);
+
+		dst_block += sizeof(bqFloat32) * 2;
+		src_block += m_blockSize;
 	}
-	return info;
+
+	m_blockSize = sizeof(bqFloat32) * 2;
+}
+
+void bqSoundStreamImpl::_convertInt16()
+{
+	auto fileBufferInfo = m_file->GetBufferInfo();
+	auto numBlocks = m_dataFromFile->m_size / fileBufferInfo.m_blockSize;
+
+	uint8_t* dst_block = m_dataAfterConvert[m_prepareBufferIndex].m_data;
+	uint8_t* src_block = m_dataPointer->m_data;
+	
+	for (uint32_t i = 0; i < numBlocks; ++i)
+	{
+		bqSoundSample_32bitFloat* dst_32bit = (bqSoundSample_32bitFloat*)dst_block;
+		bqSoundSample_16bit* _16bit = (bqSoundSample_16bit*)src_block;
+
+		dst_32bit[0] = bqSoundLab::SampleTo32bitFloat(_16bit[0]);
+		dst_32bit[1] = bqSoundLab::SampleTo32bitFloat(_16bit[1]);
+
+		dst_block += sizeof(bqFloat32) * 2;
+		src_block += m_blockSize;
+	}
+
+	m_blockSize = sizeof(bqFloat32) * 2;
 }
 
 uint64_t bqSoundStreamImpl::GetDataSize()

@@ -484,7 +484,7 @@ void bqSoundMixerImpl::Process()
 				ch1 *= stream->m_volume3DLeft;
 				ch2 *= stream->m_volume3DRight;
 			}*/
-			sPos += stream->GetBufferInfo().m_blockSize;
+			sPos += stream->GetBlockSize();
 			i += m_dataInfo.m_bytesPerSample;
 			uint8_t* dataTmp8 = (uint8_t*)m_channelsTmp.m_data[0]->m_data.m_data;
 			bqFloat32* dataTmp32 = (bqFloat32*)dataTmp8;

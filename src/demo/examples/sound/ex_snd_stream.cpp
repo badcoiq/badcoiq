@@ -49,7 +49,7 @@ bool ExampleSoundStream::Init()
 
 	m_stream = soundSystem->SummonStream();
 
-	if (!m_stream->Open("../data/music/Mystic Force - Sunset At Dawn - float32_stereo_41000.wav"))
+	if (!m_stream->Open("../data/music/uint8_mono_5500.wav"))
 	{
 		bqLog::PrintError("Can't open file for streaming\n");
 		return false;
