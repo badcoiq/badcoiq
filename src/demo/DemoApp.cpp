@@ -65,7 +65,6 @@ public:
 			if(m_texture)
 				return true;
 		}
-
 		return false;
 	}
 	virtual void Shutdown() override 
