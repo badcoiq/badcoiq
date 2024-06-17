@@ -513,7 +513,7 @@ void bqSoundMixerImpl::Process()
 		_mixTmp();
 		if (isOnEnd)
 		{
-			printf("end %i\n", stream->m_activeBufferIndex);
+			//printf("end %i\n", stream->m_activeBufferIndex);
 			stream->_OnEndBuffer();
 			
 		}

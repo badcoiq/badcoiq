@@ -196,17 +196,9 @@ void bqSoundStreamImpl::_OnEndBuffer()
 	if (m_playbackInfo[m_activeBufferIndex].m_lastBuffer)
 	{
 		//printf("PlaybackStop\n");
-		//memset(m_dataFromFile[0].m_data, 0, m_dataFromFile[0].m_size);
-		//memset(m_dataFromFile[1].m_data, 0, m_dataFromFile[1].m_size);
-
-		if (m_loop)
-		{
-			m_file->MoveToFirstDataBlock();
-		}
-		else
-		{
+		if (!m_loop)
 			PlaybackStop();
-		}
+		
 
 		if (m_callback)
 			m_callback->OnEndStream();
@@ -250,8 +242,19 @@ void bqSoundStreamImpl::_thread_function()
 
 				if (numRead < m_dataFromFile[m_prepareBufferIndex].m_size)
 				{
-					// прочитали меньше, конец файла
-					m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = true;
+					if (m_loop)
+					{
+						// если повтор то устанавливаем указатель на начало звука в файле
+						// и заполняем остаток буфера чтобы небыло паузы
+						m_file->MoveToFirstDataBlock();
+						m_file->Read(&m_dataFromFile[m_prepareBufferIndex].m_data[numRead],
+							m_dataFromFile[m_prepareBufferIndex].m_size - numRead);
+					}
+					else
+					{
+						// прочитали меньше, конец файла
+						m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = true;
+					}
 				}
 				else
 				{
@@ -269,9 +272,6 @@ void bqSoundStreamImpl::_thread_function()
 
 					auto numOfBlocks = m_dataFromFile->m_size / fileBufferInfo.m_blockSize;
 					uint8_t* srcBlock = &m_dataPointer->m_data[0];
-
-				//	memcpy(dstBlock, srcBlock, m_dataPointer->m_size);
-				//	memcpy(&dstBlock[m_dataPointer->m_size], srcBlock, m_dataPointer->m_size);
 
 					for (uint32_t di = 0; di < numOfBlocks; ++di)
 					{
