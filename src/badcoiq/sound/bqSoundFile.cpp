@@ -30,6 +30,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_SOUND
 
+#include <vorbis/codec.h>
+#include <vorbis/vorbisfile.h>
+BQ_LINK_LIBRARY("libogg");
+BQ_LINK_LIBRARY("libvorbis");
+
 #include "badcoiq/sound/bqSoundSystem.h"
 
 #include "../framework/bqFrameworkImpl.h"
@@ -86,6 +91,10 @@ bool bqSoundFile::Open(const char* fn)
 					m_setPlaybackPosition_method = &bqSoundFile::_SetPlaybackPositionWav;
 					return true;
 				}
+			}
+			else if (strcmp(name, "OggS") == 0)
+			{
+				return _OpenOGG(fn);
 			}
 		}
 		else
@@ -301,11 +310,59 @@ bool bqSoundFile::_OpenWAV(const char* fn)
 	return false;
 }
 
+size_t _oggvorbis_fread(void* buffer, size_t es, size_t ec, void* _f)
+{
+	bqSoundFile* sf = (bqSoundFile*)_f;
+	if (sf)
+	{
+		FILE* f = sf->GetFILE();
+		if(f)
+			return fread(buffer, es, ec, f);
+	}
+	return 0;
+}
+
+bool bqSoundFile::_OpenOGG(const char* fn)
+{
+	fopen_s(&m_file, fn, "rb");
+	if (m_file)
+	{
+		OggVorbis_File vf;
+		memset(&vf, 0, sizeof(vf));
+
+		ov_callbacks callbacks = 
+		{
+			_oggvorbis_fread,
+			0,
+			0,
+			0
+		};
+
+		if (ov_open_callbacks((void*)this, &vf, 0, 0, callbacks) < 0)
+		{
+			// try opus
+
+			return false;
+		}
+		else
+		{
+			printf("VORBIS\n");
+			m_readMethod = &bqSoundFile::_ReadOGG;
+			m_setPlaybackPosition_method = &bqSoundFile::_SetPlaybackPositionNull;
+		}
+	}
+
+	return false;
+}
+
+size_t bqSoundFile::_ReadOGG(void* buffer, size_t size)
+{
+	return 0;
+}
+
 size_t bqSoundFile::_ReadWav(void* buffer, size_t size)
 {
 	BQ_ASSERT_ST(m_file);
-
-	
 
 	// при чтении может быть такое что в файле после звука идут
 // ещё другие данные. 
@@ -388,10 +445,10 @@ bool bqSoundFile::eof()
 	return (f != 0);
 }
 
-void bqSoundFile::SetPlaybackPosition(uint64_t v)
-{
-	BQ_ASSERT_ST(m_file);
-	return (this->*m_setPlaybackPosition_method)(v);
-}
+//void bqSoundFile::SetPlaybackPosition(uint64_t v)
+//{
+//	BQ_ASSERT_ST(m_file);
+//	return (this->*m_setPlaybackPosition_method)(v);
+//}
 
 #endif

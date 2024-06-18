@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../inc/openal/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../src/libvorbis/include/;../../src/libogg/include/</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
@@ -115,7 +115,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../inc/openal/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../src/libvorbis/include/;../../src/libogg/include/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
@@ -137,7 +137,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../inc/openal/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../src/libvorbis/include/;../../src/libogg/include/</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -157,7 +157,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);HAVE_BZIP2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../inc/openal/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../src/libvorbis/include/;../../src/libogg/include/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>

@@ -55,8 +55,8 @@ public:
 			info.m_generateMipmaps = true;
 
 			image->Resize(126, 126, false);
-			image->SaveToFile(bqImage::SaveFileFormat::bmp24, "test.bmp");
-			image->SaveToFile(bqImage::SaveFileFormat::ddsRGBA8, "test.dds");
+	//		image->SaveToFile(bqImage::SaveFileFormat::bmp24, "test.bmp");
+	//		image->SaveToFile(bqImage::SaveFileFormat::ddsRGBA8, "test.dds");
 			
 			m_texture = m_app->GetGS()->SummonTexture(image, info);
 

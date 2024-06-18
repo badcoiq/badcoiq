@@ -47,6 +47,7 @@ class bqSoundStreamImpl : public bqSoundStream
 		{
 			uint64_t _64bit;
 			uint32_t _32bit[2];
+			bqFloat32 _float32[2];
 			uint16_t _16bit[4];
 			uint8_t _8bit[8];
 		};
@@ -115,15 +116,15 @@ public:
 	{
 		(this->*m)(c);
 	}
-	void ThreadCommand_SetPlaybackPostion(uint64_t);
+	void ThreadCommand_SetPlaybackPosition(float);
 	void ThreadCommandMethod_SetPlaybackPostion(_thread_command*);
 
 	virtual uint64_t GetDataSize() override;
 	virtual void PlaybackStart() override;
 	virtual void PlaybackStop() override;
 	virtual void PlaybackReset() override;
-	virtual void PlaybackSet(uint32_t minutes, float seconds) override;
-	virtual void PlaybackSet(float secondsOnly) override;
+	//virtual void PlaybackSet(uint32_t minutes, float seconds) override;
+	//virtual void PlaybackSet(float secondsOnly) override;
 	virtual bool Open(const char*) override;
 	virtual void Close() override;
 	virtual bool IsOpened() override;
@@ -144,9 +145,12 @@ public:
 	// в байтах. в массивах m_data____
 	// если в миксере позиция ушла за пределы значит завершили обработку
 	uint32_t m_dataPosition = 0;
+	
+	/// DELETE
 	// позиция в файле перед началом воспроизведения секунды
 	//uint64_t m_dataPositionInFile[2];
-	uint64_t m_currentDataPositionInFile = 0;
+	//uint64_t m_currentDataPositionInFile = 0;
+	
 	// надо бы что-то сделать с этими массивами по 2 штуки которые
 	//bool m_lastBuffer = false;
 	// будет структура
@@ -160,6 +164,10 @@ public:
 	// Тот буфер который будет использован в миксере.
 	// Сначала 0, потом 1 потом опять 0 потом опять 1 и т.д.
 	int m_activeBufferIndex = -1;
+	// Чтобы реализовать смену m_activeBufferIndex 0->1...1->0
+	// Потому что я сразу заготавливаю 2 буфера
+	// Значения надо где-то сохранять.
+	int m_activeBufferIndexNext[2] = {0,0};
 
 
 	void _OnEndBuffer();

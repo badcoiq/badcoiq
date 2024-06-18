@@ -59,8 +59,13 @@ public:
 	virtual void PlaybackStart() = 0;
 	virtual void PlaybackStop() = 0;
 	virtual void PlaybackReset()= 0;
-	virtual void PlaybackSet(uint32_t minutes, float seconds)= 0;
-	virtual void PlaybackSet(float secondsOnly)= 0;
+
+	// Установка позиции с какого момента начинать воспроизведение
+	// потребует дополнительной реализации.
+	// Пока нет на это время. Главное реализовать воспроизведение,
+	// паузу и reset. Установку позиции для игр и не надо.
+	//virtual void PlaybackSet(uint32_t minutes, float seconds)= 0;
+	//virtual void PlaybackSet(float secondsOnly)= 0;
 	
 	// открыть/закрыть файл
 	virtual bool Open(const char*) = 0;

@@ -57,12 +57,14 @@ class bqSoundFile
 	setPlaybackPosition_method m_setPlaybackPosition_method = 0;
 
 	size_t _ReadWav(void* buffer, size_t size);
+	size_t _ReadOGG(void* buffer, size_t size);
 	size_t _ReadNull(void* buffer, size_t size);
 
 	void _SetPlaybackPositionWav(uint64_t);
 	void _SetPlaybackPositionNull(uint64_t);
 
 	bool _OpenWAV(const char*);
+	bool _OpenOGG(const char*);
 
 public:
 	bqSoundFile();
@@ -83,6 +85,7 @@ public:
 	};
 
 	Type GetType() { return m_type; }
+	FILE* GetFILE() { return m_file; }
 
 	uint64_t GetDataSize() { return m_dataSize; }
 	
@@ -94,7 +97,12 @@ public:
 
 	bool eof();
 
-	void SetPlaybackPosition(uint64_t);
+	// пока не реализую
+	// файлы могут хранить звук по разному
+	// к каждому типу файла потребуется свой подход
+	// на всё это нет времени так как делаю для игр 
+	// а не для аудио плеера
+	//void SetPlaybackPosition(uint64_t);
 
 private:
 	Type m_type = Type::Wav;

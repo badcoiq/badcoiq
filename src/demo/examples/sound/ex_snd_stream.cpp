@@ -49,7 +49,7 @@ bool ExampleSoundStream::Init()
 
 	m_stream = soundSystem->SummonStream();
 
-	if (!m_stream->Open("../data/music/uint8_stereo_48000.wav"))
+	if (!m_stream->Open("../data/music/Jesper Kyd - Slaughterhouse.opus"))
 	{
 		bqLog::PrintError("Can't open file for streaming\n");
 		return false;
@@ -61,7 +61,6 @@ bool ExampleSoundStream::Init()
 	soundSystem->AddMixerToProcessing(m_mixer);
 	
 	m_stream->m_loop = true;
-	m_stream->PlaybackStart();
 
 	return true;
 }
@@ -88,7 +87,7 @@ void ExampleSoundStream::OnDraw()
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_W))
 	{
-		m_stream->PlaybackSet(17.5f);
+		m_stream->PlaybackReset();
 	}
 	if (bqInput::IsKeyHit(bqInput::KEY_E))
 	{

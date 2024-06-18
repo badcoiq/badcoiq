@@ -55,35 +55,52 @@ bqSoundStreamImpl::~bqSoundStreamImpl()
 void bqSoundStreamImpl::PlaybackStart()
 {
 	m_state = state_playing;
+	printf("PLAY\n");
 }
 
 void bqSoundStreamImpl::PlaybackStop()
 {
 	m_state = state_notPlaying;
+	printf("STOP\n");
 }
 
 void bqSoundStreamImpl::PlaybackReset()
 {
+	printf("STOP\n");
 	m_state = state_notPlaying;
-	PlaybackSet(0.f);
-}
 
-void bqSoundStreamImpl::PlaybackSet(uint32_t minutes, float seconds)
-{
-	if (seconds > 60.f)	seconds = 0.f;
-	PlaybackSet(seconds + ((float)minutes * 60.f));
-}
+	m_prepareBufferIndex = 0;
+	m_numOfPreparedBuffers = 0;
+	m_dataPosition = 0;
+	m_activeBufferIndex = -1;
 
-void bqSoundStreamImpl::PlaybackSet(float secondsOnly)
-{
-	if (m_file)
+	for (int i = 0; i < 2; ++i)
 	{
-		m_file->MoveToFirstDataBlock();
-
-
-		//this->ThreadCommand_SetPlaybackPostion(v);
+		memset(m_dataFromFile[i].m_data, 0, m_dataFromFile[i].m_size);
+		memset(m_dataAfterChannels[i].m_data, 0, m_dataAfterChannels[i].m_size);
+		memset(m_dataAfterConvert[i].m_data, 0, m_dataAfterConvert[i].m_size);
+		memset(m_dataAfterResample[i].m_data, 0, m_dataAfterResample[i].m_size);
 	}
+
+	this->ThreadCommand_SetPlaybackPosition(0.f);
 }
+
+//void bqSoundStreamImpl::PlaybackSet(uint32_t minutes, float seconds)
+//{
+//	if (seconds > 60.f)	seconds = 0.f;
+//	PlaybackSet(seconds + ((float)minutes * 60.f));
+//}
+//
+//void bqSoundStreamImpl::PlaybackSet(float secondsOnly)
+//{
+//	if (m_file)
+//	{
+//		m_file->MoveToFirstDataBlock();
+//
+//
+//		//this->ThreadCommand_SetPlaybackPostion(v);
+//	}
+//}
 
 bool bqSoundStreamImpl::Open(const char* path)
 {
@@ -149,8 +166,6 @@ bool bqSoundStreamImpl::Open(const char* path)
 		m_dataSize = m_file->GetDataSize();
 		m_blockSize = m_file->GetBufferInfo().m_blockSize;
 
-		// конвертации пока нет
-		// читаем float32
 		_convert = 0;
 		switch (m_file->GetBufferInfo().m_format)
 		{
@@ -163,6 +178,7 @@ bool bqSoundStreamImpl::Open(const char* path)
 		}
 
 		m_thread = new std::thread(&bqSoundStreamImpl::_thread_function, this);
+		//m_file->MoveToFirstDataBlock();
 
 		if (m_thread)
 			return true;
@@ -175,11 +191,11 @@ bool bqSoundStreamImpl::Open(const char* path)
 	return false;
 }
 
-void bqSoundStreamImpl::ThreadCommand_SetPlaybackPostion(uint64_t v)
+void bqSoundStreamImpl::ThreadCommand_SetPlaybackPosition(float v)
 {
 	_thread_command cmd;
 	cmd.m_ptr = 0;
-	cmd._64bit = v;
+	cmd._float32[0] = v;
 	cmd.m_method = &bqSoundStreamImpl::ThreadCommandMethod_SetPlaybackPostion;
 	this->m_threadContext.m_commands.Push(cmd);
 }
@@ -187,14 +203,12 @@ void bqSoundStreamImpl::ThreadCommandMethod_SetPlaybackPostion(_thread_command* 
 {
 	//printf("SPP %llu\n", c->_64bit);
 
-	m_file->SetPlaybackPosition(c->_64bit);
+	if(c->_float32[0] == 0.f)
+		m_file->MoveToFirstDataBlock();
 }
 
 void bqSoundStreamImpl::_OnEndBuffer()
 {
-	if(m_numOfPreparedBuffers)
-		--m_numOfPreparedBuffers;
-
 	if (m_playbackInfo[m_activeBufferIndex].m_lastBuffer)
 	{
 		//printf("PlaybackStop\n");
@@ -205,6 +219,11 @@ void bqSoundStreamImpl::_OnEndBuffer()
 		if (m_callback)
 			m_callback->OnEndStream();
 	}
+
+	m_activeBufferIndex = m_activeBufferIndexNext[m_activeBufferIndex];
+
+	if (m_numOfPreparedBuffers)
+		--m_numOfPreparedBuffers;
 }
 
 void bqSoundStreamImpl::_thread_function()
@@ -241,6 +260,8 @@ void bqSoundStreamImpl::_thread_function()
 				auto beforeRead = m_file->Tell();
 				memset(m_dataFromFile[m_prepareBufferIndex].m_data, 0, m_dataFromFile[m_prepareBufferIndex].m_size);
 				size_t numRead = m_file->Read(m_dataFromFile[m_prepareBufferIndex].m_data, m_dataFromFile[m_prepareBufferIndex].m_size);
+				
+				printf("READ %u\n", numRead);
 
 				if (numRead < m_dataFromFile[m_prepareBufferIndex].m_size)
 				{
@@ -358,13 +379,16 @@ void bqSoundStreamImpl::_thread_function()
 				m_dataActiveBufferPointer[m_prepareBufferIndex] = m_dataPointer;
 				m_blockSizeCurrent[m_prepareBufferIndex] = m_blockSize;
 
-				m_activeBufferIndex = m_prepareBufferIndex;
+				if(m_activeBufferIndex == -1)
+					m_activeBufferIndex = m_prepareBufferIndex;
 
 				++m_numOfPreparedBuffers;
 
 				++m_prepareBufferIndex;
 				if (m_prepareBufferIndex > 1)
 					m_prepareBufferIndex = 0;
+				
+				m_activeBufferIndexNext[m_activeBufferIndex] = m_prepareBufferIndex;
 
 			}
 		}
