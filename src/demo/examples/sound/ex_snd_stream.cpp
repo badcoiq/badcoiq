@@ -49,7 +49,7 @@ bool ExampleSoundStream::Init()
 
 	m_stream = soundSystem->SummonStream();
 
-	if (!m_stream->Open("../data/music/Jesper Kyd - Slaughterhouse.opus"))
+	if (!m_stream->Open("../data/music/Jesper Kyd - Slaughterhouse.ogg"))
 	{
 		bqLog::PrintError("Can't open file for streaming\n");
 		return false;

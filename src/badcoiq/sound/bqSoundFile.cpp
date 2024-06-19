@@ -35,6 +35,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 BQ_LINK_LIBRARY("libogg");
 BQ_LINK_LIBRARY("libvorbis");
 
+#include <opus.h>
+BQ_LINK_LIBRARY("opus");
+
 #include "badcoiq/sound/bqSoundSystem.h"
 
 #include "../framework/bqFrameworkImpl.h"
@@ -327,29 +330,107 @@ bool bqSoundFile::_OpenOGG(const char* fn)
 	fopen_s(&m_file, fn, "rb");
 	if (m_file)
 	{
-		OggVorbis_File vf;
-		memset(&vf, 0, sizeof(vf));
+		m_readMethod = &bqSoundFile::_ReadNull;
+		fseek(m_file, 26, SEEK_SET);
 
-		ov_callbacks callbacks = 
-		{
-			_oggvorbis_fread,
-			0,
-			0,
-			0
-		};
-
-		if (ov_open_callbacks((void*)this, &vf, 0, 0, callbacks) < 0)
-		{
-			// try opus
-
+		uint8_t numOfSegments = 0;
+		if(!fread(&numOfSegments, 1, 1, m_file))
 			return false;
+
+		if (numOfSegments != 1)
+			return false;
+
+		uint8_t sizeOfSegment = 0;
+		if (!fread(&sizeOfSegment, 1, 1, m_file))
+			return false;
+
+		if (!sizeOfSegment)
+			return false;
+
+		uint8_t segment[256];
+		memset(segment, 0, 256);
+		if (fread(segment, 1, sizeOfSegment, m_file) != sizeOfSegment)
+			return false;
+
+		// " the identification header is type 1, the comment header type 3 and 
+		// the setup header type 5 (these types are all odd as a packet with a 
+		// leading single bit of ’0’ is an audio packet)."
+		// "The packets must occur in the order of identification, comment, setup."
+		if (segment[0] != 1)
+			return false;
+
+		if (memcmp(&segment[1], "vorbis", 6) == 0)
+		{
+			uint32_t vorbisVersion = *((uint32_t*)&segment[7]);
+			if (vorbisVersion != 0) // должно быть 0
+				return false;
+
+			uint32_t channels = *((uint8_t*)&segment[11]);
+			uint32_t samplerate = *((uint32_t*)&segment[12]);
+
+			int32_t bitrate_maximum = *((int32_t*)&segment[16]);
+			int32_t bitrate_nominal = *((int32_t*)&segment[20]);
+			int32_t bitrate_minimum = *((int32_t*)&segment[24]);
+			
+			uint32_t blocksize_0 = (*((uint8_t*)&segment[28])) & 15;
+			uint32_t blocksize_1 = ((*((uint32_t*)&segment[28])) & 240) >> 4;
+
+			if (blocksize_0 > blocksize_1)
+				return false;
+
+			uint8_t framing_flag = *((uint8_t*)&segment[29]);
+			if(!framing_flag)
+				return false;
+
+
+			OggVorbis_File vf;
+			memset(&vf, 0, sizeof(vf));
+
+			ov_callbacks callbacks = 
+			{
+				_oggvorbis_fread,
+				0,
+				0,
+				0
+			};
+
+			if (ov_open_callbacks((void*)this, &vf, 0, 0, callbacks) < 0)
+				return false;
+		}
+		else if (memcmp(&segment[1], "OpusHead", 9) == 0)
+		{
+			//	OpusDecoder* decoder = 0;
+			//	opus_decoder_create();
 		}
 		else
 		{
-			printf("VORBIS\n");
-			m_readMethod = &bqSoundFile::_ReadOGG;
-			m_setPlaybackPosition_method = &bqSoundFile::_SetPlaybackPositionNull;
+			return false;
 		}
+
+	//	OggVorbis_File vf;
+		//memset(&vf, 0, sizeof(vf));
+
+		//ov_callbacks callbacks = 
+		//{
+		//	_oggvorbis_fread,
+		//	0,
+		//	0,
+		//	0
+		//};
+
+		//if (ov_open_callbacks((void*)this, &vf, 0, 0, callbacks) < 0)
+		//{
+		//	// try opus
+		
+
+		//	return false;
+		//}
+		//else
+		//{
+		//	printf("VORBIS\n");
+		//	m_readMethod = &bqSoundFile::_ReadOGG;
+		//	m_setPlaybackPosition_method = &bqSoundFile::_SetPlaybackPositionNull;
+		//}
 	}
 
 	return false;

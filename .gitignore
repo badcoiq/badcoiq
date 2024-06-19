@@ -44,3 +44,5 @@ build/libogg/Debug
 build/libogg/Release
 build/libvorbis/Debug
 build/libvorbis/Release
+build/opus/Debug
+build/opus/Release
