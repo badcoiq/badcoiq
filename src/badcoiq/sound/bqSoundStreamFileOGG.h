@@ -25,81 +25,41 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#ifndef _BQ_SOUNDSTREAMFILEOGG_H_
+#define _BQ_SOUNDSTREAMFILEOGG_H_
 
-#include "../../DemoApp.h"
-#include "badcoiq/sound/bqSoundSystem.h"
+#include <vorbis/codec.h>
+#include <vorbis/vorbisfile.h>
 
-#ifdef BQ_WITH_SOUND
+size_t _oggvorbis_fread(void* buffer, size_t es, size_t ec, void* _f);
+int _oggvorbis_fseek(void* _f, ogg_int64_t o, int s);
+long _oggvorbis_ftell(void* _f);
 
-ExampleSoundStream::ExampleSoundStream(DemoApp* app)
-	:
-	DemoExample(app)
+class bqSoundStreamFileOGG : public bqSoundStreamFile
 {
-}
-
-ExampleSoundStream::~ExampleSoundStream()
-{
-}
-
-
-bool ExampleSoundStream::Init()
-{
-	auto soundSystem = bqFramework::GetSoundSystem();
-	auto soundDeviceInfo = soundSystem->GetDeviceInfo();
-
-	m_stream = soundSystem->SummonStream("../data/music/Jesper Kyd - Slaughterhouse.wav");
-	if (!m_stream)
+	OggVorbis_File m_vorbisFile;
+	ov_callbacks m_callbacks =
 	{
-		bqLog::PrintError("Can't open file for streaming\n");
-		return false;
-	}
-	
-	
-	m_mixer = soundSystem->SummonMixer(2);
-	m_mixer->AddStream(m_stream);
-	soundSystem->AddMixerToProcessing(m_mixer);
-	
-	m_stream->m_loop = true;
+		_oggvorbis_fread,
+		_oggvorbis_fseek,
+		0,
+		_oggvorbis_ftell
+	};
+	int m_bitstreamCurrentSection = 0;
 
-	return true;
-}
+	bool _OpenVorbis();
+public:
+	bqSoundStreamFileOGG();
+	virtual ~bqSoundStreamFileOGG();
 
-void ExampleSoundStream::Shutdown()
-{
-	bqFramework::GetSoundSystem()->RemoveAllMixersFromProcessing();
+	virtual size_t Read(void* buffer, size_t size) override;
+	virtual void MoveToFirstDataBlock() override;
+	virtual long Tell() override;
+	virtual void Seek(long) override;
+	virtual bool eof() override;
 
-	BQ_SAFEDESTROY(m_mixer);
-	BQ_SAFEDESTROY(m_stream);
-}
+	bool Open(const char*);
+	void Close();
+};
 
-void ExampleSoundStream::OnDraw()
-{
-	if (bqInput::IsKeyHit(bqInput::KEY_ESCAPE))
-	{
-		m_app->StopExample();
-		return;
-	}
-
-	if (bqInput::IsKeyHit(bqInput::KEY_Q))
-	{
-		m_stream->PlaybackStart();
-	}
-	if (bqInput::IsKeyHit(bqInput::KEY_W))
-	{
-		m_stream->PlaybackReset();
-	}
-	if (bqInput::IsKeyHit(bqInput::KEY_E))
-	{
-		m_stream->PlaybackStop();
-	}
-
-	m_gs->BeginGUI();
-	m_gs->EndGUI();
-
-	m_gs->BeginDraw();
-	m_gs->ClearAll();
-
-	m_gs->EndDraw();
-	m_gs->SwapBuffers();
-}
 #endif

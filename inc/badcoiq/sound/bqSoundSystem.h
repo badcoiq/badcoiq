@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bqSoundStream.h"
 #include "bqSoundEffect.h"
 #include "bqSoundMixer.h"
-#include "bqSoundFile.h"
+#include "bqSoundStreamFile.h"
 
 // информация о типе звука который воспроизводит аудио девайс
 struct bqSoundSystemDeviceInfo
@@ -64,7 +64,7 @@ public:
 	// Файл будет открыт для чтения и потихоньку будет происходить
 	// чтение.
 	// чтото пока не реализовано
-	virtual bqSoundStream* SummonStream() = 0;
+	virtual bqSoundStream* SummonStream(const char*) = 0;
 
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() = 0;
 

@@ -33,6 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/sound/bqSoundSystem.h"
 
 #include "bqSoundStreamImpl.h"
+#include "bqSoundStreamFileWAV.h"
+#include "bqSoundStreamFileOGG.h"
 #include "bqSoundSystemImpl.h"
 #include "bqSoundMixerImpl.h"
 #include "bqSoundEffectVolumeImpl.h"
@@ -272,9 +274,44 @@ bool bqSoundSystemImpl::Init()
 	return retValue;
 }
 
-bqSoundStream* bqSoundSystemImpl::SummonStream()
+bqSoundStream* bqSoundSystemImpl::SummonStream(const char* fn)
 {
-	return new bqSoundStreamImpl;
+	BQ_ASSERT_ST(fn);
+	if (!fn)
+		return 0;
+
+	bqSoundStreamFile* sf = 0;
+
+	FILE* f = 0;
+	fopen_s(&f, fn, "rb");
+
+	if (f)
+	{
+		char name[5] = { 0,0,0,0,0 };
+		fread(name, 1, 4, f);
+		fclose(f);
+		f = 0;
+
+		if (strcmp(name, "RIFF") == 0)
+		{
+			bqSoundStreamFileWAV* sf_wav = new bqSoundStreamFileWAV;
+
+			if (sf_wav->Open(fn))
+				sf = sf_wav;
+			else
+				delete sf_wav;
+		}
+		else if (strcmp(name, "OggS") == 0)
+		{
+			bqSoundStreamFileOGG* sf_ogg = new bqSoundStreamFileOGG;
+			if (sf_ogg->Open(fn))
+				sf = sf_ogg;
+			else
+				delete sf_ogg;
+		}
+	}
+
+	return sf ? new bqSoundStreamImpl(sf) : 0;
 }
 
 bqWASAPIRenderer::bqWASAPIRenderer()

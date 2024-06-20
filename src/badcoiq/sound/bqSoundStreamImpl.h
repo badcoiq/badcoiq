@@ -34,7 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class bqSoundStreamImpl : public bqSoundStream
 {
-	bqSoundFile* m_file = 0;
+	//bqSoundFile* m_file = 0;
+	bqSoundStreamFile* m_streamFile = 0;
 	std::thread* m_thread = 0;
 	void _thread_function();
 	struct _thread_command;
@@ -109,7 +110,7 @@ class bqSoundStreamImpl : public bqSoundStream
 	bqSoundStreamCallback* m_callback = 0;
 
 public:
-	bqSoundStreamImpl();
+	bqSoundStreamImpl(bqSoundStreamFile*);
 	virtual ~bqSoundStreamImpl();
 	BQ_PLACEMENT_ALLOCATOR(bqSoundStreamImpl);
 	void ThreadCommand_CallMethod(ThreadCommanMethodType m, _thread_command* c)
@@ -119,15 +120,11 @@ public:
 	void ThreadCommand_SetPlaybackPosition(float);
 	void ThreadCommandMethod_SetPlaybackPostion(_thread_command*);
 
-	virtual uint64_t GetDataSize() override;
 	virtual void PlaybackStart() override;
 	virtual void PlaybackStop() override;
 	virtual void PlaybackReset() override;
 	//virtual void PlaybackSet(uint32_t minutes, float seconds) override;
 	//virtual void PlaybackSet(float secondsOnly) override;
-	virtual bool Open(const char*) override;
-	virtual void Close() override;
-	virtual bool IsOpened() override;
 	virtual uint32_t GetNumOfChannels() override;
 	//virtual const bqSoundBufferInfo& GetBufferInfo() override;
 	virtual uint32_t GetBlockSize() override;

@@ -27,62 +27,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_SOUNStream_H__
-#define __BQ_SOUNStream_H__
+#ifndef __BQ_SStreamFile_H__
+#define __BQ_SStreamFile_H__
 
 #ifdef BQ_WITH_SOUND
 
-class bqSoundStreamCallback
+class bqSoundStreamFile
 {
+protected:
+	bqSoundBufferInfo m_info;
 public:
-	bqSoundStreamCallback() {}
-	virtual ~bqSoundStreamCallback() {}
+	bqSoundStreamFile() {}
+	virtual ~bqSoundStreamFile() {}
+	BQ_PLACEMENT_ALLOCATOR(bqSoundStreamFile);
 
+	const bqSoundBufferInfo& GetBufferInfo() { return m_info; }
+	bqSoundFormat GetFormat() { return m_info.m_format; }
 
-	virtual void OnEndStream() = 0;
-};
-
-class bqSoundStream
-{
-public:
-	bqSoundStream() {}
-	virtual ~bqSoundStream() {}
-	BQ_PLACEMENT_ALLOCATOR(bqSoundStream);
-
-	bool IsPlaying() { return m_state == state_playing; }
-
-
-	virtual void PlaybackStart() = 0;
-	virtual void PlaybackStop() = 0;
-	virtual void PlaybackReset()= 0;
-
-	// Установка позиции с какого момента начинать воспроизведение
-	// потребует дополнительной реализации.
-	// Пока нет на это время. Главное реализовать воспроизведение,
-	// паузу и reset. Установку позиции для игр и не надо.
-	//virtual void PlaybackSet(uint32_t minutes, float seconds)= 0;
-	//virtual void PlaybackSet(float secondsOnly)= 0;
-		
-	// вернёт 2
-	virtual uint32_t GetNumOfChannels() = 0;
-	//	virtual const bqSoundBufferInfo& GetBufferInfo() = 0;
-	virtual uint32_t GetBlockSize() = 0;
-	
-	virtual void SetCallback(bqSoundStreamCallback*) = 0;
-
-	enum
-	{
-		state_notPlaying,
-		state_playing,
-	};
-	uint32_t m_state = state_notPlaying;
-
-	bool m_loop = false;
-	float m_volume = 0.5f;
-	bool m_use3D = false;
+	virtual size_t Read(void* buffer, size_t size) = 0;
+	virtual void MoveToFirstDataBlock() = 0;
+	virtual long Tell() = 0;
+	virtual void Seek(long) = 0;
+	virtual bool eof() = 0;
 };
 
 
 #endif
 #endif
+
 

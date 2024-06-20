@@ -207,9 +207,10 @@
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundBuffer.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundEffectDelayImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundEffectVolumeImpl.cpp" />
-    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundFile.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundLab.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundMixerImpl.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundStreamFileOGG.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\sound\bqSoundStreamFileWAV.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundStreamImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundSystemImpl.cpp" />
     <ClCompile Include="..\..\src\badcoiq\string\bqString.cpp" />
