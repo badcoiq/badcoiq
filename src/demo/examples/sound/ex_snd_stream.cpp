@@ -47,7 +47,7 @@ bool ExampleSoundStream::Init()
 	auto soundSystem = bqFramework::GetSoundSystem();
 	auto soundDeviceInfo = soundSystem->GetDeviceInfo();
 
-	m_stream = soundSystem->SummonStream("../data/music/Jesper Kyd - Slaughterhouse.wav");
+	m_stream = soundSystem->SummonStream("../data/music/ogg_stereo_44100_128.ogg");
 	if (!m_stream)
 	{
 		bqLog::PrintError("Can't open file for streaming\n");

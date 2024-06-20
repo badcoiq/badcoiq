@@ -47,7 +47,15 @@ class bqSoundStreamFileOGG : public bqSoundStreamFile
 	};
 	int m_bitstreamCurrentSection = 0;
 
-	bool _OpenVorbis();
+	bool m_eof = false;
+
+	uint8_t m_ovReadBuffer[4096];
+	uint32_t m_ovReadBufferSize = 0;
+	
+	uint8_t m_outBuffer[4096];
+	uint32_t m_outBufferSize = 0;
+
+	bool _OpenVorbis(const char*);
 public:
 	bqSoundStreamFileOGG();
 	virtual ~bqSoundStreamFileOGG();
@@ -60,6 +68,8 @@ public:
 
 	bool Open(const char*);
 	void Close();
+
+	FILE* m_file = 0;
 };
 
 #endif

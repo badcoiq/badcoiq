@@ -272,6 +272,8 @@ size_t bqSoundStreamFileWAV::Read(void* buffer, size_t size)
 	size_t newPosition = m_currentDataBlock + size;
 	if (newPosition >= m_lastDataBlock)
 	{
+		fseek(m_file, 0, SEEK_END);
+
 		size = m_lastDataBlock - m_currentDataBlock;
 		//	printf("SIZE %u\n", size);
 		if (!size)

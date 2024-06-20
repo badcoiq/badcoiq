@@ -199,7 +199,7 @@ void bqSoundStreamImpl::_OnEndBuffer()
 {
 	if (m_playbackInfo[m_activeBufferIndex].m_lastBuffer)
 	{
-		//printf("PlaybackStop\n");
+		printf("PlaybackStop\n");
 		if (!m_loop)
 			PlaybackStop();
 		
@@ -231,7 +231,7 @@ void bqSoundStreamImpl::_thread_function()
 			continue;
 		}
 
-		if (!m_streamFile->eof())
+		//if (!m_streamFile->eof())
 		{
 			if (m_numOfPreparedBuffers < 2)
 			{
@@ -250,9 +250,10 @@ void bqSoundStreamImpl::_thread_function()
 				size_t numRead = m_streamFile->Read(m_dataFromFile[m_prepareBufferIndex].m_data, m_dataFromFile[m_prepareBufferIndex].m_size);
 				
 				printf("READ %u\n", numRead);
-
-				if (numRead < m_dataFromFile[m_prepareBufferIndex].m_size)
+				m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = false;
+				if (m_streamFile->eof())
 				{
+					printf("eof\n");
 					if (m_loop)
 					{
 						// если повтор то устанавливаем указатель на начало звука в файле
@@ -267,11 +268,6 @@ void bqSoundStreamImpl::_thread_function()
 						m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = true;
 					}
 				}
-				else
-				{
-					m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = false;
-				}
-
 
 				m_dataPointer = &m_dataFromFile[m_prepareBufferIndex];
 				m_blockSize = m_streamFile->GetBufferInfo().m_blockSize;
@@ -380,7 +376,7 @@ void bqSoundStreamImpl::_thread_function()
 
 			}
 		}
-		else
+		//else
 		{
 			//m_file->MoveToFirstDataBlock();
 			//printf("END\n");

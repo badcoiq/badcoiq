@@ -42,9 +42,9 @@ size_t _oggvorbis_fread(void* buffer, size_t es, size_t ec, void* _f)
 	bqSoundStreamFileOGG* sf = (bqSoundStreamFileOGG*)_f;
 	if (sf)
 	{
-	//	FILE* f = sf->GetFILE();
-	//	if (f)
-	//		return fread(buffer, es, ec, f);
+		FILE* f = sf->m_file;
+		if (f)
+			return fread(buffer, es, ec, f);
 	}
 	return 0;
 }
@@ -53,9 +53,9 @@ int _oggvorbis_fseek(void* _f, ogg_int64_t o, int s)
 	bqSoundStreamFileOGG* sf = (bqSoundStreamFileOGG*)_f;
 	if (sf)
 	{
-	//	FILE* f = sf->GetFILE();
-	//	if (f)
-	//		return fseek(f, o, s);
+		FILE* f = sf->m_file;
+		if (f)
+			return fseek(f, o, s);
 	}
 	return 0;
 }
@@ -64,9 +64,9 @@ long _oggvorbis_ftell(void* _f)
 	bqSoundStreamFileOGG* sf = (bqSoundStreamFileOGG*)_f;
 	if (sf)
 	{
-	//	FILE* f = sf->GetFILE();
-	//	if (f)
-	//		return ftell(f);
+		FILE* f = sf->m_file;
+		if (f)
+			return ftell(f);
 	}
 	return 0;
 }
@@ -90,11 +90,92 @@ bqSoundStreamFileOGG::~bqSoundStreamFileOGG()
 
 size_t bqSoundStreamFileOGG::Read(void* buffer, size_t size)
 {
-	return ov_read(&m_vorbisFile, (char*)buffer, size, 0, 2, 1, &m_bitstreamCurrentSection);
+	// ov_read вернёт не size а значение например 4096
+	// надо заполнить буфер buffer и выходить из функции
+	// нужно иметь запасной буфер, куда будем засовывать
+	// излишки. Потом при чтении сначала вытаскиваем излишки
+	// а потом читаем новую порцию.
+
+	uint8_t* dst = (uint8_t*)buffer;
+
+	long allReadNum = 0;
+
+	// если есть что-то в буфере с излишками то копируем данные
+	if (m_outBufferSize)
+	{
+		memcpy(&dst[allReadNum], m_outBuffer, m_outBufferSize);
+		allReadNum += m_outBufferSize;
+		m_outBufferSize = 0;
+	//	printf("m_outBufferSize\n");
+	}
+
+	while (true)
+	{
+		m_ovReadBufferSize = ov_read(&m_vorbisFile, (char*)m_ovReadBuffer, 4096, 0, 2, 1, &m_bitstreamCurrentSection);
+
+		if (m_ovReadBufferSize <= 0)
+		{
+			if (m_ovReadBufferSize == 0) 
+				m_eof = true;
+
+			break;
+		}
+
+		long newReadNum = allReadNum + m_ovReadBufferSize;
+
+		if (newReadNum > size)
+		{
+			//                                    vvv_size
+			// *===================================*                     buffer/dst
+			// *---------|-----------------------------------|           m_ovReadBuffer
+			//                                              ^^^newReadNum / m_ovReadBufferSize
+			// 
+			//                                     |---------| s = newReadNum - size;
+			//                                                 размер чтобы оставить на потом
+			//                                                 надо скопировать в m_outBuffer
+			// 
+			//           |-------------------------|           sizeForDst = m_ovReadBufferSize - s;
+			//                                                 это надо скопировать в buffer / dst
+			// 
+			// 
+			//
+			auto s = newReadNum - size;
+			auto sizeForDst = m_ovReadBufferSize - s;
+			memcpy(&dst[allReadNum], m_ovReadBuffer, sizeForDst);
+			// заполнили dst
+
+			// теперь надо сохранить лишнее
+
+			// вышли за пределы buffer
+		//	printf("OUT %u, %u > %u (%u)\n", m_ovReadBufferSize, newReadNum, size, newReadNum - size);
+			printf("sizeForDst %u s %u\n", sizeForDst, s);
+
+			memset(m_outBuffer, 0, 4096);
+			m_outBufferSize = s;
+			memcpy(m_outBuffer, &m_ovReadBuffer[sizeForDst], s);
+			// но чтото не работает
+
+			break;
+		}
+		else
+		{
+			memcpy(&dst[allReadNum], m_ovReadBuffer, m_ovReadBufferSize);
+			
+			if (newReadNum == size)
+				break;
+		}
+
+
+		allReadNum = newReadNum;
+	}
+
+	return allReadNum;
 }
 
 void bqSoundStreamFileOGG::MoveToFirstDataBlock()
 {
+	ov_pcm_seek(&m_vorbisFile, 0);
+	m_eof = false;
 }
 
 long bqSoundStreamFileOGG::Tell()
@@ -102,13 +183,15 @@ long bqSoundStreamFileOGG::Tell()
 	return 0;
 }
 
-void bqSoundStreamFileOGG::Seek(long)
+void bqSoundStreamFileOGG::Seek(long v)
 {
+	ov_pcm_seek(&m_vorbisFile, v);
+	m_eof = false;
 }
 
 bool bqSoundStreamFileOGG::eof()
 {
-	return false;
+	return m_eof;
 }
 
 bool bqSoundStreamFileOGG::Open(const char* fn)
@@ -178,9 +261,9 @@ bool bqSoundStreamFileOGG::Open(const char* fn)
 			m_info.m_sampleRate = samplerate;
 			m_info.m_blockSize = m_info.m_bytesPerSample * m_info.m_channels;
 
-			file.Seek(0, bqFile::_seek::set);
+			//file.Seek(0, bqFile::_seek::set);
 
-			return _OpenVorbis();
+			return _OpenVorbis(fn);
 		}
 		else if (memcmp(&segment[1], "OpusHead", 9) == 0)
 		{
@@ -214,13 +297,20 @@ void bqSoundStreamFileOGG::Close()
 {
 }
 
-bool bqSoundStreamFileOGG::_OpenVorbis()
+bool bqSoundStreamFileOGG::_OpenVorbis(const char* fn)
 {
 	printf("Open Vorbis\n");
+	if (m_file)
+		fclose(m_file);
+
+	fopen_s(&m_file, fn, "rb");
+	if (!m_file)
+		return false;
 
 	if (ov_open_callbacks((void*)this, &m_vorbisFile, 0, 0, m_callbacks) < 0)
 	{
 		bqLog::Print("%s %u\n", BQ_FUNCTION, BQ_LINE);
+		fclose(m_file);
 		return false;
 	}
 
