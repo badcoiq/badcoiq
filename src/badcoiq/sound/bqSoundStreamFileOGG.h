@@ -31,14 +31,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 
+#include <opus.h>
+#include <opusfile.h>
+
 size_t _oggvorbis_fread(void* buffer, size_t es, size_t ec, void* _f);
 int _oggvorbis_fseek(void* _f, ogg_int64_t o, int s);
 long _oggvorbis_ftell(void* _f);
 
+int _oggopus_fread(void* _stream, unsigned char* _ptr, int _nbytes);
+int _oggopus_fseek(void* _stream, opus_int64 _offset, int _whence);
+opus_int64 _oggopus_ftell(void* _stream);
+
 class bqSoundStreamFileOGG : public bqSoundStreamFile
 {
 	OggVorbis_File m_vorbisFile;
-	ov_callbacks m_callbacks =
+	ov_callbacks m_vorbisCallbacks =
 	{
 		_oggvorbis_fread,
 		_oggvorbis_fseek,
@@ -46,16 +53,26 @@ class bqSoundStreamFileOGG : public bqSoundStreamFile
 		_oggvorbis_ftell
 	};
 	int m_bitstreamCurrentSection = 0;
-
-	bool m_eof = false;
-
 	uint8_t m_ovReadBuffer[4096];
 	uint32_t m_ovReadBufferSize = 0;
-	
+
+	OggOpusFile* m_opusFile = 0;
+	OpusFileCallbacks m_opusCallbacks =
+	{
+		_oggopus_fread,
+		_oggopus_fseek,
+		_oggopus_ftell,
+		0,
+	};
+	size_t _readOpus(void* buffer, size_t size);
+	float m_opReadBuffer[0x5000];
+
+	bool m_eof = false;
 	uint8_t m_outBuffer[4096];
 	uint32_t m_outBufferSize = 0;
 
 	bool _OpenVorbis(const char*);
+	bool _OpenOpus(const char*);
 public:
 	bqSoundStreamFileOGG();
 	virtual ~bqSoundStreamFileOGG();

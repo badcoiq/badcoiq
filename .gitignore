@@ -46,3 +46,5 @@ build/libvorbis/Debug
 build/libvorbis/Release
 build/opus/Debug
 build/opus/Release
+build/opusfile/Debug
+build/opusfile/Release

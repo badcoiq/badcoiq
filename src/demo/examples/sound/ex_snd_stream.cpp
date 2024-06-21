@@ -47,7 +47,7 @@ bool ExampleSoundStream::Init()
 	auto soundSystem = bqFramework::GetSoundSystem();
 	auto soundDeviceInfo = soundSystem->GetDeviceInfo();
 
-	m_stream = soundSystem->SummonStream("../data/music/ogg_stereo_44100_128.ogg");
+	m_stream = soundSystem->SummonStream("../data/music/opus_stereo_128.opus");
 	if (!m_stream)
 	{
 		bqLog::PrintError("Can't open file for streaming\n");
@@ -59,7 +59,7 @@ bool ExampleSoundStream::Init()
 	m_mixer->AddStream(m_stream);
 	soundSystem->AddMixerToProcessing(m_mixer);
 	
-	m_stream->m_loop = false;
+	m_stream->m_loop = true;
 
 	return true;
 }

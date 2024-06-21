@@ -130,7 +130,7 @@
 #undef OPUS_CHECK_ASM
 
 /* Use run-time CPU capabilities detection */
-#undef OPUS_HAVE_RTCD
+#define OPUS_HAVE_RTCD
 
 /* Compiler supports X86 AVX Intrinsics */
 #undef OPUS_X86_MAY_HAVE_AVX

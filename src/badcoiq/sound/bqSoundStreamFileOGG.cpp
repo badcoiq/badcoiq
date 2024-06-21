@@ -28,7 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
-#ifdef BQ_WITH_SOUND
+#ifdef BQ_WITH_OGGVORBIS_OPUS
 #include "badcoiq/sound/bqSoundSystem.h"
 #include "badcoiq/common/bqFile.h"
 
@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 BQ_LINK_LIBRARY("libogg");
+
 BQ_LINK_LIBRARY("libvorbis");
 size_t _oggvorbis_fread(void* buffer, size_t es, size_t ec, void* _f)
 {
@@ -71,10 +72,42 @@ long _oggvorbis_ftell(void* _f)
 	return 0;
 }
 
-
 #include <opus.h>
 BQ_LINK_LIBRARY("opus");
-
+BQ_LINK_LIBRARY("opusfile");
+int _oggopus_fread(void* _stream, unsigned char* _ptr, int _nbytes)
+{
+	bqSoundStreamFileOGG* sf = (bqSoundStreamFileOGG*)_stream;
+	if (sf)
+	{
+		FILE* f = sf->m_file;
+		if (f)
+			return fread(_ptr, 1, _nbytes, f);
+	}
+	return 0;
+}
+int _oggopus_fseek(void* _stream, opus_int64 _offset, int _whence)
+{
+	bqSoundStreamFileOGG* sf = (bqSoundStreamFileOGG*)_stream;
+	if (sf)
+	{
+		FILE* f = sf->m_file;
+		if (f)
+			return _fseeki64(f, _offset, _whence);
+	}
+	return 0;
+}
+opus_int64 _oggopus_ftell(void* _stream)
+{
+	bqSoundStreamFileOGG* sf = (bqSoundStreamFileOGG*)_stream;
+	if (sf)
+	{
+		FILE* f = sf->m_file;
+		if (f)
+			return ftell(f);
+	}
+	return 0;
+}
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
@@ -88,8 +121,58 @@ bqSoundStreamFileOGG::~bqSoundStreamFileOGG()
 	Close();
 }
 
+size_t bqSoundStreamFileOGG::_readOpus(void* buffer, size_t size)
+{
+	uint8_t* dst = (uint8_t*)buffer;
+
+	int readNum = 0;
+	long allReadNum = 0;
+	while (true)
+	{
+		readNum = op_read_float_stereo(m_opusFile, (float*)m_opReadBuffer, 0x5000);
+		if (readNum)
+			readNum *= 4 * 2;
+	
+		//readNum = op_read(m_opusFile, (opus_int16*)m_opReadBuffer, 0x5000, 0);
+		//if (readNum)
+		//	readNum *= 2 * 2; // *= bytePerSample * numOfChannels
+		
+		if (readNum <= 0)
+		{
+			if (readNum == 0)
+				m_eof = true;
+
+			break;
+		}
+		long newReadNum = allReadNum + readNum;
+		if (newReadNum > size)
+		{
+			break;
+		}
+
+		memcpy(&dst[allReadNum], m_opReadBuffer, readNum);
+
+		if (newReadNum == size)
+		{
+			allReadNum = newReadNum;
+			break;
+		}
+
+		allReadNum = newReadNum;
+	}
+	if(allReadNum > 0)
+		return allReadNum;
+
+	return 0;
+}
+
 size_t bqSoundStreamFileOGG::Read(void* buffer, size_t size)
 {
+	if (m_opusFile)
+		return _readOpus(buffer, size);
+
+	long allReadNum = 0;
+
 	// ov_read вернёт не size а значение например 4096
 	// надо заполнить буфер buffer и выходить из функции
 	// нужно иметь запасной буфер, куда будем засовывать
@@ -98,7 +181,6 @@ size_t bqSoundStreamFileOGG::Read(void* buffer, size_t size)
 
 	uint8_t* dst = (uint8_t*)buffer;
 
-	long allReadNum = 0;
 
 	// если есть что-то в буфере с излишками то копируем данные
 	if (m_outBufferSize)
@@ -164,20 +246,29 @@ size_t bqSoundStreamFileOGG::Read(void* buffer, size_t size)
 			memcpy(&dst[allReadNum], m_ovReadBuffer, m_ovReadBufferSize);
 			
 			if (newReadNum == size)
+			{
+				allReadNum = newReadNum;
 				break;
+			}
 		}
 
 
 		allReadNum = newReadNum;
 	}
-
 	return allReadNum;
 }
 
 void bqSoundStreamFileOGG::MoveToFirstDataBlock()
 {
-	memset(m_outBuffer, 0, 4096);
-	ov_pcm_seek(&m_vorbisFile, 0);
+	if (m_opusFile)
+	{
+		op_pcm_seek(m_opusFile, 0);
+	}
+	else
+	{
+		memset(m_outBuffer, 0, 4096);
+		ov_pcm_seek(&m_vorbisFile, 0);
+	}
 	m_eof = false;
 }
 
@@ -188,7 +279,14 @@ long bqSoundStreamFileOGG::Tell()
 
 void bqSoundStreamFileOGG::Seek(long v)
 {
-	ov_pcm_seek(&m_vorbisFile, v);
+	if (m_opusFile)
+	{
+		op_pcm_seek(m_opusFile, v);
+	}
+	else
+	{
+		ov_pcm_seek(&m_vorbisFile, v);
+	}
 	m_eof = false;
 }
 
@@ -226,13 +324,6 @@ bool bqSoundStreamFileOGG::Open(const char* fn)
 		if (file.Read(segment, sizeOfSegment) != sizeOfSegment)
 			return false;
 
-		// " the identification header is type 1, the comment header type 3 and 
-		// the setup header type 5 (these types are all odd as a packet with a 
-		// leading single bit of ’0’ is an audio packet)."
-		// "The packets must occur in the order of identification, comment, setup."
-		if (segment[0] != 1)
-			return false;
-
 		if (memcmp(&segment[1], "vorbis", 6) == 0)
 		{
 			uint32_t vorbisVersion = *((uint32_t*)&segment[7]);
@@ -268,41 +359,47 @@ bool bqSoundStreamFileOGG::Open(const char* fn)
 
 			return _OpenVorbis(fn);
 		}
-		else if (memcmp(&segment[1], "OpusHead", 9) == 0)
+		else if (memcmp(&segment[0], "OpusHead", 8) == 0)
 		{
-			//	OpusDecoder* decoder = 0;
-			//	opus_decoder_create();
+			m_info.m_format = bqSoundFormat::float32;
+			m_info.m_bitsPerSample = 32;
+			m_info.m_bytesPerSample = 4;
+			m_info.m_channels = 2;
+			m_info.m_sampleRate = 48000;
+			m_info.m_blockSize = m_info.m_bytesPerSample * m_info.m_channels;
+
+			return _OpenOpus(fn);
 		}
 		else
 		{
 			return false;
 		}
-
-
-			//if (ov_open_callbacks((void*)this, &vf, 0, 0, callbacks) < 0)
-			//{
-			//	// try opus
-
-
-			//	return false;
-			//}
-			//else
-			//{
-			//	printf("VORBIS\n");
-			//	m_readMethod = &bqSoundFile::_ReadOGG;
-			//	m_setPlaybackPosition_method = &bqSoundFile::_SetPlaybackPositionNull;
-			//}
 	}
 	return false;
 }
 
 void bqSoundStreamFileOGG::Close()
 {
+	if (m_file)
+	{
+		fclose(m_file);
+
+		ov_clear(&m_vorbisFile);
+
+		if (m_opusFile)
+		{
+			op_free(m_opusFile);
+			m_opusFile = 0;
+		}
+	}
+	m_file = 0;
+
+
 }
 
 bool bqSoundStreamFileOGG::_OpenVorbis(const char* fn)
 {
-	printf("Open Vorbis\n");
+	printf("Open Vorbis [%s]\n", fn);
 	if (m_file)
 		fclose(m_file);
 
@@ -310,13 +407,42 @@ bool bqSoundStreamFileOGG::_OpenVorbis(const char* fn)
 	if (!m_file)
 		return false;
 
-	if (ov_open_callbacks((void*)this, &m_vorbisFile, 0, 0, m_callbacks) < 0)
+	if (ov_open_callbacks((void*)this, &m_vorbisFile, 0, 0, m_vorbisCallbacks) < 0)
 	{
 		bqLog::Print("%s %u\n", BQ_FUNCTION, BQ_LINE);
 		fclose(m_file);
 		return false;
 	}
 
+	return true;
+}
+
+bool bqSoundStreamFileOGG::_OpenOpus(const char* fn)
+{
+	printf("Open Opus [%s]\n", fn);
+
+	if (m_file)
+		fclose(m_file);
+
+	if (m_opusFile)
+	{
+		op_free(m_opusFile);
+		m_opusFile = 0;
+	}
+
+
+	fopen_s(&m_file, fn, "rb");
+	if (!m_file)
+		return false;
+
+	int err = 0;
+	m_opusFile = op_open_callbacks((void*)this, &m_opusCallbacks, 0, 0, &err);
+	if (!m_opusFile)
+	{
+		bqLog::Print("%s %u\n", BQ_FUNCTION, BQ_LINE);
+		fclose(m_file);
+		return false;
+	}
 	return true;
 }
 

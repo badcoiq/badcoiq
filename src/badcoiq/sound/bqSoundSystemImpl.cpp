@@ -34,7 +34,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bqSoundStreamImpl.h"
 #include "bqSoundStreamFileWAV.h"
+
+#ifdef BQ_WITH_OGGVORBIS_OPUS
 #include "bqSoundStreamFileOGG.h"
+#endif
+
 #include "bqSoundSystemImpl.h"
 #include "bqSoundMixerImpl.h"
 #include "bqSoundEffectVolumeImpl.h"
@@ -301,6 +305,7 @@ bqSoundStream* bqSoundSystemImpl::SummonStream(const char* fn)
 			else
 				delete sf_wav;
 		}
+#ifdef BQ_WITH_OGGVORBIS_OPUS
 		else if (strcmp(name, "OggS") == 0)
 		{
 			bqSoundStreamFileOGG* sf_ogg = new bqSoundStreamFileOGG;
@@ -309,6 +314,7 @@ bqSoundStream* bqSoundSystemImpl::SummonStream(const char* fn)
 			else
 				delete sf_ogg;
 		}
+#endif
 	}
 
 	return sf ? new bqSoundStreamImpl(sf) : 0;

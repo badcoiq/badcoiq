@@ -32,6 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Компилировать со звуком
 #define BQ_WITH_SOUND
+#if defined(BQ_WITH_SOUND)
+#define BQ_WITH_OGGVORBIS_OPUS
+#endif
 
 // Использовать bqImage и текстуры
 #define BQ_WITH_IMAGE
