@@ -106,7 +106,7 @@ size_t bqSoundStreamFileOGG::Read(void* buffer, size_t size)
 		memcpy(&dst[allReadNum], m_outBuffer, m_outBufferSize);
 		allReadNum += m_outBufferSize;
 		m_outBufferSize = 0;
-	//	printf("m_outBufferSize\n");
+		//	printf("m_outBufferSize\n");
 	}
 
 	while (true)
@@ -144,17 +144,19 @@ size_t bqSoundStreamFileOGG::Read(void* buffer, size_t size)
 			memcpy(&dst[allReadNum], m_ovReadBuffer, sizeForDst);
 			// заполнили dst
 
+			allReadNum += sizeForDst;
+
 			// теперь надо сохранить лишнее
 
 			// вышли за пределы buffer
 		//	printf("OUT %u, %u > %u (%u)\n", m_ovReadBufferSize, newReadNum, size, newReadNum - size);
-			printf("sizeForDst %u s %u\n", sizeForDst, s);
+	//		printf("sizeForDst %u s %u\n", sizeForDst, s);
 
 			memset(m_outBuffer, 0, 4096);
 			m_outBufferSize = s;
-			memcpy(m_outBuffer, &m_ovReadBuffer[sizeForDst], s);
-			// но чтото не работает
-
+			memcpy(m_outBuffer, &m_ovReadBuffer[sizeForDst], 
+				s);
+			
 			break;
 		}
 		else
@@ -174,6 +176,7 @@ size_t bqSoundStreamFileOGG::Read(void* buffer, size_t size)
 
 void bqSoundStreamFileOGG::MoveToFirstDataBlock()
 {
+	memset(m_outBuffer, 0, 4096);
 	ov_pcm_seek(&m_vorbisFile, 0);
 	m_eof = false;
 }

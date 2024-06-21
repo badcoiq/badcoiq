@@ -131,32 +131,21 @@ bqSoundStreamImpl::~bqSoundStreamImpl()
 void bqSoundStreamImpl::PlaybackStart()
 {
 	m_state = state_playing;
-	printf("PLAY\n");
+//	printf("PLAY\n");
 }
 
 void bqSoundStreamImpl::PlaybackStop()
 {
 	m_state = state_notPlaying;
-	printf("STOP\n");
+//	printf("STOP\n");
 }
 
 void bqSoundStreamImpl::PlaybackReset()
 {
-	printf("RESET\n");
+//	printf("RESET\n");
 	m_state = state_notPlaying;
 
-	m_prepareBufferIndex = 0;
-	m_numOfPreparedBuffers = 0;
-	m_dataPosition = 0;
-	m_activeBufferIndex = -1;
-
-	for (int i = 0; i < 2; ++i)
-	{
-		memset(m_dataFromFile[i].m_data, 0, m_dataFromFile[i].m_size);
-		memset(m_dataAfterChannels[i].m_data, 0, m_dataAfterChannels[i].m_size);
-		memset(m_dataAfterConvert[i].m_data, 0, m_dataAfterConvert[i].m_size);
-		memset(m_dataAfterResample[i].m_data, 0, m_dataAfterResample[i].m_size);
-	}
+	
 
 	this->ThreadCommand_SetPlaybackPosition(0.f);
 }
@@ -190,6 +179,18 @@ void bqSoundStreamImpl::ThreadCommand_SetPlaybackPosition(float v)
 void bqSoundStreamImpl::ThreadCommandMethod_SetPlaybackPostion(_thread_command* c)
 {
 	//printf("SPP %llu\n", c->_64bit);
+	m_prepareBufferIndex = 0;
+	m_numOfPreparedBuffers = 0;
+	m_dataPosition = 0;
+	m_activeBufferIndex = -1;
+
+	for (int i = 0; i < 2; ++i)
+	{
+		memset(m_dataFromFile[i].m_data, 0, m_dataFromFile[i].m_size);
+		memset(m_dataAfterChannels[i].m_data, 0, m_dataAfterChannels[i].m_size);
+		memset(m_dataAfterConvert[i].m_data, 0, m_dataAfterConvert[i].m_size);
+		memset(m_dataAfterResample[i].m_data, 0, m_dataAfterResample[i].m_size);
+	}
 
 	if(c->_float32[0] == 0.f)
 		m_streamFile->MoveToFirstDataBlock();
@@ -197,9 +198,10 @@ void bqSoundStreamImpl::ThreadCommandMethod_SetPlaybackPostion(_thread_command* 
 
 void bqSoundStreamImpl::_OnEndBuffer()
 {
+//	printf("_OnEndBuffer\n");
 	if (m_playbackInfo[m_activeBufferIndex].m_lastBuffer)
 	{
-		printf("PlaybackStop\n");
+//		printf("PlaybackStop\n");
 		if (!m_loop)
 			PlaybackStop();
 		
@@ -208,7 +210,12 @@ void bqSoundStreamImpl::_OnEndBuffer()
 			m_callback->OnEndStream();
 	}
 
-	m_activeBufferIndex = m_activeBufferIndexNext[m_activeBufferIndex];
+	if (m_activeBufferIndex)
+		m_activeBufferIndex = 0;
+	else
+		m_activeBufferIndex = 1;
+
+	//m_activeBufferIndex = m_activeBufferIndexNext[m_activeBufferIndex];
 
 	if (m_numOfPreparedBuffers)
 		--m_numOfPreparedBuffers;
@@ -249,11 +256,11 @@ void bqSoundStreamImpl::_thread_function()
 				memset(m_dataFromFile[m_prepareBufferIndex].m_data, 0, m_dataFromFile[m_prepareBufferIndex].m_size);
 				size_t numRead = m_streamFile->Read(m_dataFromFile[m_prepareBufferIndex].m_data, m_dataFromFile[m_prepareBufferIndex].m_size);
 				
-				printf("READ %u\n", numRead);
+		//		printf("READ %u\n", numRead);
 				m_playbackInfo[m_prepareBufferIndex].m_lastBuffer = false;
 				if (m_streamFile->eof())
 				{
-					printf("eof\n");
+		//			printf("eof\n");
 					if (m_loop)
 					{
 						// если повтор то устанавливаем указатель на начало звука в файле
@@ -366,13 +373,16 @@ void bqSoundStreamImpl::_thread_function()
 				if(m_activeBufferIndex == -1)
 					m_activeBufferIndex = m_prepareBufferIndex;
 
+
+				auto old_m_prepareBufferIndex = m_prepareBufferIndex;
+
 				++m_numOfPreparedBuffers;
 
 				++m_prepareBufferIndex;
 				if (m_prepareBufferIndex > 1)
 					m_prepareBufferIndex = 0;
 				
-				m_activeBufferIndexNext[m_activeBufferIndex] = m_prepareBufferIndex;
+				//m_activeBufferIndexNext[old_m_prepareBufferIndex] = m_prepareBufferIndex;
 
 			}
 		}

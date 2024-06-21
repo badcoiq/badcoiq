@@ -164,7 +164,7 @@ public:
 	// Чтобы реализовать смену m_activeBufferIndex 0->1...1->0
 	// Потому что я сразу заготавливаю 2 буфера
 	// Значения надо где-то сохранять.
-	int m_activeBufferIndexNext[2] = {0,0};
+	//int m_activeBufferIndexNext[2] = {0,0};
 
 
 	void _OnEndBuffer();
