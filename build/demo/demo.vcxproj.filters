@@ -66,6 +66,9 @@
     <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_stream.cpp">
       <Filter>examples\sound</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_experiments.cpp">
+      <Filter>examples\sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">

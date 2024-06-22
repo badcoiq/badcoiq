@@ -244,6 +244,7 @@ bool DemoApp::Init()
 	AddExample(new ExampleSoundFFT(this), U"FFT", "sound/", U"...");
 	AddExample(new ExampleSoundDelay(this), U"Delay", "sound/", U"...");
 	AddExample(new ExampleSoundStream(this), U"Stream", "sound/", U"Чтение файла по 1й секунде");
+	AddExample(new ExampleSoundExp(this), U"Experiments", "sound/", U"Эксперименты с эффектами");
 #endif
 #ifdef BQ_WITH_GUI
 	AddExample(new ExampleGUISystemMenu(this), U"System Menu", "GUI/", U"Обычное системное меню что вверху окна");

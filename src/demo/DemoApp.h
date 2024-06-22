@@ -302,6 +302,8 @@ public:
 #include "examples/sound/ex_snd_fft.h"
 #include "examples/sound/ex_snd_delay.h"
 #include "examples/sound/ex_snd_stream.h"
+
+#include "examples/sound/ex_snd_experiments.h"
 #endif
 
 #ifdef BQ_WITH_GUI
