@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2023, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,49 +25,26 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_BADCOIQCONFIG_H__
-#define __BQ_BADCOIQCONFIG_H__
+#ifndef _EXphysics01_H_
+#define _EXphysics01_H_
 
-#define BQ_WITH_PHYSICS
+class DemoExample;
+class DemoApp;
+class ExamplePhysics01 : public DemoExample
+{
+	bqCamera* m_camera = 0;
+	bqGPUMesh* m_meshBox = 0;
+	bqGPUMesh* m_meshSphere = 0;
+	bqMat4 m_worldBox, m_worldSphere, m_wvp;
+public:
+	ExamplePhysics01(DemoApp*);
+	virtual ~ExamplePhysics01();
+	BQ_PLACEMENT_ALLOCATOR(ExamplePhysics01);
 
-// Компилировать со звуком
-#define BQ_WITH_SOUND
-#if defined(BQ_WITH_SOUND)
-#define BQ_WITH_OGGVORBIS_OPUS
-#endif
-
-// Использовать bqImage и текстуры
-#define BQ_WITH_IMAGE
-
-#ifdef BQ_WITH_IMAGE
-
-// Компилировать с GUI
-#define BQ_WITH_GUI
-
-#define BQ_WITH_IMAGE_BMP
-
-// Для GUI нужен PNG
-#define BQ_WITH_IMAGE_PNG
-
-#define BQ_WITH_IMAGE_JPG
-#define BQ_WITH_IMAGE_TGA
-#endif
-
-#define BQ_WITH_ARCHIVE
-#define BQ_WITH_MESH
-
-#define BQ_WITH_WINDOW
-#if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_WINDOW)
-#define BQ_WITH_GS
-#endif
-
-#if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_GS)
-#define BQ_WITH_SPRITE
-#endif
-
-#define BQ_WITH_SCENE
+	virtual bool Init() override;
+	virtual void Shutdown() override;
+	virtual void OnDraw() override;
+};
 
 #endif
-

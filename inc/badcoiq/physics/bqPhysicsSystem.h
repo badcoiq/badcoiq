@@ -1,7 +1,7 @@
-/*
+﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,48 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQPHYSICSH_
 #define __BQPHYSICSH_
 
+#include "badcoiq/containers/bqArray.h"
+
+#include "bqPhysicsShape.h"
+#include "bqPhysicsMesh.h"
+#include "bqRigidBody.h"
+
+// Вектр гравитации не вшит в bqRigidBody
+// Вместо этого есть объект который будет 
+// притягивать bqRigidBody.
+// Пока ничего особенного не вижу, радиус 
+// и позиция - всё что нужно.
+class bqGravityObject
+{
+public:
+	bqGravityObject() {}
+	~bqGravityObject() {}
+	BQ_PLACEMENT_ALLOCATOR(bqGravityObject);
+
+	bqReal m_radius = 100.0;
+	bqVec4 m_position;
+};
+
+class bqPhysics
+{
+	bqArray<bqArray<bqRigidBody*>*> m_array;
+	bqArray<bqGravityObject*> m_gravityObjects;
+public:
+	bqPhysics();
+	~bqPhysics();
+	BQ_PLACEMENT_ALLOCATOR(bqPhysics);
+
+	void AddRigidBodyArray(bqArray<bqRigidBody*>*);
+	void RemoveAllRigidBodyArrays();
+
+	bqGravityObject* CreateGravityObject(bqReal radius, const bqVec4& position);
+	void AddGravityObject(bqGravityObject*);
+	void RemoveAllGravityObject();
+
+	void Update(float dt);
+
+	bqPhysicsShapeSphere* CreateShapeSphere(float radius);
+	bqRigidBody* CreateRigidBody(bqPhysicsShape*, float mass, const bqMotionState&);
+};
+
 #endif
-
-
-

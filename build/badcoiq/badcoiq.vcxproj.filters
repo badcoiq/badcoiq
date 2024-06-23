@@ -46,6 +46,9 @@
     <Filter Include="Source Files\sound">
       <UniqueIdentifier>{398bb03a-4bec-4844-ada1-e77ecf705713}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\physics">
+      <UniqueIdentifier>{c8cb436e-c65f-4fe3-9970-39027cd586dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -185,6 +188,15 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\sound\bqSoundStreamFileWAV.cpp">
       <Filter>Source Files\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\physics\bqRigidBody.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\physics\bqPhysics.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\physics\bqPhysicsMesh.cpp">
+      <Filter>Source Files\physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

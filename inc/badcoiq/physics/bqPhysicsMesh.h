@@ -1,7 +1,7 @@
 /*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -29,22 +29,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQPHYSICSMSHH_
 #define __BQPHYSICSMSHH_
 
+#include "badcoiq/geometry/bqMesh.h"
+
 // информация о mesh
 // не должно выделять память для mesh
 // должно работать на указателях.
 // содержит BVH и прочие структуры
-class bqPhysicsMesh
+class bqPhysicsMesh : public bqPhysicsShape
 {
 public:
-bqPhysicsMesh();
-virtual ~bqPhysicsMesh();
-BQ_PLACEMENT_ALLOCATOR(bqPhysicsMesh);
+	bqPhysicsMesh() {}
+	virtual ~bqPhysicsMesh() {}
+	BQ_PLACEMENT_ALLOCATOR(bqPhysicsMesh);
 
-private:
-uint32_t m_stride = 0;
-uint8_t* m_vertices = 0;
-uint8_t* m_indices = 0;
-bqMeshIndexType m_indexType = bqMeshIndexType::u16;
+	private:
+	uint32_t m_stride = 0;
+	uint8_t* m_vertices = 0;
+	uint8_t* m_indices = 0;
+	bqMeshIndexType m_indexType = bqMeshIndexType::u16;
 
 };
 

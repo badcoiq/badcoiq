@@ -1,4 +1,4 @@
-﻿/*
+/*
 BSD 2-Clause License
 
 Copyright (c) 2024, badcoiq
@@ -25,49 +25,28 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_BADCOIQCONFIG_H__
-#define __BQ_BADCOIQCONFIG_H__
+#ifndef __BQPHYSICSSHPH_
+#define __BQPHYSICSSHPH_
 
-#define BQ_WITH_PHYSICS
+// базовый класс для всех shape
+class bqPhysicsShape
+{
+public:
+	bqPhysicsShape() {}
+	virtual ~bqPhysicsShape() {}
+	BQ_PLACEMENT_ALLOCATOR(bqPhysicsShape);
 
-// Компилировать со звуком
-#define BQ_WITH_SOUND
-#if defined(BQ_WITH_SOUND)
-#define BQ_WITH_OGGVORBIS_OPUS
-#endif
+};
 
-// Использовать bqImage и текстуры
-#define BQ_WITH_IMAGE
+class bqPhysicsShapeSphere : public bqPhysicsShape
+{
+public:
+	bqPhysicsShapeSphere();
+	virtual ~bqPhysicsShapeSphere();
+	BQ_PLACEMENT_ALLOCATOR(bqPhysicsShapeSphere);
 
-#ifdef BQ_WITH_IMAGE
-
-// Компилировать с GUI
-#define BQ_WITH_GUI
-
-#define BQ_WITH_IMAGE_BMP
-
-// Для GUI нужен PNG
-#define BQ_WITH_IMAGE_PNG
-
-#define BQ_WITH_IMAGE_JPG
-#define BQ_WITH_IMAGE_TGA
-#endif
-
-#define BQ_WITH_ARCHIVE
-#define BQ_WITH_MESH
-
-#define BQ_WITH_WINDOW
-#if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_WINDOW)
-#define BQ_WITH_GS
-#endif
-
-#if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_GS)
-#define BQ_WITH_SPRITE
-#endif
-
-#define BQ_WITH_SCENE
+	float m_raduis = 1.f;
+};
 
 #endif
-

@@ -310,6 +310,10 @@ public:
 #include "examples/GUI/ex_GUI_systemMenu.h"
 #endif
 
+#ifdef BQ_WITH_PHYSICS
+#include "examples/physics/ex_physics_01.h"
+#endif
+
 #include "examples/games/mario/ex_g_mario.h"
 
 #endif

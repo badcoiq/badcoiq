@@ -26,48 +26,25 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_BADCOIQCONFIG_H__
-#define __BQ_BADCOIQCONFIG_H__
+#include "badcoiq.h"
 
-#define BQ_WITH_PHYSICS
+#ifdef BQ_WITH_PHYSICS
 
-// Компилировать со звуком
-#define BQ_WITH_SOUND
-#if defined(BQ_WITH_SOUND)
-#define BQ_WITH_OGGVORBIS_OPUS
-#endif
+#include "badcoiq/physics/bqPhysicsSystem.h"
 
-// Использовать bqImage и текстуры
-#define BQ_WITH_IMAGE
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
 
-#ifdef BQ_WITH_IMAGE
+bqRigidBody::bqRigidBody(bqPhysicsShape* sh, float mass)
+	:
+	m_shape(sh),
+	m_mass(mass)
+{
+}
 
-// Компилировать с GUI
-#define BQ_WITH_GUI
+bqRigidBody::~bqRigidBody()
+{
+}
 
-#define BQ_WITH_IMAGE_BMP
-
-// Для GUI нужен PNG
-#define BQ_WITH_IMAGE_PNG
-
-#define BQ_WITH_IMAGE_JPG
-#define BQ_WITH_IMAGE_TGA
-#endif
-
-#define BQ_WITH_ARCHIVE
-#define BQ_WITH_MESH
-
-#define BQ_WITH_WINDOW
-#if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_WINDOW)
-#define BQ_WITH_GS
-#endif
-
-#if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_GS)
-#define BQ_WITH_SPRITE
-#endif
-
-#define BQ_WITH_SCENE
 
 #endif
-

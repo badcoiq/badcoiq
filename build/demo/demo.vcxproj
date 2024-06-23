@@ -36,6 +36,7 @@
     <ClCompile Include="..\..\src\demo\examples\games\mario\ex_g_mario.cpp" />
     <ClCompile Include="..\..\src\demo\examples\GUI\ex_GUI_systemMenu.cpp" />
     <ClCompile Include="..\..\src\demo\examples\meshgen\ex_mshgn_box.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\physics\ex_physics_01.cpp" />
     <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_editor.cpp" />
     <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_fly.cpp" />
     <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_3d.cpp" />

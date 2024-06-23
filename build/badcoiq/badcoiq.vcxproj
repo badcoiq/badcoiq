@@ -200,6 +200,9 @@
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIWindow.cpp" />
     <ClCompile Include="..\..\src\badcoiq\input\bqInput.cpp" />
     <ClCompile Include="..\..\src\badcoiq\math\bqMath.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\physics\bqPhysics.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\physics\bqPhysicsMesh.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\physics\bqRigidBody.cpp" />
     <ClCompile Include="..\..\src\badcoiq\scene\bqCamera.cpp" />
     <ClCompile Include="..\..\src\badcoiq\scene\bqCameraFrustum.cpp" />
     <ClCompile Include="..\..\src\badcoiq\scene\bqSprite.cpp" />

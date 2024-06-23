@@ -226,34 +226,40 @@ bool DemoApp::Init()
 	
 	AddExample(new textureExample(this), U"IMAGE/TEXTURE", "/", U"Для проверки bqImage и текстур");
 
-	AddExample(new ExampleBasics3DLineAndCamera(this), U"3D линия и камера", "basics/", U"Основы. Надо хотьчто-то нарисовать и уметь перемещаться нажимая кнопки. Используй WASDQE");
-	AddExample(new ExampleBasicsRayFromCursor(this), U"Луч от курсора", "basics/", U"Кликаем ЛКМ, перемещаемся WASDQE, и видим созданные лучи");
-	AddExample(new ExampleBasicsMshGnrtr(this), U"Генератор моделей", "basics/", U"Основа работы с генератором моделей. Вместо мучений с загрузкой файлов проще что нибудь сгенерировать.");
-	AddExample(new ExampleBasics3DModel(this), U"Загрузка моделей", "basics/", U"Обычно файл с моделью содержит множество моделей. Будет правильнее грузить эти модели по отдельности. Для этого нужно будет передать коллбэк. Использовать конечно будет не так просто, правильнее сделать базовый класс для моделей.");
-	AddExample(new ExampleBasicsRayTri(this), U"Пересечение луча и треугольника", "basics/", U"Для того чтобы понять пересёк ли луч модель, нужно хранить эту модель в памяти. В этом примере используется bqPolygonMesh");
-	AddExample(new ExampleBasicsRayTri2(this), U"Пересечение луча и треугольника / 2", "basics/", U"Почти тоже самое но модель грузится из файла, и треугольники берутся из bqMesh. Так же есть оптимизация, проверка на пересечение AABB");
-	AddExample(new ExampleBasicsSprite(this), U"Спрайты", "basics/", U"Создание спрайта, установка анимации.");
-	AddExample(new ExampleBasicsText3D(this), U"Текст в 3D", "basics/", U"Плоский текст в 3D. Просто рисуем спрайты.");
-	AddExample(new ExampleBasicsRotations(this), U"Вращение", "basics/", U"Работа вспомогательного класса bqSceneObject. Жми кнопки 1 2 3 4 5 6 для вращения");
-	AddExample(new ExampleBasicsOclCul(this), U"Occlusion Culling", "basics/", U"Создаём особый объект который будет использоваться GPU. Рисуем специальным способом с указанием этого объекта. Обязательно надо отсортировать объекты по дальности. ");
-	AddExample(new ExampleBasicsSkeletalAnimation(this), U"Скелетная анимация 1/2", "basics/", U"Всё создаём вручную, и анимируем тоже.");
-	AddExample(new ExampleBasicsSkeletalAnimation2(this), U"Скелетная анимация 2/2", "basics/", U"Загрузка SMD. Множество файлов, отдельно геометрия отдельно анимации.");
+	AddExample(new ExampleBasics3DLineAndCamera(this), U"3D линия и камера", "Basics/", U"Основы. Надо хотьчто-то нарисовать и уметь перемещаться нажимая кнопки. Используй WASDQE");
+	AddExample(new ExampleBasicsRayFromCursor(this), U"Луч от курсора", "Basics/", U"Кликаем ЛКМ, перемещаемся WASDQE, и видим созданные лучи");
+	AddExample(new ExampleBasicsMshGnrtr(this), U"Генератор моделей", "Basics/", U"Основа работы с генератором моделей. Вместо мучений с загрузкой файлов проще что нибудь сгенерировать.");
+	AddExample(new ExampleBasics3DModel(this), U"Загрузка моделей", "Basics/", U"Обычно файл с моделью содержит множество моделей. Будет правильнее грузить эти модели по отдельности. Для этого нужно будет передать коллбэк. Использовать конечно будет не так просто, правильнее сделать базовый класс для моделей.");
+	AddExample(new ExampleBasicsRayTri(this), U"Пересечение луча и треугольника", "Basics/", U"Для того чтобы понять пересёк ли луч модель, нужно хранить эту модель в памяти. В этом примере используется bqPolygonMesh");
+	AddExample(new ExampleBasicsRayTri2(this), U"Пересечение луча и треугольника / 2", "Basics/", U"Почти тоже самое но модель грузится из файла, и треугольники берутся из bqMesh. Так же есть оптимизация, проверка на пересечение AABB");
+	AddExample(new ExampleBasicsSprite(this), U"Спрайты", "Basics/", U"Создание спрайта, установка анимации.");
+	AddExample(new ExampleBasicsText3D(this), U"Текст в 3D", "Basics/", U"Плоский текст в 3D. Просто рисуем спрайты.");
+	AddExample(new ExampleBasicsRotations(this), U"Вращение", "Basics/", U"Работа вспомогательного класса bqSceneObject. Жми кнопки 1 2 3 4 5 6 для вращения");
+	AddExample(new ExampleBasicsOclCul(this), U"Occlusion Culling", "Basics/", U"Создаём особый объект который будет использоваться GPU. Рисуем специальным способом с указанием этого объекта. Обязательно надо отсортировать объекты по дальности. ");
+	AddExample(new ExampleBasicsSkeletalAnimation(this), U"Скелетная анимация 1/2", "Basics/", U"Всё создаём вручную, и анимируем тоже.");
+	AddExample(new ExampleBasicsSkeletalAnimation2(this), U"Скелетная анимация 2/2", "Basics/", U"Загрузка SMD. Множество файлов, отдельно геометрия отдельно анимации.");
 #ifdef BQ_WITH_SOUND
-	AddExample(new ExampleBasicsSound(this), U"Звук", "basics/", U"...");
-	AddExample(new ExampleSound3D(this), U"3D", "sound/", U"3D Sound");
-	AddExample(new ExampleSoundFFT(this), U"FFT", "sound/", U"...");
-	AddExample(new ExampleSoundDelay(this), U"Delay", "sound/", U"...");
-	AddExample(new ExampleSoundStream(this), U"Stream", "sound/", U"Чтение файла по 1й секунде");
-	AddExample(new ExampleSoundExp(this), U"Experiments", "sound/", U"Эксперименты с эффектами");
+	AddExample(new ExampleBasicsSound(this), U"Звук", "Basics/", U"...");
+	AddExample(new ExampleSound3D(this), U"3D", "Sound/", U"3D Sound");
+	AddExample(new ExampleSoundFFT(this), U"FFT", "Sound/", U"...");
+	AddExample(new ExampleSoundDelay(this), U"Delay", "Sound/", U"...");
+	AddExample(new ExampleSoundStream(this), U"Stream", "Sound/", U"Чтение файла по 1й секунде");
+	AddExample(new ExampleSoundExp(this), U"Experiments", "Sound/", U"Эксперименты с эффектами");
 #endif
+
+#ifdef BQ_WITH_PHYSICS
+	AddExample(new ExamplePhysics01(this), U"01", "Physics/", U"...");
+#endif
+
 #ifdef BQ_WITH_GUI
 	AddExample(new ExampleGUISystemMenu(this), U"System Menu", "GUI/", U"Обычное системное меню что вверху окна");
 #endif
-	AddExample(new ExampleMshGnBox(this), U"Box", "generators/mesh", U"Всё о создании коробки");
+
+	AddExample(new ExampleMshGnBox(this), U"Box", "Generators/Mesh", U"Всё о создании коробки");
 	
-	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
+	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "Scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
 	
-	AddExample(new ExampleGameMario(this), U"Mario", "games/", U"Тот самый Марио");
+	AddExample(new ExampleGameMario(this), U"Mario", "Games/", U"Тот самый Марио");
 	
 	// что-то не работает код хотя 99 процентов копипаста
 	//AddExample(new ExampleSceneCameraEdtr(this), U"Камера для 3D редактора", "scene/camera", U"Как в 3Ds Max");

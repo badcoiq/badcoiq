@@ -1,7 +1,7 @@
 /*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -35,38 +35,40 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // сил, внешних и внутренних.
 struct bqMotionState
 {
-// линейная скорость. вектр указывающий куда переместится тело.
-// может перемещаться по дуге, если действует какая-то ещё сила
-bqVec3f m_linearVelocity;
+	// линейная скорость. вектр указывающий куда переместится тело.
+	// может перемещаться по дуге, если действует какая-то ещё сила
+	bqVec3f m_linearVelocity;
 
-// угловая скорость. хз пока. нужно ли использовать кватернион?
-bqVec3f m_angularVelocity;
+	// угловая скорость. хз пока. нужно ли использовать кватернион?
+	bqVec3f m_angularVelocity;
 
-// вес и масса не одно и тоже
-// вес - изменяющееся значение.
-// например чем больше скорость тем больше вес
-float m_weight = 0.f;
+	// вес и масса не одно и тоже
+	// вес - изменяющееся значение.
+	// например чем больше скорость тем больше вес
+	float m_weight = 0.f;
 
-// есть сомнения что это должно быть здесь
-// как устанавливать позицию? наверное через метод.
-// но однозначно позиция и матрица должны быть доступны для чтения
-// 
-bqVec4 m_position;
-bqMat4 m_matrix;
+	// есть сомнения что это должно быть здесь
+	// как устанавливать позицию? наверное через метод.
+	// но однозначно позиция и матрица должны быть доступны для чтения
+	// 
+	bqVec4 m_position;
+	bqMat4 m_matrix;
 };
 
 
 class bqRigidBody : public bqUserData
 {
 public:
-bqRigidBody();
-virtual ~bqRigidBody();
-BQ_PLACEMENT_ALLOCATOR(bqRigidBody);
+	bqRigidBody(bqPhysicsShape*, float mass);
+	virtual ~bqRigidBody();
+	BQ_PLACEMENT_ALLOCATOR(bqRigidBody);
 
-bqMotionState m_motionState;
+	bqMotionState m_motionState;
 
-// если масса равна нулю то тело не будет двигаться
-float m_mass = 0.f;
+	// если масса равна нулю то тело не будет двигаться
+	float m_mass = 0.f;
+
+	bqPhysicsShape* m_shape = 0;
 };
 
 #endif
