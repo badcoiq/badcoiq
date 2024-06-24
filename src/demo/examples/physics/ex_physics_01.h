@@ -34,9 +34,19 @@ class DemoApp;
 class ExamplePhysics01 : public DemoExample
 {
 	bqCamera* m_camera = 0;
-	bqGPUMesh* m_meshBox = 0;
 	bqGPUMesh* m_meshSphere = 0;
-	bqMat4 m_worldBox, m_worldSphere, m_wvp;
+
+	bqPhysicsShape* m_shape = 0;
+	bqRigidBody* m_rigidBody = 0;
+
+	bqArray<bqRigidBody*> m_arrayOfBodies;
+
+	bqPhysics* m_physicsSystem = 0;
+
+	bool m_simulate = false;
+	void _resetPhysics();
+
+	bqMat4 m_worldSphere, m_wvp;
 public:
 	ExamplePhysics01(DemoApp*);
 	virtual ~ExamplePhysics01();

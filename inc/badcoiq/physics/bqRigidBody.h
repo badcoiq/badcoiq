@@ -53,6 +53,15 @@ struct bqMotionState
 	// 
 	bqVec4 m_position;
 	bqMat4 m_matrix;
+
+	void Reset()
+	{
+		m_linearVelocity.Set(0.f);
+		m_angularVelocity.Set(0.f);
+		m_weight = 0.f;
+		m_position.Set(0.f);
+		m_matrix.Identity();
+	}
 };
 
 

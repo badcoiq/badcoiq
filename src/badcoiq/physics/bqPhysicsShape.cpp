@@ -25,52 +25,20 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#pragma once
-#ifndef __BQPHYSICSH_
-#define __BQPHYSICSH_
 
-#include "badcoiq/containers/bqArray.h"
+#include "badcoiq.h"
 
-#include "bqPhysicsShape.h"
-#include "bqPhysicsMesh.h"
-#include "bqRigidBody.h"
+#ifdef BQ_WITH_PHYSICS
 
-// Вектр гравитации не вшит в bqRigidBody
-// Вместо этого есть объект который будет 
-// притягивать bqRigidBody.
-// Пока ничего особенного не вижу, радиус 
-// и позиция - всё что нужно.
-class bqGravityObject
-{
-public:
-	bqGravityObject() {}
-	~bqGravityObject() {}
-	BQ_PLACEMENT_ALLOCATOR(bqGravityObject);
+#include "badcoiq/physics/bqPhysicsSystem.h"
 
-	bqReal m_radius = 100.0;
-	bqVec4 m_position;
-};
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
 
-class bqPhysics
-{
-	bqArray<bqArray<bqRigidBody*>*> m_array;
-	bqArray<bqGravityObject*> m_gravityObjects;
-public:
-	bqPhysics();
-	~bqPhysics();
-	BQ_PLACEMENT_ALLOCATOR(bqPhysics);
+bqPhysicsShape::bqPhysicsShape() {}
+bqPhysicsShape::~bqPhysicsShape() {}
 
-	void AddRigidBodyArray(bqArray<bqRigidBody*>*);
-	void RemoveAllRigidBodyArrays();
-
-	bqGravityObject* CreateGravityObject(bqReal radius, const bqVec4& position);
-	void AddGravityObject(bqGravityObject*);
-	void RemoveAllGravityObject();
-
-	void Update(float dt);
-
-	bqPhysicsShapeSphere* CreateShapeSphere(float radius);
-	bqRigidBody* CreateRigidBody(bqPhysicsShape*, float mass, bqMotionState* = 0);
-};
+bqPhysicsShapeSphere::bqPhysicsShapeSphere() {}
+bqPhysicsShapeSphere::~bqPhysicsShapeSphere() {}
 
 #endif

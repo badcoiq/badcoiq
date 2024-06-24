@@ -134,6 +134,10 @@ public:
 #ifdef BQ_WITH_SOUND
 	bqSoundSystemImpl* m_soundSystem = 0;
 #endif
+
+#ifdef BQ_WITH_PHYSICS
+	bqPhysics* m_physics = 0;
+#endif
 };
 
 

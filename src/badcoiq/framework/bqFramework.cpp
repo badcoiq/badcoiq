@@ -80,6 +80,10 @@ static uint8_t g_defaultIconsPNG[] = {
 };
 #endif
 
+#ifdef BQ_WITH_PHYSICS
+#include "badcoiq/physics/bqPhysicsSystem.h"
+#endif
+
 
 //
 //  Lowercases string
@@ -1231,5 +1235,17 @@ bqSoundSystem* bqFramework::GetSoundSystem()
 	}
 
 	return g_framework->m_soundSystem;
+}
+#endif
+
+#ifdef BQ_WITH_PHYSICS
+bqPhysics* bqFramework::GetPhysicsSystem()
+{
+	if (!g_framework->m_physics)
+	{
+		g_framework->m_physics = new bqPhysics();
+	}
+
+	return g_framework->m_physics;
 }
 #endif

@@ -33,8 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqPhysicsShape
 {
 public:
-	bqPhysicsShape() {}
-	virtual ~bqPhysicsShape() {}
+	bqPhysicsShape();
+	virtual ~bqPhysicsShape();
 	BQ_PLACEMENT_ALLOCATOR(bqPhysicsShape);
 
 };

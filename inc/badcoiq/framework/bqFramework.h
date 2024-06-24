@@ -168,6 +168,10 @@ public:
 	static bqSoundSystem* GetSoundSystem();
 #endif
 
+#ifdef BQ_WITH_PHYSICS
+	static bqPhysics* GetPhysicsSystem();
+#endif
+
 };
 
 #endif

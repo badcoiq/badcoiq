@@ -248,7 +248,7 @@ bool DemoApp::Init()
 #endif
 
 #ifdef BQ_WITH_PHYSICS
-	AddExample(new ExamplePhysics01(this), U"01", "Physics/", U"...");
+	AddExample(new ExamplePhysics01(this), U"01", "Physics/", U"Столкновение 2х сфер в невесомости");
 #endif
 
 #ifdef BQ_WITH_GUI

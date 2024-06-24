@@ -45,9 +45,10 @@ ExamplePhysics01::~ExamplePhysics01()
 bool ExamplePhysics01::Init()
 {
 	m_camera = new bqCamera();
-	m_camera->m_position = bqVec3(5.f, 5.f, 5.f);
+	m_camera->m_position = bqVec3(0.f, 10.f, 8.f);
 	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
-	m_camera->SetType(bqCamera::Type::PerspectiveLookAt);
+	m_camera->Rotate(0.f, -45.f, 0.f);
+	m_camera->SetType(bqCamera::Type::Perspective);
 	m_camera->Update(0.f);
 	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
@@ -61,32 +62,9 @@ bool ExamplePhysics01::Init()
 	bqMat4 transform; // можно повернуть объект, сжать\растянуть
 	// в общем всегда будет умножение на матрицу
 	bqPolygonMesh pm; // генерируется используя концепцию полигонов
-	pm.AddBox(aabb, transform); // Добавить коробку. можно вызывать множество Add методов,
-	
-	pm.GenerateNormals(false);
-	pm.GenerateUVPlanar(1.f);
-	// но в этом примере будет 1 на каждый bqGPUMesh
-	bqMesh* mesh = pm.SummonMesh();
-	if (mesh)
-	{
-		m_meshBox = m_gs->SummonMesh(mesh);
-		delete mesh;
-	}
-	else
-	{
-		bqLog::PrintError("Can't create mesh: %s %i\n", BQ_FUNCTION, BQ_LINE);
-	}
-
-	pm.Clear();
-	transform.m_data[1].y = 0.5; // сплющю сферу 
 	pm.AddSphere(0.5f, 33, transform);
-	
-	transform.SetRotation(bqQuaternion(1.f, 0.f, 0.f));
-	pm.AddCylinder(1.f, 3.f, 31, true, true, transform);
-
 	pm.GenerateNormals(true);
-	pm.GenerateUVPlanar(100.f);
-	mesh = pm.SummonMesh();
+	auto mesh = pm.SummonMesh();
 	if (mesh)
 	{
 		m_meshSphere = m_gs->SummonMesh(mesh);
@@ -97,59 +75,105 @@ bool ExamplePhysics01::Init()
 		bqLog::PrintError("Can't create mesh: %s %i\n", BQ_FUNCTION, BQ_LINE);
 	}
 
-	if (!m_meshSphere || !m_meshBox)
+	if (!m_meshSphere)
 	{
 		bqLog::PrintError("Can't create GPU mesh: %s %i\n", BQ_FUNCTION, BQ_LINE);
 		return false;
 	}
 
+	m_physicsSystem = bqFramework::GetPhysicsSystem();
+
+	m_shape = m_physicsSystem->CreateShapeSphere(0.2f);
+	m_rigidBody = m_physicsSystem->CreateRigidBody(m_shape, 1.f);
 	
+	m_arrayOfBodies.push_back(m_rigidBody);
+	m_physicsSystem->AddRigidBodyArray(&m_arrayOfBodies);
+
+	_resetPhysics();
 
 	return true;
 }
 
 void ExamplePhysics01::Shutdown()
 {
+	_resetPhysics();
+
+	m_physicsSystem->RemoveAllGravityObject();
+	m_physicsSystem->RemoveAllRigidBodyArrays();
+
+	BQ_SAFEDESTROY(m_rigidBody);
+	BQ_SAFEDESTROY(m_shape);
+
 	BQ_SAFEDESTROY(m_meshSphere);
-	BQ_SAFEDESTROY(m_meshBox);
 	BQ_SAFEDESTROY(m_camera);
 }
 
 void ExamplePhysics01::OnDraw()
 {
+	if (m_simulate)
+	{
+		m_physicsSystem->Update(*m_app->m_dt);
+	}
+
+	m_camera->Update(0.f);
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
+
 	if (bqInput::IsKeyHit(bqInput::KEY_ESCAPE))
 	{
 		m_app->StopExample();
 		return;
 	}
 
-	m_camera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
+	if (bqInput::IsKeyHold(bqInput::KEY_SPACE))
+	{
+		m_camera->Rotate(bqInput::GetData()->m_mouseMoveDelta, *m_app->m_dt);
+
+		// move cursor to center of the screen
+		bqPoint windowCenter;
+		m_app->GetWindow()->GetCenter(windowCenter);
+		bqInput::SetMousePosition(m_app->GetWindow(), windowCenter.x, windowCenter.y);
+	}
 
 	if (bqInput::IsKeyHold(bqInput::KEY_A))
-		m_camera->m_position.x += 10.0 * (double)(*m_app->m_dt);
+		m_camera->MoveLeft(*m_app->m_dt);
 	if (bqInput::IsKeyHold(bqInput::KEY_D))
-		m_camera->m_position.x -= 10.0 * (double)(*m_app->m_dt);
+		m_camera->MoveRight(*m_app->m_dt);
 	if (bqInput::IsKeyHold(bqInput::KEY_W))
-		m_camera->m_position.z += 10.0 * (double)(*m_app->m_dt);
+		m_camera->MoveForward(*m_app->m_dt);
 	if (bqInput::IsKeyHold(bqInput::KEY_S))
-		m_camera->m_position.z -= 10.0 * (double)(*m_app->m_dt);
+		m_camera->MoveBackward(*m_app->m_dt);
 	if (bqInput::IsKeyHold(bqInput::KEY_Q))
-		m_camera->m_position.y += 10.0 * (double)(*m_app->m_dt);
+		m_camera->MoveDown(*m_app->m_dt);
 	if (bqInput::IsKeyHold(bqInput::KEY_E))
-		m_camera->m_position.y -= 10.0 * (double)(*m_app->m_dt);
+		m_camera->MoveUp(*m_app->m_dt);
+	if (bqInput::IsKeyHold(bqInput::KEY_R))
+		m_camera->Rotate(0.f, 0.f, 10.f * *m_app->m_dt);
+	if (bqInput::IsKeyHold(bqInput::KEY_F))
+		m_camera->Rotate(0.f, 0.f, -10.f * *m_app->m_dt);
+
+	if (bqInput::IsKeyHold(bqInput::KEY_Z))
+		m_simulate = true;
+	if (bqInput::IsKeyHold(bqInput::KEY_X))
+	{
+		_resetPhysics();
+	}
 
 
 	m_gs->BeginGUI();
+	m_gs->DrawGUIText(U"Z - начать симуляцию, X - сброс", 37, bqVec2f(), m_app->GetTextDrawCallback());
+	if(m_simulate)
+		m_gs->DrawGUIText(U"***Simulation***", 17, bqVec2f(0.f, 15.f), m_app->GetTextDrawCallback());
+
 	m_gs->EndGUI();
 
 	m_gs->BeginDraw();
 	m_gs->ClearAll();
 	
 	m_gs->SetShader(bqShaderType::Standart, 0);
-	m_gs->SetMesh(m_meshBox);
-	bqFramework::SetMatrix(bqMatrixType::World, &m_worldBox);
-	m_wvp = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * m_worldBox;
+	m_gs->SetMesh(m_meshSphere);
+	m_worldSphere = m_rigidBody->m_motionState.m_matrix;
+	bqFramework::SetMatrix(bqMatrixType::World, &m_worldSphere);
+	m_wvp = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * m_worldSphere;
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &m_wvp);
 	bqMaterial material;
 	material.m_shaderType = bqShaderType::Standart;
@@ -158,15 +182,16 @@ void ExamplePhysics01::OnDraw()
 	m_gs->SetMaterial(&material);
 	m_gs->Draw();
 
-	m_gs->SetMesh(m_meshSphere);
-	bqFramework::SetMatrix(bqMatrixType::World, &m_worldSphere);
-	m_wvp = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * m_worldSphere;
-	m_gs->Draw();
-
-	
-
 	m_app->DrawGrid(14, (float)m_camera->m_position.y);
 
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();
+}
+
+void ExamplePhysics01::_resetPhysics()
+{
+	m_simulate = false;
+	m_rigidBody->m_motionState.Reset();
+
+	m_rigidBody->m_motionState.m_linearVelocity.x = 1.f;
 }

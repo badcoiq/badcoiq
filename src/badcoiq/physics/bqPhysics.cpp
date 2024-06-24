@@ -56,6 +56,24 @@ void bqPhysics::RemoveAllRigidBodyArrays()
 
 void bqPhysics::Update(float dt)
 {
+	for (size_t i1 = 0; i1 < m_array.m_size; ++i1)
+	{
+		auto arr = m_array.m_data[i1];
+		for (size_t i2 = 0; i2 < arr->m_size; ++i2)
+		{
+			auto body = arr->m_data[i2];
+			if (body->m_mass > 0.f)
+			{
+				body->m_motionState.m_position.x += body->m_motionState.m_linearVelocity.x * dt;
+				body->m_motionState.m_position.y += body->m_motionState.m_linearVelocity.y * dt;
+				body->m_motionState.m_position.z += body->m_motionState.m_linearVelocity.z * dt;
+				body->m_motionState.m_matrix.m_data[3].x = body->m_motionState.m_position.x;
+				body->m_motionState.m_matrix.m_data[3].y = body->m_motionState.m_position.y;
+				body->m_motionState.m_matrix.m_data[3].z = body->m_motionState.m_position.z;
+			}
+		}
+	}
+
 }
 
 bqPhysicsShapeSphere* bqPhysics::CreateShapeSphere(float radius)
@@ -65,10 +83,13 @@ bqPhysicsShapeSphere* bqPhysics::CreateShapeSphere(float radius)
 	return newShape;
 }
 
-bqRigidBody* bqPhysics::CreateRigidBody(bqPhysicsShape* sh, float mass, const bqMotionState& ms)
+bqRigidBody* bqPhysics::CreateRigidBody(bqPhysicsShape* sh, float mass, bqMotionState* ms)
 {
 	bqRigidBody* body = new bqRigidBody(sh, mass);
-	body->m_motionState = ms;
+	if (ms)
+	{
+		body->m_motionState = *ms;
+	}
 	return body;
 }
 

@@ -123,5 +123,13 @@ enum class bqGUIDefaultFont;
 class bqGUITextEditor;
 #endif
 
+#ifdef BQ_WITH_PHYSICS
+class bqGravityObject;
+class bqPhysics;
+class bqPhysicsShape;
+class bqRigidBody;
+class bqPhysicsShapeSphere;
+#endif
+
 #endif
 
