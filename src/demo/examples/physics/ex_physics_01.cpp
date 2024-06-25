@@ -85,8 +85,10 @@ bool ExamplePhysics01::Init()
 
 	m_shape = m_physicsSystem->CreateShapeSphere(0.2f);
 	m_rigidBody = m_physicsSystem->CreateRigidBody(m_shape, 1.f);
+	m_rigidBody2 = m_physicsSystem->CreateRigidBody(m_shape, 1.f);
 	
 	m_arrayOfBodies.push_back(m_rigidBody);
+	m_arrayOfBodies.push_back(m_rigidBody2);
 	m_physicsSystem->AddRigidBodyArray(&m_arrayOfBodies);
 
 	_resetPhysics();
@@ -102,6 +104,7 @@ void ExamplePhysics01::Shutdown()
 	m_physicsSystem->RemoveAllRigidBodyArrays();
 
 	BQ_SAFEDESTROY(m_rigidBody);
+	BQ_SAFEDESTROY(m_rigidBody2);
 	BQ_SAFEDESTROY(m_shape);
 
 	BQ_SAFEDESTROY(m_meshSphere);
@@ -182,6 +185,10 @@ void ExamplePhysics01::OnDraw()
 	m_gs->SetMaterial(&material);
 	m_gs->Draw();
 
+	m_worldSphere = m_rigidBody2->m_motionState.m_matrix;
+	m_wvp = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * m_worldSphere;
+	m_gs->Draw();
+
 	m_app->DrawGrid(14, (float)m_camera->m_position.y);
 
 	m_gs->EndDraw();
@@ -192,6 +199,12 @@ void ExamplePhysics01::_resetPhysics()
 {
 	m_simulate = false;
 	m_rigidBody->m_motionState.Reset();
+	m_rigidBody2->m_motionState.Reset();
 
 	m_rigidBody->m_motionState.m_linearVelocity.x = 1.f;
+
+	m_rigidBody->m_motionState.m_position.x = -3.f;
+	m_rigidBody2->m_motionState.m_position.x = 3.f;
+	m_rigidBody->m_motionState.UpdateMatrix();
+	m_rigidBody2->m_motionState.UpdateMatrix();
 }

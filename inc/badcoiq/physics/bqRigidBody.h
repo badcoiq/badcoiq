@@ -62,15 +62,39 @@ struct bqMotionState
 		m_position.Set(0.f);
 		m_matrix.Identity();
 	}
+
+	void UpdateMatrix()
+	{
+		m_matrix.m_data[3].x = m_position.x;
+		m_matrix.m_data[3].y = m_position.y;
+		m_matrix.m_data[3].z = m_position.z;
+	}
 };
 
+struct bqPhysicsMaterial
+{
+	float m_friction = 0.5f;
+	float m_bounce = 0.5f;
+};
+
+struct bqRigidBodyContact
+{
+	bqRigidBody* m_otherBody = 0;
+	bqVec3f m_normal;
+};
 
 class bqRigidBody : public bqUserData
 {
+	friend class bqPhysics;
+
+	uint32_t m_maxContacts = 3;
+	bqArray<bqRigidBodyContact> m_contacts;
 public:
-	bqRigidBody(bqPhysicsShape*, float mass);
+	bqRigidBody(bqPhysicsShape*, float mass, uint32_t maxContacts);
 	virtual ~bqRigidBody();
 	BQ_PLACEMENT_ALLOCATOR(bqRigidBody);
+
+	const bqArray<bqRigidBodyContact>& GetContacts() { return m_contacts; }
 
 	bqMotionState m_motionState;
 
@@ -78,6 +102,9 @@ public:
 	float m_mass = 0.f;
 
 	bqPhysicsShape* m_shape = 0;
+
+	bqPhysicsMaterial m_material;
+
 };
 
 #endif

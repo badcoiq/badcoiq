@@ -54,14 +54,20 @@ void bqPhysics::RemoveAllRigidBodyArrays()
 	m_array.clear();
 }
 
+// 1. Двигаем и вращаем объекты.
+// 2. Определяем проникновения.
+// 3. Выталкиваем.
 void bqPhysics::Update(float dt)
 {
+	// 1
 	for (size_t i1 = 0; i1 < m_array.m_size; ++i1)
 	{
 		auto arr = m_array.m_data[i1];
 		for (size_t i2 = 0; i2 < arr->m_size; ++i2)
 		{
 			auto body = arr->m_data[i2];
+			body->m_contacts.clear();
+
 			if (body->m_mass > 0.f)
 			{
 				body->m_motionState.m_position.x += body->m_motionState.m_linearVelocity.x * dt;
@@ -74,6 +80,21 @@ void bqPhysics::Update(float dt)
 		}
 	}
 
+	// 2
+	// Допустим, берём тело, и проверяем с другими телами.
+	// Если с кем-то есть контакт, то сохраняем этот контакт.
+	// Контактов может быть несколько, но не бесконечно.
+	// После получения всех контактов (и всей дополнительной информации)
+	// обрабатываем эти контакты. По сути это будет шагом номер 3.
+	for (size_t i1 = 0; i1 < m_array.m_size; ++i1)
+	{
+		auto arr = m_array.m_data[i1];
+		for (size_t i2 = 0; i2 < arr->m_size; ++i2)
+		{
+			auto body = arr->m_data[i2];
+			
+		}
+	}
 }
 
 bqPhysicsShapeSphere* bqPhysics::CreateShapeSphere(float radius)
@@ -85,7 +106,7 @@ bqPhysicsShapeSphere* bqPhysics::CreateShapeSphere(float radius)
 
 bqRigidBody* bqPhysics::CreateRigidBody(bqPhysicsShape* sh, float mass, bqMotionState* ms)
 {
-	bqRigidBody* body = new bqRigidBody(sh, mass);
+	bqRigidBody* body = new bqRigidBody(sh, mass, 3);
 	if (ms)
 	{
 		body->m_motionState = *ms;

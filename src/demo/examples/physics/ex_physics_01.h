@@ -38,6 +38,7 @@ class ExamplePhysics01 : public DemoExample
 
 	bqPhysicsShape* m_shape = 0;
 	bqRigidBody* m_rigidBody = 0;
+	bqRigidBody* m_rigidBody2 = 0;
 
 	bqArray<bqRigidBody*> m_arrayOfBodies;
 

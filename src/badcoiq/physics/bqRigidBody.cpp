@@ -35,11 +35,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
-bqRigidBody::bqRigidBody(bqPhysicsShape* sh, float mass)
+bqRigidBody::bqRigidBody(bqPhysicsShape* sh, float mass, uint32_t maxContacts)
 	:
+	m_maxContacts(maxContacts),
 	m_shape(sh),
 	m_mass(mass)
 {
+	m_contacts.reserve(maxContacts);
 }
 
 bqRigidBody::~bqRigidBody()
