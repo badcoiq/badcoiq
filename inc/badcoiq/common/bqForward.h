@@ -129,6 +129,7 @@ class bqPhysics;
 class bqPhysicsShape;
 class bqRigidBody;
 class bqPhysicsShapeSphere;
+class bqPhysicsDebugDraw;
 #endif
 
 #endif

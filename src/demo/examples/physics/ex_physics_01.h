@@ -35,6 +35,7 @@ class ExamplePhysics01 : public DemoExample
 {
 	bqCamera* m_camera = 0;
 	bqGPUMesh* m_meshSphere = 0;
+	float m_sphereRadius = 0.56f;
 
 	bqPhysicsShape* m_shape = 0;
 	bqRigidBody* m_rigidBody = 0;
@@ -43,6 +44,7 @@ class ExamplePhysics01 : public DemoExample
 	bqArray<bqRigidBody*> m_arrayOfBodies;
 
 	bqPhysics* m_physicsSystem = 0;
+	bqPhysicsDebugDraw* m_debugDraw = 0;
 
 	bool m_simulate = false;
 	void _resetPhysics();

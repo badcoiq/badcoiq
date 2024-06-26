@@ -30,6 +30,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/physics/bqPhysicsSystem.h"
 
+class mybqPhysicsDebugDraw : public bqPhysicsDebugDraw
+{
+	ExamplePhysics01* m_example = 0;
+public:
+	mybqPhysicsDebugDraw() {}
+	virtual ~mybqPhysicsDebugDraw() {}
+	BQ_PLACEMENT_ALLOCATOR(mybqPhysicsDebugDraw);
+
+	virtual void DrawLine(void* data, 
+		uint32_t reason, 
+		const bqVec4& v1, 
+		const bqVec4& v2, 
+		const bqColor& color) override
+	{
+		ExamplePhysics01* ex = (ExamplePhysics01*)data;
+		ex->GetGS()->DrawLine3D(v1, v2, color);
+	}
+
+};
 
 ExamplePhysics01::ExamplePhysics01(DemoApp* app)
 	:
@@ -62,7 +81,7 @@ bool ExamplePhysics01::Init()
 	bqMat4 transform; // можно повернуть объект, сжать\растянуть
 	// в общем всегда будет умножение на матрицу
 	bqPolygonMesh pm; // генерируется используя концепцию полигонов
-	pm.AddSphere(0.5f, 33, transform);
+	pm.AddSphere(m_sphereRadius, 12, transform);
 	pm.GenerateNormals(true);
 	auto mesh = pm.SummonMesh();
 	if (mesh)
@@ -83,7 +102,7 @@ bool ExamplePhysics01::Init()
 
 	m_physicsSystem = bqFramework::GetPhysicsSystem();
 
-	m_shape = m_physicsSystem->CreateShapeSphere(0.2f);
+	m_shape = m_physicsSystem->CreateShapeSphere(m_sphereRadius);
 	m_rigidBody = m_physicsSystem->CreateRigidBody(m_shape, 1.f);
 	m_rigidBody2 = m_physicsSystem->CreateRigidBody(m_shape, 1.f);
 	
@@ -92,6 +111,11 @@ bool ExamplePhysics01::Init()
 	m_physicsSystem->AddRigidBodyArray(&m_arrayOfBodies);
 
 	_resetPhysics();
+
+	mybqPhysicsDebugDraw* dd = new mybqPhysicsDebugDraw;
+	m_debugDraw = dd;
+	m_debugDraw->m_reason = m_debugDraw->Reason_DrawAll;
+	m_physicsSystem->SetDebugDraw(m_debugDraw, this);
 
 	return true;
 }
@@ -102,6 +126,8 @@ void ExamplePhysics01::Shutdown()
 
 	m_physicsSystem->RemoveAllGravityObject();
 	m_physicsSystem->RemoveAllRigidBodyArrays();
+
+	BQ_SAFEDESTROY(m_debugDraw);
 
 	BQ_SAFEDESTROY(m_rigidBody);
 	BQ_SAFEDESTROY(m_rigidBody2);
@@ -190,6 +216,9 @@ void ExamplePhysics01::OnDraw()
 	m_gs->Draw();
 
 	m_app->DrawGrid(14, (float)m_camera->m_position.y);
+	m_gs->DisableDepth();
+	m_physicsSystem->DebugDraw();
+	m_gs->EnableDepth();
 
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();

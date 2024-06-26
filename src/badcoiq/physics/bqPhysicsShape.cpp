@@ -38,7 +38,20 @@ extern bqFrameworkImpl* g_framework;
 bqPhysicsShape::bqPhysicsShape() {}
 bqPhysicsShape::~bqPhysicsShape() {}
 
-bqPhysicsShapeSphere::bqPhysicsShapeSphere() {}
+bqPhysicsShapeSphere::bqPhysicsShapeSphere() 
+{
+	SetRadius(1.f);
+}
 bqPhysicsShapeSphere::~bqPhysicsShapeSphere() {}
+void bqPhysicsShapeSphere::SetRadius(float v)
+{
+	if (v <= 0.f)
+		v = 0.1f;
+	m_radius = v;
+	m_aabb.m_min.Set(-v);
+	m_aabb.m_min.w = 0.f;
+	m_aabb.m_max.Set(v);
+	m_aabb.m_max.w = 0.f;
+}
 
 #endif

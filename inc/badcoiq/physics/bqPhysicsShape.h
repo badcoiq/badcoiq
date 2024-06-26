@@ -29,6 +29,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQPHYSICSSHPH_
 #define __BQPHYSICSSHPH_
 
+#include "badcoiq/geometry/bqAABB.h"
+
 // базовый класс для всех shape
 class bqPhysicsShape
 {
@@ -37,16 +39,19 @@ public:
 	virtual ~bqPhysicsShape();
 	BQ_PLACEMENT_ALLOCATOR(bqPhysicsShape);
 
+	bqAabb m_aabb;
 };
 
 class bqPhysicsShapeSphere : public bqPhysicsShape
 {
+	float m_radius = 1.f;
 public:
 	bqPhysicsShapeSphere();
 	virtual ~bqPhysicsShapeSphere();
 	BQ_PLACEMENT_ALLOCATOR(bqPhysicsShapeSphere);
 
-	float m_raduis = 1.f;
+	float GetRadius() { return m_radius; }
+	void SetRadius(float);
 };
 
 #endif

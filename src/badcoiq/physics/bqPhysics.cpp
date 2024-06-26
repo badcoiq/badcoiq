@@ -92,7 +92,96 @@ void bqPhysics::Update(float dt)
 		for (size_t i2 = 0; i2 < arr->m_size; ++i2)
 		{
 			auto body = arr->m_data[i2];
-			
+
+			body->UpdateBoundingVolume();
+		}
+	}
+
+	if (m_debugDraw)
+	{
+		m_debugDraw->m_array.clear();
+
+		for (size_t i1 = 0; i1 < m_array.m_size; ++i1)
+		{
+			auto arr = m_array.m_data[i1];
+			for (size_t i2 = 0; i2 < arr->m_size; ++i2)
+			{
+				auto body = arr->m_data[i2];
+
+				if (m_debugDraw->m_reason & bqPhysicsDebugDraw::Reason_DrawAabb)
+				{
+					bqPhysicsDebugDraw::DrawCommands drawCommand;
+					drawCommand.m_color = bq::ColorWhite;
+					drawCommand.m_reason = m_debugDraw->m_reason;
+
+					auto& p1 = body->m_aabb.m_min;
+					auto& p2 = body->m_aabb.m_max;
+
+					bqColor color;
+					color.m_data[0] = 1.f;
+					color.m_data[1] = 1.f;
+					color.m_data[2] = 1.f;
+					color.m_data[3] = 1.f;
+
+					bqVec4 v1 = p1;
+					bqVec4 v2 = p2;
+
+					bqVec4 v3(p1.x, p1.y, p2.z, 1.f);
+					bqVec4 v4(p2.x, p1.y, p1.z, 1.f);
+					bqVec4 v5(p1.x, p2.y, p1.z, 1.f);
+					bqVec4 v6(p1.x, p2.y, p2.z, 1.f);
+					bqVec4 v7(p2.x, p1.y, p2.z, 1.f);
+					bqVec4 v8(p2.x, p2.y, p1.z, 1.f);
+
+					drawCommand.m_v1 = v1;
+					drawCommand.m_v2 = v4;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v5;
+					drawCommand.m_v2 = v8;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v1;
+					drawCommand.m_v2 = v5;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v4;
+					drawCommand.m_v2 = v8;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v3;
+					drawCommand.m_v2 = v7;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v6;
+					drawCommand.m_v2 = v2;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v3;
+					drawCommand.m_v2 = v6;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v7;
+					drawCommand.m_v2 = v2;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v2;
+					drawCommand.m_v2 = v8;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v4;
+					drawCommand.m_v2 = v7;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v5;
+					drawCommand.m_v2 = v6;
+					m_debugDraw->m_array.push_back(drawCommand);
+
+					drawCommand.m_v1 = v1;
+					drawCommand.m_v2 = v3;
+					m_debugDraw->m_array.push_back(drawCommand);
+				}
+			}
 		}
 	}
 }
@@ -100,7 +189,7 @@ void bqPhysics::Update(float dt)
 bqPhysicsShapeSphere* bqPhysics::CreateShapeSphere(float radius)
 {
 	bqPhysicsShapeSphere* newShape = new bqPhysicsShapeSphere();
-	newShape->m_raduis = radius;
+	newShape->SetRadius(radius);
 	return newShape;
 }
 
@@ -136,6 +225,29 @@ void bqPhysics::AddGravityObject(bqGravityObject* go)
 void bqPhysics::RemoveAllGravityObject()
 {
 	m_gravityObjects.clear();
+}
+
+void bqPhysics::SetDebugDraw(bqPhysicsDebugDraw* dd, void* data)
+{
+	m_debugDraw = dd;
+	m_debugDrawData = data;
+}
+
+void bqPhysics::DebugDraw()
+{
+	if (m_debugDraw)
+	{
+		for (uint32_t i = 0; i < m_debugDraw->m_array.m_size; ++i)
+		{
+			auto cmd = m_debugDraw->m_array.m_data[i];
+
+			m_debugDraw->DrawLine(m_debugDrawData, 
+				cmd.m_reason,
+				cmd.m_v1,
+				cmd.m_v2,
+				cmd.m_color);
+		}
+	}
 }
 
 #endif

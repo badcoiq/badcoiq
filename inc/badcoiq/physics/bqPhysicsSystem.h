@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQPHYSICSH_
 
 #include "badcoiq/containers/bqArray.h"
+#include "badcoiq/common/bqColor.h"
 
 #include "bqPhysicsShape.h"
 #include "bqPhysicsMesh.h"
@@ -51,10 +52,52 @@ public:
 	bqVec4 m_position;
 };
 
+class bqPhysicsDebugDraw
+{
+public:
+	bqPhysicsDebugDraw() {}
+	virtual ~bqPhysicsDebugDraw() {}
+	BQ_PLACEMENT_ALLOCATOR(bqPhysicsDebugDraw);
+
+	// Флаги, что надо рисовать
+	enum : uint32_t
+	{
+		Reason_DrawAabb = 0x1,
+		Reason_DrawAll = 0xffffffff
+	};
+	uint32_t m_reason = 0;
+	void AddReason(uint32_t r)
+	{
+		m_reason |= r;
+	}
+	void RemoveReason(uint32_t r)
+	{
+		m_reason &= ~r;
+	}
+	void ClearReasons()
+	{
+		m_reason = 0;
+	}
+
+	virtual void DrawLine(void* data, uint32_t, const bqVec4& v1, const bqVec4& v2, const bqColor&) = 0;
+
+	struct DrawCommands
+	{
+		uint32_t m_reason = 0;
+		bqVec4 m_v1;
+		bqVec4 m_v2;
+		bqColor m_color;
+
+	};
+	bqArray<DrawCommands> m_array;
+};
+
 class bqPhysics
 {
 	bqArray<bqArray<bqRigidBody*>*> m_array;
 	bqArray<bqGravityObject*> m_gravityObjects;
+	bqPhysicsDebugDraw* m_debugDraw = 0;
+	void* m_debugDrawData = 0;
 public:
 	bqPhysics();
 	~bqPhysics();
@@ -71,6 +114,9 @@ public:
 
 	bqPhysicsShapeSphere* CreateShapeSphere(float radius);
 	bqRigidBody* CreateRigidBody(bqPhysicsShape*, float mass, bqMotionState* = 0);
+
+	void SetDebugDraw(bqPhysicsDebugDraw*, void* data);
+	void DebugDraw();
 };
 
 #endif

@@ -81,6 +81,7 @@ struct bqRigidBodyContact
 {
 	bqRigidBody* m_otherBody = 0;
 	bqVec3f m_normal;
+	bqVec3f m_point;
 };
 
 class bqRigidBody : public bqUserData
@@ -105,6 +106,17 @@ public:
 
 	bqPhysicsMaterial m_material;
 
+	enum class BoundingVolumeType
+	{
+		Sphere,
+		AABB
+	}m_boundingVolumeType = BoundingVolumeType::Sphere;
+	// здесь, BoundingVolume должен быть умноженным на матрицу
+	// то есть должно быть повёрнуто и отмасштабировано
+	// а так же позиция относительно центра мира
+	bqAabb m_aabb;
+	float m_radius = 0.f;
+	void UpdateBoundingVolume();
 };
 
 #endif
