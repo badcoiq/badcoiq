@@ -96,6 +96,7 @@ class bqPhysics
 {
 	bqArray<bqArray<bqRigidBody*>*> m_array;
 	bqArray<bqGravityObject*> m_gravityObjects;
+	bqArray<bqRigidBody*> m_bodiesAfterOptimization;
 	bqPhysicsDebugDraw* m_debugDraw = 0;
 	void* m_debugDrawData = 0;
 public:
@@ -113,7 +114,7 @@ public:
 	void Update(float dt);
 
 	bqPhysicsShapeSphere* CreateShapeSphere(float radius);
-	bqRigidBody* CreateRigidBody(bqPhysicsShape*, float mass, bqMotionState* = 0);
+	bqRigidBody* CreateRigidBody(bqPhysicsShape*, float mass, bqRigidBodyMotionState* = 0);
 
 	void SetDebugDraw(bqPhysicsDebugDraw*, void* data);
 	void DebugDraw();

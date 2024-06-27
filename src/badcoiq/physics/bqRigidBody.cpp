@@ -51,7 +51,7 @@ bqRigidBody::~bqRigidBody()
 void bqRigidBody::UpdateBoundingVolume()
 {
 	m_aabb = m_shape->m_aabb;
-	m_aabb.Transform(&m_aabb, &m_motionState.m_matrix, &m_motionState.m_matrix.m_data[3]);
+	m_aabb.Transform(&m_aabb, &m_transformation.m_matrix, &m_transformation.m_matrix.m_data[3]);
 	m_radius = (float)m_aabb.Radius();
 }
 

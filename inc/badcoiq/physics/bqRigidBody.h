@@ -30,10 +30,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQRIGIDBODY_H__
 #define __BQRIGIDBODY_H__
 
-// тело имеет изменяющиеся параметры
-// эти параметры изменяются под действием
-// сил, внешних и внутренних.
-struct bqMotionState
+struct bqRigidBodyTransform
+{
+	// есть сомнения что это должно быть здесь
+	// как устанавливать позицию? наверное через метод.
+	// но однозначно позиция и матрица должны быть доступны для чтения
+	// 
+	bqVec4 m_position;
+	bqMat4 m_matrix;
+
+	void Reset()
+	{
+		m_position.Set(0.f);
+		m_matrix.Identity();
+	}
+
+	void UpdateMatrix()
+	{
+		m_matrix.m_data[3].x = m_position.x;
+		m_matrix.m_data[3].y = m_position.y;
+		m_matrix.m_data[3].z = m_position.z;
+	}
+};
+
+struct bqRigidBodyMotionState
 {
 	// линейная скорость. вектр указывающий куда переместится тело.
 	// может перемещаться по дуге, если действует какая-то ещё сила
@@ -47,27 +67,11 @@ struct bqMotionState
 	// например чем больше скорость тем больше вес
 	float m_weight = 0.f;
 
-	// есть сомнения что это должно быть здесь
-	// как устанавливать позицию? наверное через метод.
-	// но однозначно позиция и матрица должны быть доступны для чтения
-	// 
-	bqVec4 m_position;
-	bqMat4 m_matrix;
-
 	void Reset()
 	{
 		m_linearVelocity.Set(0.f);
 		m_angularVelocity.Set(0.f);
 		m_weight = 0.f;
-		m_position.Set(0.f);
-		m_matrix.Identity();
-	}
-
-	void UpdateMatrix()
-	{
-		m_matrix.m_data[3].x = m_position.x;
-		m_matrix.m_data[3].y = m_position.y;
-		m_matrix.m_data[3].z = m_position.z;
 	}
 };
 
@@ -77,11 +81,15 @@ struct bqPhysicsMaterial
 	float m_bounce = 0.5f;
 };
 
+// При проходе по телам, текущее тело получает силы от других тел
+// body получает силы от других тел
 struct bqRigidBodyContact
 {
 	bqRigidBody* m_otherBody = 0;
 	bqVec3f m_normal;
 	bqVec3f m_point;
+	float m_penetration = 0.f;
+	bqRigidBodyMotionState m_motionState;
 };
 
 class bqRigidBody : public bqUserData
@@ -97,7 +105,8 @@ public:
 
 	const bqArray<bqRigidBodyContact>& GetContacts() { return m_contacts; }
 
-	bqMotionState m_motionState;
+	bqRigidBodyMotionState m_motionState;
+	bqRigidBodyTransform m_transformation;
 
 	// если масса равна нулю то тело не будет двигаться
 	float m_mass = 0.f;

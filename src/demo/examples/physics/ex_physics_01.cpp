@@ -200,7 +200,7 @@ void ExamplePhysics01::OnDraw()
 	
 	m_gs->SetShader(bqShaderType::Standart, 0);
 	m_gs->SetMesh(m_meshSphere);
-	m_worldSphere = m_rigidBody->m_motionState.m_matrix;
+	m_worldSphere = m_rigidBody->m_transformation.m_matrix;
 	bqFramework::SetMatrix(bqMatrixType::World, &m_worldSphere);
 	m_wvp = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * m_worldSphere;
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &m_wvp);
@@ -211,7 +211,7 @@ void ExamplePhysics01::OnDraw()
 	m_gs->SetMaterial(&material);
 	m_gs->Draw();
 
-	m_worldSphere = m_rigidBody2->m_motionState.m_matrix;
+	m_worldSphere = m_rigidBody2->m_transformation.m_matrix;
 	m_wvp = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * m_worldSphere;
 	m_gs->Draw();
 
@@ -232,8 +232,8 @@ void ExamplePhysics01::_resetPhysics()
 
 	m_rigidBody->m_motionState.m_linearVelocity.x = 1.f;
 
-	m_rigidBody->m_motionState.m_position.x = -3.f;
-	m_rigidBody2->m_motionState.m_position.x = 3.f;
-	m_rigidBody->m_motionState.UpdateMatrix();
-	m_rigidBody2->m_motionState.UpdateMatrix();
+	m_rigidBody->m_transformation.m_position.x = -3.f;
+	m_rigidBody2->m_transformation.m_position.x = 3.f;
+	m_rigidBody->m_transformation.UpdateMatrix();
+	m_rigidBody2->m_transformation.UpdateMatrix();
 }
