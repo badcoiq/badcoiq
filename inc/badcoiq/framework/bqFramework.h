@@ -75,6 +75,7 @@ public:
 class bqFramework
 {
 public:
+
 	// Когда нам нужно запустить ДВИЖЁК, вызываем Start
 	// Он выделит память для внутреннего класса
 	static void Start(bqFrameworkCallback*);
@@ -172,6 +173,7 @@ public:
 	static bqPhysics* GetPhysicsSystem();
 #endif
 
+	static bqVec2i GetDesktopWindowSize();
 };
 
 #endif

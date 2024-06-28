@@ -1249,3 +1249,15 @@ bqPhysics* bqFramework::GetPhysicsSystem()
 	return g_framework->m_physics;
 }
 #endif
+
+bqVec2i bqFramework::GetDesktopWindowSize()
+{
+	bqVec2i v;
+#ifdef BQ_WITH_WINDOW
+	RECT r;
+	GetWindowRect(GetDesktopWindow(), &r);
+	v.x = r.right - r.left;
+	v.y = r.bottom - r.top;
+#endif
+	return v;
+}
