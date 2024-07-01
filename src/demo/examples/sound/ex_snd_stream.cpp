@@ -29,6 +29,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../../DemoApp.h"
 #include "badcoiq/sound/bqSoundSystem.h"
 
+#include "badcoiq/XML/bqXML.h"
+
 #ifdef BQ_WITH_SOUND
 
 ExampleSoundStream::ExampleSoundStream(DemoApp* app)
@@ -44,6 +46,8 @@ ExampleSoundStream::~ExampleSoundStream()
 
 bool ExampleSoundStream::Init()
 {
+
+
 	auto soundSystem = bqFramework::GetSoundSystem();
 	auto soundDeviceInfo = soundSystem->GetDeviceInfo();
 

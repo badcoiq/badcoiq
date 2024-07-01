@@ -145,6 +145,13 @@ public:
 
 	static bqString GetAppPath();
 	static bqStringA GetAppPathA();
+
+	// Получить путь к файлу относительно программы
+	// Если файла нет, то путь урежится, и его можно
+	// будет использовать в поиске файла в архиве.
+	// Например, путь ../data/img/1.png
+	// Если файла нет то вернётся
+	// data/img/1.png
 	static bqStringA GetPath(const bqString& v);
 
 #ifdef BQ_WITH_GUI
