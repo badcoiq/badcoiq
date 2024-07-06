@@ -149,6 +149,7 @@ public:
 	void ToFullscreenMode();
 	void ToWindowMode();
 
+	// получить центр относительно окна (bqWindow)
 	void GetCenter(bqPoint&);
 };
 

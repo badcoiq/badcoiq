@@ -392,17 +392,17 @@ bool bqInput::IsX2MBRelease() { return (g_framework->m_input.m_mouseButtonFlags 
 #ifdef BQ_WITH_WINDOW
 void bqInput::SetMousePosition(bqWindow* w, int32_t x, int32_t y)
 {
-
-#ifdef BQ_PLATFORM_WINDOWS
-	SetCursorPos(x, y);
 	
-	g_framework->m_input.m_mousePosition.x = (float)(x - w->GetData()->m_position.x) - w->GetData()->m_borderSize.x;
-	g_framework->m_input.m_mousePosition.y = (float)(y - w->GetData()->m_position.y) - w->GetData()->m_borderSize.y;
-
+#ifdef BQ_PLATFORM_WINDOWS
+	SetCursorPos(x + w->GetData()->m_position.x, y + w->GetData()->m_position.y);
+	
 	//printf("%i %i : %f %f\n", x, y, g_framework->m_input.m_mousePosition.x, g_framework->m_input.m_mousePosition.y);
 #else
 #error Need implementation
 #endif
+
+	g_framework->m_input.m_mousePosition.x = x - w->GetData()->m_borderSize.x;
+	g_framework->m_input.m_mousePosition.y = y - w->GetData()->m_borderSize.y;
 }
 #endif
 

@@ -547,6 +547,29 @@ bqImage* bqFramework::SummonImage(const char* path)
 }
 #endif
 
+#ifdef BQ_WITH_GS
+bqTexture* bqFramework::SummonTexture(bqGS* gs, const char* fn, bool genMipMaps, bool linearFilter)
+{
+	BQ_ASSERT_ST(gs);
+	BQ_ASSERT_ST(fn);
+	bqTexture* newTexture = 0;
+
+	if (gs && fn)
+	{
+		bqImage* img = bqFramework::SummonImage(fn);
+		if (img)
+		{
+			bqTextureInfo ti;
+			ti.m_generateMipmaps = genMipMaps;
+			ti.m_filter = linearFilter ? bqTextureFilter::LLL : bqTextureFilter::PPP;
+			newTexture = gs->SummonTexture(img, ti);
+			delete img;
+		}
+	}
+
+	return newTexture;
+}
+#endif
 
 bool bqFramework::FileExist(const char* p)
 {

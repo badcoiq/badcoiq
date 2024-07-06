@@ -80,7 +80,7 @@ public:
 
 	void AddTexture(bqTexture*);
 	void AddGlyph(const bqGUIFontGlyph&);
-	void AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& charSz, uint32_t texture, const bqPoint& texSz);
+	void AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& charSz, uint32_t texture, const bqPoint& textureSize);
 
 	const bqPoint& GetMaxSize() { return m_maxSize; }
 	bqGUIFontGlyph** GetGlyphMap() { return m_glyphMap; }

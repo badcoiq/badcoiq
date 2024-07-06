@@ -155,16 +155,20 @@ void bqWindow::SetTitle(const char* s)
 void bqWindow::GetCenter(bqPoint& p)
 {
     p.x = p.y = 0;
-
-#ifdef BQ_PLATFORM_WINDOWS
-    bqWindowWin32* w32 = (bqWindowWin32*)m_data.m_implementation;
-    RECT cr, wr;
-    GetWindowRect(w32->m_hWnd, &wr);
-    GetClientRect(w32->m_hWnd, &cr);
     p.x = (int32_t)floor((float)m_data.m_sizeCurrent.x * 0.5f);
     p.y = (int32_t)floor((float)m_data.m_sizeCurrent.y * 0.5f);
-    p.x += m_data.m_borderSize.x + wr.left;
-    p.y += m_data.m_borderSize.y + wr.top;
+
+#ifdef BQ_PLATFORM_WINDOWS
+   // bqWindowWin32* w32 = (bqWindowWin32*)m_data.m_implementation;
+  //  RECT cr, wr;
+  //  GetWindowRect(w32->m_hWnd, &wr);
+  //  GetClientRect(w32->m_hWnd, &cr);
+   
+  //  p.x += m_data.m_borderSize.x + wr.left;
+  //  p.y += m_data.m_borderSize.y + wr.top;
+
+  //  p.x = floor((cr.right - cr.left) * 0.5f);
+  //  p.y = floor((cr.top - cr.bottom) * 0.5f);
 #endif
 }
 
@@ -217,11 +221,22 @@ void bqWindow::SetBorderless(bool v)
 #ifdef BQ_PLATFORM_WINDOWS
     bqWindowWin32* w32 = (bqWindowWin32*)m_data.m_implementation;
     if (v)
+    {
         SetWindowLongPtr(w32->m_hWnd, GWL_STYLE, WS_POPUP);
+        m_data.m_borderSize.x = 0;
+        m_data.m_borderSize.y = 0;
+    }
     else
+    {
         SetWindowLongPtr(w32->m_hWnd, GWL_STYLE, w32->m_style);
+        int padding = GetSystemMetrics(SM_CXPADDEDBORDER);
+        m_data.m_borderSize.x = GetSystemMetrics(SM_CXFRAME) + padding;
+        m_data.m_borderSize.y = (GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CYCAPTION) + padding);
+    }
     SetWindowPos(w32->m_hWnd, 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
     ShowWindow(w32->m_hWnd, SW_NORMAL);
+
+    
 #endif
 }
 
@@ -294,6 +309,7 @@ void bqWindow::ToFullscreenMode()
             mi.rcMonitor.bottom - mi.rcMonitor.top,
             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         m_data.m_isFullscreen = true;
+        m_data.m_borderSize.x = m_data.m_borderSize.y = 0;
         ShowWindow(w32->m_hWnd, SW_NORMAL);
 
         bqWindowWin32_findCurrentSize(this, w32);
@@ -315,6 +331,21 @@ void bqWindow::ToWindowMode()
         SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
         SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
     m_data.m_isFullscreen = false;
+   
+    if (w32->m_stylePreFullscreen & WS_POPUP)
+    {
+        m_data.m_borderSize.x = 0;
+        m_data.m_borderSize.y = 0;
+    }
+    else
+    {
+        int padding = GetSystemMetrics(SM_CXPADDEDBORDER);
+        m_data.m_borderSize.x = GetSystemMetrics(SM_CXFRAME) + padding;
+        m_data.m_borderSize.y = (GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CYCAPTION) + padding);
+    }
+
+   // printf("m_data.m_borderSize.x %i m_data.m_borderSize.y %i\n", m_data.m_borderSize.x, m_data.m_borderSize.x);
+
     ShowWindow(w32->m_hWnd, SW_NORMAL);
 
     bqWindowWin32_findCurrentSize(this, w32);
@@ -447,9 +478,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 id->m_mousePosition.x = (float)(cursorPoint.x - rct.left - pW->GetBorderSize()->x);
                 id->m_mousePosition.y = (float)(cursorPoint.y - rct.top - pW->GetBorderSize()->y);
 
-                //printf("mp %f %f\n", id->m_mousePosition.x, id->m_mousePosition.y);
-
-                // printf("%i %i\n", cursorPoint.x, cursorPoint.y);
+    //            printf("%i %i\n", cursorPoint.x, cursorPoint.y);
+     //           printf("mp %f %f\n", id->m_mousePosition.x, id->m_mousePosition.y);
 
                 if (flags)
                 {
