@@ -137,6 +137,18 @@ public:
 			_reallocate(new_capacity);
 	}
 
+	// m_data[i] = 0;
+	void zero_memory()
+	{
+		if (m_data)
+		{
+			for (size_t i = 0u; i < m_size; ++i)
+			{
+				m_data[i] = 0;
+			}
+		}
+	}
+
 	void insert(size_t where, const_reference object)
 	{
 		if (where >= m_size)
