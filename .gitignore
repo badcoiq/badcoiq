@@ -48,3 +48,7 @@ build/opus/Debug
 build/opus/Release
 build/opusfile/Debug
 build/opusfile/Release
+tools/3dsmaxplugin/.vs
+*.aps
+tools/3dsmaxplugin/x64/Debug
+tools/3dsmaxplugin/x64/Release

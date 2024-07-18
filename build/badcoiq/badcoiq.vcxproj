@@ -180,6 +180,7 @@
     <ClCompile Include="..\..\src\badcoiq\common\bqMemory.cpp" />
     <ClCompile Include="..\..\src\badcoiq\framework\bqFramework.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqAABB.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\geometry\bqMDL.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqMesh.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqMeshCreator.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqPolygonMesh.cpp" />

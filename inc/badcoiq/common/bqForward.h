@@ -82,6 +82,7 @@ class bqMeshLoaderCallback;
 class bqTriangle;
 class bqSkeleton;
 class bqSkeletonAnimation;
+class bqMDL;
 #endif
 
 #ifdef BQ_WITH_ARCHIVE

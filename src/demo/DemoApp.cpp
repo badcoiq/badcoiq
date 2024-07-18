@@ -238,6 +238,9 @@ bool DemoApp::Init()
 	AddExample(new ExampleBasicsOclCul(this), U"Occlusion Culling", "Basics/", U"Создаём особый объект который будет использоваться GPU. Рисуем специальным способом с указанием этого объекта. Обязательно надо отсортировать объекты по дальности. ");
 	AddExample(new ExampleBasicsSkeletalAnimation(this), U"Скелетная анимация 1/2", "Basics/", U"Всё создаём вручную, и анимируем тоже.");
 	AddExample(new ExampleBasicsSkeletalAnimation2(this), U"Скелетная анимация 2/2", "Basics/", U"Загрузка SMD. Множество файлов, отдельно геометрия отдельно анимации.");
+	
+	AddExample(new ExampleBasicsMDL(this), U"MDL", "Basics/", U"Загрузка Badcoiq MDL");
+
 #ifdef BQ_WITH_SOUND
 	AddExample(new ExampleBasicsSound(this), U"Звук", "Basics/", U"...");
 	AddExample(new ExampleSound3D(this), U"3D", "Sound/", U"3D Sound");

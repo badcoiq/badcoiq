@@ -292,6 +292,7 @@ public:
 #include "examples/basic/ex_basic_rot.h"
 #include "examples/basic/ex_basic_OC.h"
 #include "examples/basic/ex_basic_skAn.h"
+#include "examples/basic/ex_basic_MDL.h"
 #include "examples/basic/ex_basic_sound.h"
 #include "examples/meshgen/ex_mshgn_box.h"
 #include "examples/scene/camera/ex_sc_camera_fly.h"

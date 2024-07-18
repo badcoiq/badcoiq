@@ -72,6 +72,9 @@
     <ClCompile Include="..\..\src\demo\examples\physics\ex_physics_01.cpp">
       <Filter>examples\physics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_MDL.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">

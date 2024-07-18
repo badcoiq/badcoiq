@@ -33,6 +33,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/geometry/bqMeshCreator.h"
 #include "badcoiq/geometry/bqSkeleton.h"
 
+#include <map>
+#include <vector>
+
 
 bqMesh::bqMesh() {}
 bqMesh::~bqMesh()
@@ -172,8 +175,106 @@ void bqMesh::GenerateTangents()
 	}
 }
 
-void bqMesh::GenerateNormals(bool)
+void bqMesh::GenerateNormals(bool smooth)
 {
+	BQ_ASSERT_ST(m_indices);
+	BQ_ASSERT_ST(m_vertices);
+
+	if (m_info.m_iCount > 2)
+	{
+		uint16_t* ind16 = (uint16_t*)GetIBuffer();
+		uint32_t* ind32 = (uint32_t*)GetIBuffer();
+
+		struct Container
+		{
+			bqVec3 normal;
+			std::vector<bqVertexTriangle*> verts;
+		};
+		std::map<std::string, Container> map;
+		bqStringA str;
+		std::string stdstr;
+
+		bqVertexTriangle* verts = (bqVertexTriangle*)GetVBuffer();
+		auto numTri = GetInfo().m_iCount / 3;
+		for (uint32_t i = 0, it = 0; i < numTri; ++i)
+		{
+			bqVertexTriangle* _v1 = 0;
+			bqVertexTriangle* _v2 = 0;
+			bqVertexTriangle* _v3 = 0;
+
+			switch (m_info.m_indexType)
+			{
+			default:
+			case bqMeshIndexType::u16:
+				_v1 = GetVertex(ind16[it]);
+				_v2 = GetVertex(ind16[it + 1]);
+				_v3 = GetVertex(ind16[it + 2]);
+				break;
+			case bqMeshIndexType::u32:
+				_v1 = GetVertex(ind32[it]);
+				_v2 = GetVertex(ind32[it + 1]);
+				_v3 = GetVertex(ind32[it + 2]);
+				break;
+			}
+
+			auto e1 = _v1->Position - _v2->Position;
+			auto e2 = _v3->Position - _v2->Position;
+			bqVec3f n;
+			e1.Cross(e2, n);
+			n.Normalize();
+
+			if (smooth)
+			{
+				str.clear();
+				str.append(_v1->Position.x);
+				str.append(_v1->Position.y);
+				str.append(_v1->Position.z);
+				stdstr.clear();
+				stdstr.append(str.c_str());
+				map[stdstr].verts.push_back(_v1);
+				map[stdstr].normal += n;
+
+				str.clear();
+				str.append(_v2->Position.x);
+				str.append(_v2->Position.y);
+				str.append(_v2->Position.z);
+				stdstr.clear();
+				stdstr.append(str.c_str());
+				map[stdstr].verts.push_back(_v2);
+				map[stdstr].normal += n;
+
+				str.clear();
+				str.append(_v3->Position.x);
+				str.append(_v3->Position.y);
+				str.append(_v3->Position.z);
+				stdstr.clear();
+				stdstr.append(str.c_str());
+				map[stdstr].verts.push_back(_v3);
+				map[stdstr].normal += n;
+
+			}
+			else
+			{
+				_v1->Normal = n;
+				_v2->Normal = n;
+				_v3->Normal = n;
+			}
+
+			it += 3;
+		}
+
+		if (smooth)
+		{
+			for (auto& o : map)
+			{
+				for (auto& c : o.second.verts)
+				{
+					c->Normal = o.second.normal;
+					c->Normal.Normalize();
+				}
+			}
+		}
+	}
 }
 
 void bqMesh::Allocate(uint32_t numV, uint32_t numI, bool skinned)
@@ -327,4 +428,18 @@ void bqMesh::ApplySkeleton(bqSkeleton* skeleton)
 		}
 	}
 }
+
+bqVertexTriangle* bqMesh::GetVertex(uint32_t index)
+{
+	bqVertexTriangle* v = (bqVertexTriangle*)m_vertices;
+	bqVertexTriangleSkinned* vSkinned = (bqVertexTriangleSkinned*)m_vertices;
+
+	if (m_info.m_stride == sizeof(bqVertexTriangle))
+		return &v[index];
+	else if(m_info.m_stride == sizeof(bqVertexTriangleSkinned))
+		return (bqVertexTriangle*)(&vSkinned[index]);
+
+	return (bqVertexTriangle*)m_vertices;
+}
+
 #endif

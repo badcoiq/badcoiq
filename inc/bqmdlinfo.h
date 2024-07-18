@@ -27,10 +27,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_BQMDL_H__
-#define __BQ_BQMDL_H__
+#ifndef __BQ_BQMDLINFO_H__
+#define __BQ_BQMDLINFO_H__
 
 #include <stdint.h>
+
+// файл чтобы можно было подключить к проекту с плагином для 3Ds Max
 
 struct bqMDLMeshVertex
 {
@@ -40,6 +42,11 @@ struct bqMDLMeshVertex
 	float m_binormal[3];
 	float m_tangent[3];
 	float m_color[4];
+};
+
+struct bqMDLMeshVertexSkinned
+{
+	bqMDLMeshVertex m_base;
 	uint8_t m_boneInds[4];
 	float m_weights[4];
 };
@@ -64,9 +71,7 @@ struct bqMDLFileHeader
 {
 	uint32_t m_bmld = 1818520930; // "bmdl"
 	uint16_t m_version = 1;
-	uint32_t m_crc = 0;
 	uint16_t m_chunkNum = 0;
-	uint32_t m_textTableOffset = 0;
 	uint32_t m_reserved1 = 0;
 	uint32_t m_reserved2 = 0;
 	uint32_t m_reserved3 = 0;
@@ -91,7 +96,9 @@ struct bqMDLChunkHeaderMesh
 	// 1 - 32bit
 	uint8_t m_indexType = 0;
 	
-	uint8_t m_stride = sizeof(bqMDLMeshVertex);
+	// 0 - bqVertexTriangle
+	// 1 - bqVertexTriangleSkinned
+	uint8_t m_vertexType = 0;
 	
 	uint16_t m_material = 0;
 	uint32_t m_vertNum = 0;

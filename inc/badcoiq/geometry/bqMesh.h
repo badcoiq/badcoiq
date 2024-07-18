@@ -105,6 +105,12 @@ public:
 
 	void ToSkinned();
 	void ApplySkeleton(bqSkeleton* skeleton);
+
+	// Получить указатель на вершину.
+	// Превеводить в другой тип нужно самостоятельно.
+	// Индексы предпологается брать из индексного буфера.
+	//  например GetVertex(m_indices[i])
+	bqVertexTriangle* GetVertex(uint32_t index);
 };
 
 #endif

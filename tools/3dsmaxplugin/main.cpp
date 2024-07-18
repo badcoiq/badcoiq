@@ -1,5 +1,5 @@
 ﻿#include "Max.h"
-#include "bqmdl.h"
+#include "bqmdlinfo.h"
 
 #include <vector>
 #include <string>
@@ -116,12 +116,9 @@ public:
 
             fwrite(&m_fileHeader.m_bmld, 1, sizeof(m_fileHeader.m_bmld), f);
             fwrite(&m_fileHeader.m_version, 1, sizeof(m_fileHeader.m_version), f);
-            fwrite(&m_fileHeader.m_crc, 1, sizeof(m_fileHeader.m_crc), f);
 
             m_fileHeader.m_chunkNum = meshChunkNum;
             fwrite(&m_fileHeader.m_chunkNum, 1, sizeof(m_fileHeader.m_chunkNum), f);
-            
-            fwrite(&m_fileHeader.m_textTableOffset, 1, sizeof(m_fileHeader.m_textTableOffset), f);
             
             uint32_t reserved[4] = { 0,0,0,0 };
             fwrite(&reserved, 1, 4 * sizeof(uint32_t), f);
@@ -140,7 +137,7 @@ public:
                 
                 fwrite(&mesh->m_chunkHeaderMesh.m_name, 1, sizeof(mesh->m_chunkHeaderMesh.m_name), f);
                 fwrite(&mesh->m_chunkHeaderMesh.m_indexType, 1, sizeof(mesh->m_chunkHeaderMesh.m_indexType), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_stride, 1, sizeof(mesh->m_chunkHeaderMesh.m_stride), f);
+                fwrite(&mesh->m_chunkHeaderMesh.m_vertexType, 1, sizeof(mesh->m_chunkHeaderMesh.m_vertexType), f);
                 fwrite(&mesh->m_chunkHeaderMesh.m_material, 1, sizeof(mesh->m_chunkHeaderMesh.m_material), f);
                 fwrite(&mesh->m_chunkHeaderMesh.m_vertNum, 1, sizeof(mesh->m_chunkHeaderMesh.m_vertNum), f);
                 fwrite(&mesh->m_chunkHeaderMesh.m_indNum, 1, sizeof(mesh->m_chunkHeaderMesh.m_indNum), f);
@@ -345,10 +342,16 @@ public:
                     headerMesh.m_indexType = indexType;
                     headerMesh.m_vertNum = newVertNum;
                     headerMesh.m_indNum = newVertNum;
-                    headerMesh.m_stride = sizeof(bqMDLMeshVertex);
+                    headerMesh.m_vertexType = 0;
+
+                    int vsz = sizeof(bqMDLMeshVertex);
+
+                    if(headerMesh.m_vertexType==1)
+                        vsz = sizeof(bqMDLMeshVertexSkinned);
+
                     headerMesh.m_vertBufSz =
                         headerMesh.m_vertNum *
-                        headerMesh.m_stride;
+                        vsz;
 
                     if (headerMesh.m_indexType == 0)
                         headerMesh.m_indBufSz = headerMesh.m_indNum * 2;
