@@ -93,11 +93,13 @@ bool ExampleBasicsMDL::Init()
 	m_gs->DisableBackFaceCulling();
 
 	m_mdl = new bqMDL;
-	if (!m_mdl->Load(bqFramework::GetPath("../data/models/teapot.bmdl").c_str(), m_gs, true))
+	if (!m_mdl->Load(bqFramework::GetPath("../data/models/tea.mdl").c_str(), m_gs, true))
 	{
 		BQ_SAFEDESTROY(m_mdl);
 		return false;
 	}
+
+	m_texture = bqFramework::SummonTexture(m_gs, bqFramework::GetPath("../data/textures/st1.jpg").c_str());
 
 	return true;
 }
@@ -106,6 +108,7 @@ void ExampleBasicsMDL::Shutdown()
 {
 	BQ_SAFEDESTROY(m_mdl);
 	BQ_SAFEDESTROY(m_camera);
+	BQ_SAFEDESTROY(m_texture);
 }
 
 void ExampleBasicsMDL::OnDraw()
@@ -139,7 +142,9 @@ void ExampleBasicsMDL::OnDraw()
 	bqMaterial material;
 	material.m_shaderType = bqShaderType::Standart;
 	material.m_sunPosition.Set(1.f, 20.f, 1.f);
+	material.m_maps[0].m_texture = m_texture;
 	m_gs->SetMaterial(&material);
+	m_gs->EnableBackFaceCulling();
 	for (size_t i = 0; i < m_mdl->GetMeshNum(); ++i)
 	{
 		auto gpumesh = m_mdl->GetGPUMesh(i);
@@ -147,7 +152,7 @@ void ExampleBasicsMDL::OnDraw()
 		/*if (m_model->m_meshBuffers.m_data[i]->m_texture)
 			material.m_maps[0].m_texture = m_model->m_meshBuffers.m_data[i]->m_texture;
 		else*/
-			material.m_maps[0].m_texture = m_app->m_whiteTexture;
+			//material.m_maps[0].m_texture = m_app->m_whiteTexture;
 
 		m_gs->SetMesh(gpumesh);
 		m_gs->Draw();

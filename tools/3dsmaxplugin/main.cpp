@@ -199,7 +199,7 @@ public:
         switch (n)
         {
         case 0:
-            return L"bmdl";
+            return L"mdl";
         }
         return L"";
     }
@@ -317,15 +317,20 @@ public:
             
             //entry->m_obj->PolygonCount
             
-            int faceNum = 0;
-            int vertNum = 0;
-            GetPolygonCount(m_timeValue, entry->m_obj, faceNum, vertNum);
-            if (faceNum)
+            
+            //GetPolygonCount(m_timeValue, entry->m_obj, faceNum, vertNum);
+            TriObject* triObj = dynamic_cast<TriObject*>(entry->m_obj);
+            if (triObj)
             {
+                
                 auto nameIndex = m_mdl.AddString(entry->m_node->GetName());
 
-                TriObject* triObj = dynamic_cast<TriObject*>(entry->m_obj);
-                if (triObj)
+                Mesh* mesh = &triObj->mesh;
+
+                int faceNum = mesh->getNumFaces();
+                int vertNum = mesh->getNumVerts();
+
+                if (faceNum)
                 {
               /*  WideCharToMultiByte(CP_UTF8, 0, entry->m_node->GetName(), -1, cname, 0xffff, 0, 0);
                 fwrite(cname, 1, strlen(cname), f);
@@ -380,20 +385,192 @@ public:
                     auto meshVerts = newMesh->m_vertices;
 
                     // теперь надо взять позиции
-                    auto verts = triObj->mesh.getVertPtr(0);
-                    auto faces = triObj->mesh.getFacePtr(0);
-                    for (int i = 0; i < faceNum; ++i)
-                    {
-                        for (int o = 0; o < 3; ++o)
+                    auto verts = mesh->getVertPtr(0);
+                    auto faces = mesh->getFacePtr(0);
+
+                    mesh->checkNormals(TRUE);
+
+                    Matrix3 tm = entry->m_node->GetObjTMAfterWSM(m_timeValue);
+
+                    auto rVerts = mesh->getRVertPtr(0);
+                    auto tVerts = mesh->getTVertPtr(0);
+                    /*triObj->mesh.normalCount
+                    triObj->mesh.getNormal();*/
+               /*     
+                    auto glambda = [&](Face* face, int o, int fi)
                         {
-                            meshVerts->m_position[0] = verts[faces[i].v[o]].x;
-                            meshVerts->m_position[1] = verts[faces[i].v[o]].y;
-                            meshVerts->m_position[2] = verts[faces[i].v[o]].z;
+                            meshVerts->m_position[0] = verts[face->v[o]].x;
+                            meshVerts->m_position[1] = verts[face->v[o]].z;
+                            meshVerts->m_position[2] = verts[face->v[o]].y;
+
+                            auto rv = rVerts[face->getVert(o)];
+                            meshVerts->m_normal[0] = rv.rn.getNormal().x;
+                            meshVerts->m_normal[1] = rv.rn.getNormal().z * -1.f;
+                            meshVerts->m_normal[2] = rv.rn.getNormal().y;
+
+                            if (tVerts)
+                            {
+                                meshVerts->m_uv[0] = tVerts[mesh->tvFace[fi].t[o]].x;
+
+                                float V = tVerts[mesh->tvFace[fi].t[o]].y;
+                                meshVerts->m_uv[1] = V;
+                            }
+
+                            ++meshVerts;
+                        };*/
+                    auto _GetVertexNormal = [&](Mesh* mesh, int faceNo, RVertex* rv) -> Point3
+                        {
+                            Face* f = &mesh->faces[faceNo];
+                            DWORD smGroup = f->smGroup;
+                            int numNormals = 0;
+                            Point3 vertexNormal;
+
+                            // Is normal specified
+                            // SPCIFIED is not currently used, but may be used in future versions.
+                            if (rv->rFlags & SPECIFIED_NORMAL) {
+                                vertexNormal = rv->rn.getNormal();
+                            }
+                            // If normal is not specified it's only available if the face belongs
+                            // to a smoothing group
+                            else if ((numNormals = rv->rFlags & NORCT_MASK) != 0 && smGroup) {
+                                // If there is only one vertex is found in the rn member.
+                                if (numNormals == 1) {
+                                    vertexNormal = rv->rn.getNormal();
+                                }
+                                else {
+                                    // If two or more vertices are there you need to step through them
+                                    // and find the vertex with the same smoothing group as the current face.
+                                    // You will find multiple normals in the ern member.
+                                    for (int i = 0; i < numNormals; i++) {
+                                        if (rv->ern[i].getSmGroup() & smGroup) {
+                                            vertexNormal = rv->ern[i].getNormal();
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                // Get the normal from the Face if no smoothing groups are there
+                                vertexNormal = mesh->getFaceNormal(faceNo);
+                            }
+
+                            return vertexNormal;
+                        };
+
+                    int ti1 = 0;
+                    int ti2 = 1;
+                    int ti3 = 2;
+
+                    // 0 1 2 - инв
+                    // 0 2 1 - 
+                    // 1 0 2 - 
+                    // 1 2 0 - 
+                    // 2 1 0 - 
+                    // 2 0 1 - 
+                    int fvx1 = 0;
+                    int fvx2 = 2;
+                    int fvx3 = 1;
+
+                    for (int fi = 0; fi < faceNum; ++fi)
+                    {
+                        Face* face = &faces[fi];
+                        auto& faceNormal = mesh->getFaceNormal(fi);
+                        
+                        // 0 1 2
+                        // 0 2 1
+                        // 1 0 2
+                        // 1 2 0
+                        // 2 1 0
+                        // 2 0 1
+
+                        int vx1 = 0;
+                        int vx2 = 1;
+                        int vx3 = 2;
+
+                        auto & faceVertIndex = face->v[fvx1];
+                        Point3 pos = verts[faceVertIndex];
+                        meshVerts->m_position[vx1] = pos.x * -1.f;
+                        meshVerts->m_position[vx3] = pos.y;
+                        meshVerts->m_position[vx2] = pos.z;
+                       
+                        Point3 vn = _GetVertexNormal(mesh, fi, mesh->getRVertPtr(faceVertIndex));
+                        meshVerts->m_normal[vx1] = vn.x;
+                        meshVerts->m_normal[vx2] = vn.z * -1.f;
+                        meshVerts->m_normal[vx3] = vn.y;
+
+                        ++meshVerts;
+
+                        faceVertIndex = face->v[fvx2];
+                        pos = verts[faceVertIndex];
+                        meshVerts->m_position[vx1] = pos.x * -1.f;
+                        meshVerts->m_position[vx3] = pos.y;
+                        meshVerts->m_position[vx2] = pos.z;
+                        vn = _GetVertexNormal(mesh, fi, mesh->getRVertPtr(faceVertIndex));
+                        meshVerts->m_normal[vx1] = vn.x;
+                        meshVerts->m_normal[vx2] = vn.z * -1.f;
+                        meshVerts->m_normal[vx3] = vn.y;
+                        ++meshVerts;
+
+                        faceVertIndex = face->v[fvx3];
+                        pos = verts[faceVertIndex];
+                        meshVerts->m_position[vx1] = pos.x * -1.f;
+                        meshVerts->m_position[vx3] = pos.y;
+                        meshVerts->m_position[vx2] = pos.z;
+                       vn = _GetVertexNormal(mesh, fi, mesh->getRVertPtr(faceVertIndex));
+                       meshVerts->m_normal[vx1] = vn.x;
+                       meshVerts->m_normal[vx2] = vn.z * -1.f;
+                       meshVerts->m_normal[vx3] = vn.y;
+                        ++meshVerts;
+
+                        //glambda(face, 0, fi);
+                        //glambda(face, 1, fi);
+                       // glambda(face, 2, fi);
+                        /*for (int o = 0; o < 3; ++o)
+                        {
+                            meshVerts->m_position[0] = verts[face->v[o]].x;
+                            meshVerts->m_position[1] = verts[face->v[o]].z;
+                            meshVerts->m_position[2] = verts[face->v[o]].y;
+
+                            auto rv = rVerts[face->getVert(o)];
+                            meshVerts->m_normal[0] = rv.rn.getNormal().x;
+                            meshVerts->m_normal[1] = rv.rn.getNormal().z * -1.f;
+                            meshVerts->m_normal[2] = rv.rn.getNormal().y;
+
+                            if (tVerts)
+                            {
+                                meshVerts->m_uv[0] = tVerts[mesh->tvFace[fi].t[o]].x;
+
+                                float V = tVerts[mesh->tvFace[fi].t[o]].y;
+                                meshVerts->m_uv[1] = 1.f - V;
+                            }
+
+                            ++meshVerts;
+                        }*/
+                    }
+
+                    meshVerts = newMesh->m_vertices;
+                    for (int fi = 0; fi < faceNum; ++fi)
+                    {
+                        int numTVx = mesh->getNumTVerts();
+                        if (numTVx)
+                        {
+                            auto tci1 = mesh->tvFace[fi].t[fvx1];
+                            auto tci2 = mesh->tvFace[fi].t[fvx2];
+                            auto tci3 = mesh->tvFace[fi].t[fvx3];
+
+                            meshVerts->m_uv[0] = tVerts[tci1].x;
+                            meshVerts->m_uv[1] = 1.f - tVerts[tci1].y;
+                            ++meshVerts;
+
+                            meshVerts->m_uv[0] = tVerts[tci2].x;
+                            meshVerts->m_uv[1] = 1.f - tVerts[tci2].y;
+                            ++meshVerts;
+
+                            meshVerts->m_uv[0] = tVerts[tci3].x;
+                            meshVerts->m_uv[1] = 1.f - tVerts[tci3].y;
                             ++meshVerts;
                         }
                     }
-                    //auto vertNum = triObj->mesh.getNumVerts();
-
+                    
                 }
             }
         }

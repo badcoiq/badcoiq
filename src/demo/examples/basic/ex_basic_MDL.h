@@ -39,6 +39,9 @@ class ExampleBasicsMDL : public DemoExample
 	//bqSceneObject* m_sceneObject = 0;
 	//bqSkeleton* m_skeleton = 0;
 	bqMDL* m_mdl = 0;
+
+	bqTexture* m_texture = 0;
+
     void _onCamera();
 public:
 	ExampleBasicsMDL(DemoApp*);

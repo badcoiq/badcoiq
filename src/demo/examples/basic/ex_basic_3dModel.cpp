@@ -53,7 +53,7 @@ bool ExampleBasics3DModel::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	m_model = new MyModel(m_gs);
-	m_model->Load(bqFramework::GetPath("../data/models/1.obj").c_str());
+	m_model->Load(bqFramework::GetPath("../data/models/cube.obj").c_str());
 
 	return true;
 }

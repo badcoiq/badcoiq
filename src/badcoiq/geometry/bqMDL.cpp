@@ -153,7 +153,7 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 					file.Read(newM->GetVBuffer(), chunkHeaderMesh.m_vertBufSz);
 					file.Read(newM->GetIBuffer(), chunkHeaderMesh.m_indBufSz);
 
-					newM->GenerateNormals(true);
+					//newM->GenerateNormals(true);
 
 					_mesh m;
 					m.m_mesh = newM;
