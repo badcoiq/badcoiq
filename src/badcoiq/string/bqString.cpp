@@ -67,6 +67,11 @@ bqString::bqString(const char8_t* s) : bqString()
 	assign(s);
 }
 
+bqString::bqString(const char8_t* s, uint32_t sz) : bqString()
+{
+	assign(s, sz);
+}
+
 bqString::bqString(const char16_t* s) : bqString()
 {
 	assign(s);
@@ -132,6 +137,12 @@ void bqString::assign(const char8_t* s)
 	append(s);
 }
 
+void bqString::assign(const char8_t* s, uint32_t sz)
+{
+	clear();
+	append(s, sz);
+}
+
 void bqString::assign(const char16_t* s)
 {
 	clear();
@@ -153,8 +164,11 @@ void bqString::assign(const bqString& s)
 // UTF-8 to UTF-32
 void bqString::append(const char* str)
 {
-	size_t len = bqStringLen(str);
+	append(str, bqStringLen(str));
+}
 
+void bqString::append(const char* str, uint32_t len)
+{
 	unsigned char c1 = 0;
 	unsigned char c2 = 0;
 	unsigned char c3 = 0;
@@ -283,6 +297,11 @@ void bqString::append(const wchar_t* str)
 void bqString::append(const char8_t* s)
 {
 	append((const char*)s);
+}
+
+void bqString::append(const char8_t* s, uint32_t sz)
+{
+	append((const char*)s, sz);
 }
 
 void bqString::append(const char16_t* s)

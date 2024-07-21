@@ -34,6 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/geometry/bqAABB.h"
 #include "badcoiq/geometry/bqMesh.h"
 #include "badcoiq/geometry/bqSkeleton.h"
+#include "badcoiq/archive/bqArchive.h"
+#include "badcoiq/common/bqFileBuffer.h"
 
 #include "bqmdlinfo.h"
 
@@ -49,6 +51,10 @@ class bqMDL
 
 	bqArray<_mesh> m_meshes;
 	bqArray<bqStringA> m_strings;
+	uint8_t* _decompress(const bqMDLFileHeader&, 
+		bqFileBuffer& , 
+		uint32_t*, bqCompressorType);
+	uint8_t* m_compressedData = 0;
 
 public:
 	bqMDL();

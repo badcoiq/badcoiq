@@ -51,37 +51,52 @@ struct bqMDLMeshVertexSkinned
 	float m_weights[4];
 };
 
-/*
-Структура файла
-
-FILE HEADER
-CHUNK HEADER
-CHUNK DATA
-CHUNK HEADER
-CHUNK DATA
-...
-CHUNK HEADER
-CHUNK DATA
-TEXT TABLE HEADER
-TEXT TABLE
-
-*/
-
 struct bqMDLFileHeader
 {
 	uint32_t m_bmld = 1818520930; // "bmdl"
-	uint16_t m_version = 1;
-	uint16_t m_chunkNum = 0;
+	uint32_t m_version = 1;
+	uint32_t m_chunkNum = 0;
+
+	enum
+	{
+		compression_null,
+		compression_fastlz,
+	};
+	// 0 - нет сжатия
+	// 1 - сжато fastlz
+	// Если есть сжатие то сжимается всё кроме bqMDLFileHeader
+	uint32_t m_compression = compression_null;
+	// если сжатие есть, размер после расжатия.
+	uint32_t m_uncmpSz = 0;
+	uint32_t m_cmpSz = 0;
+
 	uint32_t m_reserved1 = 0;
 	uint32_t m_reserved2 = 0;
 	uint32_t m_reserved3 = 0;
 	uint32_t m_reserved4 = 0;
 };
 
+
 struct bqMDLChunkHeader
 {
+	enum
+	{
+		ChunkType__null,
+		ChunkType_Mesh,
+		ChunkType_String,
+	};
+
 	// 1 - mesh chunk
-	uint16_t m_chunkType = 0;
+	// 2 - string
+	uint32_t m_chunkType = ChunkType__null;
+	
+	// размер. bqMDLChunkHeader + header конкретного чанка 
+	//    + размер данных этого чанка
+	// Например для mesh chunk
+	// m_chunkSz = sizeof(bqMDLChunkHeader) + sizeof(bqMDLChunkHeaderMesh) 
+	// + meshHead.m_vertBufSz + meshHead.m_indBufSz;
+	uint32_t m_chunkSz = 0;
+
 	uint32_t m_reserved1 = 0;
 	uint32_t m_reserved2 = 0;
 };
@@ -90,17 +105,17 @@ struct bqMDLChunkHeader
 
 struct bqMDLChunkHeaderMesh
 {
-	uint16_t m_name = 0;
+	uint32_t m_name = 0;
 	
 	// 0 - 16bit
 	// 1 - 32bit
-	uint8_t m_indexType = 0;
+	uint32_t m_indexType = 0;
 	
 	// 0 - bqVertexTriangle
 	// 1 - bqVertexTriangleSkinned
-	uint8_t m_vertexType = 0;
+	uint32_t m_vertexType = 0;
 	
-	uint16_t m_material = 0;
+	uint32_t m_material = 0;
 	uint32_t m_vertNum = 0;
 	uint32_t m_indNum = 0;
 	uint32_t m_vertBufSz = 0;
@@ -109,16 +124,13 @@ struct bqMDLChunkHeaderMesh
 	uint32_t m_reserved2 = 0;
 };
 
-struct bqMDLTextTableHeader
+// m_strSz - размер строки
+// после m_strSz идёт строка без завершающего нуля
+struct bqMDLChunkHeaderString
 {
-	// количество строк идущих после bqMDLTextTableHeader
-	uint16_t m_strNum = 0;
-	uint32_t m_reserved1 = 0;
+	uint32_t m_strSz = 0;
 };
 
-
-// далее идут строки в соответствии с количеством строк
-// из bqMDLTextTableHeader. Строки заканчиваются нулём.
 
 #endif
 

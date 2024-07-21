@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "../../DemoApp.h"
+#include "badcoiq/common/bqFileBuffer.h"
 
 
 ExampleBasics3DModel::ExampleBasics3DModel(DemoApp* app)
@@ -71,7 +72,7 @@ void ExampleBasics3DModel::OnDraw()
 		m_app->StopExample();
 		return;
 	}
-
+	
 	m_camera->Update(0.f);
 	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 

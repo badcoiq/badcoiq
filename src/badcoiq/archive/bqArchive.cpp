@@ -285,10 +285,12 @@ bool bqFrameworkImpl::_compress_fastlz(bqCompressionInfo* info)
 		bqMemory::free(output);
 		return false;
 	}
+	
+	// может быть утечка память так как realloc может вернут 0
+	// надо описать случай когда вернёт 0
+	uint8_t* output2 = (uint8_t*)bqMemory::realloc(output, compressed_size);
 
-	output = (uint8_t*)bqMemory::realloc(output, compressed_size);
-
-	info->m_dataCompressed = output;
+	info->m_dataCompressed = output2;
 	info->m_sizeCompressed = compressed_size;
 	return true;
 }

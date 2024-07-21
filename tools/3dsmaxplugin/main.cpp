@@ -5,6 +5,81 @@
 #include <string>
 #include <map>
 
+#include "fastlz.h"
+
+class FileBuffer
+{
+    uint8_t* m_data = 0;
+    uint32_t m_allocated = 0;
+    uint32_t m_add = 1024 * 1024;
+    uint32_t m_size = 0;
+
+    void _reallocate(uint32_t newSz)
+    {
+        uint32_t newAllocated = newSz + m_add;
+
+        uint8_t* newData = (uint8_t*)malloc(newAllocated);
+
+        if (m_data && newData)
+        {
+            memcpy(newData, m_data, m_allocated);
+            free(m_data);
+        }
+
+        if (newData)
+        {
+            m_data = newData;
+            m_allocated = newAllocated;
+        }
+    }
+
+public:
+    FileBuffer() 
+    {
+        Reserve(4);
+    }
+
+    ~FileBuffer() 
+    {
+        Clear();
+    }
+
+    void Clear()
+    {
+        if (m_data)
+        {
+            free(m_data);
+            m_data = 0;
+            m_allocated = 0;
+        }
+        m_size = 0;
+    }
+
+    void Reserve(uint32_t sz)
+    {
+        if (sz > m_allocated)
+            _reallocate(sz);
+    }
+
+    uint32_t Size() { return m_size; }
+    uint8_t* Data() { return m_data; }
+
+    void Add(void* data, uint32_t sz)
+    {
+        if (data && sz)
+        {
+            uint32_t newSz = m_size + sz;
+            if (newSz >= m_allocated)
+                _reallocate(newSz);
+
+            memcpy(&m_data[m_size], data, sz);
+
+            m_size = newSz;
+        }
+    }
+
+};
+
 class _Mesh
 {
 public:
@@ -60,14 +135,11 @@ public:
         }
     }
 
-    bqMDLFileHeader m_fileHeader;
-    bqMDLChunkHeader m_chunkHeader;
-    bqMDLChunkHeaderMesh m_chunkHeaderMesh;
-    bqMDLTextTableHeader m_textTableHeader;
-
     std::vector<std::string> m_strings;
     std::map<std::string, uint32_t> m_stringMap;
     std::vector<_Mesh*> m_meshes;
+
+    FileBuffer m_fileBuffer;
 
     uint32_t AddString(const char* str)
     {
@@ -113,57 +185,105 @@ public:
         if (f)
         {
             auto meshChunkNum = m_meshes.size();
+            auto stringChunkNum = m_strings.size();
 
-            fwrite(&m_fileHeader.m_bmld, 1, sizeof(m_fileHeader.m_bmld), f);
-            fwrite(&m_fileHeader.m_version, 1, sizeof(m_fileHeader.m_version), f);
+            bqMDLFileHeader fileHeader;
+            fileHeader.m_chunkNum = meshChunkNum
+                + stringChunkNum;
 
-            m_fileHeader.m_chunkNum = meshChunkNum;
-            fwrite(&m_fileHeader.m_chunkNum, 1, sizeof(m_fileHeader.m_chunkNum), f);
-            
-            uint32_t reserved[4] = { 0,0,0,0 };
-            fwrite(&reserved, 1, 4 * sizeof(uint32_t), f);
+            fwrite(&fileHeader, 1, sizeof(fileHeader), f);
 
-            // ================================== chunks
+         
             for (uint32_t i = 0; i < meshChunkNum; ++i)
             {
-                m_chunkHeader.m_chunkType = 1;
-                fwrite(&m_chunkHeader.m_chunkType, 1, sizeof(m_chunkHeader.m_chunkType), f);
-
-                uint32_t reserved[2] = { 0,0 };
-                fwrite(&reserved, 1, 2 * sizeof(uint32_t), f);
-
-                // ==================================bqMDLChunkHeaderMesh
                 auto mesh = m_meshes[i];
-                
-                fwrite(&mesh->m_chunkHeaderMesh.m_name, 1, sizeof(mesh->m_chunkHeaderMesh.m_name), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_indexType, 1, sizeof(mesh->m_chunkHeaderMesh.m_indexType), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_vertexType, 1, sizeof(mesh->m_chunkHeaderMesh.m_vertexType), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_material, 1, sizeof(mesh->m_chunkHeaderMesh.m_material), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_vertNum, 1, sizeof(mesh->m_chunkHeaderMesh.m_vertNum), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_indNum, 1, sizeof(mesh->m_chunkHeaderMesh.m_indNum), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_vertBufSz, 1, sizeof(mesh->m_chunkHeaderMesh.m_vertBufSz), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_indBufSz, 1, sizeof(mesh->m_chunkHeaderMesh.m_indBufSz), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_reserved1, 1, sizeof(mesh->m_chunkHeaderMesh.m_reserved1), f);
-                fwrite(&mesh->m_chunkHeaderMesh.m_reserved2, 1, sizeof(mesh->m_chunkHeaderMesh.m_reserved2), f);
-             
-                fwrite(mesh->m_vertices, 1, mesh->m_chunkHeaderMesh.m_vertBufSz, f);
-                fwrite(mesh->m_indices, 1, mesh->m_chunkHeaderMesh.m_indBufSz, f);
+
+                bqMDLChunkHeaderMesh meshChunkHeader;
+                meshChunkHeader = mesh->m_chunkHeaderMesh;
+
+                bqMDLChunkHeader chunkHeader;
+                chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Mesh;
+                chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+                    + sizeof(bqMDLChunkHeaderMesh)
+                    + meshChunkHeader.m_vertBufSz
+                    + meshChunkHeader.m_indBufSz;
+
+                m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+                m_fileBuffer.Add(&meshChunkHeader, sizeof(meshChunkHeader));
+                m_fileBuffer.Add(mesh->m_vertices, meshChunkHeader.m_vertBufSz);
+                m_fileBuffer.Add(mesh->m_indices, meshChunkHeader.m_indBufSz);
             }
 
-            // ==================================bqMDLTextTableHeader
-            m_textTableHeader.m_strNum = m_strings.size();
-            fwrite(&m_textTableHeader.m_strNum, 1, sizeof(m_textTableHeader.m_strNum), f);
-            fwrite(&m_textTableHeader.m_reserved1, 1, sizeof(m_textTableHeader.m_reserved1), f);
-            for (uint32_t i = 0; i < m_textTableHeader.m_strNum; ++i)
+            for (uint32_t i = 0; i < stringChunkNum; ++i)
             {
-                for (auto str : m_strings)
+                auto & str = m_strings[i];
+
+                bqMDLChunkHeaderString stringChunkHeader;
+                stringChunkHeader.m_strSz = str.size();
+
+                bqMDLChunkHeader chunkHeader;
+                chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_String;
+                chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+                    + sizeof(bqMDLChunkHeaderString)
+                    + stringChunkHeader.m_strSz;
+
+                m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+                m_fileBuffer.Add(&stringChunkHeader, sizeof(stringChunkHeader));
+                m_fileBuffer.Add(str.data(), str.size());
+            }
+            
+            fileHeader.m_compression = fileHeader.compression_fastlz;
+            if (fileHeader.m_compression)
+            {
+                switch (fileHeader.m_compression)
                 {
-                    fprintf(f, "%s", str.c_str());
-                    uint8_t nul = 0;
-                    fwrite(&nul, 1, 1, f);
+                case fileHeader.compression_fastlz:
+                default:
+                {
+                    auto sizeUncompressed = m_fileBuffer.Size();
+                    uint8_t* output = (uint8_t*)malloc(sizeUncompressed + (sizeUncompressed / 3));
+                    if (output)
+                    {
+                        int compressed_size = fastlz_compress_level(
+                            (int)2,
+                            m_fileBuffer.Data(),
+                            sizeUncompressed,
+                            output);
+
+                        if ((uint32_t)compressed_size >= sizeUncompressed)
+                        {
+                        }
+                        else
+                        {
+                            uint8_t* output2 = (uint8_t*)realloc(output, compressed_size);
+                            if (output2)
+                            {
+                                output = output2;
+
+                                fileHeader.m_cmpSz = compressed_size;
+                                fileHeader.m_uncmpSz = sizeUncompressed;
+                                fwrite(output, 1, compressed_size, f);
+
+                            }
+                        }
+
+                        free(output);
+                    }
+
+
+                }break;
                 }
             }
+            else
+            {
+                if(m_fileBuffer.Size() && m_fileBuffer.Data())
+                    fwrite(m_fileBuffer.Data(), 1, m_fileBuffer.Size(), f);
+            }
+            
+            fseek(f, 0, SEEK_SET);
+            fwrite(&fileHeader, 1, sizeof(fileHeader), f);
 
+           
             fclose(f);
         }
     }
@@ -460,12 +580,6 @@ public:
                     int ti2 = 1;
                     int ti3 = 2;
 
-                    // 0 1 2 - инв
-                    // 0 2 1 - 
-                    // 1 0 2 - 
-                    // 1 2 0 - 
-                    // 2 1 0 - 
-                    // 2 0 1 - 
                     int fvx1 = 0;
                     int fvx2 = 2;
                     int fvx3 = 1;
@@ -475,13 +589,6 @@ public:
                         Face* face = &faces[fi];
                         auto& faceNormal = mesh->getFaceNormal(fi);
                         
-                        // 0 1 2
-                        // 0 2 1
-                        // 1 0 2
-                        // 1 2 0
-                        // 2 1 0
-                        // 2 0 1
-
                         int vx1 = 0;
                         int vx2 = 1;
                         int vx3 = 2;
@@ -521,30 +628,7 @@ public:
                        meshVerts->m_normal[vx3] = vn.y;
                         ++meshVerts;
 
-                        //glambda(face, 0, fi);
-                        //glambda(face, 1, fi);
-                       // glambda(face, 2, fi);
-                        /*for (int o = 0; o < 3; ++o)
-                        {
-                            meshVerts->m_position[0] = verts[face->v[o]].x;
-                            meshVerts->m_position[1] = verts[face->v[o]].z;
-                            meshVerts->m_position[2] = verts[face->v[o]].y;
-
-                            auto rv = rVerts[face->getVert(o)];
-                            meshVerts->m_normal[0] = rv.rn.getNormal().x;
-                            meshVerts->m_normal[1] = rv.rn.getNormal().z * -1.f;
-                            meshVerts->m_normal[2] = rv.rn.getNormal().y;
-
-                            if (tVerts)
-                            {
-                                meshVerts->m_uv[0] = tVerts[mesh->tvFace[fi].t[o]].x;
-
-                                float V = tVerts[mesh->tvFace[fi].t[o]].y;
-                                meshVerts->m_uv[1] = 1.f - V;
-                            }
-
-                            ++meshVerts;
-                        }*/
+                     
                     }
 
                     meshVerts = newMesh->m_vertices;
@@ -577,29 +661,6 @@ public:
         
         m_mdl.Save(name);
 
-     //   auto root = ei->theScene;
-        
-        //if (root)
-        //{
-        //    /*FILE* f = 0;
-
-        //    char cname[0xffff];
-        //    WideCharToMultiByte(CP_UTF8, 0, name, -1, cname, 0xffff, 0, 0);
-        //    fopen_s(&f, cname, "wb");
-        //    if (f)
-        //    {
-        //        for (int i = 0; i < root->NumberOfChildren(); ++i)
-        //        {
-        //            _get_meshes(root->GetChildNode(i));
-        //        }
-
-        //        fclose(f);
-        //    }*/
-        //    for (int i = 0; i < root->NumberOfChildren(); ++i)
-        //    {
-        //        _get_meshes(root->GetChildNode(i));
-        //    }
-        //}
 
         return 1;
     }

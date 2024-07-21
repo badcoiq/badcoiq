@@ -44,6 +44,46 @@ bqMDL::~bqMDL()
 	Unload();
 }
 
+uint8_t* bqMDL::_decompress(const bqMDLFileHeader& fileHeader,
+	bqFileBuffer& fileBuffer,
+	uint32_t* szOut,
+	bqCompressorType ct)
+{
+	bqCompressionInfo cInfo;
+	cInfo.m_compressorType = ct;
+	
+	cInfo.m_sizeCompressed = fileHeader.m_cmpSz;
+	cInfo.m_dataCompressed = (uint8_t*)malloc(cInfo.m_sizeCompressed);
+	if (cInfo.m_dataCompressed)
+	{
+		fileBuffer.Read(cInfo.m_dataCompressed, cInfo.m_sizeCompressed);
+	}
+	else
+	{
+		return 0;
+	}
+
+	cInfo.m_sizeUncompressed = fileHeader.m_uncmpSz;
+	cInfo.m_dataUncompressed = (uint8_t*)malloc(cInfo.m_sizeUncompressed);
+	if (cInfo.m_dataUncompressed)
+	{
+		if (bqArchiveSystem::Decompress(&cInfo))
+		{
+			free(cInfo.m_dataCompressed);
+
+			*szOut = cInfo.m_sizeUncompressed;
+			return cInfo.m_dataUncompressed;
+		}
+		else
+		{
+			free(cInfo.m_dataUncompressed);
+		}
+	}
+
+	free(cInfo.m_dataCompressed);
+	return 0;
+}
+
 bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 {
 	Unload();
@@ -60,19 +100,9 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 			BQ_PTR_D(uint8_t, ptrr, ptr);
 
 			bqFileBuffer file(ptr, fileSz);
-			
-			bqMDLFileHeader fileHeader;
-			bqMDLChunkHeader chunkHeader;
-			bqMDLChunkHeaderMesh chunkHeaderMesh;
-			bqMDLTextTableHeader textTableHeader;
 
-			file.Read(&fileHeader.m_bmld, sizeof(fileHeader.m_bmld));
-			file.Read(&fileHeader.m_version, sizeof(fileHeader.m_version));
-			file.Read(&fileHeader.m_chunkNum, sizeof(fileHeader.m_chunkNum));
-			file.Read(&fileHeader.m_reserved1, sizeof(fileHeader.m_reserved1));
-			file.Read(&fileHeader.m_reserved2, sizeof(fileHeader.m_reserved2));
-			file.Read(&fileHeader.m_reserved3, sizeof(fileHeader.m_reserved3));
-			file.Read(&fileHeader.m_reserved4, sizeof(fileHeader.m_reserved4));
+			bqMDLFileHeader fileHeader;
+			file.Read(&fileHeader, sizeof(fileHeader));
 
 			if (fileHeader.m_bmld != 1818520930)
 			{
@@ -86,26 +116,39 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 				return false;
 			}
 
+			if (fileHeader.m_compression)
+			{
+				switch (fileHeader.m_compression)
+				{
+				case fileHeader.compression_fastlz:
+				default:
+					uint32_t dDataSz = 0;
+					uint8_t* dData = _decompress(fileHeader,
+						file, &dDataSz, bqCompressorType::fastlz);
+
+					if (dData)
+					{
+						m_compressedData = dData;
+						file = bqFileBuffer(dData, dDataSz);
+					}
+					break;
+				}
+			}
+
+			bqStringA stra;
+			bqArray<char8_t> straArray;
+
 			for (uint32_t i = 0; i < fileHeader.m_chunkNum; ++i)
 			{
-				file.Read(&chunkHeader.m_chunkType, sizeof(chunkHeader.m_chunkType));
-				file.Read(&chunkHeader.m_reserved1, sizeof(chunkHeader.m_reserved1));
-				file.Read(&chunkHeader.m_reserved2, sizeof(chunkHeader.m_reserved2));
+				bqMDLChunkHeader chunkHeader;
+				file.Read(&chunkHeader, sizeof(chunkHeader));
 
 				switch (chunkHeader.m_chunkType)
 				{
-				case 1: //bqMDLChunkHeaderMesh
+				case bqMDLChunkHeader::ChunkType_Mesh: //bqMDLChunkHeaderMesh
 				{
-					file.Read(&chunkHeaderMesh.m_name, sizeof(chunkHeaderMesh.m_name));
-					file.Read(&chunkHeaderMesh.m_indexType, sizeof(chunkHeaderMesh.m_indexType));
-					file.Read(&chunkHeaderMesh.m_vertexType, sizeof(chunkHeaderMesh.m_vertexType));
-					file.Read(&chunkHeaderMesh.m_material, sizeof(chunkHeaderMesh.m_material));
-					file.Read(&chunkHeaderMesh.m_vertNum, sizeof(chunkHeaderMesh.m_vertNum));
-					file.Read(&chunkHeaderMesh.m_indNum, sizeof(chunkHeaderMesh.m_indNum));
-					file.Read(&chunkHeaderMesh.m_vertBufSz, sizeof(chunkHeaderMesh.m_vertBufSz));
-					file.Read(&chunkHeaderMesh.m_indBufSz, sizeof(chunkHeaderMesh.m_indBufSz));
-					file.Read(&chunkHeaderMesh.m_reserved1, sizeof(chunkHeaderMesh.m_reserved1));
-					file.Read(&chunkHeaderMesh.m_reserved2, sizeof(chunkHeaderMesh.m_reserved2));
+					bqMDLChunkHeaderMesh chunkHeaderMesh;
+					file.Read(&chunkHeaderMesh, sizeof(chunkHeaderMesh));
 
 					if (chunkHeaderMesh.m_indexType > 1)
 					{
@@ -143,8 +186,6 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 						return false;
 					}
 
-					//uint8_t* m_vertices = nullptr;
-					//uint8_t* m_indices = nullptr;
 					bqMesh* newM = new bqMesh;
 					newM->Allocate(chunkHeaderMesh.m_vertNum,
 						chunkHeaderMesh.m_indNum,
@@ -161,43 +202,34 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 					m.m_chunkHeaderMesh = chunkHeaderMesh;
 					m_meshes.push_back(m);
 				}break;
+				
+				case bqMDLChunkHeader::ChunkType_String:
+				{
+					bqMDLChunkHeaderString chunkHeaderString;
+					file.Read(&chunkHeaderString, sizeof(chunkHeaderString));
+					if (!chunkHeaderString.m_strSz)
+					{
+						bqLog::PrintError("bqMDL: bad string size\n");
+						return false;
+					}
+					
+					straArray.clear();
+					straArray.reserve(chunkHeaderString.m_strSz);
+					straArray.m_size = chunkHeaderString.m_strSz;
+
+					file.Read(straArray.m_data, straArray.m_size);
+					
+					stra.clear();
+					stra.append(straArray.m_data, straArray.m_size);
+					m_strings.push_back(stra);
+
+				}break;
 
 				default:
 					bqLog::PrintError("bqMDL: bad chunk type [%u]\n", chunkHeader.m_chunkType);
 					return false;
 				}
 			}
-
-			// в конце идут строки
-			file.Read(&textTableHeader.m_strNum, sizeof(textTableHeader.m_strNum));
-			file.Read(&textTableHeader.m_reserved1, sizeof(textTableHeader.m_reserved1));
-			
-			bqStringA stra;
-			/*
-			for (uint32_t i = 0; i < textTableHeader.m_strNum; ++i)
-			{
-			}*/
-			while (!file.Eof())
-			{
-				uint8_t byte = 0;
-				file.Read(&byte, 1);
-
-				if (!byte)
-				{
-					if (stra.size())
-					{
-						m_strings.push_back(stra);
-						stra.clear();
-					}
-				}
-				else
-				{
-					stra.push_back(byte);
-				}
-			}
-			//bqDestroy(ptr);
-			if (stra.size())
-				m_strings.push_back(stra);
 		}
 
 		if (free_bqMesh)
@@ -211,6 +243,12 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 
 void bqMDL::Unload()
 {
+	if (m_compressedData)
+	{
+		free(m_compressedData);
+		m_compressedData = 0;
+	}
+
 	FreebqMesh();
 	for (uint32_t i = 0; i < m_meshes.m_size; ++i)
 	{

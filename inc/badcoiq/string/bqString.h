@@ -86,6 +86,7 @@ public:
 		assign(str); // просто присвоение
 	}
 
+
 	bqString_base(const bqString_base<char_type>& str)
 	{
 		_reallocate(m_allocated);
@@ -603,6 +604,7 @@ public:
 	bqString(const char*);
 	bqString(const wchar_t*);
 	bqString(const char8_t*);
+	bqString(const char8_t*, uint32_t sz);
 	bqString(const char16_t*);
 	bqString(const char32_t*);
 	bqString(const bqString&);
@@ -617,13 +619,16 @@ public:
 	void assign(const char*);
 	void assign(const wchar_t*);
 	void assign(const char8_t*);
+	void assign(const char8_t*, uint32_t sz);
 	void assign(const char16_t*);
 	void assign(const char32_t*);
 	void assign(const bqString&);
 
 	void append(const char*);
+	void append(const char*, uint32_t sz);
 	void append(const wchar_t*);
 	void append(const char8_t*);
+	void append(const char8_t*, uint32_t sz);
 	void append(const char16_t*);
 	void append(const char32_t*);
 	void append(const bqString&);
