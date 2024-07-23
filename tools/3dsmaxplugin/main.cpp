@@ -683,9 +683,20 @@ public:
         bone newBone;
         printf("New bone\n");
         
-        wprintf(L"Name: %s\n", node->GetName());
+        //wprintf(L"Name: %s\n", node->GetName());
         
-        newBone.m_name
+        MaxSDK::Util::MaxString mstr;
+        mstr.AllocBuffer(0xfff);
+        mstr.SetUTF16(node->GetName());
+
+        size_t len = 0;
+        auto astr = mstr.ToUTF8(&len);
+        if (len)
+        {
+            newBone.m_name.append(astr.data());
+            printf("Name: %s\n", newBone.m_name.c_str());
+        }
+
         
         Matrix3 W = node->GetNodeTM(m_timeValue);
         printf("Matrix: \n\t%f %f %f\n\t%f %f %f\n\t%f %f %f\n\n",
@@ -726,9 +737,30 @@ public:
             ScaleValue sc;
             sC->GetValue(m_timeValue, &sc);
 
-            printf("Scale: %f %f %f [%f]\n", sc.s.x, sc.s.y, sc.s.z);
+            printf("Scale: %f %f %f\n", sc.s.x, sc.s.y, sc.s.z);
         }
 
+        auto parent = node->GetParentNode();
+        if (parent)
+        {
+            mstr.SetUTF16(parent->GetName());
+
+            size_t len = 0;
+            auto astr = mstr.ToUTF8(&len);
+            if (len)
+            {
+                std::string  st;
+                st.append(astr.data());
+
+                printf("Parent name: %s\n", st.c_str());
+            }
+        }
+
+        m_bones.push_back(newBone);
+    }
+
+    void _skeletonFindParents()
+    {
 
     }
 
