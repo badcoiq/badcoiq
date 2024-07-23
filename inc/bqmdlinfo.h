@@ -84,10 +84,9 @@ struct bqMDLChunkHeader
 		ChunkType__null,
 		ChunkType_Mesh,
 		ChunkType_String,
+		ChunkType_Skeleton,
 	};
 
-	// 1 - mesh chunk
-	// 2 - string
 	uint32_t m_chunkType = ChunkType__null;
 	
 	// размер. bqMDLChunkHeader + header конкретного чанка 
@@ -105,7 +104,9 @@ struct bqMDLChunkHeader
 
 struct bqMDLChunkHeaderMesh
 {
-	uint32_t m_name = 0;
+	// все строки лежат отдельно.
+	// здесь и далее указываются индексы строк
+	uint32_t m_nameIndex = 0;
 	
 	// 0 - 16bit
 	// 1 - 32bit
@@ -129,6 +130,24 @@ struct bqMDLChunkHeaderMesh
 struct bqMDLChunkHeaderString
 {
 	uint32_t m_strSz = 0;
+};
+
+
+// сразу после идут кости в соответствии с количеством (m_boneNum)
+struct bqMDLChunkHeaderSkeleton
+{
+	// количество костей
+	uint32_t m_boneNum = 0;
+};
+struct bqMDLBoneData
+{
+	uint32_t m_nameIndex = 0;
+	// индекс родителя
+	// -1 значит что нет родителя
+	int32_t m_parent = -1;
+	float m_position[3];
+	float m_scale[3];
+	float m_rotation[4]; // quaternion
 };
 
 

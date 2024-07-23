@@ -118,17 +118,17 @@ public:
     uint8_t* m_indices = 0;
 };
 
-class bqMDL
+class bqMDLMax
 {
     uint32_t m_stringIndex = 0;
 public:
-    bqMDL() 
+    bqMDLMax()
     {
         AllocConsole();
         freopen("CONOUT$", "w", stdout);
         //printf("TEST\n");
     }
-    ~bqMDL() 
+    ~bqMDLMax()
     {
         for (size_t i = 0, sz = m_meshes.size(); i < sz; ++i)
         {
@@ -141,6 +141,16 @@ public:
     std::vector<_Mesh*> m_meshes;
 
     FileBuffer m_fileBuffer;
+
+    struct bone
+    {
+        std::string m_name;
+        std::string m_parentName;
+        int m_parent = -1;
+
+        bqMDLBoneData m_boneData;
+    };
+    std::vector<bone> m_bones;
 
     uint32_t AddString(const char* str)
     {
@@ -192,6 +202,11 @@ public:
             fileHeader.m_chunkNum = meshChunkNum
                 + stringChunkNum;
 
+            if (m_bones.size())
+            {
+                ++fileHeader.m_chunkNum; // bqMDLChunkHeaderSkeleton
+            }
+
             fwrite(&fileHeader, 1, sizeof(fileHeader), f);
 
          
@@ -231,6 +246,28 @@ public:
                 m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
                 m_fileBuffer.Add(&stringChunkHeader, sizeof(stringChunkHeader));
                 m_fileBuffer.Add(str.data(), str.size());
+            }
+
+            if (m_bones.size())
+            {
+                size_t boneNum = m_bones.size();
+
+                bqMDLChunkHeader chunkHeader;
+                chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Skeleton;
+                chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+                    + sizeof(bqMDLChunkHeaderSkeleton)
+                    + (sizeof(bqMDLBoneData) * boneNum);
+                m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+
+                bqMDLChunkHeaderSkeleton chunkHeaderSkeleton;
+                chunkHeaderSkeleton.m_boneNum = boneNum;
+                m_fileBuffer.Add(&chunkHeaderSkeleton, sizeof(chunkHeaderSkeleton));
+
+                for (uint32_t i = 0; i < boneNum; ++i)
+                {
+                    auto& bone = m_bones[i];
+                    m_fileBuffer.Add(&bone.m_boneData, sizeof(bone.m_boneData));
+                }
             }
             
             fileHeader.m_compression = fileHeader.compression_fastlz;
@@ -288,20 +325,38 @@ public:
             fclose(f);
         }
     }
+
+    void _skeletonFindParents()
+    {
+        // построение иерархии (то из чего и состоит скелет)
+        // будет происходить поиском имени родителя.
+
+        auto boneNum = m_bones.size();
+        if (boneNum)
+        {
+            for (size_t i = 0; i < boneNum; ++i)
+            {
+                auto& bone = m_bones[i];
+                bone.m_parent = -1;
+
+                for (size_t pi = 0; pi < boneNum; ++pi)
+                {
+                    auto& secondBone = m_bones[pi];
+
+                    if (bone.m_parentName == secondBone.m_name)
+                    {
+                        bone.m_parent = pi;
+                        break;
+                    }
+                }
+            }
+        }
+    }
 };
 
 class Plugin : public SceneExport
 {
-    bqMDL m_mdl;
-    void _get_meshes(INode* node)
-    {
-       /* node->geti
-
-        for (int i = 0; i < node->NumberOfChildren(); ++i)
-        {
-            _get_meshes(node->GetChildNode(i));
-        }*/
-    }
+    bqMDLMax m_mdl;
 public:
     Plugin() {}
     virtual ~Plugin()
@@ -354,27 +409,6 @@ public:
     }
     virtual void ShowAbout(HWND hWnd) {}
 
-    /*void _do_write(FILE* f, INode* node)
-    {
-        auto name = node->GetName();
-        if (name)
-        {
-            char cname[0xffff];
-            WideCharToMultiByte(CP_UTF8, 0, name, -1, cname, 0xffff, 0, 0);
-
-            fwrite(cname, 1, strlen(cname), f);
-        }
-        else
-        {
-            fwrite("[unk]", 1, 5, f);
-        }
-        fwrite("\n", 1, 1, f);
-
-        for (int i = 0; i < node->NumberOfChildren(); ++i)
-        {
-            _do_write(f, node->GetChildNode(i));
-        }
-    }*/
 
     class SceneEntry 
     {
@@ -472,7 +506,7 @@ public:
                 uint8_t indexType = (newVertNum < 0xffff) ? 0 : 1;
 
                 bqMDLChunkHeaderMesh headerMesh;
-                headerMesh.m_name = nameIndex;
+                headerMesh.m_nameIndex = nameIndex;
                 headerMesh.m_indexType = indexType;
                 headerMesh.m_vertNum = newVertNum;
                 headerMesh.m_indNum = newVertNum;
@@ -668,19 +702,9 @@ public:
         }
     }
 
-    struct bone
-    {
-        std::string m_name;
-        int m_parent = -1;
-
-        Matrix3 m_matrix;
-        Point3 m_position;
-    };
-    std::vector<bone> m_bones;
-
     void _onBone(INode* node, Object* obj)
     {
-        bone newBone;
+        bqMDLMax::bone newBone;
         printf("New bone\n");
         
         //wprintf(L"Name: %s\n", node->GetName());
@@ -689,12 +713,17 @@ public:
         mstr.AllocBuffer(0xfff);
         mstr.SetUTF16(node->GetName());
 
+
         size_t len = 0;
         auto astr = mstr.ToUTF8(&len);
         if (len)
         {
             newBone.m_name.append(astr.data());
             printf("Name: %s\n", newBone.m_name.c_str());
+        }
+        else
+        {
+            return;
         }
 
         
@@ -708,9 +737,11 @@ public:
         Control* rC = node->GetTMController()->GetRotationController();
         Control* sC = node->GetTMController()->GetScaleController();
 
+        Point3 pos;
+        Quat rot;
+        ScaleValue sc;
         if (pC)
         {
-            Point3 pos;
             pC->GetValue(m_timeValue, &pos);
 
             printf("Position: %f %f %f\n", pos.x, pos.y, pos.z);
@@ -723,21 +754,31 @@ public:
                 T.GetRow(1).x, T.GetRow(1).y, T.GetRow(1).z,
                 T.GetRow(2).x, T.GetRow(2).y, T.GetRow(2).z);
         }
+        else
+        {
+            return;
+        }
 
         if (rC)
         {
-            Quat rot;
             rC->GetValue(m_timeValue, &rot);
 
             printf("Rotation: %f %f %f [%f]\n", rot.x, rot.y, rot.z, rot.w);
         }
+        else
+        {
+            return;
+        }
 
         if (sC)
         {
-            ScaleValue sc;
             sC->GetValue(m_timeValue, &sc);
 
             printf("Scale: %f %f %f\n", sc.s.x, sc.s.y, sc.s.z);
+        }
+        else
+        {
+            return;
         }
 
         auto parent = node->GetParentNode();
@@ -749,20 +790,36 @@ public:
             auto astr = mstr.ToUTF8(&len);
             if (len)
             {
-                std::string  st;
-                st.append(astr.data());
+                newBone.m_parentName.append(astr.data());
 
-                printf("Parent name: %s\n", st.c_str());
+                printf("Parent name: %s\n", newBone.m_parentName.c_str());
+            }
+            else
+            {
+                return;
             }
         }
+        else
+        {
+            return;
+        }
 
-        m_bones.push_back(newBone);
+        newBone.m_boneData.m_nameIndex = m_mdl.AddString(node->GetName());
+        newBone.m_boneData.m_position[0] = pos.x;
+        newBone.m_boneData.m_position[1] = pos.y;
+        newBone.m_boneData.m_position[2] = pos.z;
+        newBone.m_boneData.m_scale[0] = sc.s.x;
+        newBone.m_boneData.m_scale[1] = sc.s.y;
+        newBone.m_boneData.m_scale[2] = sc.s.z;
+        newBone.m_boneData.m_rotation[0] = rot.x;
+        newBone.m_boneData.m_rotation[1] = rot.y;
+        newBone.m_boneData.m_rotation[2] = rot.z;
+        newBone.m_boneData.m_rotation[3] = rot.w;
+
+        m_mdl.m_bones.push_back(newBone);
     }
 
-    void _skeletonFindParents()
-    {
-
-    }
+    
 
     virtual int DoExport(const MCHAR* name, ExpInterface* ei, Interface* ip, BOOL suppressPrompts = FALSE, DWORD options = 0)
     {
@@ -787,6 +844,8 @@ public:
             }
             
         }
+
+        m_mdl._skeletonFindParents();
         
         m_mdl.Save(name);
 

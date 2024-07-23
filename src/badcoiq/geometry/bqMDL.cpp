@@ -225,6 +225,23 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 
 				}break;
 
+				case bqMDLChunkHeader::ChunkType_Skeleton:
+				{
+					bqMDLChunkHeaderSkeleton chunkHeaderSkeleton;
+					file.Read(&chunkHeaderSkeleton, sizeof(chunkHeaderSkeleton));
+					if (!chunkHeaderSkeleton.m_boneNum)
+					{
+						bqLog::PrintError("bqMDL: bad m_boneNum\n");
+						return false;
+					}
+
+					for (uint32_t bi = 0; bi < chunkHeaderSkeleton.m_boneNum; ++bi)
+					{
+						bqMDLBoneData boneData;
+						file.Read(&boneData, sizeof(boneData));
+					}
+				}break;
+
 				default:
 					bqLog::PrintError("bqMDL: bad chunk type [%u]\n", chunkHeader.m_chunkType);
 					return false;
@@ -236,6 +253,8 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 			FreebqMesh();
 
 		printf("Load end... %u meshes\n", m_meshes.m_size);
+
+
 		return true;
 	}
 	return false;
