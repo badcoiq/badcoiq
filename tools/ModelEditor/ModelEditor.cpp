@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ModelEditor.h"
 #include "badcoiq/gs/bqGS.h"
+#include "badcoiq/framework/bqPopupData.h"
 
 int main(int argc, char* argv[])
 {

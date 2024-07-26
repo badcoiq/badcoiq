@@ -27,58 +27,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_MDL_H__
-#define __BQ_MDL_H__
-#ifdef BQ_WITH_MESH
+#ifndef __BQ_POPUPDATA_H__
+#define __BQ_POPUPDATA_H__
 
-#include "badcoiq/geometry/bqAABB.h"
-#include "badcoiq/geometry/bqMesh.h"
-#include "badcoiq/geometry/bqSkeleton.h"
-#include "badcoiq/archive/bqArchive.h"
-#include "badcoiq/common/bqFileBuffer.h"
-#include "badcoiq/gs/bqGS.h"
+#include "badcoiq/containers/bqArray.h"
+#include "badcoiq/string/bqString.h"
 
-#include "bqmdlinfo.h"
-
-// 
-class bqMDL
+class bqPopupData
 {
-	struct _mesh
-	{
-		bqMesh* m_mesh = 0;
-		bqGPUMesh* m_GPUmesh = 0;
-		bqMDLChunkHeaderMesh m_chunkHeaderMesh;
-		bqShaderType m_shaderType = bqShaderType::Standart;
-	};
-
-	bqArray<_mesh> m_meshes;
-	bqArray<bqStringA> m_strings;
-	uint8_t* _decompress(const bqMDLFileHeader&, 
-		bqFileBuffer& , 
-		uint32_t*, bqCompressorType);
-	uint8_t* m_compressedData = 0;
-
-	bqSkeleton* m_skeleton = 0;
-
-
-
-public:
-	bqMDL();
-	~bqMDL();
-	BQ_PLACEMENT_ALLOCATOR(bqMDL);
-
-	bool Load(const char*, bqGS*, bool free_bqMesh);
-	void Unload();
 	
-	void FreebqMesh();
-	size_t GetMeshNum() { return m_meshes.m_size; }
-	bqGPUMesh* GetGPUMesh(size_t i) { return m_meshes.m_data[i].m_GPUmesh; }
-	bqSkeleton* GetSkeleton() { return m_skeleton; }
-	bqShaderType GetShaderType(size_t i) { return m_meshes.m_data[i].m_shaderType; }
+	struct Item
+	{
+		bqString m_title;
+		bqString m_shortcutText;
+		void(*m_callback)() = 0;
+	};
+	bqArray<Item> m_items;
+public:
+	bqPopupData() {}
+	~bqPopupData() {}
 
+	void AddItem(const char* title, const char* shortcut, void(*callback)())
+	{
+		Item item;
+		item.m_callback = callback;
+		item.m_shortcutText = shortcut;
+		item.m_title = title;
+		m_items.push_back(item);
+	}
+
+	size_t GetItemsNum() { return m_items.m_size; }
+	Item* GetItems() { return m_items.m_data; }
 };
 
-
-#endif
 #endif
 

@@ -186,6 +186,8 @@ public:
 #endif
 
 	static bqVec2i GetDesktopWindowSize();
+
+	static void ShowPopup(bqPopupData*);
 };
 
 #endif

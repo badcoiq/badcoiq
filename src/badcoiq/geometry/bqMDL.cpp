@@ -189,7 +189,10 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 					bqMesh* newM = new bqMesh;
 					newM->Allocate(chunkHeaderMesh.m_vertNum,
 						chunkHeaderMesh.m_indNum,
-						(chunkHeaderMesh.m_vertexType == 0) ? false : true);
+						(chunkHeaderMesh.m_vertexType == bqMDLChunkHeaderMesh::VertexType_Triangle) 
+						? false : true);
+
+					
 
 					file.Read(newM->GetVBuffer(), chunkHeaderMesh.m_vertBufSz);
 					file.Read(newM->GetIBuffer(), chunkHeaderMesh.m_indBufSz);
@@ -197,10 +200,39 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 					//newM->GenerateNormals(true);
 
 					_mesh m;
+					if (chunkHeaderMesh.m_vertexType == bqMDLChunkHeaderMesh::VertexType_Triangle)
+						m.m_shaderType = bqShaderType::Standart;
+					else
+						m.m_shaderType = bqShaderType::StandartSkinned;
 					m.m_mesh = newM;
 					m.m_GPUmesh = gs->SummonMesh(newM);
 					m.m_chunkHeaderMesh = chunkHeaderMesh;
 					m_meshes.push_back(m);
+
+					/*if (chunkHeaderMesh.m_vertexType == bqMDLChunkHeaderMesh::VertexType_Triangle)
+					{
+						printf("No weights\n");
+					}
+					else
+					{
+						bqVertexTriangleSkinned* V = (bqVertexTriangleSkinned*)newM->GetVBuffer();
+						for (uint32_t o = 0; o < newM->GetInfo().m_vCount; ++o)
+						{
+							printf("%f %f %f %f %u %u %u %u\n", 
+								V->Weights.x, 
+								V->Weights.y, 
+								V->Weights.z, 
+								V->Weights.w,
+								V->BoneInds.x,
+								V->BoneInds.y,
+								V->BoneInds.z,
+								V->BoneInds.w);
+
+							++V;
+						}
+
+					}*/
+
 				}break;
 				
 				case bqMDLChunkHeader::ChunkType_String:
@@ -235,11 +267,37 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 						return false;
 					}
 
+					m_skeleton = new bqSkeleton;
+
 					for (uint32_t bi = 0; bi < chunkHeaderSkeleton.m_boneNum; ++bi)
 					{
 						bqMDLBoneData boneData;
 						file.Read(&boneData, sizeof(boneData));
+
+						m_skeleton->AddJoint(
+							bqQuaternion(boneData.m_rotation[0],
+								boneData.m_rotation[1],
+								boneData.m_rotation[2],
+								boneData.m_rotation[3]), 
+							bqVec4(boneData.m_position[0],
+								boneData.m_position[1],
+								boneData.m_position[2],
+								0.0), 
+							bqVec4(boneData.m_scale[0],
+								boneData.m_scale[1],
+								boneData.m_scale[2],
+								0.0),
+							m_strings[boneData.m_nameIndex].c_str(),
+							boneData.m_parent);
+
+
+						/*printf("BONE[%u] POS:[%f %f %f]\n", bi,
+							boneData.m_position[0],
+							boneData.m_position[1],
+							boneData.m_position[2]);*/
 					}
+
+					
 				}break;
 
 				default:
@@ -251,6 +309,26 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 
 		if (free_bqMesh)
 			FreebqMesh();
+
+		if (m_skeleton)
+		{
+			m_skeleton->m_preRotation.SetRotation(
+				bqQuaternion(PIf * 0.5f, 0.f, 0.f));
+			m_skeleton->CalculateBind();
+			m_skeleton->Update();
+
+			
+			auto & joints = m_skeleton->GetJoints();
+			for (int i = 0; i < joints.m_size; ++i)
+			{
+				auto& joint = joints.m_data[i];
+
+				if (joint.m_base.m_parentIndex != -1)
+					printf("Bone [%s] Parent [%s]\n", joint.m_base.m_name, joints.m_data[joint.m_base.m_parentIndex].m_base.m_name);
+				else
+					printf("Bone [%s] is root\n", joint.m_base.m_name);
+			}
+		}
 
 		printf("Load end... %u meshes\n", m_meshes.m_size);
 
@@ -275,6 +353,8 @@ void bqMDL::Unload()
 	}
 	m_meshes.clear();
 	m_strings.clear();
+
+	BQ_SAFEDESTROY(m_skeleton);
 }
 
 void bqMDL::FreebqMesh()

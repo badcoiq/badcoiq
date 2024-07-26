@@ -60,7 +60,9 @@ struct bqJointBase
 	// если у джоинта нет родителя, то индекс -1
 	int32_t m_parentIndex = -1;
 
-	char m_name[50];
+	// Максимальная длина имени которое я видел 55 символов
+	// Надеюсь 100 хватит
+	char m_name[101];
 };
 
 struct bqJointData

@@ -93,7 +93,7 @@ bool ExampleBasicsMDL::Init()
 	m_gs->DisableBackFaceCulling();
 
 	m_mdl = new bqMDL;
-	if (!m_mdl->Load(bqFramework::GetPath("../data/models/tea.mdl").c_str(), m_gs, true))
+	if (!m_mdl->Load(bqFramework::GetPath("../data/models/Jill.mdl").c_str(), m_gs, true))
 	{
 		BQ_SAFEDESTROY(m_mdl);
 		return false;
@@ -134,20 +134,36 @@ void ExampleBasicsMDL::OnDraw()
 	bqFramework::SetMatrix(bqMatrixType::View, &m_camera->m_viewMatrix);
 	bqFramework::SetMatrix(bqMatrixType::Projection, &m_camera->m_projectionMatrix);
 
-	m_gs->SetShader(bqShaderType::Standart, 0);
 	bqMat4 W, WVP;
 	bqFramework::SetMatrix(bqMatrixType::World, &W);
 	WVP = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * W;
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
+
 	bqMaterial material;
-	material.m_shaderType = bqShaderType::Standart;
-	material.m_sunPosition.Set(1.f, 20.f, 1.f);
-	material.m_maps[0].m_texture = m_texture;
 	m_gs->SetMaterial(&material);
 	m_gs->EnableBackFaceCulling();
+
+	material.m_sunPosition.Set(1.f, 20.f, 1.f);
+	material.m_maps[0].m_texture = m_texture;
+	
+
+	auto skeleton = m_mdl->GetSkeleton();
+	if (skeleton)
+	{
+		auto joints = &skeleton->GetJoints().m_data[0];
+		if (joints) {
+			for (size_t o = 0; o < skeleton->GetJoints().m_size; ++o) {
+				bqFramework::GetMatrixSkinned()[o] = joints[o].m_data.m_matrixFinal;
+			}
+		}
+	}
+
 	for (size_t i = 0; i < m_mdl->GetMeshNum(); ++i)
 	{
 		auto gpumesh = m_mdl->GetGPUMesh(i);
+
+		material.m_shaderType = m_mdl->GetShaderType(i);
+		m_gs->SetShader(material.m_shaderType, 0);
 
 		/*if (m_model->m_meshBuffers.m_data[i]->m_texture)
 			material.m_maps[0].m_texture = m_model->m_meshBuffers.m_data[i]->m_texture;
@@ -158,7 +174,77 @@ void ExampleBasicsMDL::OnDraw()
 		m_gs->Draw();
 	}
 	
+
+	float a = 0.f;
+	if (bqInput::IsKeyHold(bqInput::KEY_Z))
+		a = 0.1f;
+	if (bqInput::IsKeyHold(bqInput::KEY_X))
+		a = -0.1f;
+
+	if (skeleton)
+	{
+		auto bone = skeleton->GetJoint("head neck upper");
+		if (bone)
+		{
+			bqQuaternion q;
+			q.Set(0, a, 0);
+
+			bone->m_data.m_transformation.m_base.m_rotation *= q;
+			bone->m_data.m_transformation.CalculateMatrix();
+			skeleton->Update();
+		}
+	}
+
 	m_app->DrawGrid(14, (float)m_camera->m_position.y);
+	
+
+	m_gs->SetShader(bqShaderType::Line3D, 0);
+	m_gs->DisableDepth();
+
+	if (skeleton)
+	{
+		auto joints = &skeleton->GetJoints().m_data[0];
+		if (skeleton->GetJoints().m_size)
+		{
+			size_t jsz = skeleton->GetJoints().m_size;
+			for (size_t i = 0; i < jsz; ++i)
+			{
+				bqVec4 p;
+				bqVec4 p2;
+				float sz = 0.3f;
+				p = bqVec4(sz, 0., 0., 0.);
+
+
+				bqMat4 mI2 = joints[i].m_data.m_matrixBindInverse;
+				mI2.Invert();
+
+				bqMat4 mI = joints[i].m_data.m_matrixFinal * mI2;
+
+				bqMath::Mul(mI, p, p2);
+				m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorRed);
+
+				p = bqVec4(0., sz, 0., 0.);
+				bqMath::Mul(mI, p, p2);
+				m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorLime);
+
+				p = bqVec4(0., 0., sz, 0.);
+				bqMath::Mul(mI, p, p2);
+				m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorBlue);
+
+				if (joints[i].m_base.m_parentIndex != -1)
+				{
+					auto parent = joints[joints[i].m_base.m_parentIndex];
+
+					bqMat4 _mI2 = parent.m_data.m_matrixBindInverse;
+					_mI2.Invert();
+					bqMat4 _mI = parent.m_data.m_matrixFinal * _mI2;
+					m_gs->DrawLine3D(mI.m_data[3], _mI.m_data[3], bq::ColorWhite);
+				}
+			}
+		}
+	}
+
+	m_gs->EnableDepth();
 
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();

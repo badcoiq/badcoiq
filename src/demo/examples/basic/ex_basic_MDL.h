@@ -35,6 +35,9 @@ class ExampleBasicsMDL : public DemoExample
 {
 	bqCamera* m_camera = 0;
 
+
+	float m_rotationAngle = 0.f;
+
 	//bqGPUMesh* m_mesh = 0;
 	//bqSceneObject* m_sceneObject = 0;
 	//bqSkeleton* m_skeleton = 0;

@@ -47,8 +47,8 @@ struct bqMDLMeshVertex
 struct bqMDLMeshVertexSkinned
 {
 	bqMDLMeshVertex m_base;
-	uint8_t m_boneInds[4];
-	float m_weights[4];
+	uint8_t m_boneInds[4] = {0,0,0,0};
+	float m_weights[4] = {0.f, 0.f,0.f,0.f};
 };
 
 struct bqMDLFileHeader
@@ -108,13 +108,22 @@ struct bqMDLChunkHeaderMesh
 	// здесь и далее указываются индексы строк
 	uint32_t m_nameIndex = 0;
 	
-	// 0 - 16bit
-	// 1 - 32bit
-	uint32_t m_indexType = 0;
+	float m_aabbMin[3] = { 0.f,0.f,0.f };
+	float m_aabbMax[3] = { 0.f,0.f,0.f };
+
+	enum
+	{
+		IndexType_16bit,
+		IndexType_32bit,
+	};
+	uint32_t m_indexType = IndexType_16bit;
 	
-	// 0 - bqVertexTriangle
-	// 1 - bqVertexTriangleSkinned
-	uint32_t m_vertexType = 0;
+	enum
+	{
+		VertexType_Triangle,
+		VertexType_TriangleSkinned,
+	};
+	uint32_t m_vertexType = VertexType_Triangle;
 	
 	uint32_t m_material = 0;
 	uint32_t m_vertNum = 0;

@@ -133,5 +133,7 @@ class bqPhysicsShapeSphere;
 class bqPhysicsDebugDraw;
 #endif
 
+class bqPopupData;
+
 #endif
 

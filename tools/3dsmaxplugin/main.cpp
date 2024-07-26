@@ -1,11 +1,17 @@
 ﻿#include "Max.h"
-#include "bqmdlinfo.h"
+#include <modstack.h>
+
+#include <iskin.h>
+#include <iskin.h>
+
+#include "CS/BIPEXP.H"
 
 #include <vector>
 #include <string>
 #include <map>
 
 #include "fastlz.h"
+#include "bqmdlinfo.h"
 
 class FileBuffer
 {
@@ -86,14 +92,23 @@ public:
     _Mesh(const bqMDLChunkHeaderMesh& header)
     {
         m_chunkHeaderMesh = header;
+        
+        m_stride = sizeof(bqMDLMeshVertex);
+        if (header.m_vertexType == header.VertexType_TriangleSkinned)
+            m_stride = sizeof(bqMDLMeshVertexSkinned);
 
-        m_vertices = (bqMDLMeshVertex*)malloc(header.m_vertBufSz);
+        m_vertices = (uint8_t*)malloc(header.m_vertBufSz);
+        
+
+
         if (m_vertices)
         {
+            uint8_t* v = m_vertices;
+
             for (uint32_t i = 0; i < header.m_vertNum; ++i)
             {
-                auto v = &m_vertices[i];
-                memset(v, 0, sizeof(bqMDLMeshVertex));
+                memset(v, 0, m_stride);
+                v += m_stride;
             }
 
             m_indices = (uint8_t*)malloc(header.m_indBufSz);
@@ -114,257 +129,42 @@ public:
     }
     bqMDLChunkHeaderMesh m_chunkHeaderMesh;
 
-    bqMDLMeshVertex* m_vertices = 0;
+    uint8_t* m_vertices = 0;
+    uint32_t m_stride = 0;
+
     uint8_t* m_indices = 0;
+
+    INode* m_node = 0;
+    TriObject* m_triObj = 0;
+    ISkin* m_skin = 0;
+    ISkinContextData* m_skinData = 0;
 };
 
-class bqMDLMax
+
+class Plugin : public SceneExport
 {
     uint32_t m_stringIndex = 0;
+    std::vector<std::string> m_strings;
+    std::map<std::string, uint32_t> m_stringMap;
+    std::vector<_Mesh*> m_meshes;
+    FileBuffer m_fileBuffer;
+
 public:
-    bqMDLMax()
+    Plugin() 
     {
         AllocConsole();
         freopen("CONOUT$", "w", stdout);
-        //printf("TEST\n");
     }
-    ~bqMDLMax()
+    virtual ~Plugin()
     {
         for (size_t i = 0, sz = m_meshes.size(); i < sz; ++i)
         {
             delete m_meshes[i];
         }
-    }
-
-    std::vector<std::string> m_strings;
-    std::map<std::string, uint32_t> m_stringMap;
-    std::vector<_Mesh*> m_meshes;
-
-    FileBuffer m_fileBuffer;
-
-    struct bone
-    {
-        std::string m_name;
-        std::string m_parentName;
-        int m_parent = -1;
-
-        bqMDLBoneData m_boneData;
-    };
-    std::vector<bone> m_bones;
-
-    uint32_t AddString(const char* str)
-    {
-        uint32_t index = 0;
-
-        auto iterator = m_stringMap.find(str);
-        if (iterator == m_stringMap.end())
-        {
-            index = m_stringIndex;
-            m_stringMap[str] = index;
-            m_strings.push_back(str);
-            ++m_stringIndex;
-        }
-        else
-        {
-            index = iterator->second;
-        }
-
-        return index;
-    }
-
-    uint32_t AddString(const wchar_t* str)
-    {
-        char cstr[0x5fff];
-        WideCharToMultiByte(CP_UTF8, 0, str, -1, cstr, 0x5fff, 0, 0);
-        
-        return AddString(cstr);
-    }
-
-    _Mesh* CreateMesh(const bqMDLChunkHeaderMesh& header)
-    {
-        _Mesh* m = new _Mesh(header);
-        m_meshes.push_back(m);
-        return m;
-    }
-
-    void Save(const MCHAR* name)
-    {
-        FILE* f = 0;
-        char cname[0xffff];
-        WideCharToMultiByte(CP_UTF8, 0, name, -1, cname, 0xffff, 0, 0);
-        fopen_s(&f, cname, "wb");
-        if (f)
-        {
-            auto meshChunkNum = m_meshes.size();
-            auto stringChunkNum = m_strings.size();
-
-            bqMDLFileHeader fileHeader;
-            fileHeader.m_chunkNum = meshChunkNum
-                + stringChunkNum;
-
-            if (m_bones.size())
-            {
-                ++fileHeader.m_chunkNum; // bqMDLChunkHeaderSkeleton
-            }
-
-            fwrite(&fileHeader, 1, sizeof(fileHeader), f);
-
-         
-            for (uint32_t i = 0; i < meshChunkNum; ++i)
-            {
-                auto mesh = m_meshes[i];
-
-                bqMDLChunkHeaderMesh meshChunkHeader;
-                meshChunkHeader = mesh->m_chunkHeaderMesh;
-
-                bqMDLChunkHeader chunkHeader;
-                chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Mesh;
-                chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
-                    + sizeof(bqMDLChunkHeaderMesh)
-                    + meshChunkHeader.m_vertBufSz
-                    + meshChunkHeader.m_indBufSz;
-
-                m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
-                m_fileBuffer.Add(&meshChunkHeader, sizeof(meshChunkHeader));
-                m_fileBuffer.Add(mesh->m_vertices, meshChunkHeader.m_vertBufSz);
-                m_fileBuffer.Add(mesh->m_indices, meshChunkHeader.m_indBufSz);
-            }
-
-            for (uint32_t i = 0; i < stringChunkNum; ++i)
-            {
-                auto & str = m_strings[i];
-
-                bqMDLChunkHeaderString stringChunkHeader;
-                stringChunkHeader.m_strSz = str.size();
-
-                bqMDLChunkHeader chunkHeader;
-                chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_String;
-                chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
-                    + sizeof(bqMDLChunkHeaderString)
-                    + stringChunkHeader.m_strSz;
-
-                m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
-                m_fileBuffer.Add(&stringChunkHeader, sizeof(stringChunkHeader));
-                m_fileBuffer.Add(str.data(), str.size());
-            }
-
-            if (m_bones.size())
-            {
-                size_t boneNum = m_bones.size();
-
-                bqMDLChunkHeader chunkHeader;
-                chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Skeleton;
-                chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
-                    + sizeof(bqMDLChunkHeaderSkeleton)
-                    + (sizeof(bqMDLBoneData) * boneNum);
-                m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
-
-                bqMDLChunkHeaderSkeleton chunkHeaderSkeleton;
-                chunkHeaderSkeleton.m_boneNum = boneNum;
-                m_fileBuffer.Add(&chunkHeaderSkeleton, sizeof(chunkHeaderSkeleton));
-
-                for (uint32_t i = 0; i < boneNum; ++i)
-                {
-                    auto& bone = m_bones[i];
-                    m_fileBuffer.Add(&bone.m_boneData, sizeof(bone.m_boneData));
-                }
-            }
-            
-            fileHeader.m_compression = fileHeader.compression_fastlz;
-            if (fileHeader.m_compression)
-            {
-                switch (fileHeader.m_compression)
-                {
-                case fileHeader.compression_fastlz:
-                default:
-                {
-                    auto sizeUncompressed = m_fileBuffer.Size();
-                    uint8_t* output = (uint8_t*)malloc(sizeUncompressed + (sizeUncompressed / 3));
-                    if (output)
-                    {
-                        int compressed_size = fastlz_compress_level(
-                            (int)2,
-                            m_fileBuffer.Data(),
-                            sizeUncompressed,
-                            output);
-
-                        if ((uint32_t)compressed_size >= sizeUncompressed)
-                        {
-                        }
-                        else
-                        {
-                            uint8_t* output2 = (uint8_t*)realloc(output, compressed_size);
-                            if (output2)
-                            {
-                                output = output2;
-
-                                fileHeader.m_cmpSz = compressed_size;
-                                fileHeader.m_uncmpSz = sizeUncompressed;
-                                fwrite(output, 1, compressed_size, f);
-
-                            }
-                        }
-
-                        free(output);
-                    }
-
-
-                }break;
-                }
-            }
-            else
-            {
-                if(m_fileBuffer.Size() && m_fileBuffer.Data())
-                    fwrite(m_fileBuffer.Data(), 1, m_fileBuffer.Size(), f);
-            }
-            
-            fseek(f, 0, SEEK_SET);
-            fwrite(&fileHeader, 1, sizeof(fileHeader), f);
-
-           
-            fclose(f);
-        }
-    }
-
-    void _skeletonFindParents()
-    {
-        // построение иерархии (то из чего и состоит скелет)
-        // будет происходить поиском имени родителя.
-
-        auto boneNum = m_bones.size();
-        if (boneNum)
-        {
-            for (size_t i = 0; i < boneNum; ++i)
-            {
-                auto& bone = m_bones[i];
-                bone.m_parent = -1;
-
-                for (size_t pi = 0; pi < boneNum; ++pi)
-                {
-                    auto& secondBone = m_bones[pi];
-
-                    if (bone.m_parentName == secondBone.m_name)
-                    {
-                        bone.m_parent = pi;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-};
-
-class Plugin : public SceneExport
-{
-    bqMDLMax m_mdl;
-public:
-    Plugin() {}
-    virtual ~Plugin()
-    {
-        for (size_t i = 0, sz = m_sceneEntries.size(); i < sz; ++i)
+        /*for (size_t i = 0, sz = m_sceneEntries.size(); i < sz; ++i)
         {
             delete m_sceneEntries[i];
-        }
+        }*/
     }
     int	ExtCount() 
     {
@@ -410,22 +210,424 @@ public:
     virtual void ShowAbout(HWND hWnd) {}
 
 
-    class SceneEntry 
+    uint32_t AddString(const char* str)
     {
-    public:
-       // TSTR m_name;
-        INode* m_node = 0;
-        Object* m_obj = 0;
-        
-        SceneEntry(INode* n, Object* o)
-            :
-            m_node(n),
-            m_obj(o)
-        {
-        }
-    };
+        uint32_t index = 0;
 
-    std::vector<SceneEntry*> m_sceneEntries;
+        auto iterator = m_stringMap.find(str);
+        if (iterator == m_stringMap.end())
+        {
+            index = m_stringIndex;
+            m_stringMap[str] = index;
+            m_strings.push_back(str);
+            
+            printf("Add String: [%s][%i]\n", str, m_bonesNum, m_stringIndex);
+
+
+            ++m_stringIndex;
+        }
+        else
+        {
+            index = iterator->second;
+        }
+
+        return index;
+    }
+
+    uint32_t AddString(const wchar_t* str)
+    {
+        char cstr[0x5fff];
+        WideCharToMultiByte(CP_UTF8, 0, str, -1, cstr, 0x5fff, 0, 0);
+
+        return AddString(cstr);
+    }
+
+    std::string& GetString(uint32_t i)
+    {
+        return m_strings[i];
+    }
+
+    _Mesh* CreateMesh(const bqMDLChunkHeaderMesh& header)
+    {
+        _Mesh* m = new _Mesh(header);
+        m_meshes.push_back(m);
+        return m;
+    }
+
+    void Save(const MCHAR* name)
+    {
+        FILE* f = 0;
+        char cname[0xffff];
+        WideCharToMultiByte(CP_UTF8, 0, name, -1, cname, 0xffff, 0, 0);
+        fopen_s(&f, cname, "wb");
+        if (f)
+        {
+            auto meshChunkNum = m_meshes.size();
+            auto stringChunkNum = m_strings.size();
+
+            bqMDLFileHeader fileHeader;
+            fileHeader.m_chunkNum = meshChunkNum
+                + stringChunkNum;
+
+            if (m_bonesNum)
+            {
+                ++fileHeader.m_chunkNum; // bqMDLChunkHeaderSkeleton
+            }
+
+            fwrite(&fileHeader, 1, sizeof(fileHeader), f);
+
+
+            for (uint32_t i = 0; i < meshChunkNum; ++i)
+            {
+                auto mesh = m_meshes[i];
+
+                bqMDLChunkHeaderMesh meshChunkHeader;
+                meshChunkHeader = mesh->m_chunkHeaderMesh;
+
+                bqMDLChunkHeader chunkHeader;
+                chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Mesh;
+                chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+                    + sizeof(bqMDLChunkHeaderMesh)
+                    + meshChunkHeader.m_vertBufSz
+                    + meshChunkHeader.m_indBufSz;
+
+                m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+                m_fileBuffer.Add(&meshChunkHeader, sizeof(meshChunkHeader));
+                m_fileBuffer.Add(mesh->m_vertices, meshChunkHeader.m_vertBufSz);
+                m_fileBuffer.Add(mesh->m_indices, meshChunkHeader.m_indBufSz);
+            }
+
+            for (uint32_t i = 0; i < stringChunkNum; ++i)
+            {
+                auto& str = m_strings[i];
+
+                bqMDLChunkHeaderString stringChunkHeader;
+                stringChunkHeader.m_strSz = str.size();
+
+                bqMDLChunkHeader chunkHeader;
+                chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_String;
+                chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+                    + sizeof(bqMDLChunkHeaderString)
+                    + stringChunkHeader.m_strSz;
+
+                m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+                m_fileBuffer.Add(&stringChunkHeader, sizeof(stringChunkHeader));
+                m_fileBuffer.Add(str.data(), str.size());
+            }
+
+            if (m_bonesNum)
+            {
+                bqMDLChunkHeader chunkHeader;
+                chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Skeleton;
+                chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+                    + sizeof(bqMDLChunkHeaderSkeleton)
+                    + (sizeof(bqMDLBoneData) * m_bonesNum);
+                m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+
+                bqMDLChunkHeaderSkeleton chunkHeaderSkeleton;
+                chunkHeaderSkeleton.m_boneNum = m_bonesNum;
+                m_fileBuffer.Add(&chunkHeaderSkeleton, sizeof(chunkHeaderSkeleton));
+                
+                // кости нужно записать в порядке индексов от 0 до конца.
+                // в map всё упорядочено по имени.
+                for (int32_t i = 0; i < m_bonesNum; ++i)
+                {
+                    SkeletonBone sBone = GetBone(i);
+                    if (sBone.m_node)
+                    {
+
+                        bqMDLBoneData boneData;
+                        boneData.m_nameIndex = sBone.m_nameIndex;
+                        boneData.m_parent = sBone.m_parentIndex;
+
+                        if (sBone.m_parentIndex != -1)
+                        {
+                            SkeletonBone sBoneParent = GetBone(sBone.m_parentIndex);
+                            printf("Bone [%s] parent [%s]\n", GetString(sBone.m_nameIndex).c_str(),
+                                GetString(sBoneParent.m_nameIndex).c_str());
+                        }
+                        else
+                            printf("Bone [%s] NO PARENT\n", GetString(sBone.m_nameIndex).c_str());
+
+                        boneData.m_position[0] = sBone.m_position[0];
+                        boneData.m_position[1] = sBone.m_position[1];
+                        boneData.m_position[2] = sBone.m_position[2];
+                        boneData.m_scale[0] = sBone.m_scale[0];
+                        boneData.m_scale[1] = sBone.m_scale[1];
+                        boneData.m_scale[2] = sBone.m_scale[2];
+                        boneData.m_rotation[0] = sBone.m_rotation[0];
+                        boneData.m_rotation[1] = sBone.m_rotation[1];
+                        boneData.m_rotation[2] = sBone.m_rotation[2];
+                        boneData.m_rotation[3] = sBone.m_rotation[3];
+
+                        m_fileBuffer.Add(&boneData, sizeof(boneData));
+                    }
+                }
+            }
+
+            fileHeader.m_compression = fileHeader.compression_fastlz;
+            if (fileHeader.m_compression)
+            {
+                switch (fileHeader.m_compression)
+                {
+                case fileHeader.compression_fastlz:
+                default:
+                {
+                    auto sizeUncompressed = m_fileBuffer.Size();
+                    uint8_t* output = (uint8_t*)malloc(sizeUncompressed + (sizeUncompressed / 3));
+                    if (output)
+                    {
+                        int compressed_size = fastlz_compress_level(
+                            (int)2,
+                            m_fileBuffer.Data(),
+                            sizeUncompressed,
+                            output);
+
+                        if ((uint32_t)compressed_size >= sizeUncompressed)
+                        {
+                        }
+                        else
+                        {
+                            uint8_t* output2 = (uint8_t*)realloc(output, compressed_size);
+                            if (output2)
+                            {
+                                output = output2;
+
+                                fileHeader.m_cmpSz = compressed_size;
+                                fileHeader.m_uncmpSz = sizeUncompressed;
+                                fwrite(output, 1, compressed_size, f);
+
+                            }
+                        }
+
+                        free(output);
+                    }
+
+
+                }break;
+                }
+            }
+            else
+            {
+                if (m_fileBuffer.Size() && m_fileBuffer.Data())
+                    fwrite(m_fileBuffer.Data(), 1, m_fileBuffer.Size(), f);
+            }
+
+            fseek(f, 0, SEEK_SET);
+            fwrite(&fileHeader, 1, sizeof(fileHeader), f);
+
+
+            fclose(f);
+        }
+    }
+
+
+    struct SkeletonBone
+    {
+        // индексы относительно всей иерархии.
+        // в skin модификатор может быть добавлены
+        // не все кости. Индексы костей в вершине
+        // ВЕРОЯТНО указаны относительно добавленных 
+        // костей, а не относительно всей иерархии.
+        // В bqmdl будут индексы относительно всей иерархии.
+        int32_t m_index = 0;
+        int32_t m_parentIndex = -1;
+
+        uint32_t m_nameIndex = 0;
+        INode* m_node = 0;
+
+        float m_position[3];
+        float m_scale[3];
+        float m_rotation[4];
+    };
+    std::map<std::string, SkeletonBone> m_skeleton;
+    int m_bonesNum = 0;
+
+
+    void AddBone(INode* node, Object* obj)
+    {
+        std::string nodeName(GetAString(node->GetName()).c_str());
+
+
+        // предполагается что будут добавляться
+        // новые ноды, повторений не будет.
+        // Но для аккуратности пусть будет поиск.
+        if (m_skeleton.find(nodeName) == m_skeleton.end())
+        {
+            SkeletonBone b;
+            b.m_index = m_bonesNum;
+            b.m_node = node;
+            b.m_nameIndex = AddString(nodeName.c_str());
+            printf("Add Bone: [%s][%i][%I64x] nameIndex [%u]\n", 
+                nodeName.c_str(), m_bonesNum, (uint64_t)node,
+                b.m_nameIndex);
+
+            ++m_bonesNum;
+
+            m_skeleton[nodeName] = b;
+        }
+    }
+    void BuildSkeleton()
+    {
+        printf("\nFind parents...\n");
+
+        // Нахождение всех родителей
+        auto it = m_skeleton.begin();
+        while (it != m_skeleton.end())
+        {
+            SkeletonBone & bone = (*it).second;
+            printf("Bone: [%s][%i] ... INode[%s][%I64x]\n",
+                GetString(bone.m_nameIndex).c_str(),
+                bone.m_index,
+                GetAString(bone.m_node->GetName()).c_str(),
+                (uint64_t)bone.m_node);
+
+            INode* parentNode = bone.m_node->GetParentNode();
+            if (parentNode)
+            {
+                printf("Parent INode name [%s][%I64x]\n", 
+                    GetAString(parentNode->GetName()).c_str(),
+                    (uint64_t)parentNode);
+
+                if (parentNode != m_sceneRootNode)
+                {
+
+                    SkeletonBone parentBone = GetBone(parentNode);
+                    if (parentBone.m_node == parentNode)
+                    {
+                        bone.m_parentIndex = parentBone.m_index;
+                        printf("Set parent: ... [%s][%i]\n",
+                            GetString(parentBone.m_nameIndex).c_str(),
+                            parentBone.m_index);
+
+                    }
+                }
+            }
+            it++;
+        }
+
+        // установка позиции и т.д.
+        it = m_skeleton.begin();
+        while (it != m_skeleton.end())
+        {
+            SkeletonBone& bone = (*it).second;
+
+            Matrix3 tm(bone.m_node->GetNodeTM(m_timeValue));
+            Matrix3 ptm(bone.m_node->GetParentTM(m_timeValue));
+            Control* tmc = bone.m_node->GetTMController();
+            Class_ID cid = tmc->ClassID();
+            if (cid == BIPBODY_CONTROL_CLASS_ID || cid == BIPED_CLASS_ID) {
+                /*if (m_config.getInvertYZ()) {
+                    Matrix3 m = RotateXMatrix(PI / 2.0f);
+                    tm = tm * Inverse(m);
+                }*/
+            }
+            else
+                tm = tm * Inverse(ptm);
+            Point3 pos = tm.GetTrans();
+            AngAxis aa(tm);
+            Quat q(tm);
+
+            Control* sC = tmc->GetScaleController();
+            ScaleValue sc;
+            if (sC)
+                sC->GetValue(m_timeValue, &sc);
+
+            bone.m_position[0] = pos.x;
+            bone.m_position[1] = pos.y;
+            bone.m_position[2] = pos.z;
+            bone.m_scale[0] = sc.s.x;
+            bone.m_scale[1] = sc.s.y;
+            bone.m_scale[2] = sc.s.z;
+            bone.m_rotation[0] = q.x;
+            bone.m_rotation[1] = q.y;
+            bone.m_rotation[2] = q.z;
+            bone.m_rotation[3] = q.w;
+
+            it++;
+        }
+    }
+
+    SkeletonBone GetBone(const char* name)
+    {
+        SkeletonBone bone;
+
+        if (name)
+        {
+            auto it = m_skeleton.find(name);
+            if (it != m_skeleton.end())
+            {
+                bone = (*it).second;
+            }
+        }
+
+        return bone;
+    }
+    SkeletonBone GetBone(INode* node)
+    {
+        printf("GetBoneIBone [%s][%llu]\n",
+            GetAString(node->GetName()).c_str(),
+            (uint64_t)node);
+
+        SkeletonBone bone;
+        if (node)
+        {
+            auto it = m_skeleton.begin();
+            while (it != m_skeleton.end())
+            {
+                SkeletonBone & _b = (*it).second;
+
+                printf("\t- - - [%s][%llu]  -  -  - [%s][%llu]\n",
+                    GetAString(node->GetName()).c_str(),
+                    (uint64_t)node,
+                    GetAString(_b.m_node->GetName()).c_str(),
+                    (uint64_t)_b.m_node);
+
+                if((uint64_t)node == (uint64_t)_b.m_node)
+                {
+                    printf("\t- - - FOUND\n");
+                    return _b;
+                }
+                it++;
+            }
+        }
+        return bone;
+    }
+    SkeletonBone GetBone(int index)
+    {
+        SkeletonBone bone;
+        if (index >= 0)
+        {
+            auto it = m_skeleton.begin();
+            while (it != m_skeleton.end())
+            {
+                if ((*it).second.m_index == index)
+                {
+                    return (*it).second;
+                }
+                it++;
+            }
+        }
+        return bone;
+    }
+
+
+    std::string GetAString(const wchar_t* str)
+    {
+        MaxSDK::Util::MaxString mstr;
+        mstr.AllocBuffer(0xfff);
+        mstr.SetUTF16(str);
+
+        size_t len = 0;
+        auto astr = mstr.ToUTF8(&len);
+
+        std::string s;
+
+        if (len)
+            s.append(astr.data());
+
+        return s;
+    }
 
     class MyITreeEnumProc : public ITreeEnumProc
     {
@@ -442,14 +644,49 @@ public:
 
 
             Object* obj = node->EvalWorldState(m_plugin->m_timeValue).obj;
-
+            
             auto superClassID = obj->SuperClassID();
             auto classID = obj->ClassID();
 
-            printf("superClassID %#010x\n", superClassID);
-            printf("classID %#010x %#010x\n", classID.PartA(), classID.PartB());
+            if (classID == Class_ID(DUMMY_CLASS_ID, 0))
+            {
+                return TREE_CONTINUE;
+            }
 
-            Append(node, obj);
+            /*std::string nodeName(m_plugin->GetAString(node->GetName()).c_str());
+            printf("Node: %s\n", nodeName.c_str());*/
+            Control* c = node->GetTMController();
+
+            if ((obj->ClassID() == BONE_OBJ_CLASSID) ||
+                (c->ClassID() == BIPDRIVEN_CONTROL_CLASS_ID) ||
+                (c->ClassID() == BIPBODY_CONTROL_CLASS_ID)  ||
+                (c->ClassID() == FOOTPRINT_CLASS_ID))
+            {
+                m_plugin->AddBone(node, obj);
+                return TREE_CONTINUE;
+            }
+
+            //if (obj->ClassID() == BIPED_CLASS_ID)
+            //{
+            //    m_plugin->AddBone(node, obj);
+            //    //    Append(node, obj);
+            //    return TREE_CONTINUE;
+            //}
+
+            /*if (obj->ClassID() != Class_ID(POLYOBJ_CLASS_ID, 0))
+            {
+                return TREE_CONTINUE;
+            }*/
+            
+            if (obj->CanConvertToType(Class_ID(TRIOBJ_CLASS_ID, 0)))
+            {
+                m_plugin->AddMesh(node, obj->ConvertToType(m_plugin->m_timeValue, Class_ID(TRIOBJ_CLASS_ID, 0)));
+                return TREE_CONTINUE;
+            }
+            //printf("superClassID %#010x\n", superClassID);
+            //printf("classID %#010x %#010x\n", classID.PartA(), classID.PartB());
+
+           // Append(node, obj);
 
             //if (obj->ClassID() != Class_ID(POLYOBJ_CLASS_ID, 0))
             //{
@@ -472,382 +709,598 @@ public:
             return TREE_CONTINUE;
         }
 
-        void Append(INode* node, Object* obj)
+       /* void Append(INode* node, Object* obj)
         {
             m_plugin->m_sceneEntries.push_back(new SceneEntry(node, obj));
-        }
+        }*/
     };
 
     TimeValue m_timeValue = 0;
+    INode* m_sceneRootNode = 0;
 
-    void _onMesh(INode* node, Object* obj)
+    //void _onMesh(INode* node, Object* obj)
+    //{
+    //    TriObject* triObj = dynamic_cast<TriObject*>(obj);
+    //    if (triObj)
+    //    {
+    //        auto nameIndex = m_mdl.AddString(node->GetName());
+
+    //        Mesh* mesh = &triObj->mesh;
+    //        
+    //        Matrix3 TM =  node->GetNodeTM(m_timeValue);
+
+    //        int faceNum = mesh->getNumFaces();
+    //        int vertNum = mesh->getNumVerts();
+
+    //        if (faceNum)
+    //        {
+    //            bool skinReady = false;
+
+    //            Modifier* skinModifier = 0;
+    //            ISkin* skin = 0;
+    //            ISkinContextData* skinData = 0;
+    //           // if (m_mdl.m_bones.size())
+    //            {
+    //                //  mesh->setVDataSupport(VDATA_WEIGHT);
+    //                //mesh->SupportVertexWeights();
+    //                skinModifier = 0;
+
+    //                Object* pObj = node->GetObjectRef();
+    //                if (pObj)
+    //                {
+    //                    while (pObj->SuperClassID() == GEN_DERIVOB_CLASS_ID)
+    //                    {
+    //                        IDerivedObject* pDerObj = (IDerivedObject*)(pObj);
+    //                        int Idx = 0;
+    //                        while (Idx < pDerObj->NumModifiers())
+    //                        {
+    //                            // Get the modifier. 
+    //                            Modifier* mod = pDerObj->GetModifier(Idx);
+
+    //                            if (mod->ClassID() == SKIN_CLASSID)
+    //                            {
+    //                                skinModifier = mod;
+    //                                break;
+    //                            }
+    //                            Idx++;
+    //                        }
+    //                        pObj = pDerObj->GetObjRef();
+    //                    }
+    //                }
+
+    //                if (skinModifier)
+    //                {
+    //                    skin = (ISkin*)skinModifier->GetInterface(I_SKIN);
+    //                    if (skin)
+    //                    {
+    //                        skinData = skin->GetContextInterface(node);
+    //                        if (skinData)
+    //                        {
+    //                            skinReady = true;
+    //                            _onSkin(skin, skinData);
+    //                        }
+    //                    }
+    //                }
+
+    //            }
+
+    //            /*  WideCharToMultiByte(CP_UTF8, 0, entry->m_node->GetName(), -1, cname, 0xffff, 0, 0);
+    //              fwrite(cname, 1, strlen(cname), f);
+    //              fwrite("\n", 1, 1, f);
+
+    //              fprintf(f, "_faceNum = %i\n", faceNum);
+    //              fprintf(f, "_vertNum = %i\n", vertNum);*/
+
+    //            uint32_t newVertNum = faceNum * 3;
+    //            uint8_t indexType = (newVertNum < 0xffff) 
+    //                ? bqMDLChunkHeaderMesh::IndexType_16bit
+    //                : bqMDLChunkHeaderMesh::IndexType_32bit;
+
+    //            bqMDLChunkHeaderMesh headerMesh;
+    //            headerMesh.m_nameIndex = nameIndex;
+    //            headerMesh.m_indexType = indexType;
+    //            headerMesh.m_vertNum = newVertNum;
+    //            headerMesh.m_indNum = newVertNum;
+
+    //            headerMesh.m_vertexType = bqMDLChunkHeaderMesh::VertexType_Triangle;
+    //            if(skinReady)
+    //                headerMesh.m_vertexType = bqMDLChunkHeaderMesh::VertexType_TriangleSkinned;
+
+    //            int vsz = sizeof(bqMDLMeshVertex);
+    //            if (headerMesh.m_vertexType == bqMDLChunkHeaderMesh::VertexType_TriangleSkinned)
+    //                vsz = sizeof(bqMDLMeshVertexSkinned);
+
+    //            headerMesh.m_vertBufSz =
+    //                headerMesh.m_vertNum *
+    //                vsz;
+    //            if (headerMesh.m_indexType == bqMDLChunkHeaderMesh::IndexType_16bit)
+    //                headerMesh.m_indBufSz = headerMesh.m_indNum * 2;
+    //            else
+    //                headerMesh.m_indBufSz = headerMesh.m_indNum * 4;
+
+    //            auto newMesh = m_mdl.CreateMesh(headerMesh);
+
+    //            uint16_t* in16 = (uint16_t*)newMesh->m_indices;
+    //            uint32_t* in32 = (uint32_t*)newMesh->m_indices;
+
+    //            // количество индексов будет равно количеству вершин
+    //            // на каждую вершину свой индекс
+    //            // значит индексы будут просто идти попорядку 0 1 2 3 4 5...
+    //            for (uint32_t i2 = 0; i2 < headerMesh.m_indNum; ++i2)
+    //            {
+    //                if (headerMesh.m_indexType == bqMDLChunkHeaderMesh::IndexType_16bit)
+    //                    *in16 = i2;
+    //                else
+    //                    *in32 = i2;
+
+    //                ++in16;
+    //                ++in32;
+    //            }
+
+    //            uint8_t* vert8ptr = newMesh->m_vertices;
+
+    //            // теперь надо взять позиции
+    //            auto verts = mesh->getVertPtr(0);
+    //            auto faces = mesh->getFacePtr(0);
+
+    //            mesh->checkNormals(TRUE);
+
+    //            Matrix3 tm = node->GetObjTMAfterWSM(m_timeValue);
+
+    //            auto rVerts = mesh->getRVertPtr(0);
+    //            auto tVerts = mesh->getTVertPtr(0);
+    //            auto _GetVertexNormal = [&](Mesh* mesh, int faceNo, RVertex* rv) -> Point3
+    //                {
+    //                    Face* f = &mesh->faces[faceNo];
+    //                    DWORD smGroup = f->smGroup;
+    //                    int numNormals = 0;
+    //                    Point3 vertexNormal;
+
+    //                    // Is normal specified
+    //                    // SPCIFIED is not currently used, but may be used in future versions.
+    //                    if (rv->rFlags & SPECIFIED_NORMAL) {
+    //                        vertexNormal = rv->rn.getNormal();
+    //                    }
+    //                    // If normal is not specified it's only available if the face belongs
+    //                    // to a smoothing group
+    //                    else if ((numNormals = rv->rFlags & NORCT_MASK) != 0 && smGroup) {
+    //                        // If there is only one vertex is found in the rn member.
+    //                        if (numNormals == 1) {
+    //                            vertexNormal = rv->rn.getNormal();
+    //                        }
+    //                        else {
+    //                            // If two or more vertices are there you need to step through them
+    //                            // and find the vertex with the same smoothing group as the current face.
+    //                            // You will find multiple normals in the ern member.
+    //                            for (int i2 = 0; i2 < numNormals; i2++) {
+    //                                if (rv->ern[i2].getSmGroup() & smGroup) {
+    //                                    vertexNormal = rv->ern[i2].getNormal();
+    //                                }
+    //                            }
+    //                        }
+    //                    }
+    //                    else {
+    //                        // Get the normal from the Face if no smoothing groups are there
+    //                        vertexNormal = mesh->getFaceNormal(faceNo);
+    //                    }
+
+    //                    return vertexNormal;
+    //                };
+
+    //            int ti1 = 0;
+    //            int ti2 = 1;
+    //            int ti3 = 2;
+    //            
+    //           /* int fvx1 = 0;
+    //            int fvx2 = 2;
+    //            int fvx3 = 1;*/
+    //            int vertInds[3] = { 0, 1, 2 };
+    //            printf("VNum %u\n", newMesh->m_chunkHeaderMesh.m_vertNum);
+    //            printf("VType %u\n", newMesh->m_chunkHeaderMesh.m_vertexType);
+    //            printf("VSize %u\n", newMesh->m_chunkHeaderMesh.m_vertBufSz);
+    //            printf("Stride %u\n", newMesh->m_stride);
+
+    //            /*
+    //            
+    //               */
+    //            uint8_t* vptr = vert8ptr;
+    //            bqMDLMeshVertex* meshVertex = (bqMDLMeshVertex*)vptr;
+    //            for (int fi = 0; fi < faceNum; ++fi)
+    //            {
+    //                Face* face = &faces[fi];
+    //                auto& faceNormal = mesh->getFaceNormal(fi);
+    //                int vx1 = 0;
+    //                int vx2 = 1;
+    //                int vx3 = 2;
+    //                for (int ii = 0; ii < 3; ++ii)
+    //                {
+    //                    auto& faceVertIndex = face->v[vertInds[ii]];
+    //                    Point3 pos = verts[faceVertIndex];
+    //                    meshVertex->m_position[vx1] = pos.x;
+    //                    meshVertex->m_position[vx2] = pos.y * -1.f;
+    //                    meshVertex->m_position[vx3] = pos.z;
+    //                    Point3 vn = _GetVertexNormal(mesh, fi, mesh->getRVertPtr(faceVertIndex));
+    //                    meshVertex->m_normal[vx1] = vn.x;
+    //                    meshVertex->m_normal[vx2] = vn.z * -1.f;
+    //                    meshVertex->m_normal[vx3] = vn.y;
+
+    //                    vptr += newMesh->m_stride;
+    //                    meshVertex = (bqMDLMeshVertex*)vptr;
+    //                }
+
+    //            }
+
+    //            if (skinReady)
+    //            {
+    //                vptr = vert8ptr;
+    //                meshVertex = (bqMDLMeshVertex*)vptr;
+    //                for (int fi = 0; fi < faceNum; ++fi)
+    //                {
+    //                    Face* face = &faces[fi];
+
+    //                    Matrix3 initTMBone;
+    //                    Matrix3 initTMNode;
+    //                    skin->GetSkinInitTM(node, initTMBone, false);
+    //                    skin->GetSkinInitTM(node, initTMNode, true);
+    //                    for (int ii = 0; ii < 3; ++ii)
+    //                    {
+    //                        auto& faceVertIndex = face->v[vertInds[ii]];
+    //                        int boneNum = skin->GetNumBones();
+
+    //                        bqMDLMeshVertexSkinned* meshVertexSkinned = (bqMDLMeshVertexSkinned*)vptr;
+
+    //                        //  for (int iin = 0; iin < headerMesh.m_indNum; ++iin)
+    //                        //  {
+    //                        int nbones = skinData->GetNumAssignedBones(faceVertIndex);
+    //                        for (int bi = 0; bi < nbones; ++bi)
+    //                        {
+    //                            meshVertexSkinned->m_weights[bi] = skinData->GetBoneWeight(faceVertIndex, bi);
+    //                            meshVertexSkinned->m_boneInds[bi] = skinData->GetAssignedBone(faceVertIndex, bi);
+    //                          //  printf("W: %f", meshVertexSkinned->m_weights[bi]);
+    //                          //  printf(" I: %u\n", meshVertexSkinned->m_boneInds[bi]);
+    //                        }
+    //                       // if (nbones)
+    //                       //     printf("\n");
+
+    //                        vptr += newMesh->m_stride;
+    //                    }
+    //                }
+    //            }
+
+    //            vptr = vert8ptr;
+    //            meshVertex = (bqMDLMeshVertex*)vptr;
+    //            for (int fi = 0; fi < faceNum; ++fi)
+    //            {
+    //                int numTVx = mesh->getNumTVerts();
+    //                if (numTVx)
+    //                {
+    //                    for (int ii = 0; ii < 3; ++ii)
+    //                    {
+    //                        auto tci1 = mesh->tvFace[fi].t[vertInds[ii]];
+    //                        meshVertex->m_uv[0] = tVerts[tci1].x;
+    //                        meshVertex->m_uv[1] = 1.f - tVerts[tci1].y;
+    //                        vptr += newMesh->m_stride;
+    //                        meshVertex = (bqMDLMeshVertex*)vptr;
+    //                    }
+    //                }
+    //            }
+    //            
+    //        }
+    //    }
+    //}
+
+
+    void AddMesh(INode* node, Object* obj)
     {
+        bqMDLChunkHeaderMesh meshHeader;
+        meshHeader.m_nameIndex = AddString(node->GetName());
+        printf("Add Mesh\n");
+        printf("-\tName: %s\n", GetAString(node->GetName()).c_str());
+
         TriObject* triObj = dynamic_cast<TriObject*>(obj);
         if (triObj)
-        {
-
-            auto nameIndex = m_mdl.AddString(node->GetName());
+        {            
+            Modifier* skinModifier = 0;
+            ISkin* skin = 0;
+            ISkinContextData* skinData = 0;
+            Object* pObj = node->GetObjectRef();
+            while (pObj->SuperClassID() == GEN_DERIVOB_CLASS_ID)
+            {
+                IDerivedObject* pDerObj = (IDerivedObject*)(pObj);
+                int Idx = 0;
+                while (Idx < pDerObj->NumModifiers())
+                {
+                    // Get the modifier. 
+                    Modifier* mod = pDerObj->GetModifier(Idx);
+                    if (mod->ClassID() == SKIN_CLASSID)
+                    {
+                        skinModifier = mod;
+                        break;
+                    }
+                    Idx++;
+                }
+                pObj = pDerObj->GetObjRef();
+            }
+            if (skinModifier)
+            {
+                skin = (ISkin*)skinModifier->GetInterface(I_SKIN);
+                if (skin)
+                    skinData = skin->GetContextInterface(node);
+            }
+         //   skinData = 0;
 
             Mesh* mesh = &triObj->mesh;
-
             int faceNum = mesh->getNumFaces();
             int vertNum = mesh->getNumVerts();
+            printf("faceNum %u\n", faceNum);
+            printf("vertNum %u\n", vertNum);
 
             if (faceNum)
             {
-                /*  WideCharToMultiByte(CP_UTF8, 0, entry->m_node->GetName(), -1, cname, 0xffff, 0, 0);
-                  fwrite(cname, 1, strlen(cname), f);
-                  fwrite("\n", 1, 1, f);
-
-                  fprintf(f, "_faceNum = %i\n", faceNum);
-                  fprintf(f, "_vertNum = %i\n", vertNum);*/
-
-                uint32_t newVertNum = faceNum * 3;
-                uint8_t indexType = (newVertNum < 0xffff) ? 0 : 1;
-
-                bqMDLChunkHeaderMesh headerMesh;
-                headerMesh.m_nameIndex = nameIndex;
-                headerMesh.m_indexType = indexType;
-                headerMesh.m_vertNum = newVertNum;
-                headerMesh.m_indNum = newVertNum;
-                headerMesh.m_vertexType = 0;
+                meshHeader.m_vertNum = faceNum * 3;
+                meshHeader.m_indexType = (meshHeader.m_vertNum < 0xffff)
+                    ? bqMDLChunkHeaderMesh::IndexType_16bit
+                    : bqMDLChunkHeaderMesh::IndexType_32bit;
+                meshHeader.m_indNum = meshHeader.m_vertNum;
+                
+                meshHeader.m_vertexType = bqMDLChunkHeaderMesh::VertexType_Triangle;
+                if (skinData)
+                    meshHeader.m_vertexType = bqMDLChunkHeaderMesh::VertexType_TriangleSkinned;
 
                 int vsz = sizeof(bqMDLMeshVertex);
-
-                if (headerMesh.m_vertexType == 1)
+                if (meshHeader.m_vertexType == bqMDLChunkHeaderMesh::VertexType_TriangleSkinned)
                     vsz = sizeof(bqMDLMeshVertexSkinned);
 
-                headerMesh.m_vertBufSz =
-                    headerMesh.m_vertNum *
-                    vsz;
-
-                if (headerMesh.m_indexType == 0)
-                    headerMesh.m_indBufSz = headerMesh.m_indNum * 2;
+                meshHeader.m_vertBufSz = meshHeader.m_vertNum * vsz;
+                
+                if (meshHeader.m_indexType == bqMDLChunkHeaderMesh::IndexType_16bit)
+                    meshHeader.m_indBufSz = meshHeader.m_indNum * 2;
                 else
-                    headerMesh.m_indBufSz = headerMesh.m_indNum * 4;
+                    meshHeader.m_indBufSz = meshHeader.m_indNum * 4;
+            }
 
-                auto newMesh = m_mdl.CreateMesh(headerMesh);
+            _Mesh* newM = new _Mesh(meshHeader);
+            newM->m_triObj = triObj;
+            newM->m_node = node;
+          //  printf("-\t triObj :[%llu]\n", (uint64_t)triObj);
+         //   printf("-\t node :[%llu]\n", (uint64_t)node);
+         //   printf("-\t mesh :[%llu]\n", (uint64_t)mesh);
 
-                uint16_t* in16 = (uint16_t*)newMesh->m_indices;
-                uint32_t* in32 = (uint32_t*)newMesh->m_indices;
+            if (skinData)
+            {
+                newM->m_skin = skin;
+                newM->m_skinData = skinData;
+            }
+            m_meshes.push_back(newM);
+        }
+    }
 
-                // количество индексов будет равно количеству вершин
-                // на каждую вершину свой индекс
-                // значит индексы будут просто идти попорядку 0 1 2 3 4 5...
-                for (uint32_t i2 = 0; i2 < headerMesh.m_indNum; ++i2)
-                {
-                    if (headerMesh.m_indexType == 0)
-                        *in16 = i2;
-                    else
-                        *in32 = i2;
+    Point3 GetVertexNormal(Mesh* mesh, int faceNo, RVertex* rv)
+    {
+        Face* f = &mesh->faces[faceNo];
+        DWORD smGroup = f->smGroup;
+        int numNormals = 0;
+        Point3 vertexNormal;
+
+        // Is normal specified
+        // SPCIFIED is not currently used, but may be used in future versions.
+        if (rv->rFlags & SPECIFIED_NORMAL) {
+            vertexNormal = rv->rn.getNormal();
+        }
+        // If normal is not specified it's only available if the face belongs
+        // to a smoothing group
+        else if ((numNormals = rv->rFlags & NORCT_MASK) != 0 && smGroup) {
+            // If there is only one vertex is found in the rn member.
+            if (numNormals == 1) {
+                vertexNormal = rv->rn.getNormal();
+            }
+            else {
+                // If two or more vertices are there you need to step through them
+                // and find the vertex with the same smoothing group as the current face.
+                // You will find multiple normals in the ern member.
+                for (int i2 = 0; i2 < numNormals; i2++) {
+                    if (rv->ern[i2].getSmGroup() & smGroup) {
+                        vertexNormal = rv->ern[i2].getNormal();
+                    }
+                }
+            }
+        }
+        else {
+            // Get the normal from the Face if no smoothing groups are there
+            vertexNormal = mesh->getFaceNormal(faceNo);
+        }
+
+        return vertexNormal;
+    }
+
+    void BuildMeshes()
+    {
+        printf("BuildMeshes\n");
+        printf("Num of meshes %zu\n", m_meshes.size());
+
+        for (size_t i = 0, sz = m_meshes.size(); i < sz; ++i)
+        {
+            _Mesh* newMesh = m_meshes[i];
+            Mesh* mesh = &newMesh->m_triObj->mesh;
+
+         //   printf("-\t newMesh->m_triObj :[%llu]\n", (uint64_t)newMesh->m_triObj);
+         //   printf("-\t mesh :[%llu]\n", (uint64_t)mesh);
+         //   printf("-\t newMesh->m_node :[%llu]\n", (uint64_t)newMesh->m_node);
+
+            auto headerMesh = newMesh->m_chunkHeaderMesh;
+
+            uint16_t* in16 = (uint16_t*)newMesh->m_indices;
+            uint32_t* in32 = (uint32_t*)newMesh->m_indices;
+
+            printf("Index Num %u\n", headerMesh.m_indNum);
+            printf("Index Type %u\n", headerMesh.m_indexType);
+
+            // количество индексов будет равно количеству вершин
+            // на каждую вершину свой индекс
+            // значит индексы будут просто идти попорядку 0 1 2 3 4 5...
+            for (uint32_t i2 = 0; i2 < headerMesh.m_indNum; ++i2)
+            {
+                if (headerMesh.m_indexType == bqMDLChunkHeaderMesh::IndexType_16bit)
+                    *in16 = i2;
+                else
+                    *in32 = i2;
 
                     ++in16;
                     ++in32;
+            }
+            uint8_t* vert8ptr = newMesh->m_vertices;
+            
+            // теперь надо взять позиции
+            auto verts = mesh->getVertPtr(0);
+            /*{
+                int vertNum = mesh->getNumVerts();
+                for (int j = 0; j < vertNum; ++j)
+                {
+                    printf("P: %f %f %f\n", verts[j].x, verts[j].y, verts[j].z);
                 }
+            }*/
+            auto faces = mesh->getFacePtr(0);
 
-                auto meshVerts = newMesh->m_vertices;
+            mesh->checkNormals(TRUE);
+            auto rVerts = mesh->getRVertPtr(0);
+            auto tVerts = mesh->getTVertPtr(0);
 
-                // теперь надо взять позиции
-                auto verts = mesh->getVertPtr(0);
-                auto faces = mesh->getFacePtr(0);
+            int ti1 = 0;
+            int ti2 = 1;
+            int ti3 = 2;
+            int vertInds[3] = { 0, 2, 1 };
 
-                mesh->checkNormals(TRUE);
+            printf("VNum %u\n", newMesh->m_chunkHeaderMesh.m_vertNum);
+            printf("VType %u\n", newMesh->m_chunkHeaderMesh.m_vertexType);
+            printf("VSize %u\n", newMesh->m_chunkHeaderMesh.m_vertBufSz);
+            printf("Stride %u\n", newMesh->m_stride);
 
-                Matrix3 tm = node->GetObjTMAfterWSM(m_timeValue);
+            int faceNum = mesh->getNumFaces();
+            printf("faceNum %u\n", faceNum);
 
-                auto rVerts = mesh->getRVertPtr(0);
-                auto tVerts = mesh->getTVertPtr(0);
-                /*triObj->mesh.normalCount
-                triObj->mesh.getNormal();*/
-                /*
-                     auto glambda = [&](Face* face, int o, int fi)
-                         {
-                             meshVerts->m_position[0] = verts[face->v[o]].x;
-                             meshVerts->m_position[1] = verts[face->v[o]].z;
-                             meshVerts->m_position[2] = verts[face->v[o]].y;
+            uint8_t* vptr = vert8ptr;
+            bqMDLMeshVertex* meshVertex = (bqMDLMeshVertex*)vptr;
+            for (int fi = 0; fi < faceNum; ++fi)
+            {
+                Face* face = &faces[fi];
+                
+                //auto& faceNormal = mesh->getFaceNormal(fi);
+                int vx1 = 0;
+                int vx2 = 1;
+                int vx3 = 2;
+                for (int ii = 0; ii < 3; ++ii)
+                {
+                    auto faceVertIndex = face->v[vertInds[ii]];
 
-                             auto rv = rVerts[face->getVert(o)];
-                             meshVerts->m_normal[0] = rv.rn.getNormal().x;
-                             meshVerts->m_normal[1] = rv.rn.getNormal().z * -1.f;
-                             meshVerts->m_normal[2] = rv.rn.getNormal().y;
+                  //  printf("F ii[%i] faceVertIndex[%i]\n", ii, faceVertIndex);
 
-                             if (tVerts)
-                             {
-                                 meshVerts->m_uv[0] = tVerts[mesh->tvFace[fi].t[o]].x;
+                    Point3 pos = verts[faceVertIndex];
+                 //   printf("P %f %f %f\n", pos.x, pos.y, pos.z);
 
-                                 float V = tVerts[mesh->tvFace[fi].t[o]].y;
-                                 meshVerts->m_uv[1] = V;
-                             }
+                    meshVertex->m_position[vx1] = pos.x;
+                    meshVertex->m_position[vx2] = pos.y;
+                    meshVertex->m_position[vx3] = pos.z;
+                    Point3 vn = GetVertexNormal(mesh, fi, mesh->getRVertPtr(faceVertIndex));
+                    meshVertex->m_normal[vx1] = vn.x;
+                    meshVertex->m_normal[vx2] = vn.y;
+                    meshVertex->m_normal[vx3] = vn.z;
 
-                             ++meshVerts;
-                         };*/
-                auto _GetVertexNormal = [&](Mesh* mesh, int faceNo, RVertex* rv) -> Point3
-                    {
-                        Face* f = &mesh->faces[faceNo];
-                        DWORD smGroup = f->smGroup;
-                        int numNormals = 0;
-                        Point3 vertexNormal;
+                //    printf("%f %f %f\n", meshVertex->m_position[0], meshVertex->m_position[1], meshVertex->m_position[2]);
 
-                        // Is normal specified
-                        // SPCIFIED is not currently used, but may be used in future versions.
-                        if (rv->rFlags & SPECIFIED_NORMAL) {
-                            vertexNormal = rv->rn.getNormal();
-                        }
-                        // If normal is not specified it's only available if the face belongs
-                        // to a smoothing group
-                        else if ((numNormals = rv->rFlags & NORCT_MASK) != 0 && smGroup) {
-                            // If there is only one vertex is found in the rn member.
-                            if (numNormals == 1) {
-                                vertexNormal = rv->rn.getNormal();
-                            }
-                            else {
-                                // If two or more vertices are there you need to step through them
-                                // and find the vertex with the same smoothing group as the current face.
-                                // You will find multiple normals in the ern member.
-                                for (int i2 = 0; i2 < numNormals; i2++) {
-                                    if (rv->ern[i2].getSmGroup() & smGroup) {
-                                        vertexNormal = rv->ern[i2].getNormal();
-                                    }
-                                }
-                            }
-                        }
-                        else {
-                            // Get the normal from the Face if no smoothing groups are there
-                            vertexNormal = mesh->getFaceNormal(faceNo);
-                        }
+                    vptr += newMesh->m_stride;
+                    meshVertex = (bqMDLMeshVertex*)vptr;
 
-                        return vertexNormal;
-                    };
+                 }
+            }
 
-                int ti1 = 0;
-                int ti2 = 1;
-                int ti3 = 2;
+            if (newMesh->m_skinData)
+            {
+                vptr = vert8ptr;
+                meshVertex = (bqMDLMeshVertex*)vptr;
 
-                int fvx1 = 0;
-                int fvx2 = 2;
-                int fvx3 = 1;
+                int boneNum = newMesh->m_skin->GetNumBones();
+                std::vector<INode*> _bones;
+                for (int bi = 0; bi < boneNum; ++bi)
+                {
+                    _bones.push_back(newMesh->m_skin->GetBone(bi));
+                }
 
                 for (int fi = 0; fi < faceNum; ++fi)
                 {
                     Face* face = &faces[fi];
-                    auto& faceNormal = mesh->getFaceNormal(fi);
 
-                    int vx1 = 0;
-                    int vx2 = 1;
-                    int vx3 = 2;
-
-                    auto& faceVertIndex = face->v[fvx1];
-                    Point3 pos = verts[faceVertIndex];
-                    meshVerts->m_position[vx1] = pos.x * -1.f;
-                    meshVerts->m_position[vx3] = pos.y;
-                    meshVerts->m_position[vx2] = pos.z;
-
-                    Point3 vn = _GetVertexNormal(mesh, fi, mesh->getRVertPtr(faceVertIndex));
-                    meshVerts->m_normal[vx1] = vn.x;
-                    meshVerts->m_normal[vx2] = vn.z * -1.f;
-                    meshVerts->m_normal[vx3] = vn.y;
-
-                    ++meshVerts;
-
-                    faceVertIndex = face->v[fvx2];
-                    pos = verts[faceVertIndex];
-                    meshVerts->m_position[vx1] = pos.x * -1.f;
-                    meshVerts->m_position[vx3] = pos.y;
-                    meshVerts->m_position[vx2] = pos.z;
-                    vn = _GetVertexNormal(mesh, fi, mesh->getRVertPtr(faceVertIndex));
-                    meshVerts->m_normal[vx1] = vn.x;
-                    meshVerts->m_normal[vx2] = vn.z * -1.f;
-                    meshVerts->m_normal[vx3] = vn.y;
-                    ++meshVerts;
-
-                    faceVertIndex = face->v[fvx3];
-                    pos = verts[faceVertIndex];
-                    meshVerts->m_position[vx1] = pos.x * -1.f;
-                    meshVerts->m_position[vx3] = pos.y;
-                    meshVerts->m_position[vx2] = pos.z;
-                    vn = _GetVertexNormal(mesh, fi, mesh->getRVertPtr(faceVertIndex));
-                    meshVerts->m_normal[vx1] = vn.x;
-                    meshVerts->m_normal[vx2] = vn.z * -1.f;
-                    meshVerts->m_normal[vx3] = vn.y;
-                    ++meshVerts;
-
-
-                }
-
-                meshVerts = newMesh->m_vertices;
-                for (int fi = 0; fi < faceNum; ++fi)
-                {
-                    int numTVx = mesh->getNumTVerts();
-                    if (numTVx)
+                    Matrix3 initTMBone;
+                    Matrix3 initTMNode;
+                    newMesh->m_skin->GetSkinInitTM(newMesh->m_node, initTMBone, false);
+                    newMesh->m_skin->GetSkinInitTM(newMesh->m_node, initTMNode, true);
+                    for (int ii = 0; ii < 3; ++ii)
                     {
-                        auto tci1 = mesh->tvFace[fi].t[fvx1];
-                        auto tci2 = mesh->tvFace[fi].t[fvx2];
-                        auto tci3 = mesh->tvFace[fi].t[fvx3];
+                        auto& faceVertIndex = face->v[vertInds[ii]];
 
-                        meshVerts->m_uv[0] = tVerts[tci1].x;
-                        meshVerts->m_uv[1] = 1.f - tVerts[tci1].y;
-                        ++meshVerts;
+                        bqMDLMeshVertexSkinned* meshVertexSkinned = (bqMDLMeshVertexSkinned*)vptr;
 
-                        meshVerts->m_uv[0] = tVerts[tci2].x;
-                        meshVerts->m_uv[1] = 1.f - tVerts[tci2].y;
-                        ++meshVerts;
+                        //  for (int iin = 0; iin < headerMesh.m_indNum; ++iin)
+                        //  {
+                        int nbones = newMesh->m_skinData->GetNumAssignedBones(faceVertIndex);
+                        for (int bi = 0; bi < nbones; ++bi)
+                        {
+                            meshVertexSkinned->m_weights[bi] = newMesh->m_skinData->GetBoneWeight(faceVertIndex, bi);
 
-                        meshVerts->m_uv[0] = tVerts[tci3].x;
-                        meshVerts->m_uv[1] = 1.f - tVerts[tci3].y;
-                        ++meshVerts;
+                            int boneIndex = newMesh->m_skinData->GetAssignedBone(faceVertIndex, bi);
+                            INode* _b = _bones[boneIndex];
+                            SkeletonBone skeletonBone = GetBone(GetAString(_b->GetName()).c_str());
+                            meshVertexSkinned->m_boneInds[bi] = skeletonBone.m_index;
+
+                            //INode* skinBone = newMesh->m_skin->GetBone(boneIndex);
+                            //meshVertexSkinned->m_boneInds[bi] = newMesh->m_skinData->GetAssignedBone(faceVertIndex, bi);
+
+                           // meshVertexSkinned->m_boneInds[bi] = boneIndex;
+                            //  printf(" W: %f", meshVertexSkinned->m_weights[bi]);
+                            //  printf(" I: %u\n", meshVertexSkinned->m_boneInds[bi]);
+                        }
+                        // if (nbones)
+                        //     printf("\n");
+
+                        vptr += newMesh->m_stride;
                     }
                 }
+            }
 
+            vptr = vert8ptr;
+            meshVertex = (bqMDLMeshVertex*)vptr;
+            for (int fi = 0; fi < faceNum; ++fi)
+            {
+                int numTVx = mesh->getNumTVerts();
+                if (numTVx)
+                {
+                    for (int ii = 0; ii < 3; ++ii)
+                    {
+                        auto tci1 = mesh->tvFace[fi].t[vertInds[ii]];
+                        meshVertex->m_uv[0] = tVerts[tci1].x;
+                        meshVertex->m_uv[1] = 1.f - tVerts[tci1].y;
+                        vptr += newMesh->m_stride;
+                        meshVertex = (bqMDLMeshVertex*)vptr;
+                    }
+                }
             }
         }
     }
-
-    void _onBone(INode* node, Object* obj)
-    {
-        bqMDLMax::bone newBone;
-        printf("New bone\n");
-        
-        //wprintf(L"Name: %s\n", node->GetName());
-        
-        MaxSDK::Util::MaxString mstr;
-        mstr.AllocBuffer(0xfff);
-        mstr.SetUTF16(node->GetName());
-
-
-        size_t len = 0;
-        auto astr = mstr.ToUTF8(&len);
-        if (len)
-        {
-            newBone.m_name.append(astr.data());
-            printf("Name: %s\n", newBone.m_name.c_str());
-        }
-        else
-        {
-            return;
-        }
-
-        
-        Matrix3 W = node->GetNodeTM(m_timeValue);
-        printf("Matrix: \n\t%f %f %f\n\t%f %f %f\n\t%f %f %f\n\n",
-            W.GetRow(0).x, W.GetRow(0).y, W.GetRow(0).z,
-            W.GetRow(1).x, W.GetRow(1).y, W.GetRow(1).z, 
-            W.GetRow(2).x, W.GetRow(2).y, W.GetRow(2).z);
-
-        Control* pC = node->GetTMController()->GetPositionController();
-        Control* rC = node->GetTMController()->GetRotationController();
-        Control* sC = node->GetTMController()->GetScaleController();
-
-        Point3 pos;
-        Quat rot;
-        ScaleValue sc;
-        if (pC)
-        {
-            pC->GetValue(m_timeValue, &pos);
-
-            printf("Position: %f %f %f\n", pos.x, pos.y, pos.z);
-
-            Matrix3 parentW = node->GetParentTM(m_timeValue);
-            Matrix3 T = W * parentW;
-
-            printf("Matrix * parentW: \n\t%f %f %f\n\t%f %f %f\n\t%f %f %f\n\n",
-                T.GetRow(0).x, T.GetRow(0).y, T.GetRow(0).z,
-                T.GetRow(1).x, T.GetRow(1).y, T.GetRow(1).z,
-                T.GetRow(2).x, T.GetRow(2).y, T.GetRow(2).z);
-        }
-        else
-        {
-            return;
-        }
-
-        if (rC)
-        {
-            rC->GetValue(m_timeValue, &rot);
-
-            printf("Rotation: %f %f %f [%f]\n", rot.x, rot.y, rot.z, rot.w);
-        }
-        else
-        {
-            return;
-        }
-
-        if (sC)
-        {
-            sC->GetValue(m_timeValue, &sc);
-
-            printf("Scale: %f %f %f\n", sc.s.x, sc.s.y, sc.s.z);
-        }
-        else
-        {
-            return;
-        }
-
-        auto parent = node->GetParentNode();
-        if (parent)
-        {
-            mstr.SetUTF16(parent->GetName());
-
-            size_t len = 0;
-            auto astr = mstr.ToUTF8(&len);
-            if (len)
-            {
-                newBone.m_parentName.append(astr.data());
-
-                printf("Parent name: %s\n", newBone.m_parentName.c_str());
-            }
-            else
-            {
-                return;
-            }
-        }
-        else
-        {
-            return;
-        }
-
-        newBone.m_boneData.m_nameIndex = m_mdl.AddString(node->GetName());
-        newBone.m_boneData.m_position[0] = pos.x;
-        newBone.m_boneData.m_position[1] = pos.y;
-        newBone.m_boneData.m_position[2] = pos.z;
-        newBone.m_boneData.m_scale[0] = sc.s.x;
-        newBone.m_boneData.m_scale[1] = sc.s.y;
-        newBone.m_boneData.m_scale[2] = sc.s.z;
-        newBone.m_boneData.m_rotation[0] = rot.x;
-        newBone.m_boneData.m_rotation[1] = rot.y;
-        newBone.m_boneData.m_rotation[2] = rot.z;
-        newBone.m_boneData.m_rotation[3] = rot.w;
-
-        m_mdl.m_bones.push_back(newBone);
-    }
-
     
-
     virtual int DoExport(const MCHAR* name, ExpInterface* ei, Interface* ip, BOOL suppressPrompts = FALSE, DWORD options = 0)
     {
-        m_timeValue = ip->GetTime();
+        m_timeValue = ip->GetAnimRange().Start();
+        m_sceneRootNode = ip->GetRootNode();
 
         // Сначала надо получить всё необходимое.
         // Потом записывать в файл.
 
         MyITreeEnumProc nodeEnumerator(this, ip);
         ei->theScene->EnumTree(&nodeEnumerator);
-        for (size_t i = 0, sz = m_sceneEntries.size(); i < sz; ++i)
-        {
-            auto entry = m_sceneEntries[i];
-            auto obj = entry->m_obj;
-            if (obj->ClassID() == BONE_OBJ_CLASSID)
-            {
-                _onBone(entry->m_node, obj);
-            }
-            else if (obj->CanConvertToType(Class_ID(TRIOBJ_CLASS_ID, 0)))
-            {
-                _onMesh(entry->m_node, obj->ConvertToType(m_timeValue, Class_ID(TRIOBJ_CLASS_ID, 0)));
-            }
-            
-        }
 
-        m_mdl._skeletonFindParents();
+        BuildSkeleton();
+        BuildMeshes();
         
-        m_mdl.Save(name);
+        Save(name);
 
 
         return 1;

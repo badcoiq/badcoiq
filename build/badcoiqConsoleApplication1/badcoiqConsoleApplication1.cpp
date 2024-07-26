@@ -1,5 +1,5 @@
-﻿#include "badcoiq.h"
-BQ_LINK_LIBRARY("badcoiq");
+﻿//#include "badcoiq.h"
+//BQ_LINK_LIBRARY("badcoiq");
 
 // Ниже выбираем только 1 пример
 // Проверка bqConfog.h
@@ -10,5 +10,7 @@ BQ_LINK_LIBRARY("badcoiq");
 // Только звук
 //#include "onlysound.cpp"
 
-#include "other.cpp"
+//#include "other.cpp"
+
+//#include "vectorGraphics.cpp"
 
