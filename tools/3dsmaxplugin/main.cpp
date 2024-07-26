@@ -1,5 +1,7 @@
 ﻿#include "Max.h"
 #include <modstack.h>
+#include "TextureMapIndexConstants.h"
+#include "stdmat.h"
 
 #include <iskin.h>
 #include <iskin.h>
@@ -12,6 +14,7 @@
 
 #include "fastlz.h"
 #include "bqmdlinfo.h"
+
 
 class FileBuffer
 {
@@ -84,6 +87,12 @@ public:
         }
     }
 
+};
+
+struct _Material
+{
+    uint32_t m_nameIndex = 0;
+    uint32_t m_filePathIndex1 = 0;
 };
 
 class _Mesh
@@ -340,14 +349,14 @@ public:
                         boneData.m_nameIndex = sBone.m_nameIndex;
                         boneData.m_parent = sBone.m_parentIndex;
 
-                        if (sBone.m_parentIndex != -1)
+                        /*if (sBone.m_parentIndex != -1)
                         {
                             SkeletonBone sBoneParent = GetBone(sBone.m_parentIndex);
                             printf("Bone [%s] parent [%s]\n", GetString(sBone.m_nameIndex).c_str(),
                                 GetString(sBoneParent.m_nameIndex).c_str());
                         }
                         else
-                            printf("Bone [%s] NO PARENT\n", GetString(sBone.m_nameIndex).c_str());
+                            printf("Bone [%s] NO PARENT\n", GetString(sBone.m_nameIndex).c_str());*/
 
                         boneData.m_position[0] = sBone.m_position[0];
                         boneData.m_position[1] = sBone.m_position[1];
@@ -476,18 +485,18 @@ public:
         while (it != m_skeleton.end())
         {
             SkeletonBone & bone = (*it).second;
-            printf("Bone: [%s][%i] ... INode[%s][%I64x]\n",
+           /* printf("Bone: [%s][%i] ... INode[%s][%I64x]\n",
                 GetString(bone.m_nameIndex).c_str(),
                 bone.m_index,
                 GetAString(bone.m_node->GetName()).c_str(),
-                (uint64_t)bone.m_node);
+                (uint64_t)bone.m_node);*/
 
             INode* parentNode = bone.m_node->GetParentNode();
             if (parentNode)
             {
-                printf("Parent INode name [%s][%I64x]\n", 
+                /*printf("Parent INode name [%s][%I64x]\n", 
                     GetAString(parentNode->GetName()).c_str(),
-                    (uint64_t)parentNode);
+                    (uint64_t)parentNode);*/
 
                 if (parentNode != m_sceneRootNode)
                 {
@@ -496,9 +505,9 @@ public:
                     if (parentBone.m_node == parentNode)
                     {
                         bone.m_parentIndex = parentBone.m_index;
-                        printf("Set parent: ... [%s][%i]\n",
+                        /*printf("Set parent: ... [%s][%i]\n",
                             GetString(parentBone.m_nameIndex).c_str(),
-                            parentBone.m_index);
+                            parentBone.m_index);*/
 
                     }
                 }
@@ -565,9 +574,9 @@ public:
     }
     SkeletonBone GetBone(INode* node)
     {
-        printf("GetBoneIBone [%s][%llu]\n",
+       /* printf("GetBoneIBone [%s][%llu]\n",
             GetAString(node->GetName()).c_str(),
-            (uint64_t)node);
+            (uint64_t)node);*/
 
         SkeletonBone bone;
         if (node)
@@ -577,15 +586,15 @@ public:
             {
                 SkeletonBone & _b = (*it).second;
 
-                printf("\t- - - [%s][%llu]  -  -  - [%s][%llu]\n",
+               /* printf("\t- - - [%s][%llu]  -  -  - [%s][%llu]\n",
                     GetAString(node->GetName()).c_str(),
                     (uint64_t)node,
                     GetAString(_b.m_node->GetName()).c_str(),
-                    (uint64_t)_b.m_node);
+                    (uint64_t)_b.m_node);*/
 
                 if((uint64_t)node == (uint64_t)_b.m_node)
                 {
-                    printf("\t- - - FOUND\n");
+                   // printf("\t- - - FOUND\n");
                     return _b;
                 }
                 it++;
@@ -999,7 +1008,7 @@ public:
 
         TriObject* triObj = dynamic_cast<TriObject*>(obj);
         if (triObj)
-        {            
+        {
             Modifier* skinModifier = 0;
             ISkin* skin = 0;
             ISkinContextData* skinData = 0;
@@ -1072,6 +1081,108 @@ public:
                 newM->m_skinData = skinData;
             }
             m_meshes.push_back(newM);
+
+            std::string phsMtl_mapName_base = "Base Color Map";
+            std::string mapName_bitmaptexture = "Bitmaptexture";
+
+            int mtlsNum = node->NumMtls();
+            printf("Material num: %i\n", mtlsNum);
+            for (int i = 0; i < mtlsNum; ++i)
+            {
+                Mtl* mtl = node->GetMtl();
+                int mtlNameIndex = AddString(mtl->GetName());
+                printf("MTL [%i] Name: [%s]\n",i, GetAString(mtl->GetName()).c_str());
+
+                if (mtl->ClassID() == MULTI_MATERIAL_CLASS_ID)
+                {
+                    int subMtlsNum = mtl->NumSubMtls();
+                    if (subMtlsNum)
+                    {
+                        for (int i2 = 0; i2 < subMtlsNum; ++i2)
+                        {
+                            Mtl* subMtl = mtl->GetSubMtl(i2);
+                            mtlNameIndex = AddString(subMtl->GetName());
+                            printf("Sub MTL [%i] Name: [%s]\n", i2, GetAString(subMtl->GetName()).c_str());
+
+                            if (subMtl->ClassID() == PHYSICALMATERIAL_CLASS_ID)
+                            {
+                                printf("Sub MTL ClassID: [PHYSICALMATERIAL_CLASS_ID]\n");
+                                
+                                Color ambient = mtl->GetAmbient();
+                                Color diffuse = mtl->GetDiffuse();
+                                float selfIllum = mtl->GetSelfIllum();
+                                Color selIllumColor = mtl->GetSelfIllumColor();
+                                float shininess = mtl->GetShininess();
+                                float shininessStr = mtl->GetShinStr();
+                                Color specular = mtl->GetSpecular();
+
+                                auto numSubTexMaxs = subMtl->NumSubTexmaps();
+                                printf("SubTexMap num [%i]\n", numSubTexMaxs);
+                                if (numSubTexMaxs)
+                                {
+                                    for (int sti = 0; sti < numSubTexMaxs; ++sti)
+                                    {
+                                        std::string mapName = GetAString(subMtl->GetSubTexmapSlotName(sti, false));
+                                        if (mapName == phsMtl_mapName_base)
+                                        {
+                                            Texmap* tMap = subMtl->GetSubTexmap(sti);
+                                            if (tMap)
+                                            {
+                                                wprintf(L"Have texmap [%s]\n", tMap->GetName());
+                                                mapName = GetAString(tMap->GetName());
+                                                if (mapName == mapName_bitmaptexture)
+                                                {
+                                                    BitmapTex* bitmap = dynamic_cast<BitmapTex*>(tMap);
+                                                    if (bitmap)
+                                                    {
+                                                        MSTR path = bitmap->GetMap().GetFullFilePath();
+                                                        if (path)
+                                                        {
+                                                            wprintf(L"File path [%s]\n", path);
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                printf("NO texmap\n");
+                                            }
+                                        }
+
+                                        //wprintf(L"SubTexMap[%i] name [%s]\n", sti, );
+                                    }
+                                }
+
+                                Texmap* map = mtl->GetSubTexmap(ID_DI);
+                            }
+
+                        }
+                    }
+                }
+                else
+                {
+                    if (mtl->ClassID() == PHYSICALMATERIAL_CLASS_ID)
+                    {
+                        //Mtl* pPhysicalMaterial
+
+                        Color ambient = mtl->GetAmbient();
+                        Color diffuse = mtl->GetDiffuse();
+                        float selfIllum = mtl->GetSelfIllum();
+                        Color selIllumColor = mtl->GetSelfIllumColor();
+                        float shininess = mtl->GetShininess();
+                        float shininessStr = mtl->GetShinStr();
+                        Color specular = mtl->GetSpecular();
+
+                        Texmap* map = mtl->GetSubTexmap(ID_DI);
+                    }
+                }
+
+               
+
+                    
+            }
+
         }
     }
 
@@ -1165,6 +1276,7 @@ public:
             auto rVerts = mesh->getRVertPtr(0);
             auto tVerts = mesh->getTVertPtr(0);
 
+
             int ti1 = 0;
             int ti2 = 1;
             int ti3 = 2;
@@ -1183,6 +1295,10 @@ public:
             for (int fi = 0; fi < faceNum; ++fi)
             {
                 Face* face = &faces[fi];
+
+                MtlID mtlID = mesh->getFaceMtlIndex(fi);
+                printf("Face Mtl index [%u]\n", mtlID);
+
                 
                 //auto& faceNormal = mesh->getFaceNormal(fi);
                 int vx1 = 0;
@@ -1291,6 +1407,7 @@ public:
         m_timeValue = ip->GetAnimRange().Start();
         m_sceneRootNode = ip->GetRootNode();
 
+        
         // Сначала надо получить всё необходимое.
         // Потом записывать в файл.
 
