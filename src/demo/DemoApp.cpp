@@ -161,7 +161,7 @@ bool DemoApp::Init()
 	bqFramework::Start(m_frameworkCallback);
 	
 	m_window = bqFramework::SummonWindow(m_windowCallback);
-	m_window->SetPositionAndSize(0, 0, 800, 600);
+	m_window->SetPositionAndSize(0, 0, 1024, 768);
 	m_window->SetVisible(true);	
 
 	bqArchiveSystem::ZipAdd(bqFramework::GetPath("..\\data\\data.zip").c_str());

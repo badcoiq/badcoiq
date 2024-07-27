@@ -138,6 +138,16 @@ public:
 	void SetRed(float v) { m_data[0] = v; }
 	void SetGreen(float v) { m_data[1] = v; }
 	void SetBlue(float v) { m_data[2] = v; }
+	
+	void SetR(float v) { m_data[0] = v; }
+	void SetG(float v) { m_data[1] = v; }
+	void SetB(float v) { m_data[2] = v; }
+	void SetRGB(float r, float g, float b) 
+	{
+		m_data[0] = r;
+		m_data[1] = g;
+		m_data[2] = b;
+	}
 
 	void SetAsByteAlpha(int32_t v) { m_data[3] = static_cast<float>(v) * 0.00392156862745f; }
 	void SetAsByteRed(int32_t v) { m_data[0] = static_cast<float>(v) * 0.00392156862745f; }

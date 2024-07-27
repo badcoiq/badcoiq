@@ -86,6 +86,8 @@ public:
 	};
 	map* m_maps = 0;*/
 
+//#define Reminder(msg) __FILE__ "(" $Line ") : " msg
+
 	struct map
 	{
 		map()
@@ -99,7 +101,7 @@ public:
 #if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_GS)
 		bqTexture* m_texture = 0;
 #endif
-
+		// возможно лучше удалить так как пути к файлам удобнее держать отдельно
 		char8_t m_filePath[0x1000];
 	};
 	bqArray<map> m_maps;

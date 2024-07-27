@@ -43,7 +43,9 @@ class ExampleBasicsMDL : public DemoExample
 	//bqSkeleton* m_skeleton = 0;
 	bqMDL* m_mdl = 0;
 
-	bqTexture* m_texture = 0;
+	bqString m_guiText;
+
+	//bqTexture* m_texture = 0;
 
     void _onCamera();
 public:

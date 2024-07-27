@@ -43,15 +43,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
 class bqMDL
 {
+	struct _mtl
+	{
+		bqMDLChunkHeaderMaterial m_header;
+		bqMaterial m_material;
+
+		bqTexture* m_diffuseMap = 0;
+	};
+
 	struct _mesh
 	{
 		bqMesh* m_mesh = 0;
 		bqGPUMesh* m_GPUmesh = 0;
 		bqMDLChunkHeaderMesh m_chunkHeaderMesh;
-		bqShaderType m_shaderType = bqShaderType::Standart;
+
+		_mtl m_mtl;
 	};
 
 	bqArray<_mesh> m_meshes;
+
 	bqArray<bqStringA> m_strings;
 	uint8_t* _decompress(const bqMDLFileHeader&, 
 		bqFileBuffer& , 
@@ -67,14 +77,15 @@ public:
 	~bqMDL();
 	BQ_PLACEMENT_ALLOCATOR(bqMDL);
 
-	bool Load(const char*, bqGS*, bool free_bqMesh);
+	bool Load(const char* mdlFile, const char* textureDir, bqGS*, bool free_bqMesh);
 	void Unload();
 	
 	void FreebqMesh();
 	size_t GetMeshNum() { return m_meshes.m_size; }
 	bqGPUMesh* GetGPUMesh(size_t i) { return m_meshes.m_data[i].m_GPUmesh; }
 	bqSkeleton* GetSkeleton() { return m_skeleton; }
-	bqShaderType GetShaderType(size_t i) { return m_meshes.m_data[i].m_shaderType; }
+	bqShaderType GetShaderType(size_t i) { return m_meshes.m_data[i].m_mtl.m_material.m_shaderType; }
+	bqMaterial* GetMaterial(size_t i) { return &m_meshes.m_data[i].m_mtl.m_material; }
 
 };
 

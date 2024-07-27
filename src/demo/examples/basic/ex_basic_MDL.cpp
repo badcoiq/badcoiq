@@ -93,13 +93,27 @@ bool ExampleBasicsMDL::Init()
 	m_gs->DisableBackFaceCulling();
 
 	m_mdl = new bqMDL;
-	if (!m_mdl->Load(bqFramework::GetPath("../data/models/Jill.mdl").c_str(), m_gs, true))
+
+	bqStringA modelName = "Jill";
+	bqStringA modelsDir = bqFramework::GetPath("../data/models/");
+	bqStringA texturesDir = bqFramework::GetPath("../data/textures/models/");
+	
+	bqStringA modelPath = modelsDir;
+	modelPath.append(modelName);
+	modelPath.append(".mdl");
+
+	bqStringA textureDir = texturesDir;
+	textureDir.append(modelName);
+	textureDir.append("/");
+
+
+	if (!m_mdl->Load(modelPath.c_str(), textureDir.c_str(), m_gs, true))
 	{
 		BQ_SAFEDESTROY(m_mdl);
 		return false;
 	}
 
-	m_texture = bqFramework::SummonTexture(m_gs, bqFramework::GetPath("../data/textures/st1.jpg").c_str());
+	//m_texture = bqFramework::SummonTexture(m_gs, bqFramework::GetPath("../data/textures/st1.jpg").c_str());
 
 	return true;
 }
@@ -108,7 +122,7 @@ void ExampleBasicsMDL::Shutdown()
 {
 	BQ_SAFEDESTROY(m_mdl);
 	BQ_SAFEDESTROY(m_camera);
-	BQ_SAFEDESTROY(m_texture);
+	//BQ_SAFEDESTROY(m_texture);
 }
 
 void ExampleBasicsMDL::OnDraw()
@@ -121,8 +135,25 @@ void ExampleBasicsMDL::OnDraw()
 
 	_onCamera();
 
+	static int ji = 0;
+	auto skeleton = m_mdl->GetSkeleton();
+	
+	if (bqInput::IsKeyHit(bqInput::KEY_1))
+	{
+		if (ji > 0)
+			--ji;
+	}
+	if (bqInput::IsKeyHit(bqInput::KEY_2))
+	{
+		++ji;
+		if (ji >= skeleton->GetJoints().m_size)
+			ji = skeleton->GetJoints().m_size - 1;
+	}
 
 	m_gs->BeginGUI();
+	m_guiText.assign("Joint under control: ");
+	m_guiText.append(ji);
+	m_gs->DrawGUIText(m_guiText.c_str(), m_guiText.size(), bqVec2f(0.f, 20.f), m_app->GetTextDrawCallback());
 	m_gs->EndGUI();
 
 	m_gs->BeginDraw();
@@ -139,15 +170,10 @@ void ExampleBasicsMDL::OnDraw()
 	WVP = m_camera->GetMatrixProjection() * m_camera->GetMatrixView() * W;
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
 
-	bqMaterial material;
-	m_gs->SetMaterial(&material);
-	m_gs->EnableBackFaceCulling();
-
-	material.m_sunPosition.Set(1.f, 20.f, 1.f);
-	material.m_maps[0].m_texture = m_texture;
+	
+	//material.m_maps[0].m_texture = m_texture;
 	
 
-	auto skeleton = m_mdl->GetSkeleton();
 	if (skeleton)
 	{
 		auto joints = &skeleton->GetJoints().m_data[0];
@@ -162,28 +188,58 @@ void ExampleBasicsMDL::OnDraw()
 	{
 		auto gpumesh = m_mdl->GetGPUMesh(i);
 
-		material.m_shaderType = m_mdl->GetShaderType(i);
-		m_gs->SetShader(material.m_shaderType, 0);
+		bqMaterial* mat = m_mdl->GetMaterial(i);
+		mat->m_sunPosition.Set(1.f, -20.f, 1.f);
+		mat->m_colorAmbient.Set(0.7f);
+		mat->m_colorDiffuse.Set(1.f);
 
-		/*if (m_model->m_meshBuffers.m_data[i]->m_texture)
-			material.m_maps[0].m_texture = m_model->m_meshBuffers.m_data[i]->m_texture;
-		else*/
-			//material.m_maps[0].m_texture = m_app->m_whiteTexture;
+		m_gs->SetShader(mat->m_shaderType, 0);
+		m_gs->SetMaterial(mat);
+		m_gs->EnableBackFaceCulling();
+
+		if (!mat->m_maps[0].m_texture)
+			mat->m_maps[0].m_texture = m_app->m_whiteTexture;
 
 		m_gs->SetMesh(gpumesh);
 		m_gs->Draw();
 	}
 	
 
-	float a = 0.f;
-	if (bqInput::IsKeyHold(bqInput::KEY_Z))
-		a = 0.1f;
-	if (bqInput::IsKeyHold(bqInput::KEY_X))
-		a = -0.1f;
+	float ax = 0.f;
+	float ay = 0.f;
+	float az = 0.f;
+	if (bqInput::IsKeyHold(bqInput::KEY_Z)) ax = 0.021f;
+	if (bqInput::IsKeyHold(bqInput::KEY_X)) ax = -0.021f;
+	if (bqInput::IsKeyHold(bqInput::KEY_C)) ay = 0.021f;
+	if (bqInput::IsKeyHold(bqInput::KEY_V)) ay = -0.021f;
+	if (bqInput::IsKeyHold(bqInput::KEY_B)) az = 0.021f;
+	if (bqInput::IsKeyHold(bqInput::KEY_N)) az = -0.021f;
+
+	static float sc = 1.f;
+	if (bqInput::IsKeyHold(bqInput::KEY_O)) sc += 0.021f;
+	if (bqInput::IsKeyHold(bqInput::KEY_P)) sc += -0.021f;
+	
 
 	if (skeleton)
 	{
-		auto bone = skeleton->GetJoint("head neck upper");
+		auto joint = &skeleton->GetJoints().m_data[ji];
+		if (joint)
+		{
+			bqQuaternion q;
+			q.Set(ax, ay, az);
+
+			//if (ji == 82)
+			{
+				joint->m_data.m_transformation.m_base.m_scale.x = sc;
+				joint->m_data.m_transformation.m_base.m_scale.y = sc;
+			}
+
+			joint->m_data.m_transformation.m_base.m_rotation *= q;
+			joint->m_data.m_transformation.m_base.m_rotation.Normalize();
+			joint->m_data.m_transformation.CalculateMatrix();
+			skeleton->Update();
+		}
+		/*auto bone = skeleton->GetJoint("head neck upper");
 		if (bone)
 		{
 			bqQuaternion q;
@@ -192,7 +248,8 @@ void ExampleBasicsMDL::OnDraw()
 			bone->m_data.m_transformation.m_base.m_rotation *= q;
 			bone->m_data.m_transformation.CalculateMatrix();
 			skeleton->Update();
-		}
+		}*/
+
 	}
 
 	m_app->DrawGrid(14, (float)m_camera->m_position.y);
@@ -238,7 +295,7 @@ void ExampleBasicsMDL::OnDraw()
 					bqMat4 _mI2 = parent.m_data.m_matrixBindInverse;
 					_mI2.Invert();
 					bqMat4 _mI = parent.m_data.m_matrixFinal * _mI2;
-					m_gs->DrawLine3D(mI.m_data[3], _mI.m_data[3], bq::ColorWhite);
+				//	m_gs->DrawLine3D(mI.m_data[3], _mI.m_data[3], bq::ColorWhite);
 				}
 			}
 		}

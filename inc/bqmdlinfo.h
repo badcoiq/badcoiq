@@ -85,6 +85,7 @@ struct bqMDLChunkHeader
 		ChunkType_Mesh,
 		ChunkType_String,
 		ChunkType_Skeleton,
+		ChunkType_Material,
 	};
 
 	uint32_t m_chunkType = ChunkType__null;
@@ -108,8 +109,8 @@ struct bqMDLChunkHeaderMesh
 	// здесь и далее указываются индексы строк
 	uint32_t m_nameIndex = 0;
 	
-	float m_aabbMin[3] = { 0.f,0.f,0.f };
-	float m_aabbMax[3] = { 0.f,0.f,0.f };
+	float m_aabbMin[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
+	float m_aabbMax[3] = { FLT_MIN, FLT_MIN, FLT_MIN };
 
 	enum
 	{
@@ -125,7 +126,9 @@ struct bqMDLChunkHeaderMesh
 	};
 	uint32_t m_vertexType = VertexType_Triangle;
 	
+	// индекс строки имени материала
 	uint32_t m_material = 0;
+
 	uint32_t m_vertNum = 0;
 	uint32_t m_indNum = 0;
 	uint32_t m_vertBufSz = 0;
@@ -159,6 +162,76 @@ struct bqMDLBoneData
 	float m_rotation[4]; // quaternion
 };
 
+struct bqMDLChunkHeaderMaterial
+{
+	uint32_t m_nameIndex = 0;
+	
+	int32_t m_difMap = -1;
+	int32_t m_specMap = -1;
+	int32_t m_normMap = -1;
+	int32_t m_rougMap = -1;
+
+	enum
+	{
+		// 00000000 00000000 00000000 00000111
+		texParams_cmpFunc_never = 0,
+		texParams_cmpFunc_less,
+		texParams_cmpFunc_equal,
+		texParams_cmpFunc_lessEqual,
+		texParams_cmpFunc_greater,
+		texParams_cmpFunc_notEqual,
+		texParams_cmpFunc_greaterEqual,
+		texParams_cmpFunc_always,
+		texParams_cmpFunc__mask_ = 0x7,
+
+		// 00000000 00000000 00000000 00111000
+		texParams_adrMode_wrap = 0,
+		texParams_adrMode_mirror,
+		texParams_adrMode_clamp,
+		texParams_adrMode_border,
+		texParams_adrMode_mirrorOnce,
+		texParams_adrMode__mask_ = 0x38,
+
+		// 00000000 00000000 00000111 11000000
+		texParams_filter_PPP = 0,
+		texParams_filter_PPL,
+		texParams_filter_PLP,
+		texParams_filter_PLL,
+		texParams_filter_LPP,
+		texParams_filter_LPL,
+		texParams_filter_LLP,
+		texParams_filter_LLL,
+		texParams_filter_Anisotropic,
+		texParams_filter_PPP_cmp,
+		texParams_filter_PPL_cmp,
+		texParams_filter_PLP_cmp,
+		texParams_filter_PLL_cmp,
+		texParams_filter_LPP_cmp,
+		texParams_filter_LPL_cmp,
+		texParams_filter_LLP_cmp,
+		texParams_filter_LLL_cmp,
+		texParams_filter_Anisotropic_cmp,
+		texParams_filter__mask_ = 0x1C0,
+
+		// 00000000 00000000 01111000 00000000
+		texParams_anisotropicLevel1 = 1,
+		texParams_anisotropicLevel2,
+		texParams_anisotropicLevel3,
+		texParams_anisotropicLevel4,
+		texParams_anisotropicLevel5,
+		texParams_anisotropicLevel6,
+		texParams_anisotropicLevel7,
+		texParams_anisotropicLevel8,
+		texParams_anisotropicLevel9,
+		texParams_anisotropicLevel10,
+		texParams_anisotropicLevel__mask_ = 0x7800,
+	};
+	uint32_t m_textureParams = 0;
+
+	float m_ambient[3] = { 0.5, 0.5, 0.5 };
+	float m_diffuse[3] = { 1, 1, 1 };
+	float m_specular[3] = { 1, 1, 1 };
+};
 
 #endif
 

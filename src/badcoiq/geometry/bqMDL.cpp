@@ -84,7 +84,7 @@ uint8_t* bqMDL::_decompress(const bqMDLFileHeader& fileHeader,
 	return 0;
 }
 
-bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
+bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqMesh)
 {
 	Unload();
 
@@ -92,10 +92,24 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 	BQ_ASSERT_ST(gs);
 	if (fn && gs)
 	{
+		bqArray<bqMDLChunkHeaderMaterial> materials;
+		auto l_getMaterialHeader = [&](uint32_t nameIndex) -> bqMDLChunkHeaderMaterial*
+		{
+			for (size_t i = 0; i < materials.m_size; ++i)
+			{
+				if (materials.m_data[i].m_nameIndex == nameIndex)
+					return &materials.m_data[i];
+			}
+
+			return &materials.m_data[0];
+		};
+
 		uint32_t fileSz = 0;
 		uint8_t* ptr = bqFramework::SummonFileBuffer(fn, &fileSz, false);
 		if (ptr)
 		{
+			materials.reserve(100);
+
 			// для автоматического уничтожения ptr
 			BQ_PTR_D(uint8_t, ptrr, ptr);
 
@@ -201,13 +215,15 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 
 					_mesh m;
 					if (chunkHeaderMesh.m_vertexType == bqMDLChunkHeaderMesh::VertexType_Triangle)
-						m.m_shaderType = bqShaderType::Standart;
+						m.m_mtl.m_material.m_shaderType = bqShaderType::Standart;
 					else
-						m.m_shaderType = bqShaderType::StandartSkinned;
+						m.m_mtl.m_material.m_shaderType = bqShaderType::StandartSkinned;
 					m.m_mesh = newM;
 					m.m_GPUmesh = gs->SummonMesh(newM);
 					m.m_chunkHeaderMesh = chunkHeaderMesh;
 					m_meshes.push_back(m);
+
+
 
 					/*if (chunkHeaderMesh.m_vertexType == bqMDLChunkHeaderMesh::VertexType_Triangle)
 					{
@@ -300,6 +316,13 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 					
 				}break;
 
+				case bqMDLChunkHeader::ChunkType_Material:
+				{
+					bqMDLChunkHeaderMaterial chunkHeaderMaterial;
+					file.Read(&chunkHeaderMaterial, sizeof(chunkHeaderMaterial));
+					materials.push_back(chunkHeaderMaterial);
+				}break;
+
 				default:
 					bqLog::PrintError("bqMDL: bad chunk type [%u]\n", chunkHeader.m_chunkType);
 					return false;
@@ -319,7 +342,7 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 
 			
 			auto & joints = m_skeleton->GetJoints();
-			for (int i = 0; i < joints.m_size; ++i)
+			for (size_t i = 0; i < joints.m_size; ++i)
 			{
 				auto& joint = joints.m_data[i];
 
@@ -330,7 +353,89 @@ bool bqMDL::Load(const char* fn, bqGS* gs, bool free_bqMesh)
 			}
 		}
 
-		printf("Load end... %u meshes\n", m_meshes.m_size);
+		if (materials.m_size)
+		{
+			for (size_t i = 0; i < materials.m_size; ++i)
+			{
+				bqMDLChunkHeaderMaterial& m = materials.m_data[i];
+				printf("Material[%u][%s]\n", i, m_strings[m.m_nameIndex].c_str());
+
+				if(m.m_difMap != -1)
+					printf("\tdiffuse map: [%s]\n", m_strings[m.m_difMap].c_str());
+			}
+
+			for (size_t i = 0; i < m_meshes.m_size; ++i)
+			{
+				_mesh& m = m_meshes.m_data[i];
+
+
+				m.m_mtl.m_header = *l_getMaterialHeader(m.m_chunkHeaderMesh.m_material);
+
+				m.m_mtl.m_material.m_colorAmbient.SetR(m.m_mtl.m_header.m_ambient[0]);
+				m.m_mtl.m_material.m_colorAmbient.SetG(m.m_mtl.m_header.m_ambient[1]);
+				m.m_mtl.m_material.m_colorAmbient.SetB(m.m_mtl.m_header.m_ambient[2]);
+
+				m.m_mtl.m_material.m_colorDiffuse.SetR(m.m_mtl.m_header.m_diffuse[0]);
+				m.m_mtl.m_material.m_colorDiffuse.SetG(m.m_mtl.m_header.m_diffuse[1]);
+				m.m_mtl.m_material.m_colorDiffuse.SetB(m.m_mtl.m_header.m_diffuse[2]);
+
+				m.m_mtl.m_material.m_colorSpecular.SetR(m.m_mtl.m_header.m_specular[0]);
+				m.m_mtl.m_material.m_colorSpecular.SetG(m.m_mtl.m_header.m_specular[1]);
+				m.m_mtl.m_material.m_colorSpecular.SetB(m.m_mtl.m_header.m_specular[2]);
+				
+			//	printf("%f %f %f\n", m.m_mtl.m_header.m_ambient[0], m.m_mtl.m_header.m_ambient[1], m.m_mtl.m_header.m_ambient[2]);
+			//	printf("%f %f %f\n", m.m_mtl.m_header.m_diffuse[0], m.m_mtl.m_header.m_diffuse[1], m.m_mtl.m_header.m_diffuse[2]);
+			//	printf("%f %f %f\n", m.m_mtl.m_header.m_specular[0], m.m_mtl.m_header.m_specular[1], m.m_mtl.m_header.m_specular[2]);
+
+				bqTextureInfo ti;
+				//ti.m_filter = ;
+				bqStringA imgPath;
+				if (textureDir)
+					imgPath.append(textureDir);
+
+				if (imgPath.size())
+				{
+					char* str = imgPath.data();
+					if ((str[imgPath.size() - 1] != '/')
+						&& (str[imgPath.size() - 1] != '\\'))
+						imgPath.push_back('/');
+				}
+				else
+				{
+					imgPath.push_back('/');
+				}
+				
+				int32_t difMapIndex = m.m_mtl.m_header.m_difMap;
+				if (difMapIndex != -1)
+				{
+					imgPath.append(m_strings[difMapIndex].c_str());
+				}
+
+				if (imgPath.size())
+				{
+					bqImage* img = bqFramework::SummonImage(imgPath.c_str());
+					if (img)
+					{
+						m.m_mtl.m_diffuseMap = gs->SummonTexture(img, ti);
+						if (m.m_mtl.m_diffuseMap)
+						{
+							m.m_mtl.m_material.m_maps[0].m_texture = m.m_mtl.m_diffuseMap;
+
+
+							m.m_mtl.m_material.m_shaderType = bqShaderType::Standart;
+							if(m.m_chunkHeaderMesh.m_vertexType == 
+								bqMDLChunkHeaderMesh::VertexType_TriangleSkinned)
+								m.m_mtl.m_material.m_shaderType = bqShaderType::StandartSkinned;
+						}
+
+
+						delete img;
+					}
+				}
+			}
+		}
+
+		printf("Load end... %u meshes %u materials\n", m_meshes.m_size, materials.m_size);
 
 
 		return true;
@@ -350,6 +455,8 @@ void bqMDL::Unload()
 	for (uint32_t i = 0; i < m_meshes.m_size; ++i)
 	{
 		BQ_SAFEDESTROY(m_meshes.m_data[i].m_GPUmesh);
+		
+		BQ_SAFEDESTROY(m_meshes.m_data[i].m_mtl.m_diffuseMap);
 	}
 	m_meshes.clear();
 	m_strings.clear();
