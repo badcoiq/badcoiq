@@ -2,6 +2,8 @@
 #include <modstack.h>
 #include "TextureMapIndexConstants.h"
 #include "stdmat.h"
+#include "3dsmaxport.h"
+#include "IFrameTagManager.h"
 
 #include <iskin.h>
 #include <iskin.h>
@@ -16,6 +18,14 @@
 #include "fastlz.h"
 #include "bqmdlinfo.h"
 
+#include "resource.h"
+
+#ifndef IPOS_CONTROL_CLASS_ID
+#define IPOS_CONTROL_CLASS_ID		Class_ID(0x118f7e02,0xffee238a)
+#endif
+
+static INT_PTR CALLBACK ExportDlgProc(
+	HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 class FileBuffer
 {
@@ -366,9 +376,21 @@ public:
 			size_t matChunkNum = m_materials.size();
 
 			bqMDLFileHeader fileHeader;
-		    fileHeader.m_chunkNum = meshChunkNum
-		        + stringChunkNum
-				+ matChunkNum;
+			fileHeader.m_chunkNum = 0;
+			
+			//m_GUI_checkExportAnimation
+			if (!m_GUI_checkOnlySkeleton)
+			{
+				fileHeader.m_chunkNum += meshChunkNum;
+				fileHeader.m_chunkNum += matChunkNum;
+			}
+			
+			fileHeader.m_chunkNum += stringChunkNum;
+
+			if (m_GUI_checkExportAnimation)
+			{
+				//fileHeader.m_chunkNum += aniNum;
+			}
 
 			if (m_bonesNum)
 			{
@@ -378,31 +400,34 @@ public:
 			printf("Write file header\n");
 			fwrite(&fileHeader, 1, sizeof(fileHeader), f);
 
-
-			printf("Add meshes\n");
-			for (uint32_t i = 0; i < meshChunkNum; ++i)
+			if (!m_GUI_checkOnlySkeleton)
 			{
-				auto smesh = subMeshes[i];
+				printf("Add meshes\n");
+				for (uint32_t i = 0; i < meshChunkNum; ++i)
+				{
+					auto smesh = subMeshes[i];
 
-				bqMDLChunkHeaderMesh meshChunkHeader;
-				meshChunkHeader = smesh->m_chunkHeaderMesh;
+					bqMDLChunkHeaderMesh meshChunkHeader;
+					meshChunkHeader = smesh->m_chunkHeaderMesh;
 
-				printf(" - [%u] : m_nameIndex [%u]\n", i, meshChunkHeader.m_nameIndex);
-				printf(" - [%u] : m_material [%u]\n", i, meshChunkHeader.m_material);
+					printf(" - [%u] : m_nameIndex [%u]\n", i, meshChunkHeader.m_nameIndex);
+					printf(" - [%u] : m_material [%u]\n", i, meshChunkHeader.m_material);
 
 
-				bqMDLChunkHeader chunkHeader;
-				chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Mesh;
-				chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
-					+ sizeof(bqMDLChunkHeaderMesh)
-					+ meshChunkHeader.m_vertBufSz
-					+ meshChunkHeader.m_indBufSz;
+					bqMDLChunkHeader chunkHeader;
+					chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Mesh;
+					chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+						+ sizeof(bqMDLChunkHeaderMesh)
+						+ meshChunkHeader.m_vertBufSz
+						+ meshChunkHeader.m_indBufSz;
 
-				m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
-				m_fileBuffer.Add(&meshChunkHeader, sizeof(meshChunkHeader));
-				m_fileBuffer.Add(smesh->m_vertices, meshChunkHeader.m_vertBufSz);
-				m_fileBuffer.Add(smesh->m_indices, meshChunkHeader.m_indBufSz);
+					m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+					m_fileBuffer.Add(&meshChunkHeader, sizeof(meshChunkHeader));
+					m_fileBuffer.Add(smesh->m_vertices, meshChunkHeader.m_vertBufSz);
+					m_fileBuffer.Add(smesh->m_indices, meshChunkHeader.m_indBufSz);
+				}
 			}
+
 
 			printf("Add strings\n");
 			for (uint32_t i = 0; i < stringChunkNum; ++i)
@@ -459,7 +484,7 @@ public:
 						else
 							printf("Bone [%s] NO PARENT\n", GetString(sBone.m_nameIndex).c_str());*/
 
-						boneData.m_position[0] = sBone.m_position[0];
+						/*boneData.m_position[0] = sBone.m_position[0];
 						boneData.m_position[1] = sBone.m_position[1];
 						boneData.m_position[2] = sBone.m_position[2];
 						boneData.m_scale[0] = sBone.m_scale[0];
@@ -468,32 +493,38 @@ public:
 						boneData.m_rotation[0] = sBone.m_rotation[0];
 						boneData.m_rotation[1] = sBone.m_rotation[1];
 						boneData.m_rotation[2] = sBone.m_rotation[2];
-						boneData.m_rotation[3] = sBone.m_rotation[3];
+						boneData.m_rotation[3] = sBone.m_rotation[3];*/
+						sBone.GetInitialPosition(boneData.m_position);
+						sBone.GetInitialScale(boneData.m_scale);
+						sBone.GetInitialRotation(boneData.m_rotation);
 
 						m_fileBuffer.Add(&boneData, sizeof(boneData));
 					}
 				}
 			}
 			
-			printf("Add materials\n");
-			for (uint32_t i = 0; i < matChunkNum; ++i)
+			if (!m_GUI_checkOnlySkeleton)
 			{
-				_Material* mat = &m_materials[i];
+				printf("Add materials\n");
+				for (uint32_t i = 0; i < matChunkNum; ++i)
+				{
+					_Material* mat = &m_materials[i];
 
-				//bqMDLChunkHeaderMaterial materialChunkHeader;
-				//materialChunkHeader = mat.m_header;
-				//materialChunkHeader.m_nameIndex = mat.m_header.m_nameIndex;
-				
-				printf(" - [%u] : m_nameIndex [%u]\n", i, mat->m_header.m_nameIndex);
-				printf(" - [%u] : m_difMap [%u]\n", i, mat->m_header.m_difMap);
+					//bqMDLChunkHeaderMaterial materialChunkHeader;
+					//materialChunkHeader = mat.m_header;
+					//materialChunkHeader.m_nameIndex = mat.m_header.m_nameIndex;
 
-				bqMDLChunkHeader chunkHeader;
-				chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Material;
-				chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
-					+ sizeof(bqMDLChunkHeaderMaterial);
+					printf(" - [%u] : m_nameIndex [%u]\n", i, mat->m_header.m_nameIndex);
+					printf(" - [%u] : m_difMap [%u]\n", i, mat->m_header.m_difMap);
 
-				m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
-				m_fileBuffer.Add(&mat->m_header, sizeof(mat->m_header));
+					bqMDLChunkHeader chunkHeader;
+					chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Material;
+					chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+						+ sizeof(bqMDLChunkHeaderMaterial);
+
+					m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+					m_fileBuffer.Add(&mat->m_header, sizeof(mat->m_header));
+				}
 			}
 
 			fileHeader.m_compression = fileHeader.compression_fastlz;
@@ -553,6 +584,52 @@ public:
 		}
 	}
 
+	struct SkeletonBoneTransformation
+	{
+		float m_position[3];
+		float m_scale[3];
+		float m_rotation[4];
+
+		void GetPosition(float* in)
+		{
+			in[0] = m_position[0];
+			in[1] = m_position[1];
+			in[2] = m_position[2];
+		}
+		void GetScale(float* in)
+		{
+			in[0] = m_scale[0];
+			in[1] = m_scale[1];
+			in[2] = m_scale[2];
+		}
+		void GetRotation(float* in)
+		{
+			in[0] = m_rotation[0];
+			in[1] = m_rotation[1];
+			in[2] = m_rotation[2];
+			in[3] = m_rotation[3];
+		}
+		void SetPosition(float* in)
+		{
+			m_position[0] = in[0];
+			m_position[1] = in[1];
+			m_position[2] = in[2];
+		}
+		void SetScale(float* in)
+		{
+			m_scale[0] = in[0];
+			m_scale[1] = in[1];
+			m_scale[2] = in[2];
+		}
+		void SetRotation(float* in)
+		{
+			m_rotation[0] = in[0];
+			m_rotation[1] = in[1];
+			m_rotation[2] = in[2];
+			m_rotation[3] = in[3];
+		}
+	};
+
 	struct SkeletonBone
 	{
 		// индексы относительно всей иерархии.
@@ -567,9 +644,33 @@ public:
 		uint32_t m_nameIndex = 0;
 		INode* m_node = 0;
 
-		float m_position[3];
-		float m_scale[3];
-		float m_rotation[4];
+		SkeletonBoneTransformation m_initialTransformation;
+		void GetInitialPosition(float* in)
+		{
+			m_initialTransformation.GetPosition(in);
+		}
+		void GetInitialScale(float* in)
+		{
+			m_initialTransformation.GetScale(in);
+		}
+		void GetInitialRotation(float* in)
+		{
+			m_initialTransformation.GetRotation(in);
+		}
+		void SetInitialPosition(float* in)
+		{
+			m_initialTransformation.SetPosition(in);
+		}
+		void SetInitialScale(float* in)
+		{
+			m_initialTransformation.SetScale(in);
+		}
+		void SetInitialRotation(float* in)
+		{
+			m_initialTransformation.SetRotation(in);
+		}
+
+		std::vector<SkeletonBoneTransformation> m_animationData;
 	};
 	std::map<std::string, SkeletonBone> m_skeleton;
 	int m_bonesNum = 0;
@@ -613,6 +714,65 @@ public:
 				GetAString(bone.m_node->GetName()).c_str(),
 				(uint64_t)bone.m_node);*/
 
+			
+			Interval range = m_ip->GetAnimRange();
+			printf(" --- range [%i] [%i]\n", range.Start(), range.End());
+			int tickPerFrame = GetTicksPerFrame();
+			printf(" --- range frames [%i] [%i]\n", range.Start(), range.End() / tickPerFrame);
+			printf(" --- duration [%u]\n", range.Duration());
+			
+			int frames = range.Duration() / tickPerFrame;
+			printf(" --- frames [%u]\n", frames);
+
+			int keysNum = bone.m_node->NumKeys();
+			
+			printf("Bone [%s] keysNum [%i]\n", GetAString(bone.m_node->GetName()).c_str(), keysNum);
+
+			if (keysNum != NOT_KEYFRAMEABLE)
+			{
+				if (keysNum)
+				{
+					for (int i = 0; i < keysNum; ++i)
+					{
+	//					bone.m_node->Key();
+//						printf(" - [%i]", GetAString(bone.m_node->GetName()).c_str(), keysNum);
+
+					}
+				}
+			}
+
+			{
+
+
+				//Matrix3 tm(bone.m_node->GetNodeTM(m_timeValue));
+				//Matrix3 ptm(bone.m_node->GetParentTM(m_timeValue));
+				//Control* tmc = bone.m_node->GetTMController();
+				//Class_ID cid = tmc->ClassID();
+				//if (cid == BIPBODY_CONTROL_CLASS_ID || cid == BIPED_CLASS_ID) {
+				//	/*if (m_config.getInvertYZ()) {
+				//		Matrix3 m = RotateXMatrix(PI / 2.0f);
+				//		tm = tm * Inverse(m);
+				//	}*/
+				//}
+				//else
+				//	tm = tm * Inverse(ptm);
+				//Point3 pos = tm.GetTrans();
+				//AngAxis aa(tm);
+				//Quat q(tm);
+
+				//Control* controller = bone.m_node->GetTMController();
+				//Control* posCtrl = controller->GetPositionController();
+				//if (posCtrl)
+				//{
+				//	//printf("POSITION CTRL %u %u\n", posCtrl->ClassID().PartA(), posCtrl->ClassID().PartB());
+				//	posCtrl->getP
+				//	if (posCtrl->ClassID() == IPOS_CONTROL_CLASS_ID)
+				//	{
+
+				//	}
+				//}
+			}
+
 			INode* parentNode = bone.m_node->GetParentNode();
 			if (parentNode)
 			{
@@ -642,6 +802,7 @@ public:
 		while (it != m_skeleton.end())
 		{
 			SkeletonBone& bone = (*it).second;
+			printf("Bone [%s]\n", GetAString(bone.m_node->GetName()).c_str());
 
 			Matrix3 tm(bone.m_node->GetNodeTM(m_timeValue));
 			Matrix3 ptm(bone.m_node->GetParentTM(m_timeValue));
@@ -659,12 +820,48 @@ public:
 			AngAxis aa(tm);
 			Quat q(tm);
 
+			Control* pC = tmc->GetPositionController();
+			Control* rC = tmc->GetRotationController();
 			Control* sC = tmc->GetScaleController();
 			ScaleValue sc;
 			if (sC)
 				sC->GetValue(m_timeValue, &sc);
 
-			bone.m_position[0] = pos.x;
+			{
+				
+
+				Quat arot;
+				Point3 apos;
+				ScaleValue asc;
+				for (int i = 0; i < m_framesNum; ++i)
+				{
+					//tm = bone.m_node->GetNodeTM(i * tickPerFrame);
+					if(pC)
+						pC->GetValue(i * m_tickPerFrame, &apos);
+					if(rC)
+						rC->GetValue(i * m_tickPerFrame, &arot);
+					if(sC)
+						sC->GetValue(i * m_tickPerFrame, &asc);
+					//printf(" --- FRAME[%i] pos [%f][%f][%f]\n", i,
+					//	pos.x, pos.y, pos.z);
+					//printf(" --- FRAME[%i] rot [%f][%f][%f]\n", i,
+					//	rot.x, rot.y, rot.z);
+
+					SkeletonBoneTransformation bnTr;
+					// видимо из за перегрузки оператора * можно
+					// вызвать так
+					// bnTr.SetPosition(apos);
+					// но это так неочевидно, так профессионально
+					// лучше пусть будет явная передача адреса
+					bnTr.SetPosition(&apos.x);
+					bnTr.SetScale(&asc.s.x);
+					bnTr.SetRotation(&arot.x);
+
+					bone.m_animationData.push_back(bnTr);
+				}
+			}
+
+			/*bone.m_position[0] = pos.x;
 			bone.m_position[1] = pos.y;
 			bone.m_position[2] = pos.z;
 			bone.m_scale[0] = sc.s.x;
@@ -673,7 +870,10 @@ public:
 			bone.m_rotation[0] = q.x;
 			bone.m_rotation[1] = q.y;
 			bone.m_rotation[2] = q.z;
-			bone.m_rotation[3] = q.w;
+			bone.m_rotation[3] = q.w;*/
+			bone.SetInitialPosition(&pos.x);
+			bone.SetInitialScale(&sc.s.x);
+			bone.SetInitialRotation(&q.x);
 
 			it++;
 		}
@@ -811,7 +1011,10 @@ public:
 			
 			if (obj->CanConvertToType(Class_ID(TRIOBJ_CLASS_ID, 0)))
 			{
-				m_plugin->AddMesh(node, obj->ConvertToType(m_plugin->m_timeValue, Class_ID(TRIOBJ_CLASS_ID, 0)));
+				if (!m_plugin->m_GUI_checkOnlySkeleton)
+				{
+					m_plugin->AddMesh(node, obj->ConvertToType(m_plugin->m_timeValue, Class_ID(TRIOBJ_CLASS_ID, 0)));
+				}
 				return TREE_CONTINUE;
 			}
 			//printf("superClassID %#010x\n", superClassID);
@@ -824,6 +1027,8 @@ public:
 	};
 
 	TimeValue m_timeValue = 0;
+	int m_framesNum = 0;
+	int m_tickPerFrame = 0;
 	INode* m_sceneRootNode = 0;
 
 	void MtlGetBitmap(std::string& str, Texmap* tMap)
@@ -1234,28 +1439,56 @@ public:
 		printf("End of BuildMeshes\n");
 	}
 	
+	ExpInterface* m_ei = 0;
+	Interface* m_ip = 0;
+
+	void DoAnimation()
+	{
+	//	m_sceneRootNode->
+	}
+
 	virtual int DoExport(const MCHAR* name, ExpInterface* ei, Interface* ip, BOOL suppressPrompts = FALSE, DWORD options = 0)
 	{
-		m_timeValue = ip->GetAnimRange().Start();
-		m_sceneRootNode = ip->GetRootNode();
-
+		m_ei = ei;
+		m_ip = ip;
 		
+		Interval range = m_ip->GetAnimRange();
+		m_tickPerFrame = GetTicksPerFrame();
+		m_framesNum = range.Duration() / m_tickPerFrame;
+
+		if (!DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_DIALOG1),
+			ip->GetMAXHWnd(), ExportDlgProc, (LPARAM)this)) 
+		{
+			return 1;
+		}
+	
+		IFrameTagManager* ftm = dynamic_cast<IFrameTagManager*>(GetCOREInterface(FRAMETAGMANAGER_INTERFACE));
+		if (ftm)
+		{
+		//	ftm->
+		}
+
+		m_timeValue = m_ip->GetAnimRange().Start();
+		m_sceneRootNode = m_ip->GetRootNode();
+
 		// Сначала надо получить всё необходимое.
 		// Потом записывать в файл.
 
 
-		MyITreeEnumProc nodeEnumerator(this, ip);
-		ei->theScene->EnumTree(&nodeEnumerator);
+		MyITreeEnumProc nodeEnumerator(this, m_ip);
+		m_ei->theScene->EnumTree(&nodeEnumerator);
 
 		BuildSkeleton();
 		BuildMeshes();
-		
+		DoAnimation();
+
 		Save(name);
-
-
 		return 1;
 	}
 	virtual BOOL			SupportsOptions(int ext, DWORD options) { UNUSED_PARAM(ext); UNUSED_PARAM(options); return FALSE; }
+
+	int m_GUI_checkExportAnimation = 1;
+	int m_GUI_checkOnlySkeleton = 0;
 };
 
 class ClassDescImpl : public ClassDesc
@@ -1352,4 +1585,35 @@ extern "C"
 		// TODO: Perform uninitialization here.
 		return TRUE;
 	}
+}
+static INT_PTR CALLBACK ExportDlgProc(
+	HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	Plugin* plg = DLGetWindowLongPtr<Plugin*>(hWnd);
+	switch (msg) {
+	case WM_INITDIALOG:
+		plg = (Plugin*)lParam;
+		DLSetWindowLongPtr(hWnd, lParam);
+		CenterWindow(hWnd, GetParent(hWnd));
+		CheckDlgButton(hWnd, IDC_EXPANI, plg->m_GUI_checkExportAnimation);
+		CheckDlgButton(hWnd, IDC_ONLYSKEL, plg->m_GUI_checkOnlySkeleton);
+
+		break;
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+		case IDOK:
+			plg->m_GUI_checkExportAnimation = IsDlgButtonChecked(hWnd, IDC_EXPANI);
+			plg->m_GUI_checkOnlySkeleton = IsDlgButtonChecked(hWnd, IDC_ONLYSKEL);
+
+			EndDialog(hWnd, 1);
+			break;
+		case IDCANCEL:
+			EndDialog(hWnd, 0);
+			break;
+		}
+		break;
+	default:
+		return FALSE;
+	}
+	return TRUE;
 }

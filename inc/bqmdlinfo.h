@@ -86,6 +86,7 @@ struct bqMDLChunkHeader
 		ChunkType_String,
 		ChunkType_Skeleton,
 		ChunkType_Material,
+		ChunkType_Animation,
 	};
 
 	uint32_t m_chunkType = ChunkType__null;
@@ -231,6 +232,14 @@ struct bqMDLChunkHeaderMaterial
 	float m_ambient[3] = { 0.5, 0.5, 0.5 };
 	float m_diffuse[3] = { 1, 1, 1 };
 	float m_specular[3] = { 1, 1, 1 };
+};
+
+struct bqMDLChunkHeaderAnimation
+{
+	uint32_t m_nameIndex = 0;
+
+	uint32_t m_framesNum = 0;
+	uint32_t m_bonesNum = 0;
 };
 
 #endif
