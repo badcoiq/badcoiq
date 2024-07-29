@@ -1120,3 +1120,11 @@ float bqMath::CoordToUV(float value, float textureSz)
 	return value * (1.f / textureSz);
 }
 
+bqMat4 bqMath::ScaleMatrix(float v)
+{
+	bqMat4 sM;
+	sM.m_data[0].x = v;
+	sM.m_data[1].y = v;
+	sM.m_data[2].z = v;
+	return sM;
+}

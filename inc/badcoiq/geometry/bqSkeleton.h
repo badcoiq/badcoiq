@@ -99,7 +99,8 @@ public:
 		const char* name, int32_t parentIndex);
 
 	bqArray<bqJoint>& GetJoints() { return m_joints; }
-
+	uint32_t GetJointNum() { return (uint32_t)m_joints.m_size; }
+	bqJoint* GetJoint(uint32_t i) { return &m_joints.m_data[i]; }
 	bqJoint* GetJoint(const char* name);
 
 	void CalculateBind();
@@ -137,7 +138,7 @@ struct bqSkeletonAnimationFrame
 //     нужно будет добавить методы для удобного добавления джоинтов и фреймов.
 class bqSkeletonAnimation
 {
-	bqArray<bqJointBase> m_joints; // те джоинты которых нужно анимировать
+	bqArray<bqJointBase> m_joints;
 	bqArray<bqSkeletonAnimationFrame*> m_frames; // "кадры"
 public:
 	// При создании объекта надо указать количество джоинтов и количество фреймов.
@@ -170,7 +171,9 @@ class bqSkeletonAnimationObject
 	bqSkeletonAnimation* m_animation = 0;
 	//bqSkeleton* m_skeleton = 0; // пока лишнее
 	float m_frameCurr = 0.f;
-	float m_frameMax = 0.f;
+	float m_frameBegin = 0.f;
+	float m_frameEnd = 0.f;
+	float m_fps = 30.f;
 public:
 	bqSkeletonAnimationObject();
 	~bqSkeletonAnimationObject();
@@ -180,6 +183,9 @@ public:
 
 	void Animate(float dt);
 	void AnimateInterpolate(float dt);
+	void SetFPS(float);
+	float GetFPS() { return m_fps; }
+	void SetRegion(float begin, float end);
 };
 
 

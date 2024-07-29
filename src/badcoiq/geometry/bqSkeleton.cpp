@@ -219,8 +219,10 @@ void bqSkeletonAnimationObject::Init(bqSkeletonAnimation* a, bqSkeleton* s)
 	m_joints.clear();
 //	m_skeleton = s;
 	m_animation = a;
-	m_frameMax = (float)a->GetFramesNumber();
-	m_frameCurr = 0.f;
+	m_frameBegin = 0.f;
+	m_frameEnd = (float)a->GetFramesNumber();
+	m_frameCurr = m_frameBegin;
+	m_fps = a->m_fps;
 
 	for (size_t i = 0, sz = a->GetJointsNumber(); i < sz; ++i)
 	{
@@ -231,6 +233,11 @@ void bqSkeletonAnimationObject::Init(bqSkeletonAnimation* a, bqSkeleton* s)
 			m_joints.push_back(joint);
 		}
 	}
+}
+
+void bqSkeletonAnimationObject::SetFPS(float fps)
+{
+	m_fps = fps;
 }
 
 void bqSkeletonAnimationObject::Animate(float dt)
@@ -246,10 +253,10 @@ void bqSkeletonAnimationObject::Animate(float dt)
 		m_joints.m_data[i]->m_data.m_transformation.CalculateMatrix();
 	}
 
-	m_frameCurr += (dt * m_animation->m_fps);
+	m_frameCurr += (dt * m_fps);
 
-	if (m_frameCurr >= m_frameMax)
-		m_frameCurr = 0.f;
+	if (m_frameCurr >= m_frameEnd)
+		m_frameCurr = m_frameBegin;
 }
 
 void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
@@ -260,10 +267,15 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 	bqSkeletonAnimationFrame* frame = m_animation->GetFrame(currFrameIndex);
 
 	uint32_t prevFrameIndex = currFrameIndex;
-	if (prevFrameIndex == 0)
-		prevFrameIndex = (uint32_t)floor(m_frameMax) - 1;
+	if (prevFrameIndex <= (uint32_t)floor(m_frameBegin))
+		prevFrameIndex = (uint32_t)floor(m_frameEnd) - 1;
 	else
-		--prevFrameIndex;
+	{
+		//if (!prevFrameIndex)
+			--prevFrameIndex;
+		//else
+		//	prevFrameIndex = (uint32_t)floor(m_frameEnd) - 1;
+	}
 	bqSkeletonAnimationFrame* prevFrame = m_animation->GetFrame(prevFrameIndex);
 
 	for (size_t i = 0; i < frame->m_transformations.m_size; ++i)
@@ -288,9 +300,27 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 		m_joints.m_data[i]->m_data.m_transformation.CalculateMatrix();
 	}
 
-	m_frameCurr += (dt * m_animation->m_fps);
+	m_frameCurr += (dt * m_fps);
 
-	if (m_frameCurr >= m_frameMax)
-		m_frameCurr = 0.f;
+	if (m_frameCurr >= m_frameEnd)
+		m_frameCurr = m_frameBegin;
 }
+
+void bqSkeletonAnimationObject::SetRegion(float begin, float end)
+{
+	if (begin < 0.f) begin = 0.f;
+	if (end < 0.f) end = 0.f;
+	
+	float frameMax = (float)m_animation->GetFramesNumber();
+
+	if (begin > frameMax) begin = frameMax;
+	if (end > frameMax) end = frameMax;
+
+	if (begin > end) begin = end;
+
+	m_frameBegin = begin;
+	m_frameEnd = end;
+	m_frameCurr = m_frameBegin;
+}
+
 #endif

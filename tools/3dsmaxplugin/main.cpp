@@ -351,9 +351,34 @@ public:
 		return m;
 	}
 
+	// будет установлен true когда добавится хоть 1
+	// animation data в структуру SkeletonBone.
+	// добавление зависит от того на сколько установлена time line.
+	//  (количество фреймов на полоске внизу программы)
+	// в 3Ds Max. Возможно там можно установить 1 фрейм или даже 0.
+	// 1й обычно это bind поза.
+	// хотя для файла который хранит чисто анимации
+	// bind поза не нужна. Получается анимация есть даже если
+	// она состоит из 1го фрейма.
+	// В любом случае m_hasBoneAnimationData, для порядка.
+	bool m_hasBoneAnimationData = false;
+
 	void Save(const MCHAR* name)
 	{
 		printf("Save\n");
+
+		struct _animationInfo
+		{
+			uint32_t m_nameIndex = 0;
+			uint32_t m_framesNum = 0;
+
+			// с какого фрейма начать копировать m_framesNum фреймов.
+			// Если 1 анимация то m_framesNum это есть макс значение,
+			// то есть длина анимации в редакторе. А начало анимации
+			// будет 0.
+			uint32_t m_startFrame = 0;
+		};
+		std::vector<_animationInfo> animationInfo;
 
 		FILE* f = 0;
 		char cname[0xffff];
@@ -369,14 +394,31 @@ public:
 					subMeshes.push_back(s);
 				}
 			}
-			uint32_t meshChunkNum = (uint32_t)subMeshes.size();
 
-			auto stringChunkNum = m_strings.size();
-			
-			size_t matChunkNum = m_materials.size();
-
+			size_t aniNum = 0;
 			bqMDLFileHeader fileHeader;
 			fileHeader.m_chunkNum = 0;
+			if (m_GUI_checkExportAnimation && m_hasBoneAnimationData)
+			{
+				aniNum = 1;
+				if (aniNum == 1)
+				{
+					_animationInfo ai;
+					ai.m_nameIndex = this->AddString("Animation");
+					ai.m_framesNum = m_framesNum;
+					animationInfo.push_back(ai);
+				}
+				else if (aniNum > 1)
+				{
+					// здесь будет настройка диапазонов для множества анимаций
+				}
+
+				fileHeader.m_chunkNum += aniNum;
+			}
+
+			uint32_t meshChunkNum = (uint32_t)subMeshes.size();
+			size_t stringChunkNum = m_strings.size();			
+			size_t matChunkNum = m_materials.size();
 			
 			//m_GUI_checkExportAnimation
 			if (!m_GUI_checkOnlySkeleton)
@@ -387,15 +429,14 @@ public:
 			
 			fileHeader.m_chunkNum += stringChunkNum;
 
-			if (m_GUI_checkExportAnimation)
-			{
-				//fileHeader.m_chunkNum += aniNum;
-			}
+			
 
 			if (m_bonesNum)
 			{
 				++fileHeader.m_chunkNum; // bqMDLChunkHeaderSkeleton
 			}
+
+			fileHeader.m_rotation[0] = PI * 0.5f;
 
 			printf("Write file header\n");
 			fwrite(&fileHeader, 1, sizeof(fileHeader), f);
@@ -468,7 +509,7 @@ public:
 				for (int32_t i = 0; i < m_bonesNum; ++i)
 				{
 					SkeletonBone sBone = GetBone(i);
-					if (sBone.m_node)
+					//if (sBone.m_node)
 					{
 
 						bqMDLBoneData boneData;
@@ -524,6 +565,62 @@ public:
 
 					m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
 					m_fileBuffer.Add(&mat->m_header, sizeof(mat->m_header));
+				}
+			}
+
+			if (aniNum && m_bonesNum)
+			{
+				printf("Add animation\n");
+
+
+				// aniNum - количество анимаций.
+				// Для установки количества нужно реализовать
+				// GUI элементы. В данный момент анимация одна.
+				// При реализации установки множества анимаций,
+				// нужно будет указывать диапазоны анимаций.
+				// А так-же нужно будет вычислять правильный
+				// chunkHeaderAnimation.m_framesNum.
+				
+				for (uint32_t i = 0; i < aniNum; ++i)
+				{
+					bqMDLChunkHeader chunkHeader;
+					chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_Animation;
+					chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+						+ sizeof(bqMDLChunkHeaderAnimation);
+
+					bqMDLChunkHeaderAnimation chunkHeaderAnimation;
+					chunkHeaderAnimation.m_nameIndex = animationInfo[i].m_nameIndex;
+					chunkHeaderAnimation.m_framesNum = animationInfo[i].m_framesNum;
+
+					m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+					m_fileBuffer.Add(&chunkHeaderAnimation, sizeof(chunkHeaderAnimation));
+					
+					/* Типа так
+					* frame0
+					*     bone0 pos sc rot
+					*     bone1 pos sc rot
+					*     bone2 pos sc rot
+					*     bone3 pos sc rot
+					* frame1
+					*     bone0 pos sc rot
+					*     bone1 pos sc rot
+					*     bone2 pos sc rot
+					*     bone3 pos sc rot
+					* frame2
+					*     bone0 pos sc rot
+					*     bone1 pos sc rot
+					*     bone2 pos sc rot
+					*     bone3 pos sc rot
+					*/
+					for (size_t fi = animationInfo[i].m_startFrame; fi < animationInfo[i].m_framesNum; ++fi)
+					{
+						for (int32_t i = 0; i < m_bonesNum; ++i)
+						{
+							SkeletonBone sBone = GetBone(i);
+							m_fileBuffer.Add(sBone.m_animationData[fi].Data(), sizeof(bqMDLAnimationData));
+						}
+					}
+
 				}
 			}
 
@@ -589,6 +686,8 @@ public:
 		float m_position[3];
 		float m_scale[3];
 		float m_rotation[4];
+
+		uint8_t* Data() { return (uint8_t*)this; }
 
 		void GetPosition(float* in)
 		{
@@ -670,6 +769,7 @@ public:
 			m_initialTransformation.SetRotation(in);
 		}
 
+
 		std::vector<SkeletonBoneTransformation> m_animationData;
 	};
 	std::map<std::string, SkeletonBone> m_skeleton;
@@ -690,9 +790,13 @@ public:
 			b.m_index = m_bonesNum;
 			b.m_node = node;
 			b.m_nameIndex = AddString(nodeName.c_str());
-			printf("Add Bone: [%s][%i][%I64x] nameIndex [%u]\n", 
-				nodeName.c_str(), m_bonesNum, (uint64_t)node,
-				b.m_nameIndex);
+			//printf("Add Bone: [%s][%i][%I64x] nameIndex [%u]\n", 
+			//	nodeName.c_str(), m_bonesNum, (uint64_t)node,
+			//	b.m_nameIndex);
+
+			
+			
+			//if()
 
 			++m_bonesNum;
 
@@ -716,30 +820,28 @@ public:
 
 			
 			Interval range = m_ip->GetAnimRange();
-			printf(" --- range [%i] [%i]\n", range.Start(), range.End());
+			//printf(" --- range [%i] [%i]\n", range.Start(), range.End());
 			int tickPerFrame = GetTicksPerFrame();
-			printf(" --- range frames [%i] [%i]\n", range.Start(), range.End() / tickPerFrame);
-			printf(" --- duration [%u]\n", range.Duration());
+			//printf(" --- range frames [%i] [%i]\n", range.Start(), range.End() / tickPerFrame);
+			//printf(" --- duration [%u]\n", range.Duration());
 			
 			int frames = range.Duration() / tickPerFrame;
-			printf(" --- frames [%u]\n", frames);
+			//printf(" --- frames [%u]\n", frames);
 
-			int keysNum = bone.m_node->NumKeys();
-			
-			printf("Bone [%s] keysNum [%i]\n", GetAString(bone.m_node->GetName()).c_str(), keysNum);
-
-			if (keysNum != NOT_KEYFRAMEABLE)
-			{
-				if (keysNum)
-				{
-					for (int i = 0; i < keysNum; ++i)
-					{
-	//					bone.m_node->Key();
-//						printf(" - [%i]", GetAString(bone.m_node->GetName()).c_str(), keysNum);
-
-					}
-				}
-			}
+//			int keysNum = bone.m_node->NumKeys();
+//			printf("Bone [%s] keysNum [%i]\n", GetAString(bone.m_node->GetName()).c_str(), keysNum);
+//			if (keysNum != NOT_KEYFRAMEABLE)
+//			{
+//				if (keysNum)
+//				{
+//					for (int i = 0; i < keysNum; ++i)
+//					{
+//	//					bone.m_node->Key();
+////						printf(" - [%i]", GetAString(bone.m_node->GetName()).c_str(), keysNum);
+//
+//					}
+//				}
+//			}
 
 			{
 
@@ -773,6 +875,8 @@ public:
 				//}
 			}
 
+			
+
 			INode* parentNode = bone.m_node->GetParentNode();
 			if (parentNode)
 			{
@@ -794,8 +898,32 @@ public:
 					}
 				}
 			}
+
 			it++;
 		}
+
+		Matrix3 editRot;
+		for (auto & o : m_skeleton)		{
+			auto & bone = o.second;
+			if (bone.m_node->GetParentNode() == m_sceneRootNode)			{
+				editRot = bone.m_node->GetNodeTM(0);
+				/*float pitch = 0.f;
+				float yaw = 0.f;
+				float roll = 0.f;
+				editRot.GetYawPitchRoll(&pitch, &yaw, &roll);*/
+				//Quat qX(-pitch, 0.f, 0.f, 1.f);
+				//Quat qY(0.f, -yaw, 0.f, 1.f);
+				//Quat qZ(0.f, 0.f, -roll, 1.f);
+				//Quat qR = qX * qY * qZ;
+				/*printf(" --- PYR [%f][%f][%f]\n",
+					pitch, yaw, roll);*/
+
+				editRot.Invert();
+
+				break;
+			}
+		}
+		editRot.NoTrans();
 
 		// установка позиции и т.д.
 		it = m_skeleton.begin();
@@ -803,9 +931,11 @@ public:
 		{
 			SkeletonBone& bone = (*it).second;
 			printf("Bone [%s]\n", GetAString(bone.m_node->GetName()).c_str());
+			
+			int _t = 0 * m_tickPerFrame;
 
-			Matrix3 tm(bone.m_node->GetNodeTM(m_timeValue));
-			Matrix3 ptm(bone.m_node->GetParentTM(m_timeValue));
+			Matrix3 tm(bone.m_node->GetNodeTM(_t));
+			Matrix3 ptm(bone.m_node->GetParentTM(_t));
 			Control* tmc = bone.m_node->GetTMController();
 			Class_ID cid = tmc->ClassID();
 			if (cid == BIPBODY_CONTROL_CLASS_ID || cid == BIPED_CLASS_ID) {
@@ -816,67 +946,61 @@ public:
 			}
 			else
 				tm = tm * Inverse(ptm);
+			
 			Point3 pos = tm.GetTrans();
+
 			AngAxis aa(tm);
 			Quat q(tm);
 
-			Control* pC = tmc->GetPositionController();
-			Control* rC = tmc->GetRotationController();
 			Control* sC = tmc->GetScaleController();
 			ScaleValue sc;
 			if (sC)
 				sC->GetValue(m_timeValue, &sc);
 
-			{
-				
-
-				Quat arot;
-				Point3 apos;
-				ScaleValue asc;
-				for (int i = 0; i < m_framesNum; ++i)
-				{
-					//tm = bone.m_node->GetNodeTM(i * tickPerFrame);
-					if(pC)
-						pC->GetValue(i * m_tickPerFrame, &apos);
-					if(rC)
-						rC->GetValue(i * m_tickPerFrame, &arot);
-					if(sC)
-						sC->GetValue(i * m_tickPerFrame, &asc);
-					//printf(" --- FRAME[%i] pos [%f][%f][%f]\n", i,
-					//	pos.x, pos.y, pos.z);
-					//printf(" --- FRAME[%i] rot [%f][%f][%f]\n", i,
-					//	rot.x, rot.y, rot.z);
-
-					SkeletonBoneTransformation bnTr;
-					// видимо из за перегрузки оператора * можно
-					// вызвать так
-					// bnTr.SetPosition(apos);
-					// но это так неочевидно, так профессионально
-					// лучше пусть будет явная передача адреса
-					bnTr.SetPosition(&apos.x);
-					bnTr.SetScale(&asc.s.x);
-					bnTr.SetRotation(&arot.x);
-
-					bone.m_animationData.push_back(bnTr);
-				}
-			}
-
-			/*bone.m_position[0] = pos.x;
-			bone.m_position[1] = pos.y;
-			bone.m_position[2] = pos.z;
-			bone.m_scale[0] = sc.s.x;
-			bone.m_scale[1] = sc.s.y;
-			bone.m_scale[2] = sc.s.z;
-			bone.m_rotation[0] = q.x;
-			bone.m_rotation[1] = q.y;
-			bone.m_rotation[2] = q.z;
-			bone.m_rotation[3] = q.w;*/
 			bone.SetInitialPosition(&pos.x);
 			bone.SetInitialScale(&sc.s.x);
 			bone.SetInitialRotation(&q.x);
 
 			it++;
 		}
+
+		it = m_skeleton.begin();
+		while (it != m_skeleton.end())
+		{
+			for (int i = 0; i < m_framesNum; ++i)
+			{
+				int _t = i * m_tickPerFrame;
+
+				SkeletonBone& bone = (*it).second;
+
+				Matrix3 tm(bone.m_node->GetNodeTM(_t));
+				Matrix3 ptm(bone.m_node->GetParentTM(_t));
+				Control* tmc = bone.m_node->GetTMController();
+				tm = tm * Inverse(ptm);
+				
+
+				Point3 pos = tm.GetTrans();
+				AngAxis aa(tm);
+				
+				
+
+				Quat q(tm);
+				Control* sC = tmc->GetScaleController();
+				ScaleValue sc;
+				if (sC)
+					sC->GetValue(_t, &sc);
+
+				SkeletonBoneTransformation bnTr;
+				bnTr.SetPosition(&pos.x);
+				bnTr.SetScale(&sc.s.x);
+				bnTr.SetRotation(&q.x);
+
+				bone.m_animationData.push_back(bnTr);
+				m_hasBoneAnimationData = true;
+			}
+			it++;
+		}
+
 	}
 
 	SkeletonBone GetBone(const char* name)

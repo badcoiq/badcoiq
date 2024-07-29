@@ -202,6 +202,8 @@ public:
 	// value равное 100 должно вернуть 1.f
 	// textureSz не может равняться 0
 	static float CoordToUV(float value, float textureSz);
+
+	static bqMat4 ScaleMatrix(float v);
 };
 
 

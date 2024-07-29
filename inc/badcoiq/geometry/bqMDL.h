@@ -69,8 +69,7 @@ class bqMDL
 	uint8_t* m_compressedData = 0;
 
 	bqSkeleton* m_skeleton = 0;
-
-
+	bqArray<bqSkeletonAnimation*> m_loadedAnimations;
 
 public:
 	bqMDL();
@@ -86,7 +85,9 @@ public:
 	bqSkeleton* GetSkeleton() { return m_skeleton; }
 	bqShaderType GetShaderType(size_t i) { return m_meshes.m_data[i].m_mtl.m_material.m_shaderType; }
 	bqMaterial* GetMaterial(size_t i) { return &m_meshes.m_data[i].m_mtl.m_material; }
-
+	
+	uint32_t GetAniNum() { return (uint32_t)m_loadedAnimations.m_size; }
+	bqSkeletonAnimation* GetAnimation(uint32_t i) { return m_loadedAnimations.m_data[i]; }
 };
 
 

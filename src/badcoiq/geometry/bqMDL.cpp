@@ -34,6 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/common/bqFileBuffer.h"
 #include "badcoiq/gs/bqGS.h"
 
+#include <vector>
+
 
 bqMDL::bqMDL()
 {
@@ -104,6 +106,7 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 			return &materials.m_data[0];
 		};
 
+		bqMDLFileHeader fileHeader;
 		uint32_t fileSz = 0;
 		uint8_t* ptr = bqFramework::SummonFileBuffer(fn, &fileSz, false);
 		if (ptr)
@@ -115,7 +118,6 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 
 			bqFileBuffer file(ptr, fileSz);
 
-			bqMDLFileHeader fileHeader;
 			file.Read(&fileHeader, sizeof(fileHeader));
 
 			if (fileHeader.m_bmld != 1818520930)
@@ -151,6 +153,20 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 
 			bqStringA stra;
 			bqArray<char8_t> straArray;
+
+			/*bqMDLChunkHeaderAnimation chunkHeaderAnimation;
+			struct _animation
+			{
+				bqMDLChunkHeaderAnimation chunkHeaderAnimation;
+				
+				struct _frame
+				{
+					std::vector<bqMDLAnimationData> m_boneTransformations;
+				};
+				
+				std::vector<_frame> m_frames;
+			};
+			std::vector<_animation> animations;*/
 
 			for (uint32_t i = 0; i < fileHeader.m_chunkNum; ++i)
 			{
@@ -323,6 +339,97 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					materials.push_back(chunkHeaderMaterial);
 				}break;
 
+				case bqMDLChunkHeader::ChunkType_Animation:
+				{
+					bqMDLChunkHeaderAnimation chunkHeaderAnimation;
+					file.Read(&chunkHeaderAnimation, sizeof(chunkHeaderAnimation));
+
+					if (!m_skeleton)
+					{
+						bqLog::PrintError("bqMDL: skeleton not exist at this moment\n");
+						return false;
+					}
+					else if(m_skeleton->GetJointNum() == 0)
+					{
+						bqLog::PrintError("bqMDL: skeleton has 0 bones\n");
+						return false;
+					}
+
+					if (!chunkHeaderAnimation.m_framesNum)
+					{
+						bqLog::PrintError("bqMDL: chunkHeaderAnimation.m_framesNum\n");
+						return false;
+					}
+					
+					bqSkeletonAnimation* ani = 
+						new bqSkeletonAnimation(
+							m_skeleton->GetJointNum(),
+							chunkHeaderAnimation.m_framesNum,
+							m_strings.m_data[chunkHeaderAnimation.m_nameIndex].c_str());
+					if (ani)
+					{
+						size_t boneNum = m_skeleton->GetJointNum();
+						auto & joints = m_skeleton->GetJoints();
+
+						// надо инициализировать bqJointBase
+						// который внутри ani
+						for (size_t bi = 0; bi < boneNum; ++bi)
+						{
+							bqJoint* joint = &joints.m_data[bi];
+							bqJointBase JB = joint->m_base;
+							ani->SetJoint(&JB, bi);
+						}
+
+						for (size_t fi = 0; fi < chunkHeaderAnimation.m_framesNum; ++fi)
+						{
+							for (size_t bi = 0; bi < boneNum; ++bi)
+							{
+								bqJoint* joint = &joints.m_data[bi];
+
+								// чанк с анимациями такой
+								/*
+								* bqMDLChunkHeaderAnimation (напр. 3 фреймма и 2 кости)
+								* bqMDLAnimationData - joint0 frame0
+								* bqMDLAnimationData - joint1
+								* bqMDLAnimationData - joint2
+								* bqMDLAnimationData - joint0 frame1
+								* bqMDLAnimationData - joint1
+								* bqMDLAnimationData - joint2
+								* bqMDLAnimationData - joint0 frame2
+								* bqMDLAnimationData - joint1
+								* bqMDLAnimationData - joint2
+								*/
+								bqMDLAnimationData ad;
+								file.Read(&ad, sizeof(ad));
+
+								bqJointTransformationBase JT;
+								JT.m_position.x = ad.m_position[0];
+								JT.m_position.y = ad.m_position[1];
+								JT.m_position.z = ad.m_position[2];
+
+								JT.m_scale.x = ad.m_scale[0];
+								JT.m_scale.y = ad.m_scale[1];
+								JT.m_scale.z = ad.m_scale[2];
+
+								//bqQuaternion qX(ad.m_rotation[0], 0.f, 0.f);
+								//bqQuaternion qY(0.f, ad.m_rotation[1], 0.f);
+								//bqQuaternion qZ(0.f, 0.f, ad.m_rotation[2]);
+								//bqQuaternion qR = qX * qY * qZ;
+
+								JT.m_rotation.x = ad.m_rotation[0];
+								JT.m_rotation.y = ad.m_rotation[1];
+								JT.m_rotation.z = ad.m_rotation[2];
+								JT.m_rotation.w = ad.m_rotation[3];
+
+								ani->SetTransformation(bi, fi, JT);
+							}
+						}
+
+						m_loadedAnimations.push_back(ani);
+					}
+
+				}break;
+
 				default:
 					bqLog::PrintError("bqMDL: bad chunk type [%u]\n", chunkHeader.m_chunkType);
 					return false;
@@ -336,12 +443,19 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 		if (m_skeleton)
 		{
 			m_skeleton->m_preRotation.SetRotation(
-				bqQuaternion(PIf * 0.5f, 0.f, 0.f));
+				bqQuaternion(fileHeader.m_rotation[0], 
+					fileHeader.m_rotation[1], 
+					fileHeader.m_rotation[2]));
+
+			bqMat4 mS = bqMath::ScaleMatrix(fileHeader.m_scale);
+
+			m_skeleton->m_preRotation = m_skeleton->m_preRotation * mS;
+
 			m_skeleton->CalculateBind();
 			m_skeleton->Update();
 
 			
-			auto & joints = m_skeleton->GetJoints();
+			/*auto & joints = m_skeleton->GetJoints();
 			for (size_t i = 0; i < joints.m_size; ++i)
 			{
 				auto& joint = joints.m_data[i];
@@ -350,7 +464,10 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					printf("Bone [%s] Parent [%s]\n", joint.m_base.m_name, joints.m_data[joint.m_base.m_parentIndex].m_base.m_name);
 				else
 					printf("Bone [%s] is root\n", joint.m_base.m_name);
-			}
+			}*/
+
+			//if(m_loadedAnimations.size())
+				//m_skeletonForAnimation = m_skeleton->Duplicate();
 		}
 
 		if (materials.m_size)
@@ -435,7 +552,10 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 			}
 		}
 
-		printf("Load end... %u meshes %u materials\n", m_meshes.m_size, materials.m_size);
+		printf("Load end... %zu meshes %zu materials %zu animations\n", 
+			m_meshes.m_size, 
+			materials.m_size,
+			m_loadedAnimations.m_size);
 
 
 		return true;
@@ -458,10 +578,17 @@ void bqMDL::Unload()
 		
 		BQ_SAFEDESTROY(m_meshes.m_data[i].m_mtl.m_diffuseMap);
 	}
+	for (size_t i = 0; i < m_loadedAnimations.m_size; ++i)
+	{
+		BQ_SAFEDESTROY(m_loadedAnimations.m_data[i]);
+	}
+	m_loadedAnimations.clear();
 	m_meshes.clear();
 	m_strings.clear();
 
+//	BQ_SAFEDESTROY(m_skeletonForAnimation);
 	BQ_SAFEDESTROY(m_skeleton);
+	//BQ_SAFEDESTROY(m_skeletonAnimationObject);
 }
 
 void bqMDL::FreebqMesh()
@@ -471,6 +598,7 @@ void bqMDL::FreebqMesh()
 		BQ_SAFEDESTROY(m_meshes.m_data[i].m_mesh);
 	}
 }
+
 
 
 #endif

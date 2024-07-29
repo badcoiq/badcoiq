@@ -113,6 +113,25 @@ bool ExampleBasicsMDL::Init()
 		return false;
 	}
 
+	if (m_mdl->GetAniNum())
+	{
+		m_animationSkeleton = m_mdl->GetSkeleton()->Duplicate();
+		for (uint32_t i = 0; i < m_mdl->GetAniNum(); ++i)
+		{
+			bqSkeletonAnimation* animation = m_mdl->GetAnimation(i);
+			
+
+			bqSkeletonAnimationObject* ao = new bqSkeletonAnimationObject;
+			ao->Init(animation, m_animationSkeleton);
+			ao->SetRegion(1.f, 70.f);
+
+			m_animationObjs.push_back(ao);
+
+			if(!i)
+				m_currAniObj = ao;
+		}
+	}
+
 	//m_texture = bqFramework::SummonTexture(m_gs, bqFramework::GetPath("../data/textures/st1.jpg").c_str());
 
 	return true;
@@ -120,8 +139,18 @@ bool ExampleBasicsMDL::Init()
 
 void ExampleBasicsMDL::Shutdown()
 {
+	for (uint32_t i = 0; i < m_animationObjs.m_size; ++i)
+	{
+		BQ_SAFEDESTROY(m_animationObjs.m_data[i]);
+	}
+	m_animationObjs.clear();
+
 	BQ_SAFEDESTROY(m_mdl);
 	BQ_SAFEDESTROY(m_camera);
+	BQ_SAFEDESTROY(m_animationSkeleton);
+	
+
+
 	//BQ_SAFEDESTROY(m_texture);
 }
 
@@ -136,19 +165,9 @@ void ExampleBasicsMDL::OnDraw()
 	_onCamera();
 
 	static int ji = 0;
-	auto skeleton = m_mdl->GetSkeleton();
+	m_currSkeleton = m_mdl->GetSkeleton();
 	
-	if (bqInput::IsKeyHit(bqInput::KEY_1))
-	{
-		if (ji > 0)
-			--ji;
-	}
-	if (bqInput::IsKeyHit(bqInput::KEY_2))
-	{
-		++ji;
-		if (ji >= skeleton->GetJoints().m_size)
-			ji = skeleton->GetJoints().m_size - 1;
-	}
+	
 
 	m_gs->BeginGUI();
 	m_guiText.assign("Joint under control: ");
@@ -174,14 +193,35 @@ void ExampleBasicsMDL::OnDraw()
 	//material.m_maps[0].m_texture = m_texture;
 	
 
-	if (skeleton)
+	if (m_currSkeleton)
 	{
-		auto joints = &skeleton->GetJoints().m_data[0];
+		if (m_currAniObj)
+		{
+			m_currAniObj->SetFPS(10.f);
+			m_currAniObj->AnimateInterpolate((*m_app->m_dt));
+			m_currSkeleton = m_animationSkeleton;
+			m_currSkeleton->Update();
+		}
+
+
+		auto joints = &m_currSkeleton->GetJoints().m_data[0];
 		if (joints) {
-			for (size_t o = 0; o < skeleton->GetJoints().m_size; ++o) {
+			for (size_t o = 0; o < m_currSkeleton->GetJoints().m_size; ++o) {
 				bqFramework::GetMatrixSkinned()[o] = joints[o].m_data.m_matrixFinal;
 			}
 		}
+	}
+
+	if (bqInput::IsKeyHit(bqInput::KEY_1))
+	{
+		if (ji > 0)
+			--ji;
+	}
+	if (bqInput::IsKeyHit(bqInput::KEY_2))
+	{
+		++ji;
+		if (ji >= m_currSkeleton->GetJoints().m_size)
+			ji = m_currSkeleton->GetJoints().m_size - 1;
 	}
 
 	for (size_t i = 0; i < m_mdl->GetMeshNum(); ++i)
@@ -220,9 +260,9 @@ void ExampleBasicsMDL::OnDraw()
 	if (bqInput::IsKeyHold(bqInput::KEY_P)) sc += -0.021f;
 	
 
-	if (skeleton)
+	if (m_currSkeleton)
 	{
-		auto joint = &skeleton->GetJoints().m_data[ji];
+		auto joint = &m_currSkeleton->GetJoints().m_data[ji];
 		if (joint)
 		{
 			bqQuaternion q;
@@ -237,7 +277,7 @@ void ExampleBasicsMDL::OnDraw()
 			joint->m_data.m_transformation.m_base.m_rotation *= q;
 			joint->m_data.m_transformation.m_base.m_rotation.Normalize();
 			joint->m_data.m_transformation.CalculateMatrix();
-			skeleton->Update();
+			m_currSkeleton->Update();
 		}
 		/*auto bone = skeleton->GetJoint("head neck upper");
 		if (bone)
@@ -258,12 +298,13 @@ void ExampleBasicsMDL::OnDraw()
 	m_gs->SetShader(bqShaderType::Line3D, 0);
 	m_gs->DisableDepth();
 
-	if (skeleton)
+	bool drawSkeleton = false;
+	if (m_currSkeleton && drawSkeleton)
 	{
-		auto joints = &skeleton->GetJoints().m_data[0];
-		if (skeleton->GetJoints().m_size)
+		auto joints = &m_currSkeleton->GetJoints().m_data[0];
+		if (m_currSkeleton->GetJoints().m_size)
 		{
-			size_t jsz = skeleton->GetJoints().m_size;
+			size_t jsz = m_currSkeleton->GetJoints().m_size;
 			for (size_t i = 0; i < jsz; ++i)
 			{
 				bqVec4 p;
@@ -295,7 +336,7 @@ void ExampleBasicsMDL::OnDraw()
 					bqMat4 _mI2 = parent.m_data.m_matrixBindInverse;
 					_mI2.Invert();
 					bqMat4 _mI = parent.m_data.m_matrixFinal * _mI2;
-				//	m_gs->DrawLine3D(mI.m_data[3], _mI.m_data[3], bq::ColorWhite);
+					m_gs->DrawLine3D(mI.m_data[3], _mI.m_data[3], bq::ColorLime);
 				}
 			}
 		}

@@ -42,8 +42,15 @@ class ExampleBasicsMDL : public DemoExample
 	//bqSceneObject* m_sceneObject = 0;
 	//bqSkeleton* m_skeleton = 0;
 	bqMDL* m_mdl = 0;
+	
+	bqArray<bqSkeletonAnimationObject*> m_animationObjs;
+	bqSkeletonAnimationObject* m_currAniObj = 0;
+	bqSkeleton* m_currSkeleton = 0;
+
+	bqSkeleton* m_animationSkeleton = 0;
 
 	bqString m_guiText;
+	
 
 	//bqTexture* m_texture = 0;
 

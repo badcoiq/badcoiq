@@ -70,6 +70,11 @@ struct bqMDLFileHeader
 	uint32_t m_uncmpSz = 0;
 	uint32_t m_cmpSz = 0;
 
+	// Rads
+	float m_rotation[3] = { 0.f, 0.f, 0.f };
+	
+	float m_scale = 1.f;
+
 	uint32_t m_reserved1 = 0;
 	uint32_t m_reserved2 = 0;
 	uint32_t m_reserved3 = 0;
@@ -239,7 +244,12 @@ struct bqMDLChunkHeaderAnimation
 	uint32_t m_nameIndex = 0;
 
 	uint32_t m_framesNum = 0;
-	uint32_t m_bonesNum = 0;
+};
+struct bqMDLAnimationData
+{
+	float m_position[3];
+	float m_scale[3];
+	float m_rotation[4];
 };
 
 #endif
