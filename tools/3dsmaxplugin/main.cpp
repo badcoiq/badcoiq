@@ -437,6 +437,7 @@ public:
 			}
 
 			fileHeader.m_rotation[0] = PI * 0.5f;
+			fileHeader.m_scale = m_GUI_scale;
 
 			printf("Write file header\n");
 			fwrite(&fileHeader, 1, sizeof(fileHeader), f);
@@ -1613,6 +1614,7 @@ public:
 
 	int m_GUI_checkExportAnimation = 1;
 	int m_GUI_checkOnlySkeleton = 0;
+	float m_GUI_scale = 1.f;
 };
 
 class ClassDescImpl : public ClassDesc
@@ -1664,6 +1666,14 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, ULONG fdwReason, LPVOID /*lpvReserved*/)
 		DisableThreadLibraryCalls(hInstance);
 	}
 	return(TRUE);
+}
+
+void GUI_GetNumbers(const char* str, const char* format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	vsscanf(str, format, args);
+	va_end(args);
 }
 
 extern "C"
@@ -1721,6 +1731,7 @@ static INT_PTR CALLBACK ExportDlgProc(
 		CenterWindow(hWnd, GetParent(hWnd));
 		CheckDlgButton(hWnd, IDC_EXPANI, plg->m_GUI_checkExportAnimation);
 		CheckDlgButton(hWnd, IDC_ONLYSKEL, plg->m_GUI_checkOnlySkeleton);
+		SetDlgItemText(hWnd, IDC_EDIT_SCALE, L"1");
 
 		break;
 	case WM_COMMAND:
@@ -1728,6 +1739,14 @@ static INT_PTR CALLBACK ExportDlgProc(
 		case IDOK:
 			plg->m_GUI_checkExportAnimation = IsDlgButtonChecked(hWnd, IDC_EXPANI);
 			plg->m_GUI_checkOnlySkeleton = IsDlgButtonChecked(hWnd, IDC_ONLYSKEL);
+
+			char dlgitemTextBuf[1000];
+			GetDlgItemTextA(hWnd, IDC_EDIT_SCALE, dlgitemTextBuf, 1000);
+			GUI_GetNumbers(dlgitemTextBuf, "%f", &plg->m_GUI_scale);
+			if (plg->m_GUI_scale <= 0.f)
+				plg->m_GUI_scale = 1.f;
+			if (plg->m_GUI_scale > 999999.f)
+				plg->m_GUI_scale = 999999.f;
 
 			EndDialog(hWnd, 1);
 			break;
