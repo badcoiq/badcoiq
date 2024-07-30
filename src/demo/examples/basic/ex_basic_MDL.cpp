@@ -94,7 +94,7 @@ bool ExampleBasicsMDL::Init()
 
 	m_mdl = new bqMDL;
 
-	bqStringA modelName = "Jill";
+	bqStringA modelName = "tea";
 	bqStringA modelsDir = bqFramework::GetPath("../data/models/");
 	bqStringA texturesDir = bqFramework::GetPath("../data/textures/models/");
 	

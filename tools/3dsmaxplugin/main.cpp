@@ -228,7 +228,7 @@ public:
 };
 
 
-class Plugin : public SceneExport
+class PluginExporter : public SceneExport
 {
 	uint32_t m_stringIndex = 0;
 	std::vector<std::string> m_strings;
@@ -237,12 +237,12 @@ class Plugin : public SceneExport
 	FileBuffer m_fileBuffer;
 
 public:
-	Plugin() 
+	PluginExporter()
 	{
 		AllocConsole();
 		freopen("CONOUT$", "w", stdout);
 	}
-	virtual ~Plugin()
+	virtual ~PluginExporter()
 	{
 		for (size_t i = 0, sz = m_meshes.size(); i < sz; ++i)
 		{
@@ -363,6 +363,8 @@ public:
 	// В любом случае m_hasBoneAnimationData, для порядка.
 	bool m_hasBoneAnimationData = false;
 
+	Point3 m_rotation = Point3(PI * 0.5f, 0.f, 0.f);
+
 	void Save(const MCHAR* name)
 	{
 		printf("Save\n");
@@ -436,7 +438,9 @@ public:
 				++fileHeader.m_chunkNum; // bqMDLChunkHeaderSkeleton
 			}
 
-			fileHeader.m_rotation[0] = PI * 0.5f;
+			fileHeader.m_rotation[0] = m_rotation.x;
+			fileHeader.m_rotation[1] = m_rotation.y;
+			fileHeader.m_rotation[2] = m_rotation.z;
 			fileHeader.m_scale = m_GUI_scale;
 
 			printf("Write file header\n");
@@ -1087,10 +1091,10 @@ public:
 
 	class MyITreeEnumProc : public ITreeEnumProc
 	{
-		Plugin* m_plugin = 0;
+		PluginExporter* m_plugin = 0;
 		Interface* m_ip = 0;
 	public:
-		MyITreeEnumProc(Plugin* p, Interface* ip) : m_plugin(p),
+		MyITreeEnumProc(PluginExporter* p, Interface* ip) : m_plugin(p),
 		m_ip(ip){}
 		virtual ~MyITreeEnumProc() {}
 		virtual int callback(INode* node)
@@ -1398,6 +1402,17 @@ public:
 		printf("BuildMeshes\n");
 		printf("Num of meshes %zu\n", m_meshes.size());
 
+		// для модели без skin
+		// возможно другие значения так-же должны быть с минусом
+		// пришлось добавить минус, почему-то крутит в 
+		// противоположную сторону 
+		Quat qRot;
+		qRot.SetEuler(-m_rotation.x, m_rotation.y, m_rotation.z);
+		Matrix3 mRot;
+		qRot.MakeMatrix(mRot);
+		Matrix3 mSc;
+		mSc.SetScale(Point3(m_GUI_scale, m_GUI_scale, m_GUI_scale));
+
 		// надо построить sub mesh
 		// количество sub mesh зависит от количества материалов
 		for (size_t i = 0, sz = m_meshes.size(); i < sz; ++i)
@@ -1515,10 +1530,19 @@ public:
 						{
 							auto faceVertIndex = face->v[vertInds[ii]];
 							Point3 pos = maxVerts[faceVertIndex];
+							Point3 vn = GetVertexNormal(maxMesh, fi, maxMesh->getRVertPtr(faceVertIndex));
+
+							if (meshHeader.m_vertexType == bqMDLChunkHeaderMesh::VertexType_Triangle)
+							{
+								pos = pos * mRot;
+								pos = pos * mSc;
+								
+								vn = vn * mRot;
+							}
+
 							meshVertex->m_position[vx1] = pos.x;
 							meshVertex->m_position[vx2] = pos.y;
 							meshVertex->m_position[vx3] = pos.z;
-							Point3 vn = GetVertexNormal(maxMesh, fi, maxMesh->getRVertPtr(faceVertIndex));
 							meshVertex->m_normal[vx1] = vn.x;
 							meshVertex->m_normal[vx2] = vn.y;
 							meshVertex->m_normal[vx3] = vn.z;
@@ -1567,11 +1591,6 @@ public:
 	ExpInterface* m_ei = 0;
 	Interface* m_ip = 0;
 
-	void DoAnimation()
-	{
-	//	m_sceneRootNode->
-	}
-
 	virtual int DoExport(const MCHAR* name, ExpInterface* ei, Interface* ip, BOOL suppressPrompts = FALSE, DWORD options = 0)
 	{
 		m_ei = ei;
@@ -1605,7 +1624,6 @@ public:
 
 		BuildSkeleton();
 		BuildMeshes();
-		DoAnimation();
 
 		Save(name);
 		return 1;
@@ -1626,17 +1644,17 @@ public:
 	virtual int				IsPublic() { return TRUE; };
 	virtual void* Create(BOOL loading = FALSE)
 	{
-		return new Plugin;
+		return new PluginExporter;
 	}
 
 	virtual const MCHAR* ClassName()
 	{
-		return L"Test class";
+		return L"Badcoiq plugin class";
 	}
 
 	virtual const MCHAR* NonLocalizedClassName()
 	{
-		return L"Test class";
+		return L"Badcoiq plugin class";
 	}
 
 	virtual SClass_ID		SuperClassID()
@@ -1683,7 +1701,7 @@ extern "C"
 		// Retrieve astring from the resource string table
 		static TCHAR buf[256];
 		if (hInstance)
-			return L"Test";
+			return L"Badcoiq MDL exporter";
 		return NULL;
 	}
 
@@ -1723,10 +1741,10 @@ extern "C"
 static INT_PTR CALLBACK ExportDlgProc(
 	HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	Plugin* plg = DLGetWindowLongPtr<Plugin*>(hWnd);
+	PluginExporter* plg = DLGetWindowLongPtr<PluginExporter*>(hWnd);
 	switch (msg) {
 	case WM_INITDIALOG:
-		plg = (Plugin*)lParam;
+		plg = (PluginExporter*)lParam;
 		DLSetWindowLongPtr(hWnd, lParam);
 		CenterWindow(hWnd, GetParent(hWnd));
 		CheckDlgButton(hWnd, IDC_EXPANI, plg->m_GUI_checkExportAnimation);
