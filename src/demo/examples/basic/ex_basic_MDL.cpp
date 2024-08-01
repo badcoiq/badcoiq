@@ -119,8 +119,6 @@ bool ExampleBasicsMDL::Init()
 		for (uint32_t i = 0; i < m_mdl->GetAniNum(); ++i)
 		{
 			bqSkeletonAnimation* animation = m_mdl->GetAnimation(i);
-			
-
 			bqSkeletonAnimationObject* ao = new bqSkeletonAnimationObject;
 			ao->Init(animation, m_animationSkeleton);
 			ao->SetRegion(1.f, 70.f);

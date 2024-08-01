@@ -16,19 +16,6 @@ BQ_LINK_LIBRARY("badcoiq");
 #include "badcoiq/scene/bqCamera.h"
 #include <list>
 
-//union LARGE_INTEGER
-//{
-//    struct {
-//        uint32_t LowPart;
-//        int32_t HighPart;
-//    } DUMMYSTRUCTNAME;
-//    struct {
-//        uint32_t LowPart;
-//        int32_t HighPart;
-//    } u;
-//    int64_t QuadPart;
-//};
-
 // General defines
 #ifndef NULL
 #define NULL 0
@@ -40,33 +27,6 @@ BQ_LINK_LIBRARY("badcoiq");
 #define STRLEN(aString) strlen(aString)
 #define STREQ(aString1,aString2) (strcmp(aString1,aString2) == 0)
 #define SSCANF(aString,aFormat,aParameter) sscanf(aString,aFormat,aParameter)
-
-// Tick counter defines
-class TickCounter
-{
-public:
-    //! Starts tick counting.
-    void start() {
-    }
-
-    //! Ends tick counting.
-    void end() {
-    }
-
-    //! Returns the amount of picoseconds spent between start() and end().
-    int getTicks() {
-        return 0;
-    }
-
-
-protected:
-    __int64 mStartTick;
-    __int64 mEndTick;
-};
-#define TICKCOUNTER TickCounter
-#define TICKCOUNTER_START(aTickCounter) aTickCounter.start()
-#define TICKCOUNTER_END(aTickCounter) aTickCounter.end()
-#define TICKCOUNTER_GETTICKS(aTickCounter) aTickCounter.getTicks()
 
 // Defines for the rational number format.
 #define RATIONAL float
@@ -114,12 +74,17 @@ public:
         mY = aY;
     }
 
-    RATIONAL mX;
-    RATIONAL mY;
+    RATIONAL mX = 0.f;
+    RATIONAL mY = 0.f;
 };
 class Matrix2d
 {
 public:
+    Matrix2d()
+    {
+        makeIdentity();
+    }
+
     // Makes a rotation matrix.
     void makeRotation(RATIONAL aAngle) {
         RATIONAL sinRot = (RATIONAL)sin(aAngle);
@@ -4818,6 +4783,100 @@ protected:
 
 };
 
+VectorGraphic* TestPattern::circles(RATIONAL aSize, RATIONAL aWidth, int aSegments, int aCount, const VECTOR2D& aCenter,
+    RENDERER_FILLMODE aFillMode, unsigned long aColor, PolygonFactory* aFactory,
+    const char* aSVGDumpName, const char* aBinaryDumpName)
+{
+    if (aCount < 1)
+        return NULL;
+
+    if (aSegments < 3)
+        return NULL;
+
+    bool error = false;
+
+    int count = aCount * 2;
+    int n;
+    int* vertexCounts = new int[count];
+    if (vertexCounts)
+    {
+        for (n = 0; n < count; n++)
+            vertexCounts[n] = aSegments;
+    }
+
+    RATIONAL** vertexData = new RATIONAL * [count];
+
+    if (vertexData)
+    {
+        for (n = 0; n < count; n++)
+            vertexData[n] = new RATIONAL[2 * aSegments];
+    }
+
+    if (vertexData == NULL || vertexCounts == NULL)
+        error = true;
+
+    if (!error)
+    {
+        for (n = 0; n < count; n++)
+        {
+            if (vertexData[n] == NULL)
+                error = true;
+        }
+    }
+
+    VectorGraphic* vg = NULL;
+
+    if (!error)
+    {
+        RATIONAL step = FLOAT_TO_RATIONAL(2 * 3.1415926535897932384626433832795f) / aSegments;
+        RATIONAL angle = INT_TO_RATIONAL(0);
+
+        // For every line, make two circles.
+        for (n = 0; n < aCount; n++)
+        {
+            RATIONAL outerSize = (RATIONAL)(n + 1) * aSize / (RATIONAL)aCount;
+            RATIONAL innerSize = outerSize - aWidth;
+
+            int current = 0;
+            RATIONAL* innerVertices = vertexData[n * 2];
+            RATIONAL* outerVertices = vertexData[n * 2 + 1];
+            int p;
+            for (p = 0; p < aSegments; p++)
+            {
+                RATIONAL sinVal = RATIONAL_SIN(angle);
+                RATIONAL cosVal = RATIONAL_COS(angle);
+
+                innerVertices[current] = VECTOR2D_GETX(aCenter) + sinVal * innerSize;
+                outerVertices[current++] = VECTOR2D_GETX(aCenter) + sinVal * outerSize;
+
+                innerVertices[current] = VECTOR2D_GETY(aCenter) + cosVal * innerSize;
+                outerVertices[current++] = VECTOR2D_GETY(aCenter) + cosVal * outerSize;
+
+                angle += step;
+            }
+        }
+
+        PolygonData pdata(vertexData, vertexCounts, count);
+        PolygonData* polygons[1] = { &pdata };
+
+        unsigned long colors[1] = { aColor };
+        RENDERER_FILLMODE fillmodes[1] = { aFillMode };
+
+        vg = VectorGraphic::create(polygons, colors, fillmodes, 1, aFactory);
+    }
+
+    if (vertexData)
+    {
+        for (n = 0; n < count; n++)
+            delete[] vertexData[n];
+        delete[] vertexData;
+    }
+
+    delete vertexCounts;
+
+    return vg;
+}
+
 VectorGraphic* TestPattern::randomPolygon(RATIONAL aSize, int aVertexCount, int aSeed, RATIONAL aMinStep, RATIONAL aMaxStep, const VECTOR2D& aCenter,
     RENDERER_FILLMODE aFillMode, unsigned long aColor, PolygonFactory* aFactory,
     const char* aSVGDumpName, const char* aBinaryDumpName)
@@ -5122,30 +5181,51 @@ int main()
                 screenImg.Fill(bqImageFillType::Solid, bq::ColorWhite,
                     bq::ColorWhite);
 
-                DefaultPolygonFactory factory;
-                VectorGraphic* vg = TestPattern::randomPolygon(INT_TO_RATIONAL(110), 100, 75, INT_TO_RATIONAL(100), INT_TO_RATIONAL(101),
-                    VECTOR2D(INT_TO_RATIONAL(110), INT_TO_RATIONAL(110)),
-                    RENDERER_FILLMODE_EVENODD, 0xff000000,
-                   &factory,
-                     NULL,
-                    NULL);
-                
                 Renderer* mFiller = new PolygonVersionF();
                 ((PolygonVersionF*)mFiller)->init(800, 600, 300);
-               // ((PolygonVersionF*)mFiller)->setClipRect(0, 0, 800, 600);
+                // ((PolygonVersionF*)mFiller)->setClipRect(0, 0, 800, 600);
+
+                DefaultPolygonFactory factory;
+                VectorGraphic* vg = TestPattern::circles(INT_TO_RATIONAL(108), FLOAT_TO_RATIONAL(1.0f), 100, 36,
+                    VECTOR2D(INT_TO_RATIONAL(110), INT_TO_RATIONAL(110)),
+                    RENDERER_FILLMODE_EVENODD, 0xff000000,
+                    &factory,
+                     NULL,NULL);
+                
+               
                 
                 BitmapData bitmap(screenImg.m_info.m_width, 
                     screenImg.m_info.m_height,
                     screenImg.m_info.m_pitch, 
-                    (unsigned long*)screenImg.m_data, BitmapData::BITMAP_FORMAT_BGRX);
+                    (unsigned long*)screenImg.m_data, BitmapData::BITMAP_FORMAT_XRGB);
                 MATRIX2D aTransformation;
-                RATIONAL mScale = 2.f;
+                struct _tr
+                {
+                    void updateTransformation(MATRIX2D& aTransformation)
+                    {
+                        VECTOR2D negPivot(-VECTOR2D_GETX(mPivot), -VECTOR2D_GETY(mPivot));
+                        MATRIX2D_MAKETRANSLATION(aTransformation, negPivot);
+                        MATRIX2D_ROTATE(aTransformation, mCurrentRotation);
+                        MATRIX2D_TRANSLATE(aTransformation, mPivot);
+                        MATRIX2D_TRANSLATE(aTransformation, mCurrentTranslation);
 
-                VECTOR2D scale;
-                RATIONAL t = mScale;
-                VECTOR2D_SETX(scale, t);
-                VECTOR2D_SETY(scale, t);
-                MATRIX2D_SCALE(aTransformation, scale);
+                        VECTOR2D scale;
+                        RATIONAL t = mScale;
+                        VECTOR2D_SETX(scale, t);
+                        VECTOR2D_SETY(scale, t);
+                        MATRIX2D_SCALE(aTransformation, scale);
+
+                        VECTOR2D_SETX(mCurrentTranslation, VECTOR2D_GETX(mCurrentTranslation) + VECTOR2D_GETX(mMovement));
+                        VECTOR2D_SETY(mCurrentTranslation, VECTOR2D_GETY(mCurrentTranslation) + VECTOR2D_GETY(mMovement));
+                    }
+
+                    VECTOR2D mPivot;
+                    float mScale = 2.f;
+                    RATIONAL mCurrentRotation;
+                    VECTOR2D mCurrentTranslation;
+                    VECTOR2D mMovement;
+                }__tr;
+                __tr.updateTransformation(aTransformation);
 
                 vg->render(mFiller, &bitmap, aTransformation);
 
