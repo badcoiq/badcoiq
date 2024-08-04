@@ -53,3 +53,4 @@ tools/3dsmaxplugin/.vs
 tools/3dsmaxplugin/x64/Debug
 tools/3dsmaxplugin/x64/Release
 data/models/Jill
+*.dle
