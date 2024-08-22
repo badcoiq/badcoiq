@@ -39,6 +39,8 @@ template<typename T>
 class bqVec4_t;
 template<typename T>
 class bqMatrix4_t;
+template<typename T>
+class bqMatrix2_t;
 
 using bqVec2  = bqVec2_t<bqReal>;
 using bqVec2f = bqVec2_t<float>;
@@ -49,7 +51,9 @@ using bqVec3i = bqVec3_t<int32_t>;
 using bqVec4  = bqVec4_t<bqReal>;
 using bqVec4f = bqVec4_t<float>;
 using bqVec4i = bqVec4_t<int32_t>;
+using bqMat2 = bqMatrix2_t<float>;
 using bqMat4  = bqMatrix4_t<bqReal>;
+
 
 class bqMaterial;
 class bqColor;
@@ -134,6 +138,8 @@ class bqPhysicsDebugDraw;
 #endif
 
 class bqPopupData;
+
+class bqVectorGraphicsShape;
 
 #endif
 

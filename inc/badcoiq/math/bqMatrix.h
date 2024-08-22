@@ -263,6 +263,105 @@ public:
 	T* Data() { return &m_data[0].x; }
 };
 
+template<typename T>
+class bqMatrix2_t
+{
+public:
+	bqMatrix2_t() { Identity(); }
+
+	template<typename T2>
+	bqMatrix2_t(const bqMatrix2_t<T2>& m)
+	{
+		m_data[0] = m.m_data[0];
+		m_data[1] = m.m_data[1];
+	}
+
+
+	void Identity() {
+		m_data[0].x = 1.f;
+		m_data[0].y = 0.f;
+		m_data[1].x = 0.f;
+		m_data[1].y = 1.f;
+		m_data[2].x = 0.f;
+		m_data[2].y = 0.f;
+	}
+
+	void MakeRotation(T aAngle)
+	{
+		T sinRot = (T)sin(aAngle);
+		T cosRot = (T)cos(aAngle);
+
+		m_data[0].x = cosRot;
+		m_data[0].y = sinRot;
+		m_data[1].x = -sinRot;
+		m_data[1].y = cosRot;
+		m_data[2].x = 0.f;
+		m_data[2].y = 0.f;
+	}
+
+	void MakeTranslation(const bqVec2_t<T>& aTranslation)
+	{
+		m_data[0].x = 1.f;
+		m_data[0].y = 0.f;
+		m_data[1].x = 0.f;
+		m_data[1].y = 1.f;
+		m_data[2].x = aTranslation.x;
+		m_data[2].y = aTranslation.y;
+	}
+
+	void MakeScaling(const bqVec2_t<T>& aScale)
+	{
+		m_data[0].x = aScale.x;
+		m_data[0].y = 0.f;
+		m_data[1].x = 0.f;
+		m_data[1].y = aScale.y;
+		m_data[2].x = 0.f;
+		m_data[2].y = 0.f;
+	}
+
+	void Rotate(T rotate)
+	{
+		bqMatrix2_t<T> tmp;
+		tmp.MakeRotation(rotate);
+		Multiply(tmp);
+	}
+
+	void Translate(const bqVec2_t<T>& aTranslation)
+	{
+		bqMatrix2_t<T> tmp;
+		tmp.MakeTranslation(aTranslation);
+		Multiply(tmp);
+	}
+
+	void Scale(const bqVec2_t<T>& aScale)
+	{
+		bqMatrix2_t<T> tmp;
+		tmp.MakeScaling(aScale);
+		Multiply(tmp);
+	}
+
+	void Multiply(const bqMatrix2_t<T>& aMatrix)
+	{
+		bqMatrix2_t<T> tmp = *this;
+		m_data[0].x = tmp.m_data[0].x * aMatrix.m_data[0].x +
+			tmp.m_data[0].y * aMatrix.m_data[1].x;
+		m_data[0].y = tmp.m_data[0].x * aMatrix.m_data[0].y +
+			tmp.m_data[0].y * aMatrix.m_data[1].y;
+		m_data[1].x = tmp.m_data[1].x * aMatrix.m_data[0].x +
+			tmp.m_data[1].y * aMatrix.m_data[1].x;
+		m_data[1].y = tmp.m_data[1].x * aMatrix.m_data[0].y +
+			tmp.m_data[1].y * aMatrix.m_data[1].y;
+		m_data[2].x = tmp.m_data[2].x * aMatrix.m_data[0].x +
+			tmp.m_data[2].y * aMatrix.m_data[1].x +
+			aMatrix.m_data[2].x;
+		m_data[2].y = tmp.m_data[2].x * aMatrix.m_data[0].y +
+			tmp.m_data[2].y * aMatrix.m_data[1].y +
+			aMatrix.m_data[2].y;
+	}
+
+	bqVec2_t<T> m_data[3];
+	T* Data() { return &m_data[0].x; }
+};
 
 
 #endif

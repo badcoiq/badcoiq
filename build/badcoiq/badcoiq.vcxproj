@@ -223,6 +223,8 @@
     <ClCompile Include="..\..\src\badcoiq\system\bqDLL.cpp" />
     <ClCompile Include="..\..\src\badcoiq\system\bqStacktracer.cpp" />
     <ClCompile Include="..\..\src\badcoiq\system\bqWindow.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\VG\bqVectorGraphics.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\VG\bqVectorGraphicsTarget.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

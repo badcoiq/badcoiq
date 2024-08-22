@@ -16,6 +16,8 @@ BQ_LINK_LIBRARY("badcoiq");
 #include "badcoiq/scene/bqCamera.h"
 #include <list>
 
+//#include "badcoiq/VG/bqVectorGraphics.h"
+
 // General defines
 #ifndef NULL
 #define NULL 0
@@ -4986,23 +4988,35 @@ VectorGraphic* TestPattern::star(RATIONAL aSize, int aSpikeCount, const VECTOR2D
 
     if (aSpikeCount & 1)
     {
-        RATIONAL angle = FLOAT_TO_RATIONAL(2.0f * 3.1415926535897932384626433832795f) / (RATIONAL)aSpikeCount;
-        RATIONAL startAngle = FLOAT_TO_RATIONAL(1.0f * 3.1415926535897932384626433832795f);
-        RATIONAL angleDelta = FLOAT_TO_RATIONAL(3.1415926535897932384626433832795f) + angle / INT_TO_RATIONAL(2);
-        
-        RATIONAL* vertices = TestPattern::starVertices(aSize, aSpikeCount, aCenter, startAngle, angleDelta);
-        if (vertices == NULL)
+        //RATIONAL angle = FLOAT_TO_RATIONAL(2.0f * 3.1415926535897932384626433832795f) / (RATIONAL)aSpikeCount;
+        //RATIONAL startAngle = FLOAT_TO_RATIONAL(1.0f * 3.1415926535897932384626433832795f);
+        //RATIONAL angleDelta = FLOAT_TO_RATIONAL(3.1415926535897932384626433832795f) + angle / INT_TO_RATIONAL(2);
+
+       // RATIONAL *vertices = starVertices(aSize,aSpikeCount,aCenter,startAngle,angleDelta);
+       // if (vertices == NULL)
+       //     return NULL;
+
+        RATIONAL* vertices = new RATIONAL[6];
+        if (!vertices)
             return NULL;
 
+        vertices[0] = 0.f;
+        vertices[1] = 0.f;
+
+        vertices[2] = 10.f;
+        vertices[3] = 0.f;
+
+        vertices[4] = 10.f;
+        vertices[5] = 10.f;
+
         RATIONAL* vertexData[1] = { vertices };
-        int vertexCounts[1] = { aSpikeCount };
+        int vertexCounts[1] = { 3 };
 
         PolygonData pdata(vertexData, vertexCounts, 1);
         PolygonData* polygons[1] = { &pdata };
 
         unsigned long colors[1] = { aColor };
         RENDERER_FILLMODE fillmodes[1] = { aFillMode };
-
 
         VectorGraphic* vg = VectorGraphic::create(polygons, colors, fillmodes, 1, aFactory);
 
@@ -5192,6 +5206,12 @@ int main()
                     &factory,
                      NULL,NULL);
                 
+                vg = TestPattern::star(INT_TO_RATIONAL(110), 5,
+                    VECTOR2D(INT_TO_RATIONAL(110), INT_TO_RATIONAL(110)),
+                    RENDERER_FILLMODE_EVENODD, 0xff000000,
+                    &factory,
+                   NULL,
+                    0);
                
                 
                 BitmapData bitmap(screenImg.m_info.m_width, 
@@ -5221,7 +5241,7 @@ int main()
 
                     VECTOR2D mPivot;
                     float mScale = 2.f;
-                    RATIONAL mCurrentRotation;
+                    RATIONAL mCurrentRotation = 0;
                     VECTOR2D mCurrentTranslation;
                     VECTOR2D mMovement;
                 }__tr;
@@ -5230,7 +5250,7 @@ int main()
                 vg->render(mFiller, &bitmap, aTransformation);
 
              //   memcpy(screenImg.m_data, bitmap.mData, screenImg.m_dataSize);
-                screenImg.SaveToFile(bqImage::SaveFileFormat::ddsRGBA8, "testVG.dds");
+              //  screenImg.SaveToFile(bqImage::SaveFileFormat::ddsRGBA8, "testVG.dds");
 
                 bqTexture* texture = gs->SummonTexture(&screenImg);
 

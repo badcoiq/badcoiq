@@ -49,6 +49,9 @@
     <Filter Include="Source Files\physics">
       <UniqueIdentifier>{c8cb436e-c65f-4fe3-9970-39027cd586dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\vg">
+      <UniqueIdentifier>{752e7c8f-b359-42be-a2b1-80a15d64542f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -203,6 +206,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\geometry\bqMDL.cpp">
       <Filter>Source Files\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\VG\bqVectorGraphics.cpp">
+      <Filter>Source Files\vg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\VG\bqVectorGraphicsTarget.cpp">
+      <Filter>Source Files\vg</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
