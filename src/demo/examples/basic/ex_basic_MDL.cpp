@@ -195,7 +195,17 @@ void ExampleBasicsMDL::OnDraw()
 	{
 		if (m_currAniObj)
 		{
-			m_currAniObj->SetFPS(10.f);
+			if (bqInput::IsKeyHit(bqInput::KEY_SPACE))
+			{
+				m_currAniObj->SetRegion(1.f, 19.f);
+			}
+
+			if (bqInput::IsKeyHit(bqInput::KEY_BACKSPACE))
+			{
+				m_currAniObj->SetRegion(15.f, 19.f);
+			}
+
+			m_currAniObj->SetFPS(4.f);
 			m_currAniObj->AnimateInterpolate((*m_app->m_dt));
 			m_currSkeleton = m_animationSkeleton;
 			m_currSkeleton->Update();
@@ -209,7 +219,7 @@ void ExampleBasicsMDL::OnDraw()
 			}
 		}
 	}
-
+	
 	if (bqInput::IsKeyHit(bqInput::KEY_1))
 	{
 		if (ji > 0)

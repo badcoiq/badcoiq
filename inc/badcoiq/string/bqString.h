@@ -137,7 +137,7 @@ public:
 		bqString_base<char_type> flippedStr;
 		for (size_t i = m_size - 1; i >= 0; --i)
 		{
-			flippedStr += m_data[i];
+			flippedStr.push_back(m_data[i]);
 			if (!i)
 				break;
 		}
@@ -353,7 +353,7 @@ public:
 		return m_size;
 	}
 
-	bool extension(const char* _ext)
+	bool check_extension(const char* _ext)
 	{
 		auto des_it = m_size;
 		auto zgz_it = strlen(_ext);
@@ -585,6 +585,78 @@ public:
 		result += (float)i * string_to_float_table[part_2_count];
 
 		return is_negative ? -result : result;
+	}
+
+	// вернуть имя файла без расширения
+	bqString_base<char_type> stem()
+	{
+		bqString_base<char_type> r;
+		
+		if (m_size)
+		{
+			bqString_base<char_type> tmp;
+			for (size_t i = m_size - 1; i > 0; --i)
+			{
+				if ((m_data[i] != (char_type)'/') && (m_data[i] != (char_type)'\\'))
+					tmp.push_back(m_data[i]);
+				else
+					break;
+			}
+			
+			tmp.flip();
+			tmp.pop_extension();
+
+			r = tmp;
+		}
+
+		return r;
+	}
+
+	bool has_extension()
+	{
+		bool r = false;
+
+		for (size_t i = m_size - 1; i >= 0; --i)
+		{
+			// первая точка с конца
+			if (m_data[i] == '.')
+			{
+				// если /.bar
+				// то нет расширения
+				if (i > 0)
+				{
+					if ((m_data[i - 1] == '/') || (m_data[i - 1] == '\\'))
+						break;
+				}
+
+				// если /foo/.bar./
+				// то нет расширения
+				if (i == m_size - 1)
+					break;
+
+				r = true;
+				break;
+			}
+
+			if (!i)
+				break;
+		}
+
+		return r;
+	}
+
+	void pop_extension()
+	{
+		if (has_extension())
+		{
+			pop_back_before('.');
+
+			if (m_size)
+			{
+				if(m_data[m_size-1] == '.')
+					pop_back();
+			}
+		}
 	}
 };
 
