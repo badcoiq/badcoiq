@@ -531,7 +531,7 @@ bool ExampleBasicsSkeletalAnimation2::Init()
 
 	for (size_t i = 0; i < files.m_size; ++i)
 	{
-		if (files.m_data[i].extension(".smd"))
+		if (files.m_data[i].check_extension(".smd"))
 		{
 			m_model->Load(files.m_data[i].c_str());
 		}

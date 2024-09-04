@@ -458,11 +458,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                 USHORT flags = mouseData.usButtonFlags;
                 short wheelDelta = (short)mouseData.usButtonData;
+                
               //  LONG x = mouseData.lLastX, y = mouseData.lLastY;
 
-                /*wprintf(
-                    L"Mouse: Device=0x%08X, Flags=%04x, WheelDelta=%d, X=%d, Y=%d\n",
-                    deviceHandle, flags, wheelDelta, x, y);*/
+                //wprintf(
+                //    L"Mouse: Flags=%04x, WheelDelta=%d, X=%d, Y=%d\n",
+                //     flags, wheelDelta, x, y);
 
                 bqInputData* id = bqInput::GetData();
 

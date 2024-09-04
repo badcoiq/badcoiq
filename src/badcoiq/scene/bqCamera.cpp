@@ -227,15 +227,8 @@ void bqCamera::_updateEditor(float)
 	bqMat4 R(bqQuaternion(0.f, 0.f, m_rotationPlatform.z));
 
 	m_viewMatrix = (R * (P * Y)) * T;
-
-	m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
-
-	m_viewInvertMatrix = m_viewMatrix;
-	m_viewInvertMatrix.Invert();
+	CalculateViewMatrices();
 	
-	auto pi = m_projectionMatrix;
-	pi.Invert();
-	m_viewProjectionInvertMatrix = m_viewInvertMatrix * pi;
 	m_frustum.CalculateFrustum(m_projectionMatrix, m_viewMatrix);
 
 	m_direction = Direction::NorthEast;
@@ -263,6 +256,18 @@ void bqCamera::_updateEditor(float)
 	m_viewProjectionInvertMatrix = m_viewInvertMatrix * pi;*/
 
 	//m_frustum.CalculateFrustum(m_projectionMatrix, m_viewMatrix);
+}
+
+void bqCamera::CalculateViewMatrices()
+{
+	m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
+
+	m_viewInvertMatrix = m_viewMatrix;
+	m_viewInvertMatrix.Invert();
+
+	auto pi = m_projectionMatrix;
+	pi.Invert();
+	m_viewProjectionInvertMatrix = m_viewInvertMatrix * pi;
 }
 
 void bqCamera::EditorPanMove(bqPointf* mouseDelta, float timeDelta)

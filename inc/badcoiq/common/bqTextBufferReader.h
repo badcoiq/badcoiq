@@ -35,6 +35,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/string/bqString.h"
 
 // Для удобного чтения ANSI текста из буфера
+/*
+* пример
+* 
+	bqTextBufferReader tbr(buffer, bufferSz); // text buffer reader
+	bqTextBufferReader lbr; // line buffer reader
+	bqStringA line;
+	bqStringA word;
+
+	tbr.GetLine(line);
+	lbr.Set(line.data(), line.size());
+
+	lbr.GetWord(word, "");
+	if (strcmp(word.c_str(), "version") == 0)
+	{
+		if (lbr.GetInt() == 1)
+		{
+			while (!tbr.IsEnd())
+			{
+				tbr.GetLine(line);
+
+				if (strcmp(line.c_str(), "nodes") == 0)
+				{
+					while (!tbr.IsEnd())
+					{
+						tbr.GetLine(line);
+						if (strcmp(line.c_str(), "end") == 0)
+							break;
+*/
 class bqTextBufferReader
 {
 	uint8_t* m_ptrCurr = 0;
@@ -156,16 +184,16 @@ public:
 		return r;
 	}
 
-	int GetInt()
+	int32_t GetInt()
 	{
 		GetWord(m_straTmp, "/\\|");
-		return atoi(m_straTmp.c_str());
+		return (int32_t)atoi(m_straTmp.c_str());
 	}
 
-	float GetFloat()
+	bqFloat32 GetFloat()
 	{
 		GetWord(m_straTmp, "/\\|");
-		return (float)atof(m_straTmp.c_str());
+		return (bqFloat32)atof(m_straTmp.c_str());
 	}
 
 	// Из этого: "bone01 abc"

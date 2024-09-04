@@ -58,6 +58,9 @@ using bqReal = double;
 using bqFloat32 = float;
 using bqFloat64 = double;
 
+using float32_t = bqFloat32;
+using float64_t = bqFloat64;
+
 // Определяем платформу
 #if defined(WIN32) | defined(_WIN64) | defined(_WIN32)
 #define BQ_PLATFORM_WINDOWS
@@ -148,6 +151,8 @@ using bqFloat64 = double;
 #define BQ_DELETED_METHODS(x) x(const x&) = delete; \
 	x& operator=(const x&) = delete;
 	
+
+#define BQ_CMPSTRA(s1,s2) (strcmp(s1.c_str(), s2) == 0)
 
 #endif
 

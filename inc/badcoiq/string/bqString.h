@@ -595,11 +595,14 @@ public:
 		if (m_size)
 		{
 			bqString_base<char_type> tmp;
-			for (size_t i = m_size - 1; i > 0; --i)
+			for (size_t i = m_size - 1; i >= 0; --i)
 			{
 				if ((m_data[i] != (char_type)'/') && (m_data[i] != (char_type)'\\'))
 					tmp.push_back(m_data[i]);
 				else
+					break;
+
+				if (!i)
 					break;
 			}
 			

@@ -78,6 +78,7 @@ public:
 	~bqCamera();
 	BQ_PLACEMENT_ALLOCATOR(bqCamera);
 
+	void CalculateViewMatrices();
 	void Update(float dt)
 	{
 		(this->*m_update)(dt);
