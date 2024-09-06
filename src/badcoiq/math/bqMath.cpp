@@ -967,16 +967,16 @@ void bqMath::Invert(bqMat4& m)
 	m = mat;
 }
 
-void bqMath::LookAtLH(bqMat4& m, const bqVec4& eye, const bqVec4& center, const bqVec4& up)
+void bqMath::LookAtLH(bqMat4& m, const bqVec3& eye, const bqVec3& center, const bqVec3& up)
 {
-	bqVec4 f(center - eye);
+	bqVec3 f(center - eye);
 	Normalize(f);
 
-	bqVec4 s;
+	bqVec3 s;
 	Cross(f, up, s);
 	Normalize(s);
 
-	bqVec4 u;
+	bqVec3 u;
 	Cross(s, f, u);
 
 	m.m_data[0].x = s.x;
@@ -993,16 +993,16 @@ void bqMath::LookAtLH(bqMat4& m, const bqVec4& eye, const bqVec4& center, const 
 	m.m_data[3].z = -Dot(f, eye);
 }
 
-void bqMath::LookAtRH(bqMat4& m, const bqVec4& eye, const bqVec4& center, const bqVec4& up)
+void bqMath::LookAtRH(bqMat4& m, const bqVec3& eye, const bqVec3& center, const bqVec3& up)
 {
-	bqVec4 f(center - eye);
+	bqVec3 f(center - eye);
 	Normalize(f);
 
-	bqVec4 s;
+	bqVec3 s;
 	Cross(f, up, s);
 	Normalize(s);
 
-	bqVec4 u;
+	bqVec3 u;
 	Cross(s, f, u);
 
 	m.m_data[0].x = s.x;

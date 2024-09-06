@@ -113,7 +113,7 @@ bool ExampleBasicsSprite::Init()
 
 	m_spriteWithState = new bqSprite(m_sprite->GetTexture());
 	m_spriteWithState->SetSize(10.f / 22.f, 10.f / 22.f);
-	m_spriteWithState->GetPosition().Set(1.f, 0.f, 0.f, 0.f);
+	m_spriteWithState->GetPosition().Set(1.f, 0.f, 0.f);
 	m_spriteWithState->RecalculateWorldMatrix();
 	auto spriteState = m_spriteWithState->CreateNewState();
 	spriteState->AddFrame(bqVec4f(0.f, 0.f, 14.f, 15.f));
@@ -121,7 +121,7 @@ bool ExampleBasicsSprite::Init()
 
 	m_spriteWithStateAndAnimation = new bqSprite(m_sprite->GetTexture());
 	m_spriteWithStateAndAnimation->SetSize(10.f / 22.f, 10.f / 22.f);
-	m_spriteWithStateAndAnimation->GetPosition().Set(2.f, 0.f, 0.f, 0.f);
+	m_spriteWithStateAndAnimation->GetPosition().Set(2.f, 0.f, 0.f);
 	m_spriteWithStateAndAnimation->RecalculateWorldMatrix();
 	spriteState = m_spriteWithStateAndAnimation->CreateNewState();
 	spriteState->AddFrame(bqVec4f(0.f, 0.f, 14.f, 15.f));
@@ -138,7 +138,7 @@ bool ExampleBasicsSprite::Init()
 
 	m_spriteWithStateAndAnimationAndColor = new bqSprite(m_sprite->GetTexture());
 	m_spriteWithStateAndAnimationAndColor->SetSize(10.f / 22.f, 10.f / 22.f);
-	m_spriteWithStateAndAnimationAndColor->GetPosition().Set(3.f, 0.f, 0.f, 0.f);
+	m_spriteWithStateAndAnimationAndColor->GetPosition().Set(3.f, 0.f, 0.f);
 	m_spriteWithStateAndAnimationAndColor->RecalculateWorldMatrix();
 	spriteState = m_spriteWithStateAndAnimationAndColor->CreateNewState();
 	spriteState->AddFrame(bqVec4f(0.f, 0.f, 14.f, 15.f));
@@ -172,7 +172,7 @@ bool ExampleBasicsSprite::Init()
 		}
 	}
 	m_spriteFire->SetSize(30.f / 22.f, 30.f / 22.f);
-	m_spriteFire->GetPosition().Set(0.f, 0.f, 1.f, 0.f);
+	m_spriteFire->GetPosition().Set(0.f, 0.f, 1.f);
 	m_spriteFire->RecalculateWorldMatrix();
 	spriteState = m_spriteFire->CreateNewState();
 	spriteState->CreateAnimation(32, bqVec2f(192.f, 192.f), bqVec2f(0.f));

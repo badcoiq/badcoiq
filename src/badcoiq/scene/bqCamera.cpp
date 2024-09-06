@@ -72,7 +72,7 @@ void bqCamera::_calculateView()
 	bqMat4 R;
 	R.SetRotation(m_rotation);
 
-	bqVec4 V;
+	bqVec3 V;
 	bqMath::Mul(m_rotationMatrix, -m_position, V);
 
 	//V = -m_position;
@@ -106,48 +106,48 @@ void bqCamera::_updateOrthoLookAt(float)
 	bqMath::OrthoRH(m_projectionMatrix, m_orthoWidth, m_orthoHeight, m_near, m_far);
 }
 
-void bqCamera::_moveCamera(bqVec4& vel)
+void bqCamera::_moveCamera(bqVec3& vel)
 {
 	auto RotInv = m_rotationMatrix;
 	RotInv.Invert();
-	bqVec4 v;
+	bqVec3 v;
 	bqMath::Mul(RotInv, vel, v);
 	m_position += v; // m_localPosition is just vec4 for position
 }
 
 void bqCamera::MoveLeft(float dt)
 {
-	bqVec4 v(-m_moveSpeed * dt, 0.f, 0.f, 1.f);
+	bqVec3 v(-m_moveSpeed * dt, 0.f, 0.f);
 	_moveCamera(v);
 }
 
 void bqCamera::MoveRight(float dt)
 {
-	bqVec4 v(m_moveSpeed * dt, 0.f, 0.f, 1.f);
+	bqVec3 v(m_moveSpeed * dt, 0.f, 0.f);
 	_moveCamera(v);
 }
 
 void bqCamera::MoveUp(float dt)
 {
-	bqVec4 v(0.f, m_moveSpeed * dt, 0.f, 1.f);
+	bqVec3 v(0.f, m_moveSpeed * dt, 0.f);
 	_moveCamera(v);
 }
 
 void bqCamera::MoveDown(float dt)
 {
-	bqVec4 v(0.f, -m_moveSpeed * dt, 0.f, 1.f);
+	bqVec3 v(0.f, -m_moveSpeed * dt, 0.f);
 	_moveCamera(v);
 }
 
 void bqCamera::MoveBackward(float dt)
 {
-	bqVec4 v(0.f, 0.f, m_moveSpeed * dt, 1.f);
+	bqVec3 v(0.f, 0.f, m_moveSpeed * dt);
 	_moveCamera(v);
 }
 
 void bqCamera::MoveForward(float dt)
 {
-	bqVec4 v(0.f, 0.f, -m_moveSpeed * dt, 1.f);
+	bqVec3 v(0.f, 0.f, -m_moveSpeed * dt);
 	_moveCamera(v);
 }
 
@@ -186,6 +186,7 @@ void bqCamera::Rotate(float x, float y, float z)
 	m_rotationMatrix = RX * m_rotationMatrix * RY * RZ;
 }
 
+
 void bqCamera::_updateEditor(float)
 {
 	if ((m_editorCameraType != CameraEditorType::Perspective) || m_forceOrtho)
@@ -210,11 +211,10 @@ void bqCamera::_updateEditor(float)
 	bqMat4 MY(bqQuaternion(0.f, m_rotationPlatform.y, 0.f));
 	//Mat4 MZ(Quat(0.f, 0.f, m_rotationPlatform.z));
 
-	m_position = bqVec4(0.f, m_positionPlatform.w, 0.f, 1.f);
+	m_position = bqVec3(0.f, m_positionPlatform.w, 0.f);
+	bqMath::Mul((MY * MX), bqVec3(m_position), m_position);
+	m_position += bqVec3(m_positionPlatform.x, m_positionPlatform.y, m_positionPlatform.z);
 
-	bqMath::Mul((MY * MX), bqVec4(m_position), m_position);
-
-	m_position += bqVec4(m_positionPlatform.x, m_positionPlatform.y, m_positionPlatform.z, 0.f);
 
 	bqMat4 T;
 	T.m_data[3].x = -m_position.x;
@@ -222,8 +222,8 @@ void bqCamera::_updateEditor(float)
 	T.m_data[3].z = -m_position.z;
 	T.m_data[3].w = 1.f;
 
-	bqMat4 P(bqQuaternion(m_rotationPlatform.x + bqMath::DegToRad(-90.f), 0.f, 0.f));
-	bqMat4 Y(bqQuaternion(0.f, m_rotationPlatform.y + bqMath::DegToRad(0.f), 0.f));
+	bqMat4 P(bqQuaternion(-m_rotationPlatform.x + bqMath::DegToRad(-90.f), 0.f, 0.f));
+	bqMat4 Y(bqQuaternion(0.f, -m_rotationPlatform.y + bqMath::DegToRad(0.f), 0.f));
 	bqMat4 R(bqQuaternion(0.f, 0.f, m_rotationPlatform.z));
 
 	m_viewMatrix = (R * (P * Y)) * T;
@@ -275,7 +275,7 @@ void bqCamera::EditorPanMove(bqPointf* mouseDelta, float timeDelta)
 	float speed = 10.f * ((float)m_positionPlatform.w * 0.01f);
 
 	bqVec4 vec(
-		speed * mouseDelta->x * timeDelta,
+		speed * -mouseDelta->x * timeDelta,
 		0.f,
 		speed * -mouseDelta->y * timeDelta,
 		0.f);
@@ -290,13 +290,13 @@ void bqCamera::EditorRotate(bqPointf* mouseDelta, float timeDelta)
 {
 	const float speed = 0.69f * timeDelta;
 	m_rotationPlatform.x += mouseDelta->y * speed;
-	m_rotationPlatform.y += -mouseDelta->x * speed;
+	m_rotationPlatform.y += mouseDelta->x * speed;
 
 	if (m_rotationPlatform.y < 0.f) m_rotationPlatform.y = m_rotationPlatform.y + (float)PIPI;
 
 	if (m_rotationPlatform.x > PIPI) m_rotationPlatform.x = 0.f;
 	if (m_rotationPlatform.y > PIPI) m_rotationPlatform.y = 0.f;
-	//Update();
+	
 }
 
 void bqCamera::EditorZoom(int wheelDelta)

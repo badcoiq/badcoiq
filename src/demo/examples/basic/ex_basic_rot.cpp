@@ -219,8 +219,7 @@ void ExampleBasicsRotations::OnDraw()
 	
 	m_sceneObject3->GetPosition().z = -5.f;
 	bqQuaternion qq;
-	bqVec4 vv = m_camera->m_position - m_sceneObject3->GetPosition(); // direction
-	vv.w = 0.f;
+	bqVec3 vv = m_camera->m_position - m_sceneObject3->GetPosition(); // direction
 	vv.Normalize();
 	qq.FromVector(vv, bqVec4(0.f, 0.f, 1.f, 0.f));
 	m_sceneObject3->m_qOrientation = qq;
@@ -235,8 +234,8 @@ void ExampleBasicsRotations::OnDraw()
 
 	// рисую линию которая покажет направление куда смотрит модель
 	m_gs->DisableDepth();
-	bqVec4 point(0., 0., 2., 1.);
-	bqVec4 p;
+	bqVec3 point(0., 0., 2.);
+	bqVec3 p;
 	p = m_sceneObject1->m_qOrientation.RotateVector(point);
 	m_gs->DrawLine3D(m_sceneObject1->GetPosition(), 
 		m_sceneObject1->GetPosition() + p, bq::ColorRed);

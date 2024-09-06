@@ -71,7 +71,7 @@ class bqCamera
 	void _updateOrthoLookAt(float dt);
 	void _updateEditor(float dt);
 
-	void _moveCamera(bqVec4& vel);
+	void _moveCamera(bqVec3& vel);
 
 public:
 	bqCamera();
@@ -112,7 +112,7 @@ public:
 	};
 
 	bqVec3f m_rotationPlatform;
-	bqVec4 m_positionPlatform; // w = height, zoom, mouse wheel value
+	bqVec4 m_positionPlatform = bqVec4(0.f,0.f,0.f,10.f); // w = height, zoom, mouse wheel value
 	//bqVec4 m_positionCamera; // in world
 	Direction m_direction = Direction::North;
 	CameraEditorType m_editorCameraType = CameraEditorType::Perspective;
@@ -148,9 +148,9 @@ public:
 	const bqMat4& GetMatrixViewProjectionInvert() { return m_viewProjectionInvertMatrix; }
 	const bqMat4& GetMatrixViewProjection() { return m_viewProjectionMatrix; }
 
-	bqVec4 m_position;
-	bqVec4 m_lookAtTargett;
-	bqVec4 m_upVector = bqVec4(0.0, 1.0, 0.0, 0.0);
+	bqVec3 m_position;
+	bqVec3 m_lookAtTargett;
+	bqVec3 m_upVector = bqVec3(0.0, 1.0, 0.0);
 
 	float m_moveSpeed = 10.f;
 

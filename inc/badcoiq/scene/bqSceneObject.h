@@ -57,7 +57,7 @@ class bqSceneObject : public bqUserData, public bqHierarchy
 	bqMat4 m_matrixWorld;
 	bqMat4 m_matrixRotation;
 
-	bqVec4 m_position;
+	bqVec3 m_position;
 	bqVec3 m_scale = bqVec3(1.0);
 
 
@@ -72,7 +72,7 @@ public:
 	bqQuaternion m_qZ;
 	bqQuaternion m_qOrientation;
 
-	bqVec4& GetPosition() { return m_position; }
+	bqVec3& GetPosition() { return m_position; }
 	bqVec3& GetScale() { return m_scale; }
 	bqAabb& GetAabb() { return m_aabb; }
 	bqAabb& GetAabbTransformed() { return m_aabbTransformed; }
@@ -146,7 +146,7 @@ public:
 	bqSceneObjectBV m_BV = bqSceneObjectBV::Sphere;
 	virtual void UpdateBV()
 	{
-		m_aabbTransformed.Transform(&m_aabb, &m_matrixWorld, &m_position);
+		m_aabbTransformed.Transform(m_aabb, m_matrixWorld, m_position);
 		m_BVRadius = bqMath::Distance(m_aabb.m_min, m_aabb.m_max) * 0.5;
 	}
 

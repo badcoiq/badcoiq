@@ -122,7 +122,7 @@ bool ExampleBasicsOclCul::Init()
 	m_wallObject = bqCreate<SceneObject_ExampleOcclusionCulling>();
 	m_wallObject->m_occlusionObject = m_gs->SummonOcclusionObject();
 	m_wallObject->m_occlusionObject->m_visible = false;
-	m_wallObject->GetPosition().Set(0.f, 0.f, 10.f, 0.f);
+	m_wallObject->GetPosition().Set(0.f, 0.f, 10.f);
 	m_wallObject->RecalculateWorldMatrix();
 	m_wallObject->GetAabb() = m_wall->m_meshInfo.m_aabb;
 	m_wallObject->UpdateBV();

@@ -798,7 +798,7 @@ void bqPolygonMesh::GenerateUVPlanar(float scale)
 
 	bqMat4 V;
 	bqMat4 P;
-	bqMath::LookAtRH(V, n, bqVec4(), bqVec4(0.f, 1.f, 0.f, 0.f));
+	bqMath::LookAtRH(V, n, bqVec3(), bqVec3(0.f, 1.f, 0.f));
 	bqMath::OrthoRH(P, 100.f, 100.f, -1000.f, 1000.f);
 
 	bqMat4 W;

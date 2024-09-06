@@ -265,7 +265,7 @@ bool DemoApp::Init()
 	AddExample(new ExampleGameMario(this), U"Mario", "Games/", U"Тот самый Марио");
 	
 	// что-то не работает код хотя 99 процентов копипаста
-	//AddExample(new ExampleSceneCameraEdtr(this), U"Камера для 3D редактора", "scene/camera", U"Как в 3Ds Max");
+	AddExample(new ExampleSceneCameraEdtr(this), U"Камера для 3D редактора", "Scene/camera", U"Как в 3Ds Max");
 
 	m_rootCategory.findElements();
 

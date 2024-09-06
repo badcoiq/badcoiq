@@ -186,8 +186,8 @@ public:
 	static void Invert(bqMat4&);
 
 	// View матрица
-	static void LookAtLH(bqMat4&, const bqVec4& eye, const bqVec4& center, const bqVec4& up);
-	static void LookAtRH(bqMat4&, const bqVec4& eye, const bqVec4& center, const bqVec4& up);
+	static void LookAtLH(bqMat4&, const bqVec3& eye, const bqVec3& center, const bqVec3& up);
+	static void LookAtRH(bqMat4&, const bqVec3& eye, const bqVec3& center, const bqVec3& up);
 
 	// Projection матрица
 	static void PerspectiveLH(bqMat4&, bqReal FOV, bqReal aspect, bqReal Near, bqReal Far);

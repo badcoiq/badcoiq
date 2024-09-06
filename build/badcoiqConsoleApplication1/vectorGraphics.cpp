@@ -5112,7 +5112,7 @@ int main()
                 gs->SetClearColor(0.3f, 0.3f, 0.3f, 1.f);
 
                 bqCamera camera;
-                camera.m_position.Set(8.f, 8.f, 0.0f, 0.f);
+                camera.m_position.Set(8.f, 8.f, 0.0f);
                 camera.m_aspect = 300.f / 200.f;
                 camera.m_fov = 1.1f;
                 

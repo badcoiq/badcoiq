@@ -47,7 +47,7 @@ public:
 		m_max(max)
 	{}
 
-	void Transform(bqAabb* original, bqMat4* matrix, bqVec4* position);
+	void Transform(const bqAabb& original, const bqMat4& matrix, const bqVec3& position);
 	void Add(const bqVec4& point);
 	void Add(const bqVec3& point);
 	void Add(const bqVec4f& point);

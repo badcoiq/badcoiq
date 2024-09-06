@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	by Jim Arvo
 	from "Graphics Gems", Academic Press, 1990
 */
-void bqAabb::Transform(bqAabb* original, bqMat4* matrix, bqVec4* position)
+void bqAabb::Transform(const bqAabb& original, const bqMat4& matrix, const bqVec3& position)
 {
 	bqReal  a, b;
 	bqReal  Amin[3], Amax[3];
@@ -43,14 +43,14 @@ void bqAabb::Transform(bqAabb* original, bqMat4* matrix, bqVec4* position)
 	int32_t    i, j;
 
 	/*Copy box A into a min array and a max array for easy reference.*/
-	Amin[0] = original->m_min.x;  Amax[0] = original->m_max.x;
-	Amin[1] = original->m_min.y;  Amax[1] = original->m_max.y;
-	Amin[2] = original->m_min.z;  Amax[2] = original->m_max.z;
+	Amin[0] = original.m_min.x;  Amax[0] = original.m_max.x;
+	Amin[1] = original.m_min.y;  Amax[1] = original.m_max.y;
+	Amin[2] = original.m_min.z;  Amax[2] = original.m_max.z;
 
 	/* Take care of translation by beginning at T. */
-	Bmin[0] = Bmax[0] = position->x;
-	Bmin[1] = Bmax[1] = position->y;
-	Bmin[2] = Bmax[2] = position->z;
+	Bmin[0] = Bmax[0] = position.x;
+	Bmin[1] = Bmax[1] = position.y;
+	Bmin[2] = Bmax[2] = position.z;
 
 	/* Now find the extreme points by considering the product of the */
 	/* min and max with each component of M.  */
@@ -59,8 +59,8 @@ void bqAabb::Transform(bqAabb* original, bqMat4* matrix, bqVec4* position)
 		for (j = 0; j < 3; j++)
 		{
 			// mimi: I swapped j and i
-			a = (matrix->m_data[j][i] * Amin[j]);
-			b = (matrix->m_data[j][i] * Amax[j]);
+			a = (matrix.m_data[j][i] * Amin[j]);
+			b = (matrix.m_data[j][i] * Amax[j]);
 			if (a < b)
 			{
 				Bmin[i] += a;

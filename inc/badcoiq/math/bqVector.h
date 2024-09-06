@@ -129,18 +129,15 @@ class bqVec3_t
 {
 public:
 	bqVec3_t() {}
-
+	bqVec3_t(T v) :
+		x(v),
+		y(v),
+		z(v)
+	{}
 	bqVec3_t(T X, T Y, T Z) :
 		x(X),
 		y(Y),
 		z(Z)
-	{}
-
-	template <typename T2>
-	bqVec3_t(T2 v) :
-		x(static_cast<T>(v)),
-		y(static_cast<T>(v)),
-		z(static_cast<T>(v))
 	{}
 
 	template <typename T2>
