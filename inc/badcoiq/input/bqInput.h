@@ -57,6 +57,7 @@ struct bqInputData
 	uint64_t m_keyFlagsRelease[2] = { 0,0 };
 
 	// Модификаторы клавиатуры (моя терминология)
+	// см bqInputEx.h -> bq::KeyboardMod_
 	uint8_t m_keyboardModifier = 0;
 };
 

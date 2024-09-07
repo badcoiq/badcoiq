@@ -167,7 +167,7 @@ class bqSkeletonAnimationObject
 {
 	// можно дать только определённые джоинты
 	bqArray<bqJoint*> m_joints;
-
+	bqStringA m_name;
 	bqSkeletonAnimation* m_animation = 0;
 	//bqSkeleton* m_skeleton = 0; // пока лишнее
 	float m_frameCurr = 0.f;
@@ -176,11 +176,17 @@ class bqSkeletonAnimationObject
 	float m_fps = 30.f;
 public:
 	bqSkeletonAnimationObject();
+
+	// Init, SetRegion
+	bqSkeletonAnimationObject(bqSkeletonAnimation*, bqSkeleton*, const char* name, float b, float e);
+	// Init, SetRegion SetFPS
+	bqSkeletonAnimationObject(bqSkeletonAnimation*, bqSkeleton*, const char* name, float b, float e, float fps);
+	
 	~bqSkeletonAnimationObject();
 	BQ_PLACEMENT_ALLOCATOR(bqSkeletonAnimationObject);
 
-	void Init(bqSkeletonAnimation*, bqSkeleton*);
-
+	void Init(bqSkeletonAnimation*, bqSkeleton*, const char* name);
+	const bqStringA& GetName() { return m_name; }
 	void Animate(float dt);
 	void AnimateInterpolate(float dt);
 	void SetFPS(float);

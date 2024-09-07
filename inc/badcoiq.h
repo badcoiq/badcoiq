@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // некоторые выдаются внутри кода visual studio
 #pragma warning( disable : 4820 ) // <число> padding что-то там. например если добавлен bool в класс
 #pragma warning( disable : 4365 ) // выдаёт xmemory. conversion from 'long' to 'unsigned int', signed/unsigned mismatch
+#pragma warning( disable : 4244 ) // double to float, possible loss of data
 
 #include "badcoiq/bqConfig.h"
 #include "badcoiq/common/bqDefines.h"

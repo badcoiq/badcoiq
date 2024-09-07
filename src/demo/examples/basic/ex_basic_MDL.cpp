@@ -120,7 +120,7 @@ bool ExampleBasicsMDL::Init()
 		{
 			bqSkeletonAnimation* animation = m_mdl->GetAnimation(i);
 			bqSkeletonAnimationObject* ao = new bqSkeletonAnimationObject;
-			ao->Init(animation, m_animationSkeleton);
+			ao->Init(animation, m_animationSkeleton, "name");
 			ao->SetRegion(1.f, 70.f);
 
 			m_animationObjs.push_back(ao);

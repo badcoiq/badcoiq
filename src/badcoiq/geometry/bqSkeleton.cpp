@@ -211,10 +211,37 @@ bqSkeletonAnimationObject::~bqSkeletonAnimationObject()
 {
 }
 
-void bqSkeletonAnimationObject::Init(bqSkeletonAnimation* a, bqSkeleton* s)
+bqSkeletonAnimationObject::bqSkeletonAnimationObject(
+	bqSkeletonAnimation* a, 
+	bqSkeleton* s, 
+	const char* n,
+	float b, 
+	float e)
+{
+	Init(a, s, n);
+	SetRegion(b, e);
+}
+
+bqSkeletonAnimationObject::bqSkeletonAnimationObject(
+	bqSkeletonAnimation* a,
+	bqSkeleton* s,
+	const char* n,
+	float b,
+	float e,
+	float fps)
+{
+	Init(a, s, n);
+	SetRegion(b, e);
+	SetFPS(fps);
+}
+
+void bqSkeletonAnimationObject::Init(bqSkeletonAnimation* a, bqSkeleton* s, const char* name)
 {
 	BQ_ASSERT_ST(a);
 	BQ_ASSERT_ST(s);
+
+	if (name)
+		m_name = name;
 
 	m_joints.clear();
 //	m_skeleton = s;

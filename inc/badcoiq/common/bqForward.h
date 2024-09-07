@@ -87,6 +87,7 @@ class bqTriangle;
 class bqSkeleton;
 class bqSkeletonAnimation;
 class bqMDL;
+class bqSkeletonAnimationObject;
 #endif
 
 #ifdef BQ_WITH_ARCHIVE
