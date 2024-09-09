@@ -229,4 +229,5 @@ public:
 };
 
 #include "exporter.h"
+#include "mod.h"
 

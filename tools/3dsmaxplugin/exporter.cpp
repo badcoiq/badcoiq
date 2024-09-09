@@ -1158,6 +1158,7 @@ static INT_PTR CALLBACK ExportDlgProc(
 		CenterWindow(hWnd, GetParent(hWnd));
 		CheckDlgButton(hWnd, IDC_EXPANI, plg->m_GUI_checkExportAnimation);
 		CheckDlgButton(hWnd, IDC_ONLYSKEL, plg->m_GUI_checkOnlySkeleton);
+		CheckDlgButton(hWnd, IDC_CHECK_USE_COLLISION, plg->m_GUI_checkUseCollision);
 		SetDlgItemText(hWnd, IDC_EDIT_SCALE, L"1");
 
 		break;
@@ -1166,6 +1167,7 @@ static INT_PTR CALLBACK ExportDlgProc(
 		case IDOK:
 			plg->m_GUI_checkExportAnimation = IsDlgButtonChecked(hWnd, IDC_EXPANI);
 			plg->m_GUI_checkOnlySkeleton = IsDlgButtonChecked(hWnd, IDC_ONLYSKEL);
+			plg->m_GUI_checkUseCollision = IsDlgButtonChecked(hWnd, IDC_CHECK_USE_COLLISION);
 
 			char dlgitemTextBuf[1000];
 			GetDlgItemTextA(hWnd, IDC_EDIT_SCALE, dlgitemTextBuf, 1000);

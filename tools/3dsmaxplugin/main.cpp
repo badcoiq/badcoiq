@@ -1,6 +1,7 @@
 ﻿#include "main.h"
 
-static ClassDescExporter _description;
+static ClassDescExporter _descriptionExporter;
+static ClassDescMod_collisionMesh _descriptionMod_collisionMesh;
 
 HINSTANCE hInstance = 0;
 
@@ -30,13 +31,13 @@ extern "C"
 		// Retrieve astring from the resource string table
 		static TCHAR buf[256];
 		if (hInstance)
-			return L"Badcoiq MDL exporter";
+			return L"Badcoiq Engine Plugin for 3DS Max";
 		return NULL;
 	}
 
 	__declspec(dllexport) int LibNumberClasses()
 	{
-		return 1;
+		return 2;
 	}
 
 	__declspec(dllexport) ClassDesc* LibClassDesc(int i)
@@ -44,7 +45,9 @@ extern "C"
 		switch (i)
 		{
 		case 0:
-			return &_description;
+			return &_descriptionExporter;
+		case 1:
+			return &_descriptionMod_collisionMesh;
 		}
 
 		return 0;

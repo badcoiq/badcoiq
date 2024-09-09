@@ -274,5 +274,6 @@ public:
 
 	int m_GUI_checkExportAnimation = 1;
 	int m_GUI_checkOnlySkeleton = 0;
+	int m_GUI_checkUseCollision = 0;
 	float m_GUI_scale = 1.f;
 };

@@ -144,6 +144,7 @@ struct bqMDLChunkHeader
 		ChunkType_Skeleton,
 		ChunkType_Material,
 		ChunkType_Animation,
+		ChunkType_CollisionMesh,
 	};
 	uint32_t m_chunkType = ChunkType__null;
 	
