@@ -395,7 +395,7 @@ public:
 				//   уже требуется отдельные на каждый отдельный объект на сцене
 				bqSkeletonAnimationObject* ao = new bqSkeletonAnimationObject;
 				m_animationObjects.push_back(ao);
-				ao->Init(m_loadedAnimations.m_data[i], m_skeletonForAnimation);
+				ao->Init(m_loadedAnimations.m_data[i], m_skeletonForAnimation, "test");
 			}
 		}
 	}

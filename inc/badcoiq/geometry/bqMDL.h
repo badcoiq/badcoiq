@@ -40,6 +40,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bqmdlinfo.h"
 
+class bqMDLCollision
+{
+public:
+	bqMDLCollision();
+	~bqMDLCollision();
+	BQ_PLACEMENT_ALLOCATOR(bqMDLCollision);
+
+	bqAabb m_aabb;
+	bqReal m_radius = 0.f;
+
+	//bqTriangle* m_triangles = 0;
+	//uint32_t m_triNum = 0;
+
+	bqVec3f* m_vBuf = 0;
+	uint32_t* m_iBuf = 0;
+};
+
 // 
 class bqMDL
 {
@@ -71,6 +88,12 @@ class bqMDL
 	bqSkeleton* m_skeleton = 0;
 	bqArray<bqSkeletonAnimation*> m_loadedAnimations;
 
+	// ! их может быть множество !
+	// потом переделаю
+	bqMDLCollision* m_collision = 0;
+
+	bqAabb m_aabb;
+	bqReal m_radius = 0.f;
 public:
 	bqMDL();
 	~bqMDL();
@@ -88,6 +111,9 @@ public:
 	
 	uint32_t GetAniNum() { return (uint32_t)m_loadedAnimations.m_size; }
 	bqSkeletonAnimation* GetAnimation(uint32_t i) { return m_loadedAnimations.m_data[i]; }
+
+	bqAabb& GetAabb() { return m_aabb; }
+	bqReal GetBoundingRadius() { return m_radius; }
 };
 
 

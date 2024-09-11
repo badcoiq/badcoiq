@@ -191,6 +191,13 @@ void PluginExporter::Save(const MCHAR* name)
 		{
 			fileHeader.m_chunkNum += meshChunkNum;
 			fileHeader.m_chunkNum += matChunkNum;
+
+			// если m_GUI_checkUseCollision то
+			// будет записан 1 меш для колизии.
+			if (meshChunkNum && m_GUI_checkUseCollision)
+			{
+				fileHeader.m_chunkNum += meshChunkNum;
+			}
 		}
 
 		fileHeader.m_chunkNum += stringChunkNum;
@@ -334,6 +341,121 @@ void PluginExporter::Save(const MCHAR* name)
 
 				m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
 				m_fileBuffer.Add(&mat->m_header, sizeof(mat->m_header));
+			}
+
+			if (meshChunkNum && m_GUI_checkUseCollision)
+			{
+				printf("Collision\n");
+
+				/*bqMDLChunkHeader chunkHeader;
+				chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_CollisionMesh;
+				chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+					+ sizeof(bqMDLChunkHeaderCollisionMesh);*/
+
+
+				for (uint32_t i = 0; i < meshChunkNum; ++i)
+				{
+					auto smesh = subMeshes[i];
+				
+					if (smesh->m_chunkHeaderMesh.m_indNum < 3)
+						continue;
+
+					std::map<std::string, uint32_t> vMap;
+					std::vector<vec3> Vs;
+					std::vector<uint32_t> Is;
+
+					uint16_t* ind16 = (uint16_t*)smesh->m_indices;
+					uint32_t* ind32 = (uint32_t*)smesh->m_indices;
+					uint32_t curInd = 0;
+					uint32_t tri[3] = { 0,0,0 };
+					uint32_t triNum = smesh->m_chunkHeaderMesh.m_indNum / 3;
+					bqMDLMeshVertex* Vtx = (bqMDLMeshVertex*)smesh->m_vertices;
+					bqMDLMeshVertexSkinned* VtxS = (bqMDLMeshVertexSkinned*)smesh->m_vertices;
+					vec3 triV[3];
+					aabb _aabb;
+
+					for (uint32_t ti = 0, tic = 0; ti < triNum; ++ti)
+					{
+						if (smesh->m_chunkHeaderMesh.m_indexType == bqMDLChunkHeaderMesh::IndexType_16bit)
+						{
+							tri[0] = ind16[tic];
+							tri[1] = ind16[tic+1];
+							tri[2] = ind16[tic+2];
+						}
+						else
+						{
+							tri[0] = ind32[tic];
+							tri[1] = ind32[tic + 1];
+							tri[2] = ind32[tic + 2];
+						}
+
+						tic += 3;
+
+						if (smesh->m_chunkHeaderMesh.m_vertexType == bqMDLChunkHeaderMesh::VertexType_TriangleSkinned)
+						{
+							triV[0].x = VtxS[tri[0]].m_base.m_position[0];
+							triV[0].y = VtxS[tri[0]].m_base.m_position[1];
+							triV[0].z = VtxS[tri[0]].m_base.m_position[2];
+
+							triV[1].x = VtxS[tri[1]].m_base.m_position[0];
+							triV[1].y = VtxS[tri[1]].m_base.m_position[1];
+							triV[1].z = VtxS[tri[1]].m_base.m_position[2];
+
+							triV[2].x = VtxS[tri[2]].m_base.m_position[0];
+							triV[2].y = VtxS[tri[2]].m_base.m_position[1];
+							triV[2].z = VtxS[tri[2]].m_base.m_position[2];
+						}
+						else
+						{
+							triV[0].x = Vtx[tri[0]].m_position[0];
+							triV[0].y = Vtx[tri[0]].m_position[1];
+							triV[0].z = Vtx[tri[0]].m_position[2];
+
+							triV[1].x = Vtx[tri[1]].m_position[0];
+							triV[1].y = Vtx[tri[1]].m_position[1];
+							triV[1].z = Vtx[tri[1]].m_position[2];
+
+							triV[2].x = Vtx[tri[2]].m_position[0];
+							triV[2].y = Vtx[tri[2]].m_position[1];
+							triV[2].z = Vtx[tri[2]].m_position[2];
+						}
+
+						_aabb.add(triV[0]);
+						_aabb.add(triV[1]);
+						_aabb.add(triV[2]);
+
+						_onCollisionMeshAddPositionInMap(triV[0], vMap, Vs, Is, curInd);
+						_onCollisionMeshAddPositionInMap(triV[1], vMap, Vs, Is, curInd);
+						_onCollisionMeshAddPositionInMap(triV[2], vMap, Vs, Is, curInd);
+					}
+					bqMDLChunkHeaderCollisionMesh meshChunkHeader;
+					meshChunkHeader.m_aabbMax[0] = _aabb.m_max.x;
+					meshChunkHeader.m_aabbMax[1] = _aabb.m_max.y;
+					meshChunkHeader.m_aabbMax[2] = _aabb.m_max.z;
+					meshChunkHeader.m_aabbMin[0] = _aabb.m_min.x;
+					meshChunkHeader.m_aabbMin[1] = _aabb.m_min.y;
+					meshChunkHeader.m_aabbMin[2] = _aabb.m_min.z;
+					meshChunkHeader.m_radius = _aabb.radius();
+					meshChunkHeader.m_indNum = Is.size();
+					meshChunkHeader.m_vertNum = Vs.size();
+
+					printf("RADIUS: %f\n", meshChunkHeader.m_radius);
+
+					uint32_t vSz = meshChunkHeader.m_vertNum * sizeof(vec3);
+					uint32_t iSz = meshChunkHeader.m_indNum * sizeof(uint32_t);
+
+					bqMDLChunkHeader chunkHeader;
+					chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_CollisionMesh;
+					chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+						+ sizeof(bqMDLChunkHeaderCollisionMesh)
+						+ vSz
+						+ iSz;
+
+					m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+					m_fileBuffer.Add(&meshChunkHeader, sizeof(meshChunkHeader));
+					m_fileBuffer.Add(Vs.data(), vSz);
+					m_fileBuffer.Add(Is.data(), iSz);
+				}
 			}
 		}
 
@@ -1139,7 +1261,37 @@ int PluginExporter::DoExport(const MCHAR* name, ExpInterface* ei, Interface* ip,
 	Save(name);
 	return 1;
 }
-	
+
+std::string g_positionString;
+void PluginExporter::_onCollisionMeshAddPositionInMap(
+	const vec3& pos, 
+	std::map<std::string, uint32_t>& vMap,
+	std::vector<vec3>& Vs,
+	std::vector<uint32_t>& Is,
+	uint32_t& curInd)
+{
+	g_positionString.clear();
+	char charBuf[500];
+	sprintf_s(charBuf, 500, "%f %f %f", pos.x, pos.y, pos.z);
+	g_positionString.assign(charBuf);
+
+	uint32_t indexThis = curInd;
+
+	auto it = vMap.find(g_positionString);
+	if (it == vMap.end())
+	{
+		vMap[g_positionString] = curInd;
+		++curInd;
+		Vs.push_back(pos);
+	}
+	else
+	{
+		indexThis = vMap[g_positionString];
+	}
+
+	Is.push_back(indexThis);
+}
+
 BOOL PluginExporter::SupportsOptions(int ext, DWORD options) 
 {
 	UNUSED_PARAM(ext); 

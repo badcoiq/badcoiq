@@ -46,6 +46,12 @@ class PluginExporter : public SceneExport
 	std::vector<_Mesh*> m_meshes;
 	FileBuffer m_fileBuffer;
 
+	
+	void _onCollisionMeshAddPositionInMap(const vec3& pos, std::map<std::string, uint32_t>& vMap,
+		std::vector<vec3>& Vs,
+		std::vector<uint32_t>& Is,
+		uint32_t& curInd);
+
 public:
 	PluginExporter();
 	virtual ~PluginExporter();
@@ -276,4 +282,6 @@ public:
 	int m_GUI_checkOnlySkeleton = 0;
 	int m_GUI_checkUseCollision = 0;
 	float m_GUI_scale = 1.f;
+
+
 };

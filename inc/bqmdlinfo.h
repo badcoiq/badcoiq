@@ -170,6 +170,7 @@ struct bqMDLChunkHeaderMesh
 	
 	float m_aabbMin[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
 	float m_aabbMax[3] = { FLT_MIN, FLT_MIN, FLT_MIN };
+	float m_radius = 0.f;
 
 	// тип индекса
 	enum
@@ -205,6 +206,21 @@ struct bqMDLChunkHeaderMesh
 
 	uint32_t m_reserved1 = 0;
 	uint32_t m_reserved2 = 0;
+};
+
+struct bqMDLChunkHeaderCollisionMesh
+{
+	float m_aabbMin[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
+	float m_aabbMax[3] = { FLT_MIN, FLT_MIN, FLT_MIN };
+	float m_radius = 0.f;
+
+	// количество вершин
+	// vec3 float
+	uint32_t m_vertNum = 0;
+
+	// количество индексов
+	// 32bit
+	uint32_t m_indNum = 0;
 };
 
 // Чанк строки

@@ -28,6 +28,55 @@ void GUI_GetNumbers(const char* str, const char* format, ...);
 #define IPOS_CONTROL_CLASS_ID		Class_ID(0x118f7e02,0xffee238a)
 #endif
 
+struct vec3
+{
+	float x = 0.f;
+	float y = 0.f;
+	float z = 0.f;
+
+	float distance(const vec3& other)
+	{
+		float xx = other.x - x;
+		float yy = other.y - y;
+		float zz = other.z - z;
+
+		return sqrt((xx * xx) + (yy * yy) + (zz * zz));
+	}
+};
+
+struct aabb
+{
+	aabb()
+	{
+		m_min.x = FLT_MAX;
+		m_min.y = FLT_MAX;
+		m_min.z = FLT_MAX;
+		
+		m_max.x = FLT_MIN;
+		m_max.y = FLT_MIN;
+		m_max.z = FLT_MIN;
+	}
+
+	void add(const vec3& v)
+	{
+		if (v.x < m_min.x)m_min.x = v.x;
+		if (v.y < m_min.y)m_min.y = v.y;
+		if (v.z < m_min.z)m_min.z = v.z;
+
+		if (v.x > m_max.x)m_max.x = v.x;
+		if (v.y > m_max.y)m_max.y = v.y;
+		if (v.z > m_max.z)m_max.z = v.z;
+	}
+
+	float radius()
+	{
+		return m_min.distance(m_max) * 0.5f;
+	}
+
+	vec3 m_min;
+	vec3 m_max;
+};
+
 class FileBuffer
 {
 	uint8_t* m_data = 0;
@@ -139,15 +188,29 @@ public:
 	uint32_t m_stride = 0;
 	bqMDLChunkHeaderMesh m_chunkHeaderMesh;
 
+	aabb m_aabb;
 	void AabbAdd(const Point3& p)
 	{
-		if (p.x < m_chunkHeaderMesh.m_aabbMin[0]) m_chunkHeaderMesh.m_aabbMin[0] = p.x;
+		/*if (p.x < m_chunkHeaderMesh.m_aabbMin[0]) m_chunkHeaderMesh.m_aabbMin[0] = p.x;
 		if (p.y < m_chunkHeaderMesh.m_aabbMin[1]) m_chunkHeaderMesh.m_aabbMin[1] = p.y;
 		if (p.z < m_chunkHeaderMesh.m_aabbMin[2]) m_chunkHeaderMesh.m_aabbMin[2] = p.z;
 
 		if (p.x > m_chunkHeaderMesh.m_aabbMax[0]) m_chunkHeaderMesh.m_aabbMax[0] = p.x;
 		if (p.y > m_chunkHeaderMesh.m_aabbMax[1]) m_chunkHeaderMesh.m_aabbMax[1] = p.y;
-		if (p.z > m_chunkHeaderMesh.m_aabbMax[2]) m_chunkHeaderMesh.m_aabbMax[2] = p.z;
+		if (p.z > m_chunkHeaderMesh.m_aabbMax[2]) m_chunkHeaderMesh.m_aabbMax[2] = p.z;*/
+		vec3 v;
+		v.x = p.x;
+		v.y = p.y;
+		v.z = p.z;
+		m_aabb.add(v);
+
+		m_chunkHeaderMesh.m_aabbMax[0] = m_aabb.m_max.x;
+		m_chunkHeaderMesh.m_aabbMax[1] = m_aabb.m_max.y;
+		m_chunkHeaderMesh.m_aabbMax[2] = m_aabb.m_max.z;
+		m_chunkHeaderMesh.m_aabbMin[0] = m_aabb.m_min.x;
+		m_chunkHeaderMesh.m_aabbMin[1] = m_aabb.m_min.y;
+		m_chunkHeaderMesh.m_aabbMin[2] = m_aabb.m_min.z;
+		m_chunkHeaderMesh.m_radius = m_aabb.radius();
 	}
 
 

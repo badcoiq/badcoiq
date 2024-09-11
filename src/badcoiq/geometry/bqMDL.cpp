@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef BQ_WITH_MESH
 
 #include "badcoiq/geometry/bqMDL.h"
+#include "badcoiq/geometry/bqTriangle.h"
 #include "badcoiq/common/bqFileBuffer.h"
 #include "badcoiq/gs/bqGS.h"
 
@@ -216,13 +217,20 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 						return false;
 					}
 
+
+					m_aabb.Add(bqVec3(chunkHeaderMesh.m_aabbMin[0],
+						chunkHeaderMesh.m_aabbMin[1],
+						chunkHeaderMesh.m_aabbMin[2]));
+					m_aabb.Add(bqVec3(chunkHeaderMesh.m_aabbMax[0],
+						chunkHeaderMesh.m_aabbMax[1],
+						chunkHeaderMesh.m_aabbMax[2]));
+					m_radius = m_aabb.Radius();
+
 					bqMesh* newM = new bqMesh;
 					newM->Allocate(chunkHeaderMesh.m_vertNum,
 						chunkHeaderMesh.m_indNum,
 						(chunkHeaderMesh.m_vertexType == bqMDLChunkHeaderMesh::VertexType_Triangle) 
-						? false : true);
-
-					
+						? false : true);					
 
 					file.Read(newM->GetVBuffer(), chunkHeaderMesh.m_vertBufSz);
 					file.Read(newM->GetIBuffer(), chunkHeaderMesh.m_indBufSz);
@@ -267,6 +275,34 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 
 				}break;
 				
+				case bqMDLChunkHeader::ChunkType_CollisionMesh:
+				{
+					bqMDLChunkHeaderCollisionMesh chunkHeaderMesh;
+					file.Read(&chunkHeaderMesh, sizeof(chunkHeaderMesh));
+
+					m_aabb.m_min.x = chunkHeaderMesh.m_aabbMin[0];
+					m_aabb.m_min.y = chunkHeaderMesh.m_aabbMin[1];
+					m_aabb.m_min.z = chunkHeaderMesh.m_aabbMin[2];
+					m_aabb.m_max.x = chunkHeaderMesh.m_aabbMax[0];
+					m_aabb.m_max.y = chunkHeaderMesh.m_aabbMax[1];
+					m_aabb.m_max.z = chunkHeaderMesh.m_aabbMax[2];
+					m_radius = chunkHeaderMesh.m_radius;
+
+					uint32_t vSz = chunkHeaderMesh.m_vertNum * sizeof(bqVec3f);
+					uint32_t iSz = chunkHeaderMesh.m_indNum * sizeof(uint32_t);
+
+					bqMDLCollision* newCollision = new bqMDLCollision;
+					newCollision->m_aabb = m_aabb;
+					newCollision->m_radius = m_radius;
+					newCollision->m_vBuf = new bqVec3f[chunkHeaderMesh.m_vertNum];
+					newCollision->m_iBuf = new uint32_t[chunkHeaderMesh.m_indNum];
+
+					file.Read(newCollision->m_vBuf, vSz);
+					file.Read(newCollision->m_iBuf, iSz);
+
+					m_collision = newCollision;
+				}break;
+
 				case bqMDLChunkHeader::ChunkType_String:
 				{
 					bqMDLChunkHeaderString chunkHeaderString;
@@ -588,6 +624,7 @@ void bqMDL::Unload()
 
 //	BQ_SAFEDESTROY(m_skeletonForAnimation);
 	BQ_SAFEDESTROY(m_skeleton);
+	BQ_SAFEDESTROY(m_collision);
 	//BQ_SAFEDESTROY(m_skeletonAnimationObject);
 }
 
@@ -599,6 +636,14 @@ void bqMDL::FreebqMesh()
 	}
 }
 
+bqMDLCollision::bqMDLCollision()
+{
+}
 
+bqMDLCollision::~bqMDLCollision()
+{
+	BQ_SAFEDESTROY(m_vBuf);
+	BQ_SAFEDESTROY(m_iBuf);
+}
 
 #endif
