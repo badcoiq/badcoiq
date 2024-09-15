@@ -439,7 +439,7 @@ void PluginExporter::Save(const MCHAR* name)
 					meshChunkHeader.m_indNum = Is.size();
 					meshChunkHeader.m_vertNum = Vs.size();
 
-					printf("RADIUS: %f\n", meshChunkHeader.m_radius);
+					//printf("RADIUS: %f\n", meshChunkHeader.m_radius);
 
 					uint32_t vSz = meshChunkHeader.m_vertNum * sizeof(vec3);
 					uint32_t iSz = meshChunkHeader.m_indNum * sizeof(uint32_t);
@@ -455,6 +455,9 @@ void PluginExporter::Save(const MCHAR* name)
 					m_fileBuffer.Add(&meshChunkHeader, sizeof(meshChunkHeader));
 					m_fileBuffer.Add(Vs.data(), vSz);
 					m_fileBuffer.Add(Is.data(), iSz);
+
+					std::vector<tri_aabb> _aabbs;
+					BuildBVH(_aabbs, Vs, Is);
 				}
 			}
 		}
@@ -1292,6 +1295,278 @@ void PluginExporter::_onCollisionMeshAddPositionInMap(
 	Is.push_back(indexThis);
 }
 
+void PluginExporter::BuildBVH(
+	std::vector<tri_aabb>& aabbs, 
+	std::vector<vec3>& Vs, 
+	std::vector<uint32_t>& Is)
+{
+	uint32_t triNum = Is.size() / 3;
+	std::vector<tri_aabb> tri_aabbs;
+	tri_aabbs.reserve(triNum);
+
+	// получаю аабб на каждый треугольник
+	for (uint32_t ti = 0, tic = 0; ti < triNum; ++ti)
+	{
+		uint32_t ind1 = Is[tic];
+		uint32_t ind2 = Is[tic+1];
+		uint32_t ind3 = Is[tic+2];
+
+		vec3& v1 = Vs[ind1];
+		vec3& v2 = Vs[ind2];
+		vec3& v3 = Vs[ind3];
+
+		tri_aabb newTriAabb;
+		newTriAabb.m_tris[0] = ti;
+		newTriAabb.m_triNum = 1;
+		newTriAabb.m_aabb.add(v1);
+		newTriAabb.m_aabb.add(v2);
+		newTriAabb.m_aabb.add(v3);
+
+		newTriAabb.m_center = newTriAabb.m_aabb.center();
+		tri_aabbs.push_back(newTriAabb);
+		tic += 3;
+	}
+
+	uint32_t groupNum = 0;
+	// Группирую
+	for (uint32_t ti = 0; ti < triNum; ++ti)
+	{
+
+		// беру текущий
+		//  *
+		// [1][2][3][4][5][6][7][8][9]
+		// 
+		// измеряю расстояние.
+		// [1] [2]  [3]  [4]  [5]
+		// [0] [1.1][0.4][0.2][0.8]
+		// 
+		// сортирую массив.
+		// [1][4][3][5][2]
+		// 
+		// добавляю самые близкие.
+		// например 4 и 3 если добавляются только 2
+		// 
+		// потом надо будет сбросить ti до 0 и пройтись
+		// по массиву заново. скипать обработанные aabb
+		// надо используя флаг tri_aabb::flag_added
+		//
+
+		tri_aabb& currAabb = tri_aabbs[ti];
+		currAabb.m_distance = 0.f;
+
+		if ((currAabb.m_flags & tri_aabb::flag_added) == 0)
+		{
+			currAabb.m_flags |= tri_aabb::flag_added;
+			currAabb.m_flags |= tri_aabb::flag_main;
+			++groupNum;
+		
+			// удаляю флаг flag_distanceCalculated
+			// надо сбросить так как новая итерация
+			for (uint32_t ti2 = ti + 1; ti2 < triNum; ++ti2)
+			{
+				tri_aabbs[ti2].remove_flag(tri_aabb::flag_distanceCalculated);
+			}
+
+			bool needSort = false;
+			// Измеряю расстояние
+			for (uint32_t ti2 = ti+1; ti2 < triNum; ++ti2)
+			{
+				tri_aabb& otherAabb = tri_aabbs[ti2];
+			
+				if ((otherAabb.m_flags & tri_aabb::flag_distanceCalculated) == 0)
+				{
+					if ((otherAabb.m_flags & tri_aabb::flag_added) == 0)
+					{
+						otherAabb.m_distance = currAabb.m_center.distance(otherAabb.m_center);
+					//	printf("TI2[%u] dist[%f]\n", ti2, otherAabb.m_distance);
+						otherAabb.m_flags |= tri_aabb::flag_distanceCalculated;
+
+						needSort = true;
+					}
+				}
+			}
+
+			// сортировка
+			if (needSort)
+			{
+				std::sort(tri_aabbs.begin(), tri_aabbs.end(),
+					[](const tri_aabb& a, const tri_aabb& b)
+					{
+						return a.m_distance < b.m_distance;
+					});
+			}
+			
+			// добавление близких
+			for (uint32_t ti2 = ti + 1; ti2 < triNum; ++ti2)
+			{
+				tri_aabb& otherAabb = tri_aabbs[ti2];
+				// если ранее не был добавлен
+				if ((otherAabb.m_flags & tri_aabb::flag_added) == 0)
+				{
+					if (currAabb.m_triNum == TRI_AABB_MAXTRIS)
+						break;
+
+					otherAabb.m_flags |= tri_aabb::flag_added;
+			//		printf("ADD TI2[%u] dist[%f]\n", ti2, otherAabb.m_distance);
+
+					// при добавлении надо добавить аабб
+					// увеличив currAabb.m_aabb
+					// и надо передать индекс треугольника
+					currAabb.m_aabb.add(otherAabb.m_aabb);
+					currAabb.m_tris[currAabb.m_triNum] = otherAabb.m_tris[0];
+					++currAabb.m_triNum;
+				}
+			}
+
+			// так как была сортировка, смысла нет продолжать проход
+			// по массиву. нужно запустить проход заново
+			ti = 0xFFFFFFFF; // потом будет ++ti и оно станет нулём
+		}
+	}
+	printf("groupNum %u\n", groupNum);
+
+
+	// теперь надо построить дерево, которое будет ввиде массива.
+	// дерево строится от листьев к корню.
+	// в первом проходе берутся группы которые хранят треугольники.
+	// (группы берутся из aabbs)
+	
+	// добавляются "листья". они хранят индексы на треугольники
+	for (uint32_t ti = 0; ti < triNum; ++ti)
+	{
+		tri_aabb& currAabb = tri_aabbs[ti];
+		if (currAabb.m_flags & tri_aabb::flag_main)
+		{
+			aabbs.push_back(currAabb);
+		}
+	}
+
+	// используется для индикации, чтобы знать что 
+	// сначала добавил группу 1, потом группу 2
+	tri_aabb* group_1 = 0;
+	tri_aabb* group_2 = 0;
+
+	// для простоты понимания отдельным циклом добавлю 
+	// все листья, потом отдельно буду строить остаток дерева
+	tri_aabb newGroup;
+	newGroup.m_flags |= tri_aabb::flag_node;
+	for (uint32_t li = 0, sz = aabbs.size(); li < sz; ++li)
+	{
+		// aabbs на данном этапе хранит только листья
+		tri_aabb& currAabb = aabbs[li];
+		tri_aabb* currAabbPtr = &aabbs[li];
+
+		// если ранее не было добавлено в newGroup
+		if ((currAabb.m_flags & tri_aabb::flag_leafInTree)==0)
+		{
+			if (!group_1)
+			{
+				newGroup.m_aabb_a = li;
+				newGroup.m_aabb.add(currAabb.m_aabb);
+				group_1 = currAabbPtr;
+			}
+			else if (!group_2)
+			{
+				newGroup.m_aabb_b = li;
+				newGroup.m_aabb.add(currAabb.m_aabb);
+
+				//group_2 = currAabbPtr;
+				// обе группы добавлены. туперь надо сохранить newGroup
+				aabbs.push_back(newGroup);
+				//размер aabbs изменился, поэтому используется sz в for
+
+				group_1 = 0;
+				group_2 = 0;
+
+				// в случае если листьев нечётное количество
+				// данная ветка не сработает. Нужно обработать
+				// данный случай ниже после цикла.
+			}
+			currAabb.m_flags |= tri_aabb::flag_leafInTree;
+		}
+	}
+	if (group_1 && (!group_2))
+	{
+		// добавлять newGroup не надо, иначе будет 2 вложенных 
+		// одинаковых аабб. Решение - использовать флаг 
+		// tri_aabb::flag_node на листочке.
+		//aabbs.push_back(newGroup);
+		aabbs[newGroup.m_aabb_a].m_flags |= tri_aabb::flag_node;
+
+		// далее будут строится другие node
+		// они будут строиться на основе флага tri_aabb::flag_node
+
+		group_1 = 0;
+		group_2 = 0;
+	}
+
+	// при создании надо считать количество созданных нод.
+	// Если создана 1 нода, то эта нода корневая.
+	int nodeCounter = 0;
+	while (true)
+	{
+		tri_aabb brandNewNode;
+		brandNewNode.m_flags |= tri_aabb::flag_node;
+
+		for (uint32_t li = 0, sz = aabbs.size(); li < sz; ++li)
+		{
+			tri_aabb* currAabb = &aabbs[li];
+			if (currAabb->m_flags & tri_aabb::flag_node)
+			{
+				if ((currAabb->m_flags & tri_aabb::flag_hasParent) == 0)
+				{
+					currAabb->m_flags |= tri_aabb::flag_hasParent;
+					
+					++nodeCounter;
+
+					if (!group_1)
+					{
+						brandNewNode.m_aabb_a = li;
+						brandNewNode.m_aabb.add(currAabb->m_aabb);
+						group_1 = currAabb;
+					}
+					else if (!group_2)
+					{
+						brandNewNode.m_aabb_b = li;
+						brandNewNode.m_aabb.add(currAabb->m_aabb);
+
+						aabbs.push_back(brandNewNode);
+
+						group_1 = 0;
+						group_2 = 0;
+					}
+				}
+			}
+		}
+		if (group_1 && (!group_2))
+		{
+			aabbs.push_back(brandNewNode);
+			group_1 = 0;
+			group_2 = 0;
+		}
+
+		if (!nodeCounter)
+			break;
+		else if (nodeCounter == 1)
+			break;
+		else
+			nodeCounter = 0;
+	}
+
+	tri_aabb* root = &aabbs[aabbs.size() - 1];
+	if (root)
+	{
+		for (uint32_t li = 0, sz = aabbs.size(); li < sz; ++li)
+		{
+			tri_aabb* currAabb = &aabbs[li];
+			printf("NODE[%u] a[%u] b[%u] triNum[%i]\n", li,
+				currAabb->m_aabb_a,
+				currAabb->m_aabb_b,
+				currAabb->m_triNum);
+		}
+	}
+}
+
 BOOL PluginExporter::SupportsOptions(int ext, DWORD options) 
 {
 	UNUSED_PARAM(ext); 
@@ -1341,3 +1616,4 @@ static INT_PTR CALLBACK ExportDlgProc(
 	}
 	return TRUE;
 }
+

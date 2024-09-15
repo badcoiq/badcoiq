@@ -68,13 +68,69 @@ struct aabb
 		if (v.z > m_max.z)m_max.z = v.z;
 	}
 
+	void add(const aabb& v)
+	{
+		add(v.m_min);
+		add(v.m_max);
+	}
+
 	float radius()
 	{
 		return m_min.distance(m_max) * 0.5f;
 	}
 
+	vec3 center() const
+	{
+		vec3 v;
+		v.x = m_min.x + m_max.x;
+		v.y = m_min.y + m_max.y;
+		v.z = m_min.z + m_max.z;
+		v.x *= 0.5f;
+		v.y *= 0.5f;
+		v.z *= 0.5f;
+		return v;
+	}
+
 	vec3 m_min;
 	vec3 m_max;
+};
+
+#define TRI_AABB_MAXTRIS 10
+struct tri_aabb
+{
+	tri_aabb()
+	{
+		for (int i = 0; i < TRI_AABB_MAXTRIS; ++i)
+		{
+			m_tris[i] = 0;
+		}
+	}
+
+	aabb m_aabb;
+	vec3 m_center;
+	float m_distance = 0.f;
+	int m_triNum = 0;
+
+	uint32_t m_aabb_a = 0;
+	uint32_t m_aabb_b = 0;
+
+	uint32_t m_tris[TRI_AABB_MAXTRIS];
+
+	enum
+	{
+		flag_added = 0x1,
+		flag_distanceCalculated = 0x2,
+
+		// это главный аабб, в него будут добавляться другие аабб
+		flag_main = 0x4,
+		
+		flag_node = 0x8,
+		flag_leafInTree = 0x10,
+		flag_hasParent = 0x20,
+	};
+	uint32_t m_flags = 0;
+	void clear_flags() { m_flags = 0; }
+	void remove_flag(uint32_t flag) { m_flags &= ~flag; }
 };
 
 class FileBuffer
