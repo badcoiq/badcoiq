@@ -111,8 +111,10 @@ struct tri_aabb
 	float m_distance = 0.f;
 	int m_triNum = 0;
 
-	uint32_t m_aabb_a = 0;
-	uint32_t m_aabb_b = 0;
+	uint32_t m_indexInAabbs = 0;
+
+	uint32_t m_aabb_a = 0xFFFFFFFF;
+	uint32_t m_aabb_b = 0xFFFFFFFF;
 
 	uint32_t m_tris[TRI_AABB_MAXTRIS];
 
@@ -131,6 +133,8 @@ struct tri_aabb
 	uint32_t m_flags = 0;
 	void clear_flags() { m_flags = 0; }
 	void remove_flag(uint32_t flag) { m_flags &= ~flag; }
+
+	int m_level = 0;
 };
 
 class FileBuffer

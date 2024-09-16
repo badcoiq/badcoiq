@@ -1295,6 +1295,89 @@ void PluginExporter::_onCollisionMeshAddPositionInMap(
 	Is.push_back(indexThis);
 }
 
+tri_aabb* BVHFindNearestAabb(tri_aabb* node, std::vector<tri_aabb>& aabbs, int prevLevel)
+{
+	tri_aabb* nearest = 0;
+
+	float distance = 9999999.f;
+
+	for (size_t ti = 0, sz = aabbs.size(); ti < sz; ++ti)
+	{
+		auto* curr = &aabbs[ti];
+		if ((curr->m_flags & tri_aabb::flag_added) == 0)
+		{
+			if (curr != node)
+			{
+				if (curr->m_level == prevLevel)
+				{
+					float d = curr->m_center.distance(node->m_center);
+					if (d < distance)
+					{
+						distance = d;
+						nearest = curr;
+					}
+				}
+			}
+		}
+	}
+
+
+	return nearest;
+}
+void BuildBVH(std::vector<tri_aabb>& aabbs, int level)
+{
+	int numOfAdded = 0;
+
+	int prevLevel = level - 1;
+	for (size_t ti = 0, sz = aabbs.size(); ti < sz; ++ti)
+	{
+		auto* curr = &aabbs[ti];
+
+		// беру те ноды, уровень которых уже установлен, он prevLevel
+		// текущий уровень это level, он будет передаваться новым нодам
+		if (curr->m_level == prevLevel)
+		{
+			// только ноды которые не добавлены
+			if ((curr->m_flags & tri_aabb::flag_added) == 0)
+			{
+				// помечу что теперь нода добавлена
+				curr->m_flags |= tri_aabb::flag_added;
+
+				// нужно найти ближайшую ноду
+				auto* nearest = BVHFindNearestAabb(curr, aabbs, prevLevel);
+
+				// новая нода содержит или 1 или 2 tri_aabb
+				tri_aabb brandNewNode;
+				brandNewNode.m_aabb_a = curr->m_indexInAabbs;
+				brandNewNode.m_aabb.add(curr->m_aabb);
+
+				if (nearest)
+				{
+					nearest->m_flags |= tri_aabb::flag_added;
+					brandNewNode.m_aabb_b = nearest->m_indexInAabbs;
+					brandNewNode.m_aabb.add(nearest->m_aabb);
+				}
+				brandNewNode.m_center = brandNewNode.m_aabb.center();
+				brandNewNode.m_level = level;
+				brandNewNode.m_indexInAabbs = aabbs.size();
+				aabbs.push_back(brandNewNode);
+				++numOfAdded;
+			}
+		}
+	}
+
+	if (numOfAdded > 1)
+	{
+		for (size_t ti = 0, sz = aabbs.size(); ti < sz; ++ti)
+		{
+			auto* curr = &aabbs[ti];
+			if (curr->m_level == level)
+			{
+				BuildBVH(aabbs, level + 1);
+			}
+		}
+	}
+}
 void PluginExporter::BuildBVH(
 	std::vector<tri_aabb>& aabbs, 
 	std::vector<vec3>& Vs, 
@@ -1413,6 +1496,7 @@ void PluginExporter::BuildBVH(
 					// увеличив currAabb.m_aabb
 					// и надо передать индекс треугольника
 					currAabb.m_aabb.add(otherAabb.m_aabb);
+					currAabb.m_center = currAabb.m_aabb.center();
 					currAabb.m_tris[currAabb.m_triNum] = otherAabb.m_tris[0];
 					++currAabb.m_triNum;
 				}
@@ -1425,133 +1509,145 @@ void PluginExporter::BuildBVH(
 	}
 	printf("groupNum %u\n", groupNum);
 
-
-	// теперь надо построить дерево, которое будет ввиде массива.
-	// дерево строится от листьев к корню.
-	// в первом проходе берутся группы которые хранят треугольники.
-	// (группы берутся из aabbs)
-	
-	// добавляются "листья". они хранят индексы на треугольники
-	for (uint32_t ti = 0; ti < triNum; ++ti)
+	for (uint32_t ti = 0; ti < tri_aabbs.size(); ++ti)
 	{
 		tri_aabb& currAabb = tri_aabbs[ti];
 		if (currAabb.m_flags & tri_aabb::flag_main)
 		{
+			currAabb.clear_flags();
+			currAabb.m_indexInAabbs = aabbs.size();
 			aabbs.push_back(currAabb);
 		}
 	}
 
-	// используется для индикации, чтобы знать что 
-	// сначала добавил группу 1, потом группу 2
-	tri_aabb* group_1 = 0;
-	tri_aabb* group_2 = 0;
+	::BuildBVH(aabbs, 1);
+	
+	//// теперь надо построить дерево, которое будет ввиде массива.
+	//// дерево строится от листьев к корню.
+	//// в первом проходе берутся группы которые хранят треугольники.
+	//// (группы берутся из aabbs)
+	//
+	//// добавляются "листья". они хранят индексы на треугольники
+	//for (uint32_t ti = 0; ti < triNum; ++ti)
+	//{
+	//	tri_aabb& currAabb = tri_aabbs[ti];
+	//	if (currAabb.m_flags & tri_aabb::flag_main)
+	//	{
+	//		aabbs.push_back(currAabb);
+	//	}
+	//}
 
-	// для простоты понимания отдельным циклом добавлю 
-	// все листья, потом отдельно буду строить остаток дерева
-	tri_aabb newGroup;
-	newGroup.m_flags |= tri_aabb::flag_node;
-	for (uint32_t li = 0, sz = aabbs.size(); li < sz; ++li)
-	{
-		// aabbs на данном этапе хранит только листья
-		tri_aabb& currAabb = aabbs[li];
-		tri_aabb* currAabbPtr = &aabbs[li];
+	//// используется для индикации, чтобы знать что 
+	//// сначала добавил группу 1, потом группу 2
+	//tri_aabb* group_1 = 0;
+	//tri_aabb* group_2 = 0;
 
-		// если ранее не было добавлено в newGroup
-		if ((currAabb.m_flags & tri_aabb::flag_leafInTree)==0)
-		{
-			if (!group_1)
-			{
-				newGroup.m_aabb_a = li;
-				newGroup.m_aabb.add(currAabb.m_aabb);
-				group_1 = currAabbPtr;
-			}
-			else if (!group_2)
-			{
-				newGroup.m_aabb_b = li;
-				newGroup.m_aabb.add(currAabb.m_aabb);
+	//// для простоты понимания отдельным циклом добавлю 
+	//// все листья, потом отдельно буду строить остаток дерева
+	//tri_aabb newGroup;
+	//newGroup.m_flags |= tri_aabb::flag_node;
+	//for (uint32_t li = 0, sz = aabbs.size(); li < sz; ++li)
+	//{
+	//	// aabbs на данном этапе хранит только листья
+	//	tri_aabb& currAabb = aabbs[li];
+	//	tri_aabb* currAabbPtr = &aabbs[li];
 
-				//group_2 = currAabbPtr;
-				// обе группы добавлены. туперь надо сохранить newGroup
-				aabbs.push_back(newGroup);
-				//размер aabbs изменился, поэтому используется sz в for
+	//	// если ранее не было добавлено в newGroup
+	//	if ((currAabb.m_flags & tri_aabb::flag_leafInTree)==0)
+	//	{
+	//		if (!group_1)
+	//		{
+	//			newGroup.m_aabb_a = li;
+	//			newGroup.m_aabb.add(currAabb.m_aabb);
+	//			group_1 = currAabbPtr;
+	//		}
+	//		else if (!group_2)
+	//		{
+	//			newGroup.m_aabb_b = li;
+	//			newGroup.m_aabb.add(currAabb.m_aabb);
 
-				group_1 = 0;
-				group_2 = 0;
+	//			//group_2 = currAabbPtr;
+	//			// обе группы добавлены. туперь надо сохранить newGroup
+	//			aabbs.push_back(newGroup);
+	//			//размер aabbs изменился, поэтому используется sz в for
 
-				// в случае если листьев нечётное количество
-				// данная ветка не сработает. Нужно обработать
-				// данный случай ниже после цикла.
-			}
-			currAabb.m_flags |= tri_aabb::flag_leafInTree;
-		}
-	}
-	if (group_1 && (!group_2))
-	{
-		// добавлять newGroup не надо, иначе будет 2 вложенных 
-		// одинаковых аабб. Решение - использовать флаг 
-		// tri_aabb::flag_node на листочке.
-		//aabbs.push_back(newGroup);
-		aabbs[newGroup.m_aabb_a].m_flags |= tri_aabb::flag_node;
+	//			group_1 = 0;
+	//			group_2 = 0;
 
-		// далее будут строится другие node
-		// они будут строиться на основе флага tri_aabb::flag_node
+	//			// в случае если листьев нечётное количество
+	//			// данная ветка не сработает. Нужно обработать
+	//			// данный случай ниже после цикла.
+	//		}
+	//		currAabb.m_flags |= tri_aabb::flag_leafInTree;
+	//	}
+	//}
+	//if (group_1 && (!group_2))
+	//{
+	//	// добавлять newGroup не надо, иначе будет 2 вложенных 
+	//	// одинаковых аабб. Решение - использовать флаг 
+	//	// tri_aabb::flag_node на листочке.
+	//	//aabbs.push_back(newGroup);
+	//	aabbs[newGroup.m_aabb_a].m_flags |= tri_aabb::flag_node;
 
-		group_1 = 0;
-		group_2 = 0;
-	}
+	//	// далее будут строится другие node
+	//	// они будут строиться на основе флага tri_aabb::flag_node
 
-	// при создании надо считать количество созданных нод.
-	// Если создана 1 нода, то эта нода корневая.
-	int nodeCounter = 0;
-	while (true)
-	{
-		tri_aabb brandNewNode;
-		brandNewNode.m_flags |= tri_aabb::flag_node;
+	//	group_1 = 0;
+	//	group_2 = 0;
+	//}
 
-		for (uint32_t li = 0, sz = aabbs.size(); li < sz; ++li)
-		{
-			tri_aabb* currAabb = &aabbs[li];
-			if (currAabb->m_flags & tri_aabb::flag_node)
-			{
-				if ((currAabb->m_flags & tri_aabb::flag_hasParent) == 0)
-				{
-					currAabb->m_flags |= tri_aabb::flag_hasParent;
-					
-					++nodeCounter;
+	//// при создании надо считать количество созданных нод.
+	//// Если создана 1 нода, то эта нода корневая.
+	//int nodeCounter = 0;
+	//while (true)
+	//{
+	//	tri_aabb brandNewNode;
+	//	brandNewNode.m_flags |= tri_aabb::flag_node;
 
-					if (!group_1)
-					{
-						brandNewNode.m_aabb_a = li;
-						brandNewNode.m_aabb.add(currAabb->m_aabb);
-						group_1 = currAabb;
-					}
-					else if (!group_2)
-					{
-						brandNewNode.m_aabb_b = li;
-						brandNewNode.m_aabb.add(currAabb->m_aabb);
+	//	for (uint32_t li = 0, sz = aabbs.size(); li < sz; ++li)
+	//	{
+	//		tri_aabb* currAabb = &aabbs[li];
+	//		if (currAabb->m_flags & tri_aabb::flag_node)
+	//		{
+	//			if ((currAabb->m_flags & tri_aabb::flag_hasParent) == 0)
+	//			{
+	//				currAabb->m_flags |= tri_aabb::flag_hasParent;
+	//				
+	//				++nodeCounter;
 
-						aabbs.push_back(brandNewNode);
+	//				if (!group_1)
+	//				{
+	//					brandNewNode.m_aabb_a = li;
+	//					brandNewNode.m_aabb.add(currAabb->m_aabb);
+	//					group_1 = currAabb;
+	//				}
+	//				else if (!group_2)
+	//				{
+	//					brandNewNode.m_aabb_b = li;
+	//					brandNewNode.m_aabb.add(currAabb->m_aabb);
 
-						group_1 = 0;
-						group_2 = 0;
-					}
-				}
-			}
-		}
-		if (group_1 && (!group_2))
-		{
-			aabbs.push_back(brandNewNode);
-			group_1 = 0;
-			group_2 = 0;
-		}
+	//					aabbs.push_back(brandNewNode);
 
-		if (!nodeCounter)
-			break;
-		else if (nodeCounter == 1)
-			break;
-		else
-			nodeCounter = 0;
-	}
+	//					group_1 = 0;
+	//					group_2 = 0;
+	//				}
+	//			}
+	//		}
+	//	}
+	//	if (group_1 && (!group_2))
+	//	{
+	//		aabbs.push_back(brandNewNode);
+	//		group_1 = 0;
+	//		group_2 = 0;
+	//	}
+
+	//	if (!nodeCounter)
+	//		break;
+	//	else if (nodeCounter == 1)
+	//		break;
+	//	else
+	//		nodeCounter = 0;
+	//}
 
 	tri_aabb* root = &aabbs[aabbs.size() - 1];
 	if (root)
