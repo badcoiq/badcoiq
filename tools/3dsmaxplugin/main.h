@@ -95,7 +95,7 @@ struct aabb
 	vec3 m_max;
 };
 
-#define TRI_AABB_MAXTRIS 10
+#define TRI_AABB_MAXTRIS 20
 struct tri_aabb
 {
 	tri_aabb()
