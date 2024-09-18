@@ -109,7 +109,7 @@ struct tri_aabb
 	aabb m_aabb;
 	vec3 m_center;
 	float m_distance = 0.f;
-	int m_triNum = 0;
+	int32_t m_triNum = 0;
 
 	uint32_t m_indexInAabbs = 0;
 
@@ -264,13 +264,13 @@ public:
 		v.z = p.z;
 		m_aabb.add(v);
 
-		m_chunkHeaderMesh.m_aabbMax[0] = m_aabb.m_max.x;
-		m_chunkHeaderMesh.m_aabbMax[1] = m_aabb.m_max.y;
-		m_chunkHeaderMesh.m_aabbMax[2] = m_aabb.m_max.z;
-		m_chunkHeaderMesh.m_aabbMin[0] = m_aabb.m_min.x;
-		m_chunkHeaderMesh.m_aabbMin[1] = m_aabb.m_min.y;
-		m_chunkHeaderMesh.m_aabbMin[2] = m_aabb.m_min.z;
-		m_chunkHeaderMesh.m_radius = m_aabb.radius();
+		m_chunkHeaderMesh.m_aabb.m_aabbMax[0] = m_aabb.m_max.x;
+		m_chunkHeaderMesh.m_aabb.m_aabbMax[1] = m_aabb.m_max.y;
+		m_chunkHeaderMesh.m_aabb.m_aabbMax[2] = m_aabb.m_max.z;
+		m_chunkHeaderMesh.m_aabb.m_aabbMin[0] = m_aabb.m_min.x;
+		m_chunkHeaderMesh.m_aabb.m_aabbMin[1] = m_aabb.m_min.y;
+		m_chunkHeaderMesh.m_aabb.m_aabbMin[2] = m_aabb.m_min.z;
+		m_chunkHeaderMesh.m_aabb.m_radius = m_aabb.radius();
 	}
 
 

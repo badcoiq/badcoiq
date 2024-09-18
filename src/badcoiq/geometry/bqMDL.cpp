@@ -218,12 +218,12 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					}
 
 
-					m_aabb.Add(bqVec3(chunkHeaderMesh.m_aabbMin[0],
-						chunkHeaderMesh.m_aabbMin[1],
-						chunkHeaderMesh.m_aabbMin[2]));
-					m_aabb.Add(bqVec3(chunkHeaderMesh.m_aabbMax[0],
-						chunkHeaderMesh.m_aabbMax[1],
-						chunkHeaderMesh.m_aabbMax[2]));
+					m_aabb.Add(bqVec3(chunkHeaderMesh.m_aabb.m_aabbMin[0],
+						chunkHeaderMesh.m_aabb.m_aabbMin[1],
+						chunkHeaderMesh.m_aabb.m_aabbMin[2]));
+					m_aabb.Add(bqVec3(chunkHeaderMesh.m_aabb.m_aabbMax[0],
+						chunkHeaderMesh.m_aabb.m_aabbMax[1],
+						chunkHeaderMesh.m_aabb.m_aabbMax[2]));
 					m_radius = m_aabb.Radius();
 
 					bqMesh* newM = new bqMesh;
@@ -280,13 +280,13 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					bqMDLChunkHeaderCollisionMesh chunkHeaderMesh;
 					file.Read(&chunkHeaderMesh, sizeof(chunkHeaderMesh));
 
-					m_aabb.m_min.x = chunkHeaderMesh.m_aabbMin[0];
-					m_aabb.m_min.y = chunkHeaderMesh.m_aabbMin[1];
-					m_aabb.m_min.z = chunkHeaderMesh.m_aabbMin[2];
-					m_aabb.m_max.x = chunkHeaderMesh.m_aabbMax[0];
-					m_aabb.m_max.y = chunkHeaderMesh.m_aabbMax[1];
-					m_aabb.m_max.z = chunkHeaderMesh.m_aabbMax[2];
-					m_radius = chunkHeaderMesh.m_radius;
+					m_aabb.m_min.x = chunkHeaderMesh.m_aabb.m_aabbMin[0];
+					m_aabb.m_min.y = chunkHeaderMesh.m_aabb.m_aabbMin[1];
+					m_aabb.m_min.z = chunkHeaderMesh.m_aabb.m_aabbMin[2];
+					m_aabb.m_max.x = chunkHeaderMesh.m_aabb.m_aabbMax[0];
+					m_aabb.m_max.y = chunkHeaderMesh.m_aabb.m_aabbMax[1];
+					m_aabb.m_max.z = chunkHeaderMesh.m_aabb.m_aabbMax[2];
+					m_radius = chunkHeaderMesh.m_aabb.m_radius;
 
 					uint32_t vSz = chunkHeaderMesh.m_vertNum * sizeof(bqVec3f);
 					uint32_t iSz = chunkHeaderMesh.m_indNum * sizeof(uint32_t);
@@ -299,6 +299,21 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 
 					file.Read(newCollision->m_vBuf, vSz);
 					file.Read(newCollision->m_iBuf, iSz);
+
+					for (size_t ai = 0; ai < chunkHeaderMesh.m_numOfBVHAabbs; ++ai)
+					{
+						bqMDLBVHAABB bvh_aabb;
+						file.Read(&bvh_aabb, sizeof(bvh_aabb));
+					}
+					for (size_t li = 0; li < chunkHeaderMesh.m_numOfBVHLeaves; ++li)
+					{
+						auto* ab = &_aabbs[li];
+						file.Read(&ab->m_triNum, sizeof(ab->m_triNum));
+						for (int32_t ti = 0; ti < ab->m_triNum; ++ti)
+						{
+							file.Read(&ab->m_tris[ti], sizeof(ab->m_triNum));
+						}
+					}
 
 					m_collision = newCollision;
 				}break;

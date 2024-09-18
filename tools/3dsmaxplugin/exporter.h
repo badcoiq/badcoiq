@@ -88,7 +88,7 @@ public:
 	Point3 m_rotation = Point3(PI * 0.5f, 0.f, 0.f);
 
 	void Save(const MCHAR* name);
-	void BuildBVH(std::vector<tri_aabb>& aabbs,
+	uint32_t BuildBVH(std::vector<tri_aabb>& aabbs,
 		std::vector<vec3>& Vs, std::vector<uint32_t>& Is);
 
 	struct SkeletonBoneTransformation

@@ -429,13 +429,13 @@ void PluginExporter::Save(const MCHAR* name)
 						_onCollisionMeshAddPositionInMap(triV[2], vMap, Vs, Is, curInd);
 					}
 					bqMDLChunkHeaderCollisionMesh meshChunkHeader;
-					meshChunkHeader.m_aabbMax[0] = _aabb.m_max.x;
-					meshChunkHeader.m_aabbMax[1] = _aabb.m_max.y;
-					meshChunkHeader.m_aabbMax[2] = _aabb.m_max.z;
-					meshChunkHeader.m_aabbMin[0] = _aabb.m_min.x;
-					meshChunkHeader.m_aabbMin[1] = _aabb.m_min.y;
-					meshChunkHeader.m_aabbMin[2] = _aabb.m_min.z;
-					meshChunkHeader.m_radius = _aabb.radius();
+					meshChunkHeader.m_aabb.m_aabbMax[0] = _aabb.m_max.x;
+					meshChunkHeader.m_aabb.m_aabbMax[1] = _aabb.m_max.y;
+					meshChunkHeader.m_aabb.m_aabbMax[2] = _aabb.m_max.z;
+					meshChunkHeader.m_aabb.m_aabbMin[0] = _aabb.m_min.x;
+					meshChunkHeader.m_aabb.m_aabbMin[1] = _aabb.m_min.y;
+					meshChunkHeader.m_aabb.m_aabbMin[2] = _aabb.m_min.z;
+					meshChunkHeader.m_aabb.m_radius = _aabb.radius();
 					meshChunkHeader.m_indNum = Is.size();
 					meshChunkHeader.m_vertNum = Vs.size();
 
@@ -444,20 +444,58 @@ void PluginExporter::Save(const MCHAR* name)
 					uint32_t vSz = meshChunkHeader.m_vertNum * sizeof(vec3);
 					uint32_t iSz = meshChunkHeader.m_indNum * sizeof(uint32_t);
 
+
+					std::vector<tri_aabb> _aabbs;
+					meshChunkHeader.m_numOfBVHLeaves = BuildBVH(_aabbs, Vs, Is);
+					meshChunkHeader.m_numOfBVHAabbs = _aabbs.size();
+
+										
 					bqMDLChunkHeader chunkHeader;
 					chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_CollisionMesh;
 					chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
 						+ sizeof(bqMDLChunkHeaderCollisionMesh)
 						+ vSz
-						+ iSz;
+						+ iSz
+						+ (meshChunkHeader.m_numOfBVHAabbs * sizeof(bqMDLBVHAABB));
+
+					for (size_t li = 0; li < meshChunkHeader.m_numOfBVHLeaves; ++li)
+					{
+						chunkHeader.m_chunkSz += sizeof(_aabbs[li].m_triNum);
+						chunkHeader.m_chunkSz += _aabbs[li].m_triNum * sizeof(int32_t);
+					}
+
 
 					m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
 					m_fileBuffer.Add(&meshChunkHeader, sizeof(meshChunkHeader));
 					m_fileBuffer.Add(Vs.data(), vSz);
 					m_fileBuffer.Add(Is.data(), iSz);
 
-					std::vector<tri_aabb> _aabbs;
-					BuildBVH(_aabbs, Vs, Is);
+					for (size_t ai = 0; ai < meshChunkHeader.m_numOfBVHAabbs; ++ai)
+					{
+						auto* ab = &_aabbs[ai];
+
+						bqMDLBVHAABB bvh_aabb;
+						bvh_aabb.m_aabb.m_radius = ab->m_aabb.radius();
+						bvh_aabb.m_aabb.m_aabbMin[0] = ab->m_aabb.m_min.x;
+						bvh_aabb.m_aabb.m_aabbMin[1] = ab->m_aabb.m_min.y;
+						bvh_aabb.m_aabb.m_aabbMin[2] = ab->m_aabb.m_min.z;
+						bvh_aabb.m_aabb.m_aabbMax[0] = ab->m_aabb.m_max.x;
+						bvh_aabb.m_aabb.m_aabbMax[1] = ab->m_aabb.m_max.y;
+						bvh_aabb.m_aabb.m_aabbMax[2] = ab->m_aabb.m_max.z;
+						bvh_aabb.m_first = ab->m_aabb_a;
+						bvh_aabb.m_second = ab->m_aabb_b;
+
+						m_fileBuffer.Add(&bvh_aabb, sizeof(bvh_aabb));
+					}
+					for (size_t li = 0; li < meshChunkHeader.m_numOfBVHLeaves; ++li)
+					{
+						auto* ab = &_aabbs[li];
+						m_fileBuffer.Add(&ab->m_triNum, sizeof(ab->m_triNum));
+						for (int32_t ti = 0; ti < ab->m_triNum; ++ti)
+						{
+							m_fileBuffer.Add(&ab->m_tris[ti], sizeof(ab->m_triNum));
+						}
+					}
 				}
 			}
 		}
@@ -1378,7 +1416,7 @@ void BuildBVH(std::vector<tri_aabb>& aabbs, int level)
 		}
 	}
 }
-void PluginExporter::BuildBVH(
+uint32_t PluginExporter::BuildBVH(
 	std::vector<tri_aabb>& aabbs, 
 	std::vector<vec3>& Vs, 
 	std::vector<uint32_t>& Is)
@@ -1404,8 +1442,8 @@ void PluginExporter::BuildBVH(
 		newTriAabb.m_aabb.add(v1);
 		newTriAabb.m_aabb.add(v2);
 		newTriAabb.m_aabb.add(v3);
-
 		newTriAabb.m_center = newTriAabb.m_aabb.center();
+
 		tri_aabbs.push_back(newTriAabb);
 		tic += 3;
 	}
@@ -1509,11 +1547,13 @@ void PluginExporter::BuildBVH(
 	}
 	printf("groupNum %u\n", groupNum);
 
+	uint32_t leaves = 0;
 	for (uint32_t ti = 0; ti < tri_aabbs.size(); ++ti)
 	{
 		tri_aabb& currAabb = tri_aabbs[ti];
 		if (currAabb.m_flags & tri_aabb::flag_main)
 		{
+			++leaves;
 			currAabb.clear_flags();
 			currAabb.m_indexInAabbs = aabbs.size();
 			aabbs.push_back(currAabb);
@@ -1521,133 +1561,6 @@ void PluginExporter::BuildBVH(
 	}
 
 	::BuildBVH(aabbs, 1);
-	
-	//// теперь надо построить дерево, которое будет ввиде массива.
-	//// дерево строится от листьев к корню.
-	//// в первом проходе берутся группы которые хранят треугольники.
-	//// (группы берутся из aabbs)
-	//
-	//// добавляются "листья". они хранят индексы на треугольники
-	//for (uint32_t ti = 0; ti < triNum; ++ti)
-	//{
-	//	tri_aabb& currAabb = tri_aabbs[ti];
-	//	if (currAabb.m_flags & tri_aabb::flag_main)
-	//	{
-	//		aabbs.push_back(currAabb);
-	//	}
-	//}
-
-	//// используется для индикации, чтобы знать что 
-	//// сначала добавил группу 1, потом группу 2
-	//tri_aabb* group_1 = 0;
-	//tri_aabb* group_2 = 0;
-
-	//// для простоты понимания отдельным циклом добавлю 
-	//// все листья, потом отдельно буду строить остаток дерева
-	//tri_aabb newGroup;
-	//newGroup.m_flags |= tri_aabb::flag_node;
-	//for (uint32_t li = 0, sz = aabbs.size(); li < sz; ++li)
-	//{
-	//	// aabbs на данном этапе хранит только листья
-	//	tri_aabb& currAabb = aabbs[li];
-	//	tri_aabb* currAabbPtr = &aabbs[li];
-
-	//	// если ранее не было добавлено в newGroup
-	//	if ((currAabb.m_flags & tri_aabb::flag_leafInTree)==0)
-	//	{
-	//		if (!group_1)
-	//		{
-	//			newGroup.m_aabb_a = li;
-	//			newGroup.m_aabb.add(currAabb.m_aabb);
-	//			group_1 = currAabbPtr;
-	//		}
-	//		else if (!group_2)
-	//		{
-	//			newGroup.m_aabb_b = li;
-	//			newGroup.m_aabb.add(currAabb.m_aabb);
-
-	//			//group_2 = currAabbPtr;
-	//			// обе группы добавлены. туперь надо сохранить newGroup
-	//			aabbs.push_back(newGroup);
-	//			//размер aabbs изменился, поэтому используется sz в for
-
-	//			group_1 = 0;
-	//			group_2 = 0;
-
-	//			// в случае если листьев нечётное количество
-	//			// данная ветка не сработает. Нужно обработать
-	//			// данный случай ниже после цикла.
-	//		}
-	//		currAabb.m_flags |= tri_aabb::flag_leafInTree;
-	//	}
-	//}
-	//if (group_1 && (!group_2))
-	//{
-	//	// добавлять newGroup не надо, иначе будет 2 вложенных 
-	//	// одинаковых аабб. Решение - использовать флаг 
-	//	// tri_aabb::flag_node на листочке.
-	//	//aabbs.push_back(newGroup);
-	//	aabbs[newGroup.m_aabb_a].m_flags |= tri_aabb::flag_node;
-
-	//	// далее будут строится другие node
-	//	// они будут строиться на основе флага tri_aabb::flag_node
-
-	//	group_1 = 0;
-	//	group_2 = 0;
-	//}
-
-	//// при создании надо считать количество созданных нод.
-	//// Если создана 1 нода, то эта нода корневая.
-	//int nodeCounter = 0;
-	//while (true)
-	//{
-	//	tri_aabb brandNewNode;
-	//	brandNewNode.m_flags |= tri_aabb::flag_node;
-
-	//	for (uint32_t li = 0, sz = aabbs.size(); li < sz; ++li)
-	//	{
-	//		tri_aabb* currAabb = &aabbs[li];
-	//		if (currAabb->m_flags & tri_aabb::flag_node)
-	//		{
-	//			if ((currAabb->m_flags & tri_aabb::flag_hasParent) == 0)
-	//			{
-	//				currAabb->m_flags |= tri_aabb::flag_hasParent;
-	//				
-	//				++nodeCounter;
-
-	//				if (!group_1)
-	//				{
-	//					brandNewNode.m_aabb_a = li;
-	//					brandNewNode.m_aabb.add(currAabb->m_aabb);
-	//					group_1 = currAabb;
-	//				}
-	//				else if (!group_2)
-	//				{
-	//					brandNewNode.m_aabb_b = li;
-	//					brandNewNode.m_aabb.add(currAabb->m_aabb);
-
-	//					aabbs.push_back(brandNewNode);
-
-	//					group_1 = 0;
-	//					group_2 = 0;
-	//				}
-	//			}
-	//		}
-	//	}
-	//	if (group_1 && (!group_2))
-	//	{
-	//		aabbs.push_back(brandNewNode);
-	//		group_1 = 0;
-	//		group_2 = 0;
-	//	}
-
-	//	if (!nodeCounter)
-	//		break;
-	//	else if (nodeCounter == 1)
-	//		break;
-	//	else
-	//		nodeCounter = 0;
-	//}
 
 	tri_aabb* root = &aabbs[aabbs.size() - 1];
 	if (root)
@@ -1661,6 +1574,8 @@ void PluginExporter::BuildBVH(
 				currAabb->m_triNum);
 		}
 	}
+
+	return leaves;
 }
 
 BOOL PluginExporter::SupportsOptions(int ext, DWORD options) 

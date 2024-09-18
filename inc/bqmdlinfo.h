@@ -159,6 +159,31 @@ struct bqMDLChunkHeader
 	uint32_t m_reserved2 = 0;
 };
 
+struct bqMDLAABB
+{
+	float m_aabbMin[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
+	float m_aabbMax[3] = { FLT_MIN, FLT_MIN, FLT_MIN };
+	float m_radius = 0.f;
+
+	void Add(float x, float y, float z)
+	{
+		if (x > m_aabbMax[0]) m_aabbMax[0] = x;
+		if (y > m_aabbMax[1]) m_aabbMax[1] = y;
+		if (z > m_aabbMax[2]) m_aabbMax[2] = z;
+
+		if (x < m_aabbMin[0]) m_aabbMin[0] = x;
+		if (y < m_aabbMin[1]) m_aabbMin[1] = y;
+		if (z < m_aabbMin[2]) m_aabbMin[2] = z;
+	}
+};
+
+struct bqMDLBVHAABB
+{
+	bqMDLAABB m_aabb;
+	uint32_t m_first = 0xffffffff;
+	uint32_t m_second = 0xffffffff;
+};
+
 // дальше идёт зависимое от типа чанка (m_chunkType)
 
 // Чанк описывающий 3D модель
@@ -168,9 +193,7 @@ struct bqMDLChunkHeaderMesh
 	// здесь и далее указываются индексы строк
 	uint32_t m_nameIndex = 0;
 	
-	float m_aabbMin[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
-	float m_aabbMax[3] = { FLT_MIN, FLT_MIN, FLT_MIN };
-	float m_radius = 0.f;
+	bqMDLAABB m_aabb;
 
 	// тип индекса
 	enum
@@ -210,9 +233,7 @@ struct bqMDLChunkHeaderMesh
 
 struct bqMDLChunkHeaderCollisionMesh
 {
-	float m_aabbMin[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
-	float m_aabbMax[3] = { FLT_MIN, FLT_MIN, FLT_MIN };
-	float m_radius = 0.f;
+	bqMDLAABB m_aabb;
 
 	// количество вершин
 	// vec3 float
@@ -221,6 +242,9 @@ struct bqMDLChunkHeaderCollisionMesh
 	// количество индексов
 	// 32bit
 	uint32_t m_indNum = 0;
+
+	uint32_t m_numOfBVHAabbs = 0;
+	uint32_t m_numOfBVHLeaves = 0;
 };
 
 // Чанк строки

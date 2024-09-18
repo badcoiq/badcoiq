@@ -40,6 +40,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bqmdlinfo.h"
 
+class bqMDLBVHNode
+{
+	bqMDLBVHNode(); всё это надо реализовать
+	~bqMDLBVHNode();
+
+	bqMDLBVHAABB m_mdl_aabb;
+	uint32_t m_triNum = 0;
+	uint32_t* m_tris = 0;
+};
+
 class bqMDLCollision
 {
 public:
@@ -55,6 +65,9 @@ public:
 
 	bqVec3f* m_vBuf = 0;
 	uint32_t* m_iBuf = 0;
+
+	bqMDLBVHNode* m_bvh = 0;
+	uint32_t m_bvhNodeNum = 0;
 };
 
 // 
