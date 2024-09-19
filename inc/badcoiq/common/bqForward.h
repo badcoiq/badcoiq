@@ -88,6 +88,7 @@ class bqSkeleton;
 class bqSkeletonAnimation;
 class bqMDL;
 class bqSkeletonAnimationObject;
+class bqMDLCollision;
 #endif
 
 #ifdef BQ_WITH_ARCHIVE

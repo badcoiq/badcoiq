@@ -42,7 +42,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class bqMDLBVHNode
 {
-	bqMDLBVHNode(); всё это надо реализовать
+public:
+	bqMDLBVHNode();
 	~bqMDLBVHNode();
 
 	bqMDLBVHAABB m_mdl_aabb;
@@ -111,6 +112,8 @@ public:
 	bqMDL();
 	~bqMDL();
 	BQ_PLACEMENT_ALLOCATOR(bqMDL);
+
+	bqMDLCollision* GetCollision() { return m_collision; }
 
 	bool Load(const char* mdlFile, const char* textureDir, bqGS*, bool free_bqMesh);
 	void Unload();

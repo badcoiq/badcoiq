@@ -146,6 +146,7 @@ using float64_t = bqFloat64;
 // вызывать только если объект был создан с помощью new
 // в том числе если у класса указано BQ_PLACEMENT_ALLOCATOR
 #define BQ_SAFEDESTROY(p) if(p){delete p;p=nullptr;}
+#define BQ_SAFEDESTROY_A(p) if(p){delete[] p;p=nullptr;}
 
 // наверно надо удалить
 #define BQ_DELETED_METHODS(x) x(const x&) = delete; \

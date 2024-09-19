@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_AABB_H__
 
 #include "badcoiq/geometry/bqRay.h"
+#include "bqmdlinfo.h"
 
 // Axis-Aligned Bounding Box
 class bqAabb
@@ -45,6 +46,11 @@ public:
 	bqAabb(const bqVec4& min, const bqVec4& max) :
 		m_min(min),
 		m_max(max)
+	{}
+
+	bqAabb(const bqMDLAABB& aabb) :
+		m_min(aabb.m_aabbMin[0], aabb.m_aabbMin[1], aabb.m_aabbMin[2], 0.f),
+		m_max(aabb.m_aabbMax[0], aabb.m_aabbMax[1], aabb.m_aabbMax[2], 0.f)
 	{}
 
 	void Transform(const bqAabb& original, const bqMat4& matrix, const bqVec3& position);

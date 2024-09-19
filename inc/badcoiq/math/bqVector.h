@@ -620,6 +620,8 @@ public:
 BQ_FORCEINLINE bqVec4f operator*(const bqReal& s, const bqVec4f& v) { return v * s; }
 BQ_FORCEINLINE bqVec4 operator*(const bqReal& s, const bqVec4& v) { return v * s; }
 
+//const bqVec4 bqVec4_Zero = bqVec4();
+// ненадо. есть bqZeroVector4
 
 #endif
 

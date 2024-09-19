@@ -291,27 +291,37 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					uint32_t vSz = chunkHeaderMesh.m_vertNum * sizeof(bqVec3f);
 					uint32_t iSz = chunkHeaderMesh.m_indNum * sizeof(uint32_t);
 
+					if (chunkHeaderMesh.m_numOfBVHAabbs > 10000)
+					{
+						bqLog::PrintError("%s : too many aabbs for collision\n", BQ_FUNCTION);
+						return false;
+					}
+
 					bqMDLCollision* newCollision = new bqMDLCollision;
 					newCollision->m_aabb = m_aabb;
 					newCollision->m_radius = m_radius;
 					newCollision->m_vBuf = new bqVec3f[chunkHeaderMesh.m_vertNum];
 					newCollision->m_iBuf = new uint32_t[chunkHeaderMesh.m_indNum];
+					newCollision->m_bvhNodeNum = chunkHeaderMesh.m_numOfBVHAabbs;
+					newCollision->m_bvh = new bqMDLBVHNode[newCollision->m_bvhNodeNum];
 
 					file.Read(newCollision->m_vBuf, vSz);
 					file.Read(newCollision->m_iBuf, iSz);
 
 					for (size_t ai = 0; ai < chunkHeaderMesh.m_numOfBVHAabbs; ++ai)
 					{
-						bqMDLBVHAABB bvh_aabb;
-						file.Read(&bvh_aabb, sizeof(bvh_aabb));
+						file.Read(&newCollision->m_bvh[ai].m_mdl_aabb, sizeof(bqMDLBVHAABB));
 					}
 					for (size_t li = 0; li < chunkHeaderMesh.m_numOfBVHLeaves; ++li)
 					{
-						auto* ab = &_aabbs[li];
-						file.Read(&ab->m_triNum, sizeof(ab->m_triNum));
-						for (int32_t ti = 0; ti < ab->m_triNum; ++ti)
+						
+						file.Read(&newCollision->m_bvh[li].m_triNum, sizeof(uint32_t));
+
+						newCollision->m_bvh[li].m_tris = new uint32_t[newCollision->m_bvh[li].m_triNum];
+
+						for (int32_t ti = 0; ti < newCollision->m_bvh[li].m_triNum; ++ti)
 						{
-							file.Read(&ab->m_tris[ti], sizeof(ab->m_triNum));
+							file.Read(&newCollision->m_bvh[li].m_tris[ti], sizeof(uint32_t));
 						}
 					}
 
@@ -657,8 +667,17 @@ bqMDLCollision::bqMDLCollision()
 
 bqMDLCollision::~bqMDLCollision()
 {
-	BQ_SAFEDESTROY(m_vBuf);
-	BQ_SAFEDESTROY(m_iBuf);
+	BQ_SAFEDESTROY_A(m_vBuf);
+	BQ_SAFEDESTROY_A(m_iBuf);
+	BQ_SAFEDESTROY_A(m_bvh);
+}
+
+bqMDLBVHNode::bqMDLBVHNode()
+{
+}
+bqMDLBVHNode::~bqMDLBVHNode()
+{
+	BQ_SAFEDESTROY_A(m_tris);
 }
 
 #endif
