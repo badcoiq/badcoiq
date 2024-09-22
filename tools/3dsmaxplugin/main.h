@@ -22,14 +22,42 @@
 
 #include "resource.h"
 
+#define xInfinity std::numeric_limits<float>::infinity()
+#define xEpsilon std::numeric_limits<float>::epsilon()
+
 void GUI_GetNumbers(const char* str, const char* format, ...);
 
 #ifndef IPOS_CONTROL_CLASS_ID
 #define IPOS_CONTROL_CLASS_ID		Class_ID(0x118f7e02,0xffee238a)
 #endif
 
+template<class T>
+const T& xMax(const T& a, const T& b)
+{
+	return (a < b) ? b : a;
+}
+template<class T>
+const T& xMin(const T& a, const T& b)
+{
+	return (b < a) ? b : a;
+}
+
 struct vec3
 {
+	vec3()
+	{
+	}
+	vec3(float v)
+		:
+		x(v),y(v),z(v)
+	{
+	}
+	vec3(float _x, float _y, float _z)
+		:
+		x(_x), y(_y), z(_z)
+	{
+	}
+
 	float x = 0.f;
 	float y = 0.f;
 	float z = 0.f;
@@ -41,6 +69,172 @@ struct vec3
 		float zz = other.z - z;
 
 		return sqrt((xx * xx) + (yy * yy) + (zz * zz));
+	}
+	float dot()const { return (x * x) + (y * y) + (z * z); }
+	float dot(const vec3& o)const { return (x * o.x) + (y * o.y) + (z * o.z); }
+
+	vec3 cross(const vec3& a)const {
+		vec3 out;
+		out.x = (y * a.z) - (z * a.y);
+		out.y = (z * a.x) - (x * a.z);
+		out.z = (x * a.y) - (y * a.x);
+		return out;
+	}
+
+	void normalize()
+	{
+		float len = std::sqrt(dot());
+		if (len > 0)
+			len = 1.0 / len;
+		x *= len;
+		y *= len;
+		z *= len;
+	}
+
+	vec3 operator+(const vec3& v)const
+	{
+		vec3 r;
+		r.x = x + v.x;
+		r.y = y + v.y;
+		r.z = z + v.z;
+		return r;
+	}
+	vec3 operator-(const vec3& v)const
+	{
+		vec3 r;
+		r.x = x - v.x;
+		r.y = y - v.y;
+		r.z = z - v.z;
+		return r;
+	}
+	vec3 operator*(const vec3& v)const
+	{
+		vec3 r;
+		r.x = x * v.x;
+		r.y = y * v.y;
+		r.z = z * v.z;
+		return r;
+	}
+	vec3 operator/(const vec3& v)const
+	{
+		vec3 r;
+		r.x = x / v.x;
+		r.y = y / v.y;
+		r.z = z / v.z;
+		return r;
+	}
+};
+
+class xRay
+{
+public:
+	xRay() {}
+	~xRay() {}
+
+	vec3 m_origin;
+	vec3 m_end;
+	vec3 m_direction;
+	vec3 m_invDir;
+	void Update()
+	{
+		m_direction.x = m_end.x - m_origin.x;
+		m_direction.y = m_end.y - m_origin.y;
+		m_direction.z = m_end.z - m_origin.z;
+		m_direction.normalize();
+
+		m_invDir.x = 1.f / m_direction.x;
+		m_invDir.y = 1.f / m_direction.y;
+		m_invDir.z = 1.f / m_direction.z;
+	}
+	
+	void Set(const vec3& origin, const vec3& end)
+	{
+		m_origin = origin;
+		m_end = end;
+		Update();
+	}
+
+};
+
+class xTriangle
+{
+public:
+	xTriangle() {}
+	xTriangle(const vec3 _v1, const vec3& _v2, const vec3& _v3)
+	{
+		Set(_v1, _v2, _v3);
+	}
+	
+	vec3 v1;
+	vec3 v2;
+	vec3 v3;
+	vec3 e1;
+	vec3 e2;
+
+	void Set(const vec3 _v1, const vec3& _v2, const vec3& _v3)
+	{
+		v1 = _v1;
+		v2 = _v2;
+		v3 = _v3;
+		Update();
+	}
+
+	void Update()
+	{
+		e1 = vec3(v2.x - v1.x,
+			v2.y - v1.y,
+			v2.z - v1.z);
+		e2 = vec3(v3.x - v1.x,
+			v3.y - v1.y,
+			v3.z - v1.z);
+		//	e1.cross(e2, faceNormal);
+	}
+
+	void Center(vec3& out)
+	{
+		out = (v1 + v2 + v3) * 0.3333333;
+	}
+
+	bool RayTest_MT(const xRay& ray, bool withBackFace, float& T, float& U, float& V, float& W)
+	{
+		vec3  pvec = ray.m_direction.cross(e2);
+		float det = e1.dot(pvec);
+
+		if (withBackFace)
+		{
+			if (std::fabs(det) < xEpsilon)
+				return false;
+		}
+		else
+		{
+			if (det < xEpsilon && det > -xEpsilon)
+				return false;
+		}
+
+		vec3 tvec(
+			ray.m_origin.x - v1.x,
+			ray.m_origin.y - v1.y,
+			ray.m_origin.z - v1.z);
+
+		float inv_det = 1.f / det;
+		U = tvec.dot(pvec) * inv_det;
+
+		if (U < 0.f || U > 1.f)
+			return false;
+
+		vec3  qvec = tvec.cross(e1);
+
+		V = ray.m_direction.dot(qvec) * inv_det;
+
+		if (V < 0.f || U + V > 1.f)
+			return false;
+
+		T = e2.dot(qvec) * inv_det;
+
+		if (T < xEpsilon) return false;
+
+		W = 1.f - U - V;
+		return true;
 	}
 };
 
@@ -55,6 +249,12 @@ struct aabb
 		m_max.x = FLT_MIN;
 		m_max.y = FLT_MIN;
 		m_max.z = FLT_MIN;
+	}
+
+	aabb(const aabb& v)
+	{
+		add(v.m_min);
+		add(v.m_max);
 	}
 
 	void add(const vec3& v)
@@ -91,6 +291,96 @@ struct aabb
 		return v;
 	}
 
+	bool isPointInside(const vec3& p)
+	{
+		bool r = false;
+		if ((p.x >= m_min.x) && (p.x <= m_max.x))
+		{
+			if ((p.y >= m_min.y) && (p.y <= m_max.y))
+			{
+				if ((p.z >= m_min.z) && (p.z <= m_max.z))
+				{
+					r = true;
+				}
+			}
+		}
+		return r;
+	}
+
+	bool RayTest(const xRay& r) const
+	{
+
+		float t1 = (m_min.x - r.m_origin.x) * r.m_invDir.x;
+		float t2 = (m_max.x - r.m_origin.x) * r.m_invDir.x;
+		float t3 = (m_min.y - r.m_origin.y) * r.m_invDir.y;
+		float t4 = (m_max.y - r.m_origin.y) * r.m_invDir.y;
+		float t5 = (m_min.z - r.m_origin.z) * r.m_invDir.z;
+		float t6 = (m_max.z - r.m_origin.z) * r.m_invDir.z;
+
+		float tmin = xMax(xMax(xMin(t1, t2), xMin(t3, t4)), xMin(t5, t6));
+		float tmax = xMin(xMin(xMax(t1, t2), xMax(t3, t4)), xMax(t5, t6));
+
+		if (tmax < 0 || tmin > tmax) return false;
+
+		return true;
+	}
+	bool RayTestTriangle(const vec3& tv1, const vec3& tv2, const vec3& tv3) const
+	{
+		auto& p1 = m_min;
+		auto& p2 = m_max;
+
+		vec3 v1 = p1;
+		vec3 v2 = p2;
+
+		vec3 v3(p1.x, p1.y, p2.z);
+		vec3 v4(p2.x, p1.y, p1.z);
+		vec3 v5(p1.x, p2.y, p1.z);
+		vec3 v6(p1.x, p2.y, p2.z);
+		vec3 v7(p2.x, p1.y, p2.z);
+		vec3 v8(p2.x, p2.y, p1.z);
+
+		xRay r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12;
+		r1.Set(v1, v4);
+		r2.Set(v5, v8);
+		r3.Set(v1, v5);
+		r4.Set(v4, v8);
+		r5.Set(v3, v7);
+		r6.Set(v6, v2);
+		r7.Set(v3, v6);
+		r8.Set(v7, v2);
+		r9.Set(v2, v8);
+		r10.Set(v4, v7);
+		r11.Set(v5, v6);
+		r12.Set(v1, v3);
+
+		xTriangle triangle(v1,v2,v3);
+		float t, u, v, w;
+		t, u = v = w = 0.f;
+
+		bool r = triangle.RayTest_MT(r1, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r2, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r3, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r4, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r5, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r6, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r7, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r8, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r9, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r10, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r11, true, t, u, v, w);
+		if (!r) r = triangle.RayTest_MT(r12, true, t, u, v, w);
+		return r;
+	}
+	bool isHasTriangle(const vec3& v1, const vec3& v2, const vec3& v3)
+	{
+		bool r = isPointInside(v1);
+		if (!r) r = isPointInside(v2);
+		if (!r) r = isPointInside(v3);
+		//if (!r) r = RayTestTriangle(v1,v2,v3);
+
+		return r;
+	}
+
 	vec3 m_min;
 	vec3 m_max;
 };
@@ -108,6 +398,8 @@ struct tri_aabb
 
 	aabb m_aabb;
 	vec3 m_center;
+	vec3 m_firstTriangleCenter;
+
 	float m_distance = 0.f;
 	int32_t m_triNum = 0;
 
@@ -135,6 +427,35 @@ struct tri_aabb
 	void remove_flag(uint32_t flag) { m_flags &= ~flag; }
 
 	int m_level = 0;
+};
+struct tri_aabb2
+{
+	tri_aabb2()
+	{
+	}
+	~tri_aabb2()
+	{
+		if (m_tris)
+			delete[]m_tris;
+	}
+
+	aabb m_aabb;
+
+	int32_t m_triNum = 0;
+	uint32_t * m_tris = 0;
+
+	uint32_t m_aabb_a = 0xFFFFFFFF;
+	uint32_t m_aabb_b = 0xFFFFFFFF;
+
+	//uint32_t m_tris[TRI_AABB_MAXTRIS];
+
+	enum
+	{
+		flag_added = 0x1,
+	};
+	uint32_t m_flags = 0;
+	void clear_flags() { m_flags = 0; }
+	void remove_flag(uint32_t flag) { m_flags &= ~flag; }
 };
 
 class FileBuffer

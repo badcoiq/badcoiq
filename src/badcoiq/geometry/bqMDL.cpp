@@ -311,8 +311,19 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					for (size_t ai = 0; ai < chunkHeaderMesh.m_numOfBVHAabbs; ++ai)
 					{
 						file.Read(&newCollision->m_bvh[ai].m_mdl_aabb, sizeof(bqMDLBVHAABB));
+
+						if (newCollision->m_bvh[ai].m_mdl_aabb.m_triNum)
+						{
+							file.Read(&newCollision->m_bvh[ai].m_triNum, sizeof(uint32_t));
+							newCollision->m_bvh[ai].m_tris = new uint32_t[newCollision->m_bvh[ai].m_triNum];
+
+							for (int32_t ti = 0; ti < newCollision->m_bvh[ai].m_triNum; ++ti)
+							{
+								file.Read(&newCollision->m_bvh[ai].m_tris[ti], sizeof(uint32_t));
+							}
+						}
 					}
-					for (size_t li = 0; li < chunkHeaderMesh.m_numOfBVHLeaves; ++li)
+					/*for (size_t li = 0; li < chunkHeaderMesh.m_numOfBVHLeaves; ++li)
 					{
 						
 						file.Read(&newCollision->m_bvh[li].m_triNum, sizeof(uint32_t));
@@ -323,7 +334,7 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 						{
 							file.Read(&newCollision->m_bvh[li].m_tris[ti], sizeof(uint32_t));
 						}
-					}
+					}*/
 
 					m_collision = newCollision;
 				}break;

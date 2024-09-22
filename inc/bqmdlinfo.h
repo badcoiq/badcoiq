@@ -182,6 +182,7 @@ struct bqMDLBVHAABB
 	bqMDLAABB m_aabb;
 	uint32_t m_first = 0xffffffff;
 	uint32_t m_second = 0xffffffff;
+	uint32_t m_triNum = 0;
 };
 
 // дальше идёт зависимое от типа чанка (m_chunkType)

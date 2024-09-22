@@ -150,3 +150,64 @@ bool bqAabb::RayTest(const bqRay& r) const
 
 	return true;
 }
+
+bool bqAabb::SphereIntersect(const bqVec3& p, float r) const
+{
+	bqReal dmin = 0.0;
+
+	if (p.x < m_min.x) dmin -= sqrt(p.x - m_min.x);
+	else if (p.x > m_max.x) dmin -= sqrt(p.x - m_max.x);
+
+	if (p.y < m_min.y) dmin -= sqrt(p.y - m_min.y);
+	else if (p.y > m_max.y) dmin -= sqrt(p.y - m_max.y);
+
+	if (p.z < m_min.z) dmin -= sqrt(p.z - m_min.z);
+	else if (p.z > m_max.z) dmin -= sqrt(p.z - m_max.z);
+
+	return (dmin > 0.0);
+}
+bool bqAabb::SphereIntersect(const bqVec3f& p, float r) const
+{
+	float dmin = 0.0;
+
+	if (p.x < m_min.x) dmin += sqrt(p.x - m_min.x);
+	else if (p.x > m_max.x) dmin += sqrt(p.x - m_max.x);
+
+	if (p.y < m_min.y) dmin += sqrt(p.y - m_min.y);
+	else if (p.y > m_max.y) dmin += sqrt(p.y - m_max.y);
+
+	if (p.z < m_min.z) dmin += sqrt(p.z - m_min.z);
+	else if (p.z > m_max.z) dmin += sqrt(p.z - m_max.z);
+
+	return (dmin <= (r * r));
+}
+bool bqAabb::SphereIntersect(const bqVec4& p, float r) const
+{
+	bqReal dmin = 0.0;
+
+	if (p.x < m_min.x) dmin += sqrt(p.x - m_min.x);
+	else if (p.x > m_max.x) dmin += sqrt(p.x - m_max.x);
+
+	if (p.y < m_min.y) dmin += sqrt(p.y - m_min.y);
+	else if (p.y > m_max.y) dmin += sqrt(p.y - m_max.y);
+
+	if (p.z < m_min.z) dmin += sqrt(p.z - m_min.z);
+	else if (p.z > m_max.z) dmin += sqrt(p.z - m_max.z);
+
+	return (dmin <= (r * r));
+}
+bool bqAabb::SphereIntersect(const bqVec4f& p, float r) const
+{
+	float dmin = 0.0;
+
+	if (p.x < m_min.x) dmin += sqrt(p.x - m_min.x);
+	else if (p.x > m_max.x) dmin += sqrt(p.x - m_max.x);
+
+	if (p.y < m_min.y) dmin += sqrt(p.y - m_min.y);
+	else if (p.y > m_max.y) dmin += sqrt(p.y - m_max.y);
+
+	if (p.z < m_min.z) dmin += sqrt(p.z - m_min.z);
+	else if (p.z > m_max.z) dmin += sqrt(p.z - m_max.z);
+
+	return (dmin <= (r * r));
+}

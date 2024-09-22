@@ -446,9 +446,12 @@ void PluginExporter::Save(const MCHAR* name)
 
 
 					std::vector<tri_aabb> _aabbs;
-					meshChunkHeader.m_numOfBVHLeaves = BuildBVH(_aabbs, Vs, Is);
-					meshChunkHeader.m_numOfBVHAabbs = _aabbs.size();
+					std::vector<tri_aabb2*>* _aabbs2 = new std::vector<tri_aabb2*>;
+					//meshChunkHeader.m_numOfBVHLeaves = BuildBVH(_aabbs, Vs, Is);
+					BuildBVH2(_aabbs2, &Vs, &Is);
+					meshChunkHeader.m_numOfBVHAabbs = _aabbs2->size();
 
+					printf("meshChunkHeader.m_numOfBVHAabbs %u\n", meshChunkHeader.m_numOfBVHAabbs);
 										
 					bqMDLChunkHeader chunkHeader;
 					chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_CollisionMesh;
@@ -458,10 +461,24 @@ void PluginExporter::Save(const MCHAR* name)
 						+ iSz
 						+ (meshChunkHeader.m_numOfBVHAabbs * sizeof(bqMDLBVHAABB));
 
+					meshChunkHeader.m_numOfBVHLeaves = 0;
+					for (size_t ai = 0; ai < meshChunkHeader.m_numOfBVHAabbs; ++ai)
+					{
+						auto ab = _aabbs2->data()[ai];
+						
+						if (ab->m_triNum && ab->m_tris)
+						{
+							++meshChunkHeader.m_numOfBVHLeaves;
+						}
+					}
+					printf("meshChunkHeader.m_numOfBVHLeaves %u\n", meshChunkHeader.m_numOfBVHLeaves);
+
 					for (size_t li = 0; li < meshChunkHeader.m_numOfBVHLeaves; ++li)
 					{
-						chunkHeader.m_chunkSz += sizeof(_aabbs[li].m_triNum);
-						chunkHeader.m_chunkSz += _aabbs[li].m_triNum * sizeof(int32_t);
+						auto ab = _aabbs2->data()[li];
+
+						chunkHeader.m_chunkSz += sizeof(ab->m_triNum);
+						chunkHeader.m_chunkSz += ab->m_triNum * sizeof(int32_t);
 					}
 
 
@@ -472,7 +489,8 @@ void PluginExporter::Save(const MCHAR* name)
 
 					for (size_t ai = 0; ai < meshChunkHeader.m_numOfBVHAabbs; ++ai)
 					{
-						auto* ab = &_aabbs[ai];
+						auto ab = _aabbs2->data()[ai];
+						printf("Write aabb %u\n", ai);
 
 						bqMDLBVHAABB bvh_aabb;
 						bvh_aabb.m_aabb.m_radius = ab->m_aabb.radius();
@@ -484,20 +502,33 @@ void PluginExporter::Save(const MCHAR* name)
 						bvh_aabb.m_aabb.m_aabbMax[2] = ab->m_aabb.m_max.z;
 						bvh_aabb.m_first = ab->m_aabb_a;
 						bvh_aabb.m_second = ab->m_aabb_b;
+						bvh_aabb.m_triNum = ab->m_triNum;
 
 						m_fileBuffer.Add(&bvh_aabb, sizeof(bvh_aabb));
+
+						if (ab->m_triNum)
+						{
+							m_fileBuffer.Add(&ab->m_triNum, sizeof(ab->m_triNum));
+							for (int32_t ti = 0; ti < ab->m_triNum; ++ti)
+							{
+								m_fileBuffer.Add(&ab->m_tris[ti], sizeof(ab->m_triNum));
+							}
+						}
 					}
-					for (size_t li = 0; li < meshChunkHeader.m_numOfBVHLeaves; ++li)
+					/*for (size_t li = 0; li < meshChunkHeader.m_numOfBVHLeaves; ++li)
 					{
-						auto* ab = &_aabbs[li];
+						auto ab = _aabbs2->data()[li];
+						printf("Write aabb tris %u\n", li);
+
 						m_fileBuffer.Add(&ab->m_triNum, sizeof(ab->m_triNum));
 						for (int32_t ti = 0; ti < ab->m_triNum; ++ti)
 						{
 							m_fileBuffer.Add(&ab->m_tris[ti], sizeof(ab->m_triNum));
 						}
-					}
+					}*/
 				}
 			}
+			printf("end of collision\n");
 		}
 
 		if (aniNum && m_bonesNum)
@@ -1416,6 +1447,9 @@ void BuildBVH(std::vector<tri_aabb>& aabbs, int level)
 		}
 	}
 }
+
+// не работает как хотелось
+// будет работать вторая версия
 uint32_t PluginExporter::BuildBVH(
 	std::vector<tri_aabb>& aabbs, 
 	std::vector<vec3>& Vs, 
@@ -1443,6 +1477,7 @@ uint32_t PluginExporter::BuildBVH(
 		newTriAabb.m_aabb.add(v2);
 		newTriAabb.m_aabb.add(v3);
 		newTriAabb.m_center = newTriAabb.m_aabb.center();
+		newTriAabb.m_firstTriangleCenter = newTriAabb.m_center;
 
 		tri_aabbs.push_back(newTriAabb);
 		tic += 3;
@@ -1498,7 +1533,7 @@ uint32_t PluginExporter::BuildBVH(
 				{
 					if ((otherAabb.m_flags & tri_aabb::flag_added) == 0)
 					{
-						otherAabb.m_distance = currAabb.m_center.distance(otherAabb.m_center);
+						otherAabb.m_distance = currAabb.m_firstTriangleCenter.distance(otherAabb.m_center);
 					//	printf("TI2[%u] dist[%f]\n", ti2, otherAabb.m_distance);
 						otherAabb.m_flags |= tri_aabb::flag_distanceCalculated;
 
@@ -1576,6 +1611,299 @@ uint32_t PluginExporter::BuildBVH(
 	}
 
 	return leaves;
+}
+
+std::vector<tri_aabb2*>* g_aabbs = 0;
+std::vector<vec3>* g_Vs = 0;
+std::vector<uint32_t>* g_Is = 0;
+void BuildBVH2_getBetterPart(tri_aabb2* currBox, float* X, float* Y, float* Z)
+{
+	float triNum = (float)currBox->m_triNum;
+
+	/*
+	*  min                                       max
+	    *----------------------------------------*
+		*                   |                    *
+		*                   |                    *
+		*                   |                    *
+		*                   |                    *
+		*                   *center              *
+		*                   |                    *
+		*                   |                    *
+		*                   |                    *
+		*                   |                    *
+		*----------------------------------------*
+	*/
+
+	vec3 center = currBox->m_aabb.center();
+
+	aabb aabbX1 = currBox->m_aabb;
+	aabb aabbX2 = currBox->m_aabb;
+	aabbX1.m_min.x = center.x;
+	aabbX2.m_max.x = center.x;
+
+	aabb aabbY1 = currBox->m_aabb;
+	aabb aabbY2 = currBox->m_aabb;
+	aabbY1.m_min.y = center.y;
+	aabbY2.m_max.y = center.y;
+
+	aabb aabbZ1 = currBox->m_aabb;
+	aabb aabbZ2 = currBox->m_aabb;
+	aabbZ1.m_min.z = center.z;
+	aabbZ2.m_max.z = center.z;
+
+	uint32_t triNumX[2] = { 0,0 };
+	uint32_t triNumY[2] = { 0,0 };
+	uint32_t triNumZ[2] = { 0,0 };
+	for (uint32_t ti = 0; ti < currBox->m_triNum; ++ti)
+	{
+		 uint32_t tic = currBox->m_tris[ti] * 3;
+
+		 uint32_t ind1 = g_Is->data()[tic];
+		 uint32_t ind2 = g_Is->data()[tic + 1];
+		 uint32_t ind3 = g_Is->data()[tic + 2];
+
+		 vec3& v1 = g_Vs->data()[ind1];
+		 vec3& v2 = g_Vs->data()[ind2];
+		 vec3& v3 = g_Vs->data()[ind3];
+
+		 if (aabbX1.isHasTriangle(v1, v2, v3)) ++triNumX[0];
+		 if (aabbX2.isHasTriangle(v1, v2, v3)) ++triNumX[1];
+		 if (aabbY1.isHasTriangle(v1, v2, v3)) ++triNumY[0];
+		 if (aabbY2.isHasTriangle(v1, v2, v3)) ++triNumY[1];
+		 if (aabbZ1.isHasTriangle(v1, v2, v3)) ++triNumZ[0];
+		 if (aabbZ2.isHasTriangle(v1, v2, v3)) ++triNumZ[1];
+	}
+
+	uint32_t vX = 1.f;
+	uint32_t vY = 1.f;
+	uint32_t vZ = 1.f;
+	if (triNumX[0] && triNumX[1])
+	{
+		vX = triNumX[0];
+		if (triNumX[1] > vX)
+			vX = triNumX[1];
+	}
+	else if (triNumX[1]) vX = triNumX[1];
+
+	if (triNumY[0] && triNumY[1])
+	{
+		vY = triNumY[0];
+		if (triNumY[1] > vY)
+			vY = triNumY[1];
+	}
+	else if (triNumY[1]) vY = triNumY[1];
+
+	if (triNumZ[0] && triNumZ[1])
+	{
+		vZ = triNumZ[0];
+		if (triNumZ[1] > vZ)
+			vZ = triNumZ[1];
+	}
+	else if (triNumZ[1]) vZ = triNumZ[1];
+
+	*X = (float)vX / triNum;
+	*Y = (float)vY / triNum;
+	*Z = (float)vZ / triNum;
+}
+void BuildBVH2(tri_aabb2* currBox)
+{
+	printf("in BuildBVH2\n");
+	printf("\t currBox->m_triNum %u \n", currBox->m_triNum);
+	
+	// если currBox имеет больше треугольников чем указано, его надо разбить на 2 части.
+	// Нужно определить, по какой оси лучше разбить аабб.
+	if (currBox->m_triNum > TRI_AABB_MAXTRIS)
+	{
+		// количество треугольников в части / количество треугольников в ААББ = значение от 0 до 1.
+		// потом, выбираю самое большое значение.
+		float aabbX = 0.f;
+		float aabbY = 0.f;
+		float aabbZ = 0.f;
+		BuildBVH2_getBetterPart(currBox, &aabbX, &aabbY, &aabbZ);
+		printf("\t aabbX %f \n", aabbX);
+		printf("\t aabbY %f \n", aabbY);
+		printf("\t aabbZ %f \n", aabbZ);
+
+		// 0 X
+		// 1 Y
+		// 2 Z
+		int axis = 0;
+
+		if ((aabbX > aabbY) && (aabbX > aabbZ)) axis = 1;
+		if ((aabbY > aabbX) && (aabbY > aabbZ)) axis = 0;
+		if ((aabbZ > aabbX) && (aabbZ > aabbY)) axis = 2;
+
+		printf("\t axis %i \n", axis);
+
+		vec3 center = currBox->m_aabb.center();
+		aabb aabbX1 = currBox->m_aabb;
+		aabb aabbX2 = currBox->m_aabb;
+		aabbX1.m_min.x = center.x;
+		aabbX2.m_max.x = center.x;
+		aabb aabbY1 = currBox->m_aabb;
+		aabb aabbY2 = currBox->m_aabb;
+		aabbY1.m_min.y = center.y;
+		aabbY2.m_max.y = center.y;
+		aabb aabbZ1 = currBox->m_aabb;
+		aabb aabbZ2 = currBox->m_aabb;
+		aabbZ1.m_min.z = center.z;
+		aabbZ2.m_max.z = center.z;
+
+		tri_aabb2* newAabbA = new tri_aabb2;
+		tri_aabb2* newAabbB = new tri_aabb2;
+
+
+		switch (axis)
+		{
+		default:
+		case 0:
+		{
+			newAabbA->m_aabb = aabbX1;
+			newAabbB->m_aabb = aabbX2;
+		}break;
+		case 1:
+		{
+			newAabbA->m_aabb = aabbY1;
+			newAabbB->m_aabb = aabbY2;
+		}break;
+		case 2:
+		{
+			newAabbA->m_aabb = aabbZ1;
+			newAabbB->m_aabb = aabbZ2;
+		}break;
+		}
+		
+		for (uint32_t ti = 0; ti < currBox->m_triNum; ++ti)
+		{
+			uint32_t tic = currBox->m_tris[ti] * 3;
+
+			uint32_t ind1 = g_Is->data()[tic];
+			uint32_t ind2 = g_Is->data()[tic + 1];
+			uint32_t ind3 = g_Is->data()[tic + 2];
+
+			vec3& v1 = g_Vs->data()[ind1];
+			vec3& v2 = g_Vs->data()[ind2];
+			vec3& v3 = g_Vs->data()[ind3];
+
+			if (newAabbA->m_aabb.isHasTriangle(v1, v2, v3)) ++newAabbA->m_triNum;
+			if (newAabbB->m_aabb.isHasTriangle(v1, v2, v3)) ++newAabbB->m_triNum;
+		}
+
+		printf("\t newAabbA->m_triNum %u \n", newAabbA->m_triNum);
+		printf("\t newAabbB->m_triNum %u \n", newAabbB->m_triNum);
+
+
+		if (newAabbA->m_triNum)
+			newAabbA->m_tris = new uint32_t[newAabbA->m_triNum];
+		if (newAabbB->m_triNum)
+			newAabbB->m_tris = new uint32_t[newAabbB->m_triNum];
+
+		for (uint32_t ti = 0, ati = 0, bti = 0; ti < currBox->m_triNum; ++ti)
+		{
+			uint32_t tic = currBox->m_tris[ti] * 3;
+
+			uint32_t ind1 = g_Is->data()[tic];
+			uint32_t ind2 = g_Is->data()[tic + 1];
+			uint32_t ind3 = g_Is->data()[tic + 2];
+
+			vec3& v1 = g_Vs->data()[ind1];
+			vec3& v2 = g_Vs->data()[ind2];
+			vec3& v3 = g_Vs->data()[ind3];
+
+			if (newAabbA->m_aabb.isHasTriangle(v1, v2, v3))
+			{
+				newAabbA->m_tris[ati] = ti;
+				++ati;
+			}
+
+			if (newAabbB->m_aabb.isHasTriangle(v1, v2, v3))
+			{
+				newAabbB->m_tris[bti] = ti;
+				++bti;
+			}
+		}
+
+		if (newAabbA->m_tris)
+		{
+			printf("\t add newAabbA\n");
+
+			currBox->m_aabb_a = g_aabbs->size();
+			g_aabbs->push_back(newAabbA);
+		}
+		else
+		{
+		//	delete newAabbA;
+			newAabbA = 0;
+		}
+
+		if (newAabbB->m_tris)
+		{
+			printf("\t add newAabbB\n");
+
+			currBox->m_aabb_b = g_aabbs->size();
+			g_aabbs->push_back(newAabbB);
+		}
+		else
+		{
+		//	delete newAabbB;
+			newAabbB = 0;
+		}
+
+		if (newAabbA || newAabbB)
+		{
+		//	delete[] currBox->m_tris;
+			currBox->m_tris = 0;
+			currBox->m_triNum = 0;
+		}
+
+		if(newAabbA)
+			::BuildBVH2(newAabbA);
+		if (newAabbB)
+			::BuildBVH2(newAabbB);
+	}
+}
+void PluginExporter::BuildBVH2(std::vector<tri_aabb2*>* aabbs,
+	std::vector<vec3>* Vs, std::vector<uint32_t>* Is)
+{
+	g_Vs = Vs;
+	g_Is = Is;
+
+	// надо создать главный ААББ
+	// сначала он хранит все треугольники.
+	// После создания, нужно передать его в рекурсивную функцию,
+	// и разбивать аабб пополам, передавая треугольники.
+
+	tri_aabb2 * mainAabb = new tri_aabb2;
+	uint32_t triNum = Is->size() / 3;
+	mainAabb->m_triNum = triNum;
+	mainAabb->m_tris = new uint32_t[triNum];
+
+	for (uint32_t ti = 0, tic = 0; ti < triNum; ++ti)
+	{
+		uint32_t ind1 = Is->data()[tic];
+		uint32_t ind2 = Is->data()[tic + 1];
+		uint32_t ind3 = Is->data()[tic + 2];
+
+		vec3& v1 = Vs->data()[ind1];
+		vec3& v2 = Vs->data()[ind2];
+		vec3& v3 = Vs->data()[ind3];
+
+		// передача индекса треугольника
+		mainAabb->m_tris[ti] = ti;
+
+		// и наращивание ААББ
+		mainAabb->m_aabb.add(v1);
+		mainAabb->m_aabb.add(v2);
+		mainAabb->m_aabb.add(v3);
+
+		tic += 3;
+	}
+	printf("Main AABB triNum[%u]\n", mainAabb->m_triNum);
+	aabbs->push_back(mainAabb);
+
+	g_aabbs = aabbs;
+	::BuildBVH2(mainAabb);
 }
 
 BOOL PluginExporter::SupportsOptions(int ext, DWORD options) 

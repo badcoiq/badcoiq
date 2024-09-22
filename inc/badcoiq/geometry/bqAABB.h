@@ -60,6 +60,11 @@ public:
 	void Add(const bqVec3f& point);
 	void Add(const bqAabb& box);
 	bool RayTest(const bqRay& r) const;
+	
+	bool SphereIntersect(const bqVec3& p, float r) const;
+	bool SphereIntersect(const bqVec3f& p, float r) const;
+	bool SphereIntersect(const bqVec4& p, float r) const;
+	bool SphereIntersect(const bqVec4f& p, float r) const;
 
 	void Center(bqVec4& v) const
 	{

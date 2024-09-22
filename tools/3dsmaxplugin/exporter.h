@@ -90,6 +90,8 @@ public:
 	void Save(const MCHAR* name);
 	uint32_t BuildBVH(std::vector<tri_aabb>& aabbs,
 		std::vector<vec3>& Vs, std::vector<uint32_t>& Is);
+	void BuildBVH2(std::vector<tri_aabb2*>* aabbs,
+		std::vector<vec3>* Vs, std::vector<uint32_t>* Is);
 
 	struct SkeletonBoneTransformation
 	{
