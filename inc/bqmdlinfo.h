@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdint.h>
 
+#include "badcoiq/math/bqVector.h"
+
 // файл чтобы можно было подключить к проекту с плагином для 3Ds Max
 
 // Вершина содержит такие данные. Аналогично
@@ -161,25 +163,45 @@ struct bqMDLChunkHeader
 
 struct bqMDLAABB
 {
-	float m_aabbMin[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
-	float m_aabbMax[3] = { FLT_MIN, FLT_MIN, FLT_MIN };
-	float m_radius = 0.f;
+	//float m_aabbMin[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
+	//float m_aabbMax[3] = { FLT_MIN, FLT_MIN, FLT_MIN };
+	bqAabb m_aabb;
+
 
 	void Add(float x, float y, float z)
 	{
-		if (x > m_aabbMax[0]) m_aabbMax[0] = x;
+		m_aabb.Add(x, y, z);
+		/*if (x > m_aabbMax[0]) m_aabbMax[0] = x;
 		if (y > m_aabbMax[1]) m_aabbMax[1] = y;
 		if (z > m_aabbMax[2]) m_aabbMax[2] = z;
 
 		if (x < m_aabbMin[0]) m_aabbMin[0] = x;
 		if (y < m_aabbMin[1]) m_aabbMin[1] = y;
-		if (z < m_aabbMin[2]) m_aabbMin[2] = z;
+		if (z < m_aabbMin[2]) m_aabbMin[2] = z;*/
 	}
+
+	/*bool SphereIntersect(const bqVec3& p, float r) const
+	{
+		bqReal dmin = 0.0;
+
+		if (p.x < m_min.x) dmin -= sqrt(p.x - m_min.x);
+		else if (p.x > m_max.x) dmin -= sqrt(p.x - m_max.x);
+
+		if (p.y < m_min.y) dmin -= sqrt(p.y - m_min.y);
+		else if (p.y > m_max.y) dmin -= sqrt(p.y - m_max.y);
+
+		if (p.z < m_min.z) dmin -= sqrt(p.z - m_min.z);
+		else if (p.z > m_max.z) dmin -= sqrt(p.z - m_max.z);
+
+		return (dmin > 0.0);
+	}*/
 };
 
 struct bqMDLBVHAABB
 {
-	bqMDLAABB m_aabb;
+	//bqMDLAABB m_aabb;
+	bqAabb m_aabb;
+
 	uint32_t m_first = 0xffffffff;
 	uint32_t m_second = 0xffffffff;
 	uint32_t m_triNum = 0;

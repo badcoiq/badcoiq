@@ -69,6 +69,21 @@ public:
 
 	bqMDLBVHNode* m_bvh = 0;
 	uint32_t m_bvhNodeNum = 0;
+
+	// origin - позиция
+	// указывается позиция только другого объекта, относительно этого
+	// 
+	// Например 
+	// CollisionSphereSphere( obj->m_radius, obj->m_pos - mdlColObj->m_pos )
+	// 
+	// точка пересечения, нормаль и прочая информация помещается в переменные,
+	// указанных ниже следующих методов
+	//
+	bool CollisionSphereSphere(bqReal radius, const bqVec3& origin);
+	bool CollisionSphereBox(bqReal radius, const bqVec3& origin);
+	bool CollisionSphereBVH(bqReal radius, const bqVec3& origin);
+	bqVec3 m_intersection;
+	bqVec3 m_normal;
 };
 
 // 

@@ -134,6 +134,27 @@ void bqAabb::Add(const bqAabb& box)
 	if (box.m_max.z > m_max.z) m_max.z = box.m_max.z;
 }
 
+void bqAabb::Add(float32_t x, float32_t y, float32_t z)
+{
+	if (x < m_min.x) m_min.x = x;
+	if (y < m_min.y) m_min.y = y;
+	if (z < m_min.z) m_min.z = z;
+
+	if (x > m_max.x) m_max.x = x;
+	if (y > m_max.y) m_max.y = y;
+	if (z > m_max.z) m_max.z = z;
+}
+void bqAabb::Add(float64_t x, float64_t y, float64_t z)
+{
+	if (x < m_min.x) m_min.x = x;
+	if (y < m_min.y) m_min.y = y;
+	if (z < m_min.z) m_min.z = z;
+
+	if (x > m_max.x) m_max.x = x;
+	if (y > m_max.y) m_max.y = y;
+	if (z > m_max.z) m_max.z = z;
+}
+
 bool bqAabb::RayTest(const bqRay& r) const
 {
 	bqReal t1 = (m_min.x - r.m_origin.x) * r.m_invDir.x;

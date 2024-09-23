@@ -48,23 +48,25 @@ public:
 		m_max(max)
 	{}
 
-	bqAabb(const bqMDLAABB& aabb) :
+	/*bqAabb(const bqMDLAABB& aabb) :
 		m_min(aabb.m_aabbMin[0], aabb.m_aabbMin[1], aabb.m_aabbMin[2], 0.f),
 		m_max(aabb.m_aabbMax[0], aabb.m_aabbMax[1], aabb.m_aabbMax[2], 0.f)
-	{}
+	{}*/
 
 	void Transform(const bqAabb& original, const bqMat4& matrix, const bqVec3& position);
 	void Add(const bqVec4& point);
 	void Add(const bqVec3& point);
 	void Add(const bqVec4f& point);
 	void Add(const bqVec3f& point);
+	void Add(float32_t x, float32_t y, float32_t z);
+	void Add(float64_t x, float64_t y, float64_t z);
 	void Add(const bqAabb& box);
 	bool RayTest(const bqRay& r) const;
 	
-	bool SphereIntersect(const bqVec3& p, float r) const;
-	bool SphereIntersect(const bqVec3f& p, float r) const;
-	bool SphereIntersect(const bqVec4& p, float r) const;
-	bool SphereIntersect(const bqVec4f& p, float r) const;
+	bool SphereIntersect(const bqVec3& p, float32_t r) const;
+	bool SphereIntersect(const bqVec3f& p, float32_t r) const;
+	bool SphereIntersect(const bqVec4& p, float32_t r) const;
+	bool SphereIntersect(const bqVec4f& p, float32_t r) const;
 
 	void Center(bqVec4& v) const
 	{
@@ -74,7 +76,8 @@ public:
 
 	bqReal Radius()
 	{
-		return bqMath::Distance(m_min, m_max) * 0.5;
+		m_radius = bqMath::Distance(m_min, m_max) * 0.5;
+		return m_radius;
 	}
 
 	void Extent(bqVec4& v)
@@ -96,6 +99,8 @@ public:
 
 	bqVec4 m_min;
 	bqVec4 m_max;
+
+	bqReal m_radius = 0.f;
 };
 
 

@@ -683,6 +683,42 @@ bqMDLCollision::~bqMDLCollision()
 	BQ_SAFEDESTROY_A(m_bvh);
 }
 
+bool bqMDLCollision::CollisionSphereSphere(bqReal radius, const bqVec3& origin)
+{
+	bqReal d = bqMath::Distance(origin, bqZeroVector3);
+	bqReal R = radius + m_radius;
+	if (d < R)
+	{
+		bqReal len = R - d;
+		m_normal = origin;
+		m_normal.Normalize();
+		m_intersection = origin - (m_normal * len);
+
+		return true;
+	}
+	return false;
+}
+bool bqMDLCollision::CollisionSphereBox(bqReal radius, const bqVec3& origin)
+{
+	return m_aabb.SphereIntersect(origin, radius);
+}
+bool bqMDLCollision::CollisionSphereBVH(bqReal radius, const bqVec3& origin)
+{
+	BQ_ASSERT_ST(m_bvh);
+	if (m_bvhNodeNum)
+	{
+		bqMDLBVHNode* currNode = m_bvh;
+		for (uint32_t i = 0; i < m_bvhNodeNum; ++i)
+		{
+			if (currNode->m_mdl_aabb.m_aabb.SphereIntersect(origin, radius))
+			{
+
+			}
+		}
+	}
+	return false;
+}
+
 bqMDLBVHNode::bqMDLBVHNode()
 {
 }
