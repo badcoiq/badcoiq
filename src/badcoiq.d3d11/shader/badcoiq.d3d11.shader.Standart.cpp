@@ -107,7 +107,9 @@ void bqD3D11ShaderStandart::SetConstants(bqMaterial* material)
 
 	m_cbDataP.BaseColor = material->m_colorDiffuse;
 	m_cbDataP.AmbientColor = material->m_colorAmbient;
-	m_cbDataP.SunPosition = material->m_sunPosition;
+	m_cbDataP.SunPosition.x = material->m_sunPosition.x;
+	m_cbDataP.SunPosition.y = material->m_sunPosition.y;
+	m_cbDataP.SunPosition.z = material->m_sunPosition.z;
 
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -211,7 +213,9 @@ void bqD3D11ShaderStandartSkinned::SetConstants(bqMaterial* material)
 
 	m_cbDataP.BaseColor = material->m_colorDiffuse;
 	m_cbDataP.AmbientColor = material->m_colorAmbient;
-	m_cbDataP.SunPosition = material->m_sunPosition;
+	m_cbDataP.SunPosition.x = material->m_sunPosition.x;
+	m_cbDataP.SunPosition.y = material->m_sunPosition.y;
+	m_cbDataP.SunPosition.z = material->m_sunPosition.z;
 
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;

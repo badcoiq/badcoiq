@@ -49,7 +49,7 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqGravityObject);
 
 	bqReal m_radius = 100.0;
-	bqVec4 m_position;
+	bqVec3 m_position;
 };
 
 class bqPhysicsDebugDraw
@@ -79,13 +79,13 @@ public:
 		m_reason = 0;
 	}
 
-	virtual void DrawLine(void* data, uint32_t, const bqVec4& v1, const bqVec4& v2, const bqColor&) = 0;
+	virtual void DrawLine(void* data, uint32_t, const bqVec3& v1, const bqVec3& v2, const bqColor&) = 0;
 
 	struct DrawCommands
 	{
 		uint32_t m_reason = 0;
-		bqVec4 m_v1;
-		bqVec4 m_v2;
+		bqVec3 m_v1;
+		bqVec3 m_v2;
 		bqColor m_color;
 
 	};
@@ -107,7 +107,7 @@ public:
 	void AddRigidBodyArray(bqArray<bqRigidBody*>*);
 	void RemoveAllRigidBodyArrays();
 
-	bqGravityObject* CreateGravityObject(bqReal radius, const bqVec4& position);
+	bqGravityObject* CreateGravityObject(bqReal radius, const bqVec3& position);
 	void AddGravityObject(bqGravityObject*);
 	void RemoveAllGravityObject();
 

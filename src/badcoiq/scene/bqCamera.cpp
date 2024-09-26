@@ -78,7 +78,9 @@ void bqCamera::_calculateView()
 	//V = -m_position;
 
 	m_viewMatrix = m_rotationMatrix;// *P;
-	m_viewMatrix[3] = V;
+	m_viewMatrix[3].x = V.x;
+	m_viewMatrix[3].y = V.y;
+	m_viewMatrix[3].z = V.z;
 	m_viewMatrix[3].w = 1.f;
 }
 

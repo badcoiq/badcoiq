@@ -31,7 +31,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_AABB_H__
 
 #include "badcoiq/geometry/bqRay.h"
-#include "bqmdlinfo.h"
 
 // Axis-Aligned Bounding Box
 class bqAabb
@@ -39,19 +38,14 @@ class bqAabb
 public:
 	bqAabb()
 		:
-		m_min(bqVec4fFltMax),
-		m_max(bqVec4fFltMaxNeg)
+		m_min(bqVec3FltMax),
+		m_max(bqVec3FltMaxNeg)
 	{}
 
-	bqAabb(const bqVec4& min, const bqVec4& max) :
+	bqAabb(const bqVec3& min, const bqVec3& max) :
 		m_min(min),
 		m_max(max)
 	{}
-
-	/*bqAabb(const bqMDLAABB& aabb) :
-		m_min(aabb.m_aabbMin[0], aabb.m_aabbMin[1], aabb.m_aabbMin[2], 0.f),
-		m_max(aabb.m_aabbMax[0], aabb.m_aabbMax[1], aabb.m_aabbMax[2], 0.f)
-	{}*/
 
 	void Transform(const bqAabb& original, const bqMat4& matrix, const bqVec3& position);
 	void Add(const bqVec4& point);
@@ -68,9 +62,9 @@ public:
 	bool SphereIntersect(const bqVec4& p, float32_t r) const;
 	bool SphereIntersect(const bqVec4f& p, float32_t r) const;
 
-	void Center(bqVec4& v) const
+	void Center(bqVec3& v) const
 	{
-		v = bqVec4(m_min + m_max);
+		v = bqVec3(m_min + m_max);
 		v *= 0.5f;
 	}
 
@@ -80,25 +74,25 @@ public:
 		return m_radius;
 	}
 
-	void Extent(bqVec4& v)
+	void Extent(bqVec3& v)
 	{
-		v = bqVec4(m_max - m_min);
+		v = bqVec3(m_max - m_min);
 	}
 
 	bool IsEmpty() const
 	{
-		return ((m_min == bqVec4fFltMax) && (m_max == bqVec4fFltMaxNeg))
+		return ((m_min == bqVec3FltMax) && (m_max == bqVec3FltMaxNeg))
 			|| (m_min == m_max);
 	}
 
 	void Reset()
 	{
-		m_min = bqVec4fFltMax;
-		m_max = bqVec4fFltMaxNeg;
+		m_min = bqVec3FltMax;
+		m_max = bqVec3FltMaxNeg;
 	}
 
-	bqVec4 m_min;
-	bqVec4 m_max;
+	bqVec3 m_min;
+	bqVec3 m_max;
 
 	bqReal m_radius = 0.f;
 };

@@ -54,8 +54,8 @@ bool ExampleBasicsMshGnrtr::Init()
 
 	// Создаю коробку и сферу
 	bqAabb aabb; // можно создать используя aabb
-	aabb.m_min.Set(-2.f, -1.f, -1.f, 0.f);
-	aabb.m_max.Set(2.f, -0.8f, 1.f, 0.f);
+	aabb.m_min.Set(-2.f, -1.f, -1.f);
+	aabb.m_max.Set(2.f, -0.8f, 1.f);
 	bqMat4 transform; // можно повернуть объект, сжать\растянуть
 	// в общем всегда будет умножение на матрицу
 	bqPolygonMesh pm; // генерируется используя концепцию полигонов

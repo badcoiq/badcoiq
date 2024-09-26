@@ -50,7 +50,7 @@ public:
 	}m_cbData;
 	virtual void SetConstants(bqMaterial* material) final;
 
-	void SetData(const bqVec4& p1, const bqVec4& p2, const bqColor& color, const bqMat4& projMat);
+	void SetData(const bqVec3& p1, const bqVec3& p2, const bqColor& color, const bqMat4& projMat);
 
 	bool Init();
 };

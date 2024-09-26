@@ -128,8 +128,8 @@ public:
 
 	// 3D
 	bool m_use3D = false;
-	bqVec4 m_soundPosition;
-	bqVec4 m_listenerPosition;
+	bqVec3 m_soundPosition;
+	bqVec3 m_listenerPosition;
 	bool m_useDoppler = false;
 	float m_Doppler = 1.f;
 	float m_DopplerTimer = 0.f;

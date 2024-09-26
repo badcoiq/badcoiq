@@ -68,8 +68,8 @@ bool ExampleMshGnBox::Init()
 	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
 
 	bqAabb aabb;
-	aabb.m_min.Set(-2.f, -1.f, -1.f, 0.f);
-	aabb.m_max.Set(2.f, -0.8f, 1.f, 0.f);
+	aabb.m_min.Set(-2.f, -1.f, -1.f);
+	aabb.m_max.Set(2.f, -0.8f, 1.f);
 	bqMat4 transform;
 	bqPolygonMesh pm;
 	pm.AddBox(aabb, transform);

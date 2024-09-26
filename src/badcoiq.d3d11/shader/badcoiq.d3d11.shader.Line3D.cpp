@@ -96,10 +96,14 @@ bool bqD3D11ShaderLine3D::Init(){
 	return true;
 }
 
-void bqD3D11ShaderLine3D::SetData(const bqVec4& p1, const bqVec4& p2, const bqColor& color, const bqMat4& projMat)
+void bqD3D11ShaderLine3D::SetData(const bqVec3& p1, const bqVec3& p2, const bqColor& color, const bqMat4& projMat)
 {
-	m_cbData.P1 = p1;
-	m_cbData.P2 = p2;
+	m_cbData.P1.x = p1.x;
+	m_cbData.P1.y = p1.y;
+	m_cbData.P1.z = p1.z;
+	m_cbData.P2.x = p2.x;
+	m_cbData.P2.y = p2.y;
+	m_cbData.P2.z = p2.z;
 	m_cbData.P1.w = 1.f;
 	m_cbData.P2.w = 1.f;
 	m_cbData.Color = color;

@@ -195,10 +195,10 @@ void ExampleBasicsSkeletalAnimation::OnDraw()
 		size_t jsz = m_skeleton->GetJoints().m_size;
 		for (size_t i = 0; i < jsz; ++i)
 		{
-			bqVec4 p;
-			bqVec4 p2;
+			bqVec3 p;
+			bqVec3 p2;
 			float sz = 0.3f;
-			p = bqVec4(sz, 0., 0., 0.);
+			p = bqVec3(sz, 0., 0.);
 
 
 			bqMat4 mI2 = joints[i].m_data.m_matrixBindInverse;
@@ -207,15 +207,15 @@ void ExampleBasicsSkeletalAnimation::OnDraw()
 			bqMat4 mI = joints[i].m_data.m_matrixFinal * mI2;
 
 			bqMath::Mul(mI, p, p2);
-			m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorRed);
+			m_gs->DrawLine3D(mI.m_data[3].GetVec3(), mI.m_data[3].GetVec3() + p2, bq::ColorRed);
 
-			p = bqVec4(0., sz, 0., 0.);
+			p = bqVec3(0., sz, 0.);
 			bqMath::Mul(mI, p, p2);
-			m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorLime);
+			m_gs->DrawLine3D(mI.m_data[3].GetVec3(), mI.m_data[3].GetVec3() + p2, bq::ColorLime);
 
-			p = bqVec4(0., 0., sz, 0.);
+			p = bqVec3(0., 0., sz);
 			bqMath::Mul(mI, p, p2);
-			m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorBlue);
+			m_gs->DrawLine3D(mI.m_data[3].GetVec3(), mI.m_data[3].GetVec3() + p2, bq::ColorBlue);
 		}
 	}
 	m_gs->EnableDepth();
@@ -710,28 +710,28 @@ void ExampleBasicsSkeletalAnimation2::OnDraw()
 			size_t jsz = s->GetJoints().m_size;
 			for (size_t i = 0; i < jsz; ++i)
 			{
-				bqVec4 p;
-				bqVec4 p2;
+				bqVec3 p;
+				bqVec3 p2;
 				float sz = 0.3f;
-				p = bqVec4(sz, 0., 0., 0.);
+				p = bqVec3(sz, 0., 0.);
 
 				bqJoint* joint = &joints[i];
 
-				bqMat4 mI2 = joint->m_data.m_matrixBindInverse;
+				bqMat4 mI2 = joints[i].m_data.m_matrixBindInverse;
 				mI2.Invert();
 
-				bqMat4 mI = joint->m_data.m_matrixFinal * mI2;
+				bqMat4 mI = joints[i].m_data.m_matrixFinal * mI2;
 
 				bqMath::Mul(mI, p, p2);
-				m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorRed);
+				m_gs->DrawLine3D(mI.m_data[3].GetVec3(), mI.m_data[3].GetVec3() + p2, bq::ColorRed);
 
-				p = bqVec4(0., sz, 0., 0.);
+				p = bqVec3(0., sz, 0.);
 				bqMath::Mul(mI, p, p2);
-				m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorLime);
+				m_gs->DrawLine3D(mI.m_data[3].GetVec3(), mI.m_data[3].GetVec3() + p2, bq::ColorLime);
 
-				p = bqVec4(0., 0., sz, 0.);
+				p = bqVec3(0., 0., sz);
 				bqMath::Mul(mI, p, p2);
-				m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorBlue);
+				m_gs->DrawLine3D(mI.m_data[3].GetVec3(), mI.m_data[3].GetVec3() + p2, bq::ColorBlue);
 
 				if (i > 0 && (joint->m_base.m_parentIndex != -1))
 				{
@@ -741,8 +741,8 @@ void ExampleBasicsSkeletalAnimation2::OnDraw()
 					mI2.Invert();
 					bqMat4 mI3 = joint2->m_data.m_matrixFinal * mI2;
 
-					p = mI.m_data[3];
-					p2 = mI3.m_data[3];
+					p = mI.m_data[3].GetVec3();
+					p2 = mI3.m_data[3].GetVec3();
 					m_gs->DrawLine3D(p, p2, bq::ColorBlue);
 				}
 			}

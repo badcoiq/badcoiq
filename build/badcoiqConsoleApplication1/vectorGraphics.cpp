@@ -5277,13 +5277,13 @@ int main()
 
                         gs->SetShader(bqShaderType::Line3D, 0);
                         gs->DrawLine3D(
-                            bqVec4(10.f, 0.f, 0.f, 0.f),
-                            bqVec4(-10.f, 0.f, 0.f, 0.f),
+                            bqVec3(10.f, 0.f, 0.f),
+                            bqVec3(-10.f, 0.f, 0.f),
                             bqColor(1.f, 0.f, 0.f, 1.f));
 
                         gs->DrawLine3D(
-                            bqVec4(0.f, 0.f, 10.f, 0.f),
-                            bqVec4(0.f, 0.f, -10.f, 0.f),
+                            bqVec3(0.f, 0.f, 10.f),
+                            bqVec3(0.f, 0.f, -10.f),
                             bqColor(0.f, 1.f, 0.f, 1.f));
 
                         gs->SetShader(bqShaderType::Standart, 0);

@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdint.h>
 
+#include "badcoiq/geometry/bqAABB.h"
 #include "badcoiq/math/bqVector.h"
 
 // файл чтобы можно было подключить к проекту с плагином для 3Ds Max

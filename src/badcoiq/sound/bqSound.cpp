@@ -159,17 +159,16 @@ void bqSound::Update3D(const bqMat4& view)
 {
 	m_volume3DLeft = 0.f;
 	m_volume3DRight = 0.f;
-	bqVec4 relPos = m_soundPosition - m_listenerPosition;
+	bqVec3 relPos = m_soundPosition - m_listenerPosition;
 
 	m_distanceToListenerOld = m_distanceToListener;
-	m_distanceToListener = bqMath::Distance(bqZeroVector4, relPos);
+	m_distanceToListener = bqMath::Distance(bqZeroVector3, relPos);
 //	printf("Distance %f; RP %f %f %f\n", distance, relPos.x, relPos.y, relPos.z);
 	if (m_distanceToListener <= m_3DFar)
 	{
 
 		float vvv = 1.f / (m_3DFar - m_3DNear);
 
-		relPos.w = 1.f;
 		relPos.Normalize();
 		
 		bqMat4 V = view;

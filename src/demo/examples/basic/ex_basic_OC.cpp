@@ -110,8 +110,8 @@ bool ExampleBasicsOclCul::Init()
 
 	pm.Clear();
 	bqAabb aabb;
-	aabb.m_min.Set(-5.f, -5.f, 0.1f, 0.f);
-	aabb.m_max.Set(5.f, 5.f, 0.2f, 0.f);
+	aabb.m_min.Set(-5.f, -5.f, 0.1f);
+	aabb.m_max.Set(5.f, 5.f, 0.2f);
 	pm.AddBox(aabb, mat);
 	pm.GenerateNormals(false);
 	pm.GenerateUVPlanar(211.f);

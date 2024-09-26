@@ -86,15 +86,15 @@ bool ExampleBasicsRotations::Init()
 
 	bqPolygonMesh pm;
 	bqAabb aabb;
-	aabb.m_min.Set(-0.2f, -0.25f, -2.f, 0.f);
-	aabb.m_max.Set(0.2f, 0.25f, 2.f, 0.f);
+	aabb.m_min.Set(-0.2f, -0.25f, -2.f);
+	aabb.m_max.Set(0.2f, 0.25f, 2.f);
 	bqMat4 mat;
 	pm.AddBox(aabb, mat);
-	aabb.m_min.Set(-2.f, 0.1f, -0.2f, 0.f);
-	aabb.m_max.Set(2.f, 0.2f, 0.2f, 0.f);
+	aabb.m_min.Set(-2.f, 0.1f, -0.2f);
+	aabb.m_max.Set(2.f, 0.2f, 0.2f);
 	pm.AddBox(aabb, mat);
-	aabb.m_min.Set(-0.85f, 0.1f, -0.2f, 0.f);
-	aabb.m_max.Set(0.85f, 0.2f, 0.2f, 0.f);
+	aabb.m_min.Set(-0.85f, 0.1f, -0.2f);
+	aabb.m_max.Set(0.85f, 0.2f, 0.2f);
 	mat.m_data[3].Set(0.f, 0.f, -1.8f, 1.f);
 	pm.AddBox(aabb, mat);
 	pm.GenerateNormals(false);
@@ -221,7 +221,7 @@ void ExampleBasicsRotations::OnDraw()
 	bqQuaternion qq;
 	bqVec3 vv = m_camera->m_position - m_sceneObject3->GetPosition(); // direction
 	vv.Normalize();
-	qq.FromVector(vv, bqVec4(0.f, 0.f, 1.f, 0.f));
+	qq.FromVector(vv, bqVec3(0.f, 0.f, 1.f));
 	m_sceneObject3->m_qOrientation = qq;
 	m_sceneObject3->RecalculateWorldMatrix();
 	W = m_sceneObject3->GetMatrixWorld();

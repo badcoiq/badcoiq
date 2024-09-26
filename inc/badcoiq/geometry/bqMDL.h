@@ -66,6 +66,8 @@ public:
 
 	bqVec3f* m_vBuf = 0;
 	uint32_t* m_iBuf = 0;
+	uint32_t m_vertNum = 0;
+	uint32_t m_indNum = 0;
 
 	bqMDLBVHNode* m_bvh = 0;
 	uint32_t m_bvhNodeNum = 0;
@@ -82,6 +84,7 @@ public:
 	bool CollisionSphereSphere(bqReal radius, const bqVec3& origin);
 	bool CollisionSphereBox(bqReal radius, const bqVec3& origin);
 	bool CollisionSphereBVH(bqReal radius, const bqVec3& origin);
+	bool CollisionSphereTriangle(bqReal radius, const bqVec3& origin);
 	bqVec3 m_intersection;
 	bqVec3 m_normal;
 };

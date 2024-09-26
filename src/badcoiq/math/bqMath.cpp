@@ -849,6 +849,14 @@ void bqMath::Mul(const bqMat4& m, const bqVec3& v, bqVec3& r)
 	r.z = v.x * m.m_data[0].z + v.y * m.m_data[1].z + v.z * m.m_data[2].z;
 }
 
+void bqMath::Mul(const bqMat4& m, const bqVec3& v, bqVec4& r)
+{
+	r.x = v.x * m.m_data[0].x + v.y * m.m_data[1].x + v.z * m.m_data[2].x + m.m_data[3].x;
+	r.y = v.x * m.m_data[0].y + v.y * m.m_data[1].y + v.z * m.m_data[2].y + m.m_data[3].y;
+	r.z = v.x * m.m_data[0].z + v.y * m.m_data[1].z + v.z * m.m_data[2].z + m.m_data[3].z;
+	r.w = v.x * m.m_data[0].w + v.y * m.m_data[1].w + v.z * m.m_data[2].w + m.m_data[3].w;
+}
+
 void bqMath::Mul(const bqMat4& m, const bqVec3f& v, bqVec3f& r)
 {
 	r.x = v.x * (float)m.m_data[0].x + v.y * (float)m.m_data[1].x + v.z * (float)m.m_data[2].x;

@@ -143,7 +143,7 @@ public:
 	virtual void EndDraw() final;
 	virtual void SwapBuffers() final;
 	
-	virtual void DrawLine3D(const bqVec4& p1, const bqVec4& p2, const bqColor& c) final;
+	virtual void DrawLine3D(const bqVec3& p1, const bqVec3& p2, const bqColor& c) final;
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) final;
 
 #ifdef BQ_WITH_MESH
@@ -185,7 +185,7 @@ public:
 	virtual void DrawGUIText(const char32_t* text, uint32_t textSz, const bqVec2f& position,
 		bqGUIDrawTextCallback*) final;
 #ifdef BQ_WITH_SPRITE
-	virtual void DrawText3D(const bqVec4& pos, const char32_t* text, size_t textLen,
+	virtual void DrawText3D(const bqVec3& pos, const char32_t* text, size_t textLen,
 		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) final;
 #endif
 #endif

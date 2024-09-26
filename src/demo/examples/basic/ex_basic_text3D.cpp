@@ -121,13 +121,13 @@ void ExampleBasicsText3D::OnDraw()
 	bqFramework::SetMatrix(bqMatrixType::View, &m_camera->m_viewMatrix);
 	bqFramework::SetMatrix(bqMatrixType::Projection, &m_camera->m_projectionMatrix);
 
-	m_gs->DrawText3D(bqVec4(), U"Hello World!!!", 15, bqFramework::GetDefaultFont(bqGUIDefaultFont::Text),
+	m_gs->DrawText3D(bqVec3(), U"Hello World!!!", 15, bqFramework::GetDefaultFont(bqGUIDefaultFont::Text),
 		bq::ColorRed, 0.01f, 51);
-	m_gs->DrawText3D(bqVec4(5.f, 0.f, 0.f, 0.f), U"Чуть дальше", 12, bqFramework::GetDefaultFont(bqGUIDefaultFont::Text),
+	m_gs->DrawText3D(bqVec3(5.f, 0.f, 0.f), U"Чуть дальше", 12, bqFramework::GetDefaultFont(bqGUIDefaultFont::Text),
 		bq::ColorLime, 0.01f, 1);
-	m_gs->DrawText3D(bqVec4(1.f, 0.f, 1.f, 0.f), U"Малого размера", 15, bqFramework::GetDefaultFont(bqGUIDefaultFont::Text),
+	m_gs->DrawText3D(bqVec3(1.f, 0.f, 1.f), U"Малого размера", 15, bqFramework::GetDefaultFont(bqGUIDefaultFont::Text),
 		bq::ColorAliceBlue, 0.001f, 1);
-	m_gs->DrawText3D(bqVec4(1.f, 0.f, 2.f, 0.f), U"БОЛЬШЕ", 7, bqFramework::GetDefaultFont(bqGUIDefaultFont::Text),
+	m_gs->DrawText3D(bqVec3(1.f, 0.f, 2.f), U"БОЛЬШЕ", 7, bqFramework::GetDefaultFont(bqGUIDefaultFont::Text),
 		bq::ColorBlueViolet, 0.1f, 1);
 	
 	m_app->DrawGrid(14, (float)m_camera->m_position.y);

@@ -817,7 +817,10 @@ void bqPolygonMesh::GenerateUVPlanar(float scale)
 			auto lv = cv->m_left;
 			while (true)
 			{
-				bqVec4 point = cv->m_data->m_data.BaseData.Position;// -center3d;
+				bqVec4 point;
+				point.x = cv->m_data->m_data.BaseData.Position.x;
+				point.y = cv->m_data->m_data.BaseData.Position.y;
+				point.z = cv->m_data->m_data.BaseData.Position.z;
 				point.w = 1.f;
 				bqMath::Mul(VP, bqVec4(point), point);
 

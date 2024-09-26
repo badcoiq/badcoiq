@@ -213,5 +213,8 @@
     <ClCompile Include="..\..\src\badcoiq\VG\bqVectorGraphicsTarget.cpp">
       <Filter>Source Files\vg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\geometry\bqTriangle.cpp">
+      <Filter>Source Files\geometry</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

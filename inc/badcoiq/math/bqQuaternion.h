@@ -138,6 +138,21 @@ public:
 		this->Normalize();
 	}
 
+	void FromVector(const bqVec3& v1, const bqVec3& v2)
+	{
+		bqVec3 a;
+		v1.Cross(v2, a);
+
+		x = (float)a.x;
+		y = (float)a.y;
+		z = (float)a.z;
+
+		// LOL
+		w = 1.f + (float)(v1.Dot(v2));
+
+		this->Normalize();
+	}
+
 	/*void FromMatrix(const bqMat4& m)
 	{
 		bqReal trace = m.m_data[0].x + m.m_data[1].y + m.m_data[2].z;

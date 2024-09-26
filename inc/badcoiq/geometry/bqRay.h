@@ -38,12 +38,12 @@ public:
 	bqRay() {}
 	~bqRay() {}
 
-	bqVec4 m_origin;
-	bqVec4 m_end;
+	bqVec3 m_origin;
+	bqVec3 m_end;
 
 	// Так-же полезно иметь дополнительные данные
-	bqVec4 m_direction;
-	bqVec4 m_invDir;
+	bqVec3 m_direction;
+	bqVec3 m_invDir;
 
 	// Для Watertight Ray/Triangle Intersection
 	int32_t m_kz = 0;
@@ -68,17 +68,17 @@ public:
 	// Пересечение линий.
 	// Установить пересекает ли линия другую линию невозможно так как они не имеют
 	//  толщину. Логичнее получить расстояние между ними.
-	bqReal DistanceToLine(const bqVec4& lineP0, const bqVec4& lineP1);
+	bqReal DistanceToLine(const bqVec3& lineP0, const bqVec3& lineP1);
 
 	// После установки m_origin или m_end
 	// Вычислить остальные значения типа m_direction, m_kz
 	void Update();
 
 	// Получить точку на луче, на расстоянии t от начала (m_origin)
-	void GetIntersectionPoint(bqReal t, bqVec4& ip);
+	void GetIntersectionPoint(bqReal t, bqVec3& ip);
 
 	// Пересекает ли плоскость.
-	bool PlaneIntersection(const bqVec4& planePoint, const bqVec4& planeNormal, bqReal& T);
+	bool PlaneIntersection(const bqVec3& planePoint, const bqVec3& planeNormal, bqReal& T);
 };
 
 #endif

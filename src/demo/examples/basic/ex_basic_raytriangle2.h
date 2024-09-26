@@ -161,7 +161,7 @@ class ExampleBasicsRayTri2 : public DemoExample
     MyModel* m_model = 0;
 
     void _onCamera();
-    bool _getRayHit(bqAabb&, bqTriangle& out, bqRay& ray, bqVec4& ip);
+    bool _getRayHit(bqAabb&, bqTriangle& out, bqRay& ray, bqVec3& ip);
 public:
 	ExampleBasicsRayTri2(DemoApp*);
 	virtual ~ExampleBasicsRayTri2();

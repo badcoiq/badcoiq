@@ -47,18 +47,26 @@ void bqRay::CreateFrom2DCoords(
 	float pt_y = -(coord.y / rc_sz.y) * 2.f + 1.f;
 
 	//                                           0.f - for d3d
-	bqMath::Mul(VPinv, bqVec4(pt_x, pt_y, depthRange.x, 1.f), m_origin);
-	bqMath::Mul(VPinv, bqVec4(pt_x, pt_y, depthRange.y, 1.f), m_end);
+	bqVec4 Orgn4, End4;
+	bqMath::Mul(VPinv, bqVec3(pt_x, pt_y, depthRange.x), Orgn4);
+	bqMath::Mul(VPinv, bqVec3(pt_x, pt_y, depthRange.y), End4);
 
-	m_origin.w = 1.0f / m_origin.w;
-	m_origin.x *= m_origin.w;
-	m_origin.y *= m_origin.w;
-	m_origin.z *= m_origin.w;
+	m_origin.x = Orgn4.x;
+	m_origin.y = Orgn4.y;
+	m_origin.z = Orgn4.z;
+	m_end.x = End4.x;
+	m_end.y = End4.y;
+	m_end.z = End4.z;
 
-	m_end.w = 1.0f / m_end.w;
-	m_end.x *= m_end.w;
-	m_end.y *= m_end.w;
-	m_end.z *= m_end.w;
+	Orgn4.w = 1.0f / Orgn4.w;
+	m_origin.x *= Orgn4.w;
+	m_origin.y *= Orgn4.w;
+	m_origin.z *= Orgn4.w;
+
+	End4.w = 1.0f / End4.w;
+	m_end.x *= End4.w;
+	m_end.y *= End4.w;
+	m_end.z *= End4.w;
 
 	Update();
 }
@@ -68,13 +76,11 @@ void bqRay::Update()
 	m_direction.x = m_end.x - m_origin.x;
 	m_direction.y = m_end.y - m_origin.y;
 	m_direction.z = m_end.z - m_origin.z;
-	m_direction.w = 0.f;
 	m_direction.Normalize();
 
 	m_invDir.x = 1.f / m_direction.x;
 	m_invDir.y = 1.f / m_direction.y;
 	m_invDir.z = 1.f / m_direction.z;
-	m_invDir.w = 1.f / m_direction.w;
 
 	m_kz = bqRay_max_dim
 	(
@@ -104,14 +110,11 @@ void bqRay::Update()
 	m_Sz = 1.f / dir_data[m_kz];
 }
 
-bqReal bqRay::DistanceToLine(const bqVec4& lineP0, const bqVec4& lineP1)
+bqReal bqRay::DistanceToLine(const bqVec3& lineP0, const bqVec3& lineP1)
 {
-	bqVec4 u = m_end - m_origin;
-	bqVec4 v = lineP1 - lineP0;
-	bqVec4 w = m_origin - lineP0;
-	u.w = 0.f;
-	v.w = 0.f;
-	w.w = 0.f;
+	bqVec3 u = m_end - m_origin;
+	bqVec3 v = lineP1 - lineP0;
+	bqVec3 w = m_origin - lineP0;
 	bqReal a = u.Dot();
 	bqReal b = u.Dot(v);
 	bqReal c = v.Dot();
@@ -132,28 +135,27 @@ bqReal bqRay::DistanceToLine(const bqVec4& lineP0, const bqVec4& lineP1)
 	}
 
 	//bqVec4 dP = w + (sc * u) - (tc * v);
-	bqVec4 dP;
+	bqVec3 dP;
 	dP.x = w.x = (sc * u.x) - (tc * v.x);
 	dP.y = w.y = (sc * u.y) - (tc * v.y);
 	dP.z = w.z = (sc * u.z) - (tc * v.z);
-	dP.w = 0.f;
 	return std::sqrt(dP.Dot());
 }
 
-void bqRay::GetIntersectionPoint(bqReal t, bqVec4& ip)
+void bqRay::GetIntersectionPoint(bqReal t, bqVec3& ip)
 {
 	ip.x = m_origin.x + t * m_direction.x;
 	ip.y = m_origin.y + t * m_direction.y;
 	ip.z = m_origin.z + t * m_direction.z;
 }
 
-bool bqRay::PlaneIntersection(const bqVec4& planePoint, const bqVec4& planeNormal, bqReal& T)
+bool bqRay::PlaneIntersection(const bqVec3& planePoint, const bqVec3& planeNormal, bqReal& T)
 {
 	bqReal det = (planeNormal.x * m_direction.x) + (planeNormal.y * m_direction.y) + (planeNormal.z * m_direction.z);
 
 	if (std::abs(det) < bqEpsilon) return false;
 
-	bqVec4 v;
+	bqVec3 v;
 	v.x = planePoint.x - m_origin.x;
 	v.y = planePoint.y - m_origin.y;
 	v.z = planePoint.z - m_origin.z;

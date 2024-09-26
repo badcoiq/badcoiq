@@ -149,7 +149,7 @@ void ExampleBasicsRayTri2::OnDraw()
 		m_app->GetGS()->GetDepthRange());
 	r.Update();
 
-	bqVec4 ip;
+	bqVec3 ip;
 	bqTriangle triangle;
 	bqAabb aabb;
 	if (_getRayHit(aabb, triangle, r, ip))
@@ -159,11 +159,11 @@ void ExampleBasicsRayTri2::OnDraw()
 		m_gs->DrawLine3D(triangle.v2, triangle.v3, bq::ColorYellow);
 		m_gs->DrawLine3D(triangle.v3, triangle.v1, bq::ColorYellow);
 
-		m_gs->DrawLine3D(ip + bqVec4(-1.f, 0.f, 0.f, 0.f), ip + bqVec4(1.f, 0.f, 0.f, 0.f), bq::ColorRed);
-		m_gs->DrawLine3D(ip + bqVec4(0.f, -1.f, 0.f, 0.f), ip + bqVec4(0.f, 1.f, 0.f, 0.f), bq::ColorRed);
-		m_gs->DrawLine3D(ip + bqVec4(0.f, 0.f, -1.f, 0.f), ip + bqVec4(0.f, 0.f, 1.f, 0.f), bq::ColorRed);
+		m_gs->DrawLine3D(ip + bqVec3(-1.f, 0.f, 0.f), ip + bqVec3(1.f, 0.f, 0.f), bq::ColorRed);
+		m_gs->DrawLine3D(ip + bqVec3(0.f, -1.f, 0.f), ip + bqVec3(0.f, 1.f, 0.f), bq::ColorRed);
+		m_gs->DrawLine3D(ip + bqVec3(0.f, 0.f, -1.f), ip + bqVec3(0.f, 0.f, 1.f), bq::ColorRed);
 
-		m_app->DrawAABB(aabb, bq::ColorWhite, bqVec4());
+		m_app->DrawAABB(aabb, bq::ColorWhite, bqVec3());
 	}
 
 	m_app->DrawGrid(14, (float)m_camera->m_position.y);
@@ -172,7 +172,7 @@ void ExampleBasicsRayTri2::OnDraw()
 	m_gs->SwapBuffers();
 }
 
-bool ExampleBasicsRayTri2::_getRayHit(bqAabb& aabb, bqTriangle& outTri, bqRay& ray, bqVec4& ip)
+bool ExampleBasicsRayTri2::_getRayHit(bqAabb& aabb, bqTriangle& outTri, bqRay& ray, bqVec3& ip)
 {
 	bool ret = false;
 	bqReal len = 9999.0;
@@ -233,7 +233,7 @@ bool ExampleBasicsRayTri2::_getRayHit(bqAabb& aabb, bqTriangle& outTri, bqRay& r
 				bqReal V = 0.f;
 				bqReal W = 0.f;
 				ray.Update();
-				if (tri.RayTest_Watertight(ray, true, T, U, V, W))
+				if (tri.RayIntersect_Watertight(ray, true, T, U, V, W))
 				{
 					if (T < len)
 					{

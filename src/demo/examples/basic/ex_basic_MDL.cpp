@@ -315,10 +315,10 @@ void ExampleBasicsMDL::OnDraw()
 			size_t jsz = m_currSkeleton->GetJoints().m_size;
 			for (size_t i = 0; i < jsz; ++i)
 			{
-				bqVec4 p;
-				bqVec4 p2;
+				bqVec3 p;
+				bqVec3 p2;
 				float sz = 0.3f;
-				p = bqVec4(sz, 0., 0., 0.);
+				p = bqVec3(sz, 0., 0.);
 
 
 				bqMat4 mI2 = joints[i].m_data.m_matrixBindInverse;
@@ -327,15 +327,15 @@ void ExampleBasicsMDL::OnDraw()
 				bqMat4 mI = joints[i].m_data.m_matrixFinal * mI2;
 
 				bqMath::Mul(mI, p, p2);
-				m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorRed);
+				m_gs->DrawLine3D(mI.m_data[3].GetVec3(), mI.m_data[3].GetVec3() + p2, bq::ColorRed);
 
-				p = bqVec4(0., sz, 0., 0.);
+				p = bqVec3(0., sz, 0.);
 				bqMath::Mul(mI, p, p2);
-				m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorLime);
+				m_gs->DrawLine3D(mI.m_data[3].GetVec3(), mI.m_data[3].GetVec3() + p2, bq::ColorLime);
 
-				p = bqVec4(0., 0., sz, 0.);
+				p = bqVec3(0., 0., sz);
 				bqMath::Mul(mI, p, p2);
-				m_gs->DrawLine3D(mI.m_data[3], mI.m_data[3] + p2, bq::ColorBlue);
+				m_gs->DrawLine3D(mI.m_data[3].GetVec3(), mI.m_data[3].GetVec3() + p2, bq::ColorBlue);
 
 				if (joints[i].m_base.m_parentIndex != -1)
 				{
@@ -344,7 +344,7 @@ void ExampleBasicsMDL::OnDraw()
 					bqMat4 _mI2 = parent.m_data.m_matrixBindInverse;
 					_mI2.Invert();
 					bqMat4 _mI = parent.m_data.m_matrixFinal * _mI2;
-					m_gs->DrawLine3D(mI.m_data[3], _mI.m_data[3], bq::ColorLime);
+					m_gs->DrawLine3D(mI.m_data[3].GetVec3(), _mI.m_data[3].GetVec3(), bq::ColorLime);
 				}
 			}
 		}

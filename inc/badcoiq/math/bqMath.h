@@ -48,8 +48,10 @@ const double PIPI = 6.283185307179586476925286766559;
 #include "badcoiq/math/bqQuaternion.h"
 #include "badcoiq/math/bqMatrix.h"
 
-const bqVec4 bqVec4fFltMax = bqVec4(DBL_MAX);
-const bqVec4 bqVec4fFltMaxNeg = bqVec4(-DBL_MAX);
+const bqVec4 bqVec4FltMax = bqVec4(DBL_MAX);
+const bqVec4 bqVec4FltMaxNeg = bqVec4(-DBL_MAX);
+const bqVec3 bqVec3FltMax = bqVec3(DBL_MAX);
+const bqVec3 bqVec3FltMaxNeg = bqVec3(-DBL_MAX);
 const bqVec4 bqZeroVector4 = bqVec4(0.0, 0.0, 0.0, 0.0);
 const bqVec3 bqZeroVector3 = bqVec3(0.0,0.0,0.0);
 
@@ -176,6 +178,7 @@ public:
 
 	static void Mul(const bqMat4&, const bqMat4&, bqMat4&);
 	static void Mul(const bqMat4&, const bqVec3&, bqVec3&);
+	static void Mul(const bqMat4&, const bqVec3&, bqVec4&);
 	static void Mul(const bqMat4&, const bqVec4&, bqVec4&);
 	static void Mul(const bqMat4&, const bqVec4f&, bqVec4f&);
 	static void Mul(const bqMat4&, const bqVec3f&, bqVec3f&);

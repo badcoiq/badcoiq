@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ class ExampleBasicsRayTri : public DemoExample
 	bqPolygonMesh* m_polygonMesh = 0;
 	bqMat4 m_worldSphere, m_wvp;
 
-	bool _getTriangle(bqTriangle*, bqRay*, bqVec4& ip);
+	bool _getTriangle(bqTriangle*, bqRay*, bqVec3& ip);
 	void _onCamera();
 public:
 	ExampleBasicsRayTri(DemoApp*);

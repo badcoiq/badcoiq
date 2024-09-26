@@ -40,8 +40,8 @@ public:
 
 	virtual void DrawLine(void* data, 
 		uint32_t reason, 
-		const bqVec4& v1, 
-		const bqVec4& v2, 
+		const bqVec3& v1, 
+		const bqVec3& v2, 
 		const bqColor& color) override
 	{
 		ExamplePhysics01* ex = (ExamplePhysics01*)data;
@@ -76,8 +76,8 @@ bool ExamplePhysics01::Init()
 
 	// Создаю коробку и сферу
 	bqAabb aabb; // можно создать используя aabb
-	aabb.m_min.Set(-2.f, -1.f, -1.f, 0.f);
-	aabb.m_max.Set(2.f, -0.8f, 1.f, 0.f);
+	aabb.m_min.Set(-2.f, -1.f, -1.f);
+	aabb.m_max.Set(2.f, -0.8f, 1.f);
 	bqMat4 transform; // можно повернуть объект, сжать\растянуть
 	// в общем всегда будет умножение на матрицу
 	bqPolygonMesh pm; // генерируется используя концепцию полигонов

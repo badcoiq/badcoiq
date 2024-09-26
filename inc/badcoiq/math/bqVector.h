@@ -349,6 +349,8 @@ public:
 	T z = static_cast<T>(0);
 	T* Data() { return &x; }
 };
+BQ_FORCEINLINE bqVec3f operator*(const bqReal& s, const bqVec3f& v) { return v * s; }
+BQ_FORCEINLINE bqVec3 operator*(const bqReal& s, const bqVec3& v) { return v * s; }
 
 template<typename T>
 class bqVec4_t
@@ -363,27 +365,18 @@ public:
 		w(W)
 	{}
 
-	template <typename T2>
-	bqVec4_t(T2 v) :
-		x(static_cast<T>(v)),
-		y(static_cast<T>(v)),
-		z(static_cast<T>(v)),
-		w(static_cast<T>(v))
+	bqVec4_t(T v) :
+		x(v),
+		y(v),
+		z(v),
+		w(v)
 	{}
 
-	template <typename T2>
-	bqVec4_t(const bqVec4_t<T2>& v) :
-		x(static_cast<T>(v.x)),
-		y(static_cast<T>(v.y)),
-		z(static_cast<T>(v.z)),
-		w(static_cast<T>(v.w))
-	{}
-
-	template <typename T2>
-	bqVec4_t(const bqVec3_t<T2>& v) :
-		x(static_cast<T>(v.x)),
-		y(static_cast<T>(v.y)),
-		z(static_cast<T>(v.z))
+	bqVec4_t(const bqVec4_t<T>& v) :
+		x(v.x),
+		y(v.y),
+		z(v.z),
+		w(v.w)
 	{}
 
 	void Set(T X, T Y, T Z, T W)
@@ -617,7 +610,7 @@ public:
 	bqRect GetRect() { return bqRect((bqRect::_type)x, (bqRect::_type)y, (bqRect::_type)z, (bqRect::_type)w); }
 	bqRectf GetRectf() { return bqRectf((bqRect::_type)x, (bqRect::_type)y, (bqRect::_type)z, (bqRect::_type)w); }
 };
-BQ_FORCEINLINE bqVec4f operator*(const bqReal& s, const bqVec4f& v) { return v * s; }
+BQ_FORCEINLINE bqVec4f operator*(const float32_t& s, const bqVec4f& v) { return v * s; }
 BQ_FORCEINLINE bqVec4 operator*(const bqReal& s, const bqVec4& v) { return v * s; }
 
 //const bqVec4 bqVec4_Zero = bqVec4();

@@ -44,7 +44,7 @@ class bqSpriteState;
 class bqSprite : public bqSceneObject
 {
 	bqTexture* m_texture = 0;
-	bqVec4f m_rect;
+	bqVec4 m_rect;
 	bqArray<bqSpriteState*> m_states;
 	bqSpriteState* m_activeState = 0;
 	bqColor m_color = bq::ColorWhite;
@@ -71,7 +71,7 @@ public:
 
 	float m_alphaDiscard = 0.5f;
 
-	bqVec4f& GetRect() { return m_rect; }
+	bqVec4& GetRect() { return m_rect; }
 	bqSpriteState* GetActiveState() { return m_activeState; }
 	void SetActiveState(bqSpriteState* s) { m_activeState = s; }
 	bqSpriteState* CreateNewState();

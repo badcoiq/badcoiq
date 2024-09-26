@@ -83,7 +83,7 @@ bool bqCameraFrustum::PointInFrustum(const bqVec4& point)
 	return true;
 }
 
-bool bqCameraFrustum::SphereInFrustum(bqReal radius, const bqVec4& position)
+bool bqCameraFrustum::SphereInFrustum(bqReal radius, const bqVec3& position)
 {
 	if (m_planes[0].x * position.x +
 		m_planes[0].y * position.y +

@@ -53,7 +53,7 @@ public:
 	bqVec4 m_planes[6u];
 
 	bool PointInFrustum(const bqVec4& point);
-	bool SphereInFrustum(bqReal radius, const bqVec4& position);
+	bool SphereInFrustum(bqReal radius, const bqVec3& position);
 	bool AABBInFrustum(const bqAabb& aabb);
 	void NormalizePlane(bqVec4& plane);
 	void CalculateFrustum(bqMat4& P, bqMat4& V);

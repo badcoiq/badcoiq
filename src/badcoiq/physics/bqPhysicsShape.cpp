@@ -49,9 +49,7 @@ void bqPhysicsShapeSphere::SetRadius(float v)
 		v = 0.1f;
 	m_radius = v;
 	m_aabb.m_min.Set(-v);
-	m_aabb.m_min.w = 0.f;
 	m_aabb.m_max.Set(v);
-	m_aabb.m_max.w = 0.f;
 }
 
 #endif

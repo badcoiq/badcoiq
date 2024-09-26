@@ -726,7 +726,7 @@ bool bqGSD3D11::CreateShaders()
 	return true;
 }
 
-void bqGSD3D11::DrawLine3D(const bqVec4& p1, const bqVec4& p2, const bqColor& c)
+void bqGSD3D11::DrawLine3D(const bqVec3& p1, const bqVec3& p2, const bqColor& c)
 {
 	m_shaderLine3D->SetData(p1, p2, c, *bqFramework::GetMatrix(bqMatrixType::ViewProjection));
 	m_shaderLine3D->SetConstants(0); // возможно лишнее. Не не лишнее. Там работа с константным буфером.
@@ -1572,7 +1572,7 @@ void bqGSD3D11::_drawSprite(const bqColor& color, const bqVec4& corners, const b
 
 #ifdef BQ_WITH_GUI
 void bqGSD3D11::DrawText3D(
-	const bqVec4& pos, 
+	const bqVec3& pos, 
 	const char32_t* text, 
 	size_t textLen,
 	bqGUIFont* font, 

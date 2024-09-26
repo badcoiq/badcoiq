@@ -103,7 +103,7 @@ public:
 
 	// Нарисовать линию в 3D.
 	// Обязательно нужно указать на ViewProjection матрицу
-	virtual void DrawLine3D(const bqVec4& p1, const bqVec4& p2, const bqColor& c) = 0;
+	virtual void DrawLine3D(const bqVec3& p1, const bqVec3& p2, const bqColor& c) = 0;
 
 	// Установить текущий шейдер.
 	// Если bqShaderType::User то необходимо указать индекс шейдера
@@ -179,7 +179,7 @@ public:
 	//                    на половину длинны. Постоянно вычислять длинну внутри метода думаю
 	//                    не верно. Проще указать эту длинну вручную. bqGUIFont должен иметь метод
 	//                    который вернёт длинну в пикселях. Если метода нет то его надо написать.
-	virtual void DrawText3D(const bqVec4& pos, const char32_t* text, size_t textLen,
+	virtual void DrawText3D(const bqVec3& pos, const char32_t* text, size_t textLen,
 		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) = 0;
 #endif
 #endif

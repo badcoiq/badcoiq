@@ -218,12 +218,7 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					}
 
 
-					m_aabb.Add(bqVec3(chunkHeaderMesh.m_aabb.m_aabbMin[0],
-						chunkHeaderMesh.m_aabb.m_aabbMin[1],
-						chunkHeaderMesh.m_aabb.m_aabbMin[2]));
-					m_aabb.Add(bqVec3(chunkHeaderMesh.m_aabb.m_aabbMax[0],
-						chunkHeaderMesh.m_aabb.m_aabbMax[1],
-						chunkHeaderMesh.m_aabb.m_aabbMax[2]));
+					m_aabb.Add(chunkHeaderMesh.m_aabb.m_aabb);
 					m_radius = m_aabb.Radius();
 
 					bqMesh* newM = new bqMesh;
@@ -280,13 +275,8 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					bqMDLChunkHeaderCollisionMesh chunkHeaderMesh;
 					file.Read(&chunkHeaderMesh, sizeof(chunkHeaderMesh));
 
-					m_aabb.m_min.x = chunkHeaderMesh.m_aabb.m_aabbMin[0];
-					m_aabb.m_min.y = chunkHeaderMesh.m_aabb.m_aabbMin[1];
-					m_aabb.m_min.z = chunkHeaderMesh.m_aabb.m_aabbMin[2];
-					m_aabb.m_max.x = chunkHeaderMesh.m_aabb.m_aabbMax[0];
-					m_aabb.m_max.y = chunkHeaderMesh.m_aabb.m_aabbMax[1];
-					m_aabb.m_max.z = chunkHeaderMesh.m_aabb.m_aabbMax[2];
-					m_radius = chunkHeaderMesh.m_aabb.m_radius;
+					m_aabb = chunkHeaderMesh.m_aabb.m_aabb;
+					m_radius = chunkHeaderMesh.m_aabb.m_aabb.m_radius;
 
 					uint32_t vSz = chunkHeaderMesh.m_vertNum * sizeof(bqVec3f);
 					uint32_t iSz = chunkHeaderMesh.m_indNum * sizeof(uint32_t);
@@ -304,6 +294,8 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					newCollision->m_iBuf = new uint32_t[chunkHeaderMesh.m_indNum];
 					newCollision->m_bvhNodeNum = chunkHeaderMesh.m_numOfBVHAabbs;
 					newCollision->m_bvh = new bqMDLBVHNode[newCollision->m_bvhNodeNum];
+					newCollision->m_vertNum = chunkHeaderMesh.m_vertNum;
+					newCollision->m_indNum = chunkHeaderMesh.m_indNum;
 
 					file.Read(newCollision->m_vBuf, vSz);
 					file.Read(newCollision->m_iBuf, iSz);
@@ -317,7 +309,7 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 							file.Read(&newCollision->m_bvh[ai].m_triNum, sizeof(uint32_t));
 							newCollision->m_bvh[ai].m_tris = new uint32_t[newCollision->m_bvh[ai].m_triNum];
 
-							for (int32_t ti = 0; ti < newCollision->m_bvh[ai].m_triNum; ++ti)
+							for (uint32_t ti = 0; ti < newCollision->m_bvh[ai].m_triNum; ++ti)
 							{
 								file.Read(&newCollision->m_bvh[ai].m_tris[ti], sizeof(uint32_t));
 							}
@@ -715,6 +707,21 @@ bool bqMDLCollision::CollisionSphereBVH(bqReal radius, const bqVec3& origin)
 
 			}
 		}
+	}
+	return false;
+}
+bool bqMDLCollision::CollisionSphereTriangle(bqReal radius, const bqVec3& origin)
+{
+	bqTriangle tri;
+	for (uint32_t i = 0; i < m_indNum; )
+	{
+		tri.v1 = m_vBuf[m_iBuf[i]];
+		tri.v2 = m_vBuf[m_iBuf[i+1]];
+		tri.v3 = m_vBuf[m_iBuf[i+2]];
+		
+		//tri.Update();
+
+		
 	}
 	return false;
 }

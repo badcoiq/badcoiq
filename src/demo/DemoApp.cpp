@@ -574,20 +574,20 @@ bqGPUMesh* DemoApp::CreateMeshBox(const bqAabb& b)
 	return m_GPUMesh;
 }
 
-void DemoApp::DrawAABB(const bqAabb& aabb, const bqColor& color, const bqVec4& position)
+void DemoApp::DrawAABB(const bqAabb& aabb, const bqColor& color, const bqVec3& position)
 {
 	auto& p1 = aabb.m_min;
 	auto& p2 = aabb.m_max;
 
-	bqVec4 v1 = p1;
-	bqVec4 v2 = p2;
+	bqVec3 v1 = p1;
+	bqVec3 v2 = p2;
 
-	bqVec4 v3(p1.x, p1.y, p2.z, 1.f);
-	bqVec4 v4(p2.x, p1.y, p1.z, 1.f);
-	bqVec4 v5(p1.x, p2.y, p1.z, 1.f);
-	bqVec4 v6(p1.x, p2.y, p2.z, 1.f);
-	bqVec4 v7(p2.x, p1.y, p2.z, 1.f);
-	bqVec4 v8(p2.x, p2.y, p1.z, 1.f);
+	bqVec3 v3(p1.x, p1.y, p2.z);
+	bqVec3 v4(p2.x, p1.y, p1.z);
+	bqVec3 v5(p1.x, p2.y, p1.z);
+	bqVec3 v6(p1.x, p2.y, p2.z);
+	bqVec3 v7(p2.x, p1.y, p2.z);
+	bqVec3 v8(p2.x, p2.y, p1.z);
 
 	m_gs->DrawLine3D(v1 + position, v4 + position, color);
 	m_gs->DrawLine3D(v5 + position, v8 + position, color);
