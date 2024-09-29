@@ -429,13 +429,9 @@ void PluginExporter::Save(const MCHAR* name)
 						_onCollisionMeshAddPositionInMap(triV[2], vMap, Vs, Is, curInd);
 					}
 					bqMDLChunkHeaderCollisionMesh meshChunkHeader;
-					meshChunkHeader.m_aabb.m_aabbMax[0] = _aabb.m_max.x;
-					meshChunkHeader.m_aabb.m_aabbMax[1] = _aabb.m_max.y;
-					meshChunkHeader.m_aabb.m_aabbMax[2] = _aabb.m_max.z;
-					meshChunkHeader.m_aabb.m_aabbMin[0] = _aabb.m_min.x;
-					meshChunkHeader.m_aabb.m_aabbMin[1] = _aabb.m_min.y;
-					meshChunkHeader.m_aabb.m_aabbMin[2] = _aabb.m_min.z;
-					meshChunkHeader.m_aabb.m_radius = _aabb.radius();
+					meshChunkHeader.m_aabb.m_aabb.m_max.Set(_aabb.m_max.x, _aabb.m_max.y, _aabb.m_max.z);
+					meshChunkHeader.m_aabb.m_aabb.m_min.Set(_aabb.m_min.x, _aabb.m_min.y, _aabb.m_min.z);
+					meshChunkHeader.m_aabb.m_aabb.m_radius = _aabb.radius();
 					meshChunkHeader.m_indNum = Is.size();
 					meshChunkHeader.m_vertNum = Vs.size();
 
@@ -494,12 +490,12 @@ void PluginExporter::Save(const MCHAR* name)
 
 						bqMDLBVHAABB bvh_aabb;
 						bvh_aabb.m_aabb.m_radius = ab->m_aabb.radius();
-						bvh_aabb.m_aabb.m_aabbMin[0] = ab->m_aabb.m_min.x;
-						bvh_aabb.m_aabb.m_aabbMin[1] = ab->m_aabb.m_min.y;
-						bvh_aabb.m_aabb.m_aabbMin[2] = ab->m_aabb.m_min.z;
-						bvh_aabb.m_aabb.m_aabbMax[0] = ab->m_aabb.m_max.x;
-						bvh_aabb.m_aabb.m_aabbMax[1] = ab->m_aabb.m_max.y;
-						bvh_aabb.m_aabb.m_aabbMax[2] = ab->m_aabb.m_max.z;
+						bvh_aabb.m_aabb.m_min.x = ab->m_aabb.m_min.x;
+						bvh_aabb.m_aabb.m_min.y = ab->m_aabb.m_min.y;
+						bvh_aabb.m_aabb.m_min.z = ab->m_aabb.m_min.z;
+						bvh_aabb.m_aabb.m_max.x = ab->m_aabb.m_max.x;
+						bvh_aabb.m_aabb.m_max.y = ab->m_aabb.m_max.y;
+						bvh_aabb.m_aabb.m_max.z = ab->m_aabb.m_max.z;
 						bvh_aabb.m_first = ab->m_aabb_a;
 						bvh_aabb.m_second = ab->m_aabb_b;
 						bvh_aabb.m_triNum = ab->m_triNum;

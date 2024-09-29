@@ -36,6 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define bqInfinity std::numeric_limits<bqReal>::infinity()
 #define bqEpsilon std::numeric_limits<bqReal>::epsilon()
 
+#ifdef PI
+#undef PI
+#endif
+
 const float PIf = static_cast<float>(3.14159265358979323846);
 const float PIfHalf = static_cast<float>(3.14159265358979323846 * 0.5);
 const float PIfPI = 6.2831853f;
@@ -53,7 +57,16 @@ const bqVec4 bqVec4FltMaxNeg = bqVec4(-DBL_MAX);
 const bqVec3 bqVec3FltMax = bqVec3(DBL_MAX);
 const bqVec3 bqVec3FltMaxNeg = bqVec3(-DBL_MAX);
 const bqVec4 bqZeroVector4 = bqVec4(0.0, 0.0, 0.0, 0.0);
-const bqVec3 bqZeroVector3 = bqVec3(0.0,0.0,0.0);
+const bqVec3 bqZeroVector3 = bqVec3(0.0, 0.0, 0.0);
+const bqVec3 bqUpVector3 = bqVec3(0.0,1.0,0.0);
+
+#ifdef DegToRad
+#undef DegToRad
+#endif
+
+#ifdef RadToDeg
+#undef RadToDeg
+#endif
 
 class bqMath
 {

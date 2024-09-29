@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "bqmdlinfo.h"
 
 class PluginExporter;
 
@@ -85,7 +86,7 @@ public:
 	// В любом случае m_hasBoneAnimationData, для порядка.
 	bool m_hasBoneAnimationData = false;
 
-	Point3 m_rotation = Point3(PI * 0.5f, 0.f, 0.f);
+	Point3 m_rotation = Point3(PIf * 0.5f, 0.f, 0.f);
 
 	void Save(const MCHAR* name);
 	uint32_t BuildBVH(std::vector<tri_aabb>& aabbs,

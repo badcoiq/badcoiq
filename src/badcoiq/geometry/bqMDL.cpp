@@ -31,7 +31,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef BQ_WITH_MESH
 
 #include "badcoiq/geometry/bqMDL.h"
-#include "badcoiq/geometry/bqTriangle.h"
 #include "badcoiq/common/bqFileBuffer.h"
 #include "badcoiq/gs/bqGS.h"
 
@@ -682,9 +681,10 @@ bool bqMDLCollision::CollisionSphereSphere(bqReal radius, const bqVec3& origin)
 	if (d < R)
 	{
 		bqReal len = R - d;
-		m_normal = origin;
-		m_normal.Normalize();
-		m_intersection = origin - (m_normal * len);
+		m_outNormal = origin;
+		m_outNormal.Normalize();
+		m_outIntersection = origin - (m_outNormal * len);
+		m_outLen = len;
 
 		return true;
 	}
@@ -719,11 +719,90 @@ bool bqMDLCollision::CollisionSphereTriangle(bqReal radius, const bqVec3& origin
 		tri.v2 = m_vBuf[m_iBuf[i+1]];
 		tri.v3 = m_vBuf[m_iBuf[i+2]];
 		
-		//tri.Update();
+		tri.Update();
 
+		bqReal len = 0.0;
+		bqVec3 ip;
+		if (tri.SphereIntersect(radius, origin, len, ip))
+		{
+			m_outIntersection = ip;
+			m_outNormal = tri.normal;
+			m_outLen = len;
+			return true;
+		}
 		
+		i += 3;
 	}
 	return false;
+}
+
+bool bqMDLCollision::CollisionTriangleTriangle(bqTriangle* t, const bqVec3& origin)
+{
+	bqTriangle tri;
+	bqTriangle tri2 = *t;
+	tri2.v1 += origin;
+	tri2.v2 += origin;
+	tri2.v3 += origin;
+
+	for (uint32_t i = 0; i < m_indNum; )
+	{
+		tri.v1 = m_vBuf[m_iBuf[i]];
+		tri.v2 = m_vBuf[m_iBuf[i + 1]];
+		tri.v3 = m_vBuf[m_iBuf[i + 2]];
+
+		tri.Update();
+
+		bqReal len = 0.0;
+		bqVec3 ip;
+		if (tri.TriangleIntersect(&tri2))
+		{
+			m_outIntersection = ip;
+			m_outNormal = tri.normal;
+			m_outLen = len;
+			m_outTriangle = tri;
+			return true;
+		}
+
+		i += 3;
+	}
+	return false;
+}
+
+bool bqMDLCollision::CollisionRayTriangle(const bqRay& ray)
+{
+	bqTriangle tri;
+
+	m_outLen = FLT_MAX;
+
+	bool result = false;
+
+	for (uint32_t i = 0; i < m_indNum; )
+	{
+		tri.v1 = m_vBuf[m_iBuf[i]];
+		tri.v2 = m_vBuf[m_iBuf[i + 1]];
+		tri.v3 = m_vBuf[m_iBuf[i + 2]];
+
+		tri.Update();
+
+		bqReal T, U, V, W;
+		T = U = V = W = 0;
+
+		bqVec3 ip;
+		if (tri.RayIntersect_MT(ray, true, T, U, V, W))
+		{
+			if (T < m_outLen)
+			{
+				m_outIntersection = ray.m_origin + (ray.m_direction * T);
+				m_outNormal = tri.normal;
+				m_outLen = T;
+				m_outTriangle = tri;
+				result = true;
+			}
+		}
+
+		i += 3;
+	}
+	return result;
 }
 
 bqMDLBVHNode::bqMDLBVHNode()

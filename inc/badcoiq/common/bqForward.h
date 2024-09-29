@@ -40,6 +40,8 @@ class bqVec4_t;
 template<typename T>
 class bqMatrix4_t;
 template<typename T>
+class bqMatrix3_t;
+template<typename T>
 class bqMatrix2_t;
 
 using bqVec2  = bqVec2_t<bqReal>;
@@ -52,6 +54,7 @@ using bqVec4  = bqVec4_t<bqReal>;
 using bqVec4f = bqVec4_t<float32_t>;
 using bqVec4i = bqVec4_t<int32_t>;
 using bqMat2 = bqMatrix2_t<float32_t>;
+using bqMat3 = bqMatrix3_t<bqReal>;
 using bqMat4  = bqMatrix4_t<bqReal>;
 
 

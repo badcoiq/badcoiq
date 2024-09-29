@@ -162,11 +162,22 @@ public:
 	float m_fps = 30.f;
 };
 
+struct bqSkeletonAnimationObjectJointData
+{
+	bqJoint* m_joint = 0;
+	uint32_t m_flags = 0;
+
+	enum
+	{
+		flag_skipTransform = 0x1
+	};
+};
+
 // Для проигрывания анимации надо получить указатели на джоинты
 class bqSkeletonAnimationObject
 {
 	// можно дать только определённые джоинты
-	bqArray<bqJoint*> m_joints;
+	bqArray<bqSkeletonAnimationObjectJointData> m_joints;
 	bqStringA m_name;
 	bqSkeletonAnimation* m_animation = 0;
 	//bqSkeleton* m_skeleton = 0; // пока лишнее
@@ -192,6 +203,19 @@ public:
 	void SetFPS(float);
 	float GetFPS() { return m_fps; }
 	void SetRegion(float begin, float end);
+
+	void AddJoint(bqJoint*);
+
+	bqSkeletonAnimationObjectJointData& GetJointData(uint32_t i) { return m_joints[i]; }
+	uint32_t GetJointDataNum() { return m_joints.size(); }
+	bqSkeletonAnimationObjectJointData* GetJointData(const char*);
+};
+
+class bqSkeletalAnimationObjectMany
+{
+public:
+	bqSkeletalAnimationObjectMany();
+	~bqSkeletalAnimationObjectMany();
 };
 
 

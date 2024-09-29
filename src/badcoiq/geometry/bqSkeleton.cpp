@@ -257,7 +257,9 @@ void bqSkeletonAnimationObject::Init(bqSkeletonAnimation* a, bqSkeleton* s, cons
 		bqJoint* joint = s->GetJoint(J->m_name);
 		if (joint)
 		{
-			m_joints.push_back(joint);
+			bqSkeletonAnimationObjectJointData jad;
+			jad.m_joint = joint;
+			m_joints.push_back(jad);
 		}
 	}
 }
@@ -274,10 +276,14 @@ void bqSkeletonAnimationObject::Animate(float dt)
 	bqSkeletonAnimationFrame* frame = m_animation->GetFrame(currFrameIndex);
 	for (size_t i = 0; i < frame->m_transformations.m_size; ++i)
 	{
-		m_joints.m_data[i]->m_data.m_transformation.m_base.m_position = frame->m_transformations.m_data[i].m_position;
-		m_joints.m_data[i]->m_data.m_transformation.m_base.m_rotation = frame->m_transformations.m_data[i].m_rotation;
-		m_joints.m_data[i]->m_data.m_transformation.m_base.m_scale = frame->m_transformations.m_data[i].m_scale;
-		m_joints.m_data[i]->m_data.m_transformation.CalculateMatrix();
+		auto & jad = m_joints.m_data[i];
+		jad.m_joint->m_data.m_transformation.m_base.m_position = frame->m_transformations.m_data[i].m_position;
+		jad.m_joint->m_data.m_transformation.m_base.m_rotation = frame->m_transformations.m_data[i].m_rotation;
+		jad.m_joint->m_data.m_transformation.m_base.m_scale = frame->m_transformations.m_data[i].m_scale;
+
+		
+
+		jad.m_joint->m_data.m_transformation.CalculateMatrix();
 	}
 
 	m_frameCurr += (dt * m_fps);
@@ -307,24 +313,28 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 
 	for (size_t i = 0; i < frame->m_transformations.m_size; ++i)
 	{
+		auto& jad = m_joints.m_data[i];
+		if (jad.m_flags & bqSkeletonAnimationObjectJointData::flag_skipTransform)
+			continue;
+
 		bqVec4 P;
 		bqMath::Lerp1(prevFrame->m_transformations.m_data[i].m_position,
 			frame->m_transformations.m_data[i].m_position, t, P);
 
-		m_joints.m_data[i]->m_data.m_transformation.m_base.m_position = P;
+		jad.m_joint->m_data.m_transformation.m_base.m_position = P;
 
 		bqQuaternion Q;
 		bqMath::Slerp(prevFrame->m_transformations.m_data[i].m_rotation,
 			frame->m_transformations.m_data[i].m_rotation,
 			t, 1.f, Q);
-		m_joints.m_data[i]->m_data.m_transformation.m_base.m_rotation = Q;
+		jad.m_joint->m_data.m_transformation.m_base.m_rotation = Q;
 
 		bqVec4 S;
 		bqMath::Lerp1(prevFrame->m_transformations.m_data[i].m_scale,
 			frame->m_transformations.m_data[i].m_scale, t, S);
-		m_joints.m_data[i]->m_data.m_transformation.m_base.m_scale = S;
+		jad.m_joint->m_data.m_transformation.m_base.m_scale = S;
 
-		m_joints.m_data[i]->m_data.m_transformation.CalculateMatrix();
+		jad.m_joint->m_data.m_transformation.CalculateMatrix();
 	}
 
 	m_frameCurr += (dt * m_fps);
@@ -348,6 +358,17 @@ void bqSkeletonAnimationObject::SetRegion(float begin, float end)
 	m_frameBegin = begin;
 	m_frameEnd = end;
 	m_frameCurr = m_frameBegin;
+}
+
+bqSkeletonAnimationObjectJointData* bqSkeletonAnimationObject::GetJointData(const char* name)
+{
+	BQ_ASSERT_ST(name);
+	for (size_t i = 0; i < m_joints.m_size; ++i)
+	{
+		if (strcmp(m_joints.m_data[i].m_joint->m_base.m_name, name) == 0)
+			return &m_joints.m_data[i];
+	}
+	return 0;
 }
 
 #endif

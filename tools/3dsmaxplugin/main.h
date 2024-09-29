@@ -585,13 +585,13 @@ public:
 		v.z = p.z;
 		m_aabb.add(v);
 
-		m_chunkHeaderMesh.m_aabb.m_aabbMax[0] = m_aabb.m_max.x;
-		m_chunkHeaderMesh.m_aabb.m_aabbMax[1] = m_aabb.m_max.y;
-		m_chunkHeaderMesh.m_aabb.m_aabbMax[2] = m_aabb.m_max.z;
-		m_chunkHeaderMesh.m_aabb.m_aabbMin[0] = m_aabb.m_min.x;
-		m_chunkHeaderMesh.m_aabb.m_aabbMin[1] = m_aabb.m_min.y;
-		m_chunkHeaderMesh.m_aabb.m_aabbMin[2] = m_aabb.m_min.z;
-		m_chunkHeaderMesh.m_aabb.m_radius = m_aabb.radius();
+		m_chunkHeaderMesh.m_aabb.m_aabb.m_max.x = m_aabb.m_max.x;
+		m_chunkHeaderMesh.m_aabb.m_aabb.m_max.y = m_aabb.m_max.y;
+		m_chunkHeaderMesh.m_aabb.m_aabb.m_max.z = m_aabb.m_max.z;
+		m_chunkHeaderMesh.m_aabb.m_aabb.m_min.x = m_aabb.m_min.x;
+		m_chunkHeaderMesh.m_aabb.m_aabb.m_min.y = m_aabb.m_min.y;
+		m_chunkHeaderMesh.m_aabb.m_aabb.m_min.z = m_aabb.m_min.z;
+		m_chunkHeaderMesh.m_aabb.m_aabb.m_radius = m_aabb.radius();
 	}
 
 

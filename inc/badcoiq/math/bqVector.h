@@ -330,6 +330,16 @@ public:
 		out.z = (x * static_cast<T>(a.y)) - (y * static_cast<T>(a.x));
 	}
 
+	template<typename T2>
+	bqVec3_t<T> Cross(const bqVec3_t<T2>& a)const {
+		bqVec3_t<T> out;
+		out.x = (y * static_cast<T>(a.z)) - (z * static_cast<T>(a.y));
+		out.y = (z * static_cast<T>(a.x)) - (x * static_cast<T>(a.z));
+		out.z = (x * static_cast<T>(a.y)) - (y * static_cast<T>(a.x));
+
+		return out;
+	}
+
 	void Normalize()
 	{
 		T len = std::sqrt(Dot());
@@ -342,7 +352,9 @@ public:
 
 	T Dot()const { return (x * x) + (y * y) + (z * z); }
 	T Dot(const bqVec3_t<T>& v)const { return (x * v.x) + (y * v.y) + (z * v.z); }
+	bqVec3 Dot3(const bqVec3_t<T>& v0, const bqVec3_t<T>& v1, const bqVec3_t<T>& v2) const { return bqVec3(Dot(v0), Dot(v1), Dot(v2)); }
 	T Length() const { return std::sqrt((x * x) + (y * y) + (z * z)); }
+	T Length2() const { return Dot(); }
 
 	T x = static_cast<T>(0);
 	T y = static_cast<T>(0);

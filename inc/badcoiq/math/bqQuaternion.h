@@ -206,6 +206,14 @@ public:
 		w = w * q.w - x * q.x - y * q.y - z * q.z;
 	}
 
+	void operator*=(bqFloat32 v)
+	{
+		x *= v;
+		y *= v;
+		z *= v;
+		w = w * v - x * v - y * v - z * v;
+	}
+
 	bool operator!=(const bqQuaternion& q)const
 	{
 		if (x != q.x) return true;

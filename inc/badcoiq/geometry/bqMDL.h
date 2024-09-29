@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/geometry/bqAABB.h"
 #include "badcoiq/geometry/bqMesh.h"
 #include "badcoiq/geometry/bqSkeleton.h"
+#include "badcoiq/geometry/bqTriangle.h"
 #include "badcoiq/archive/bqArchive.h"
 #include "badcoiq/common/bqFileBuffer.h"
 #include "badcoiq/gs/bqGS.h"
@@ -85,8 +86,15 @@ public:
 	bool CollisionSphereBox(bqReal radius, const bqVec3& origin);
 	bool CollisionSphereBVH(bqReal radius, const bqVec3& origin);
 	bool CollisionSphereTriangle(bqReal radius, const bqVec3& origin);
-	bqVec3 m_intersection;
-	bqVec3 m_normal;
+	bool CollisionTriangleTriangle(bqTriangle* t, const bqVec3& origin);
+
+	// одно пересечение, самое близкое к bqRay::m_origin
+	bool CollisionRayTriangle(const bqRay&);
+
+	bqVec3 m_outIntersection;
+	bqVec3 m_outNormal;
+	bqReal m_outLen = 0.0;
+	bqTriangle m_outTriangle;
 };
 
 // 

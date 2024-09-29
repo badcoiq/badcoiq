@@ -264,6 +264,101 @@ public:
 };
 
 template<typename T>
+class bqMatrix3_t
+{
+public:
+	bqMatrix3_t() { Identity(); }
+
+	template<typename T2>
+	bqMatrix3_t(const bqMatrix3_t<T2>& m)
+	{
+		m_data[0] = m.m_data[0];
+		m_data[1] = m.m_data[1];
+		m_data[2] = m.m_data[2];
+	}
+
+	bqMatrix3_t(const bqQuaternion& q)
+	{
+		Identity();
+		SetRotation(q);
+	}
+
+	bqMatrix3_t(const bqVec3_t<T>& x, const bqVec3_t<T>& y, const bqVec3_t<T>& z) {
+		m_data[0u] = x;
+		m_data[1u] = y;
+		m_data[2u] = z;
+	}
+
+	void Identity() {
+		auto* p = this->Data();
+		p[0] = static_cast<T>(1.f);
+		p[1] = static_cast<T>(0.f);
+		p[2] = static_cast<T>(0.f);
+
+		p[3] = static_cast<T>(0.f);
+		p[4] = static_cast<T>(1.f);
+		p[5] = static_cast<T>(0.f);
+
+		p[6] = static_cast<T>(0.f);
+		p[7] = static_cast<T>(0.f);
+		p[8] = static_cast<T>(1.f);
+	}
+
+	void Set(
+		T xx, T xy, T xz,
+		T yx, T yy, T yz,
+		T zx, T zy, T zz)
+	{
+		m_data[0].Set(xx, xy, xz);
+		m_data[1].Set(yx, yy, yz);
+		m_data[2].Set(zx, zy, zz);
+	}
+
+	void SetRotation(const bqQuaternion& q)
+	{
+		T d = q.Length();
+		T s = 2.0f / d;
+		T xs = q.x * s, ys = q.y * s, zs = q.z * s;
+		T wx = q.w * xs, wy = q.w * ys, wz = q.w * zs;
+		T xx = q.x * xs, xy = q.x * ys, xz = q.x * zs;
+		T yy = q.y * ys, yz = q.y * zs, zz = q.z * zs;
+		Set(
+			1.0f - (yy + zz), xy - wz, xz + wy,
+			xy + wz, 1.0f - (xx + zz), yz - wx,
+			xz - wy, yz + wx, 1.0f - (xx + yy));
+	}
+
+	bqVec3_t<T>& operator[](uint32_t i) { assert(i <= 2); return m_data[i]; }
+	const bqVec3_t<T>& operator[](uint32_t i) const { assert(i <= 2); return m_data[i]; }
+
+	bqMatrix3_t<T> operator*(const bqMatrix3_t<T>& m) const
+	{
+		return bqMatrix3_t<T>(
+			m_data[0] * m.m_data[0].x + m_data[1] * m.m_data[0].y + m_data[2] * m.m_data[0].z,
+			m_data[0] * m.m_data[1].x + m_data[1] * m.m_data[1].y + m_data[2] * m.m_data[1].z,
+			m_data[0] * m.m_data[2].x + m_data[1] * m.m_data[2].y + m_data[2] * m.m_data[2].z
+		);
+	}
+
+	bqVec3_t<T> operator*(const bqVec3_t<T>& v) const {
+		return bqVec3_t<T>
+			(
+				v.x * m_data[0].x + v.y * m_data[1].x + v.z * m_data[2].x,
+				v.x * m_data[0].y + v.y * m_data[1].y + v.z * m_data[2].y,
+				v.x * m_data[0].z + v.y * m_data[1].z + v.z * m_data[2].z
+			);
+	}
+
+	bqMatrix3_t<T>& operator*=(const bqMatrix3_t<T>& m) {
+		(*this) = (*this) * m;
+		return *this;
+	}
+
+	bqVec3_t<T> m_data[3];
+	T* Data() { return &m_data[0].x; }
+};
+
+template<typename T>
 class bqMatrix2_t
 {
 public:

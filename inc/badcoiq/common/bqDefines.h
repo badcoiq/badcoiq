@@ -136,8 +136,6 @@ using float64_t = bqFloat64;
 
 #endif
 
-
-
 // Полезная вещь.Например имеем 0xAABBCCDD
 // Можно получить 0xAABB и 0xCCDD
 #define BQ_LO32(l) ((uint16_t)(((uint32_t)(l)) & 0xffff))
