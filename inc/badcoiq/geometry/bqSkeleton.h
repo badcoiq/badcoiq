@@ -47,6 +47,10 @@ struct bqJointTransformationBase
 struct bqJointTransformation
 {
 	bqJointTransformationBase m_base;
+	
+	bqJointTransformationBase m_add;
+	bool m_useAdd = false;
+
 	bqMat4 m_matrix;
 
 	void CalculateMatrix();

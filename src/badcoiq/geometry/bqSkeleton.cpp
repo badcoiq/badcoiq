@@ -327,6 +327,13 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 		bqMath::Slerp(prevFrame->m_transformations.m_data[i].m_rotation,
 			frame->m_transformations.m_data[i].m_rotation,
 			t, 1.f, Q);
+
+		if (jad.m_joint->m_data.m_transformation.m_useAdd)
+		{
+			Q *= jad.m_joint->m_data.m_transformation.m_add.m_rotation;
+			Q.Normalize();
+		}
+
 		jad.m_joint->m_data.m_transformation.m_base.m_rotation = Q;
 
 		bqVec4 S;

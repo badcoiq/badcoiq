@@ -1284,3 +1284,10 @@ bqVec2i bqFramework::GetDesktopWindowSize()
 #endif
 	return v;
 }
+
+void bqFramework::ShowCursor(bool v)
+{
+#ifdef BQ_WITH_WINDOW
+	::ShowCursor((BOOL)v);
+#endif
+}
