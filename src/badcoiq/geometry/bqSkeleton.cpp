@@ -378,4 +378,11 @@ bqSkeletonAnimationObjectJointData* bqSkeletonAnimationObject::GetJointData(cons
 	return 0;
 }
 
+bqSkeletonAnimationObject* bqSkeletonAnimationObject::Duplicate()
+{
+	bqSkeletonAnimationObject* n = new bqSkeletonAnimationObject;
+	*n = *this;
+	return n;
+}
+
 #endif

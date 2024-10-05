@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_TEXTURE_H__
 
 #include "badcoiq/common/bqImage.h"
+#include "badcoiq/cryptography/bqCryptography.h"
 
 // Тип текстуры
 enum class bqTextureType : uint32_t

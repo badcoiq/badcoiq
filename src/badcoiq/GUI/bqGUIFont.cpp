@@ -60,6 +60,12 @@ bqGUIFont::~bqGUIFont()
 void bqGUIFont::AddTexture(bqTexture* t)
 {
 	BQ_ASSERT_ST(t);
+	for (size_t i = 0, sz = m_textures.m_size; i < sz; ++i)
+	{
+		if (m_textures.m_data[i] == t)
+			return;
+	}
+
 	m_textures.push_back(t);
 }
 

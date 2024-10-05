@@ -153,6 +153,17 @@ public:
 		this->Normalize();
 	}
 
+	void FromVector2(const bqVec3& v)
+	{
+		x = (float)-v.x;
+		y = (float)-v.y;
+		z = (float)-v.z;
+
+		w = 1.f;
+
+		this->Normalize();
+	}
+
 	/*void FromMatrix(const bqMat4& m)
 	{
 		bqReal trace = m.m_data[0].x + m.m_data[1].y + m.m_data[2].z;

@@ -177,7 +177,11 @@ struct bqSkeletonAnimationObjectJointData
 	};
 };
 
-// Для проигрывания анимации надо получить указатели на джоинты
+/*! \class bqSkeletonAnimationObject
+	\brief То что играет анимацию.
+	
+	Конструктор с параметрами автоматически всё инициализирует.
+*/ 
 class bqSkeletonAnimationObject
 {
 	// можно дать только определённые джоинты
@@ -192,18 +196,32 @@ class bqSkeletonAnimationObject
 public:
 	bqSkeletonAnimationObject();
 
-	// Init, SetRegion
+	/// Init, SetRegion
 	bqSkeletonAnimationObject(bqSkeletonAnimation*, bqSkeleton*, const char* name, float b, float e);
-	// Init, SetRegion SetFPS
+
+	/// Init, SetRegion SetFPS
 	bqSkeletonAnimationObject(bqSkeletonAnimation*, bqSkeleton*, const char* name, float b, float e, float fps);
 	
 	~bqSkeletonAnimationObject();
 	BQ_PLACEMENT_ALLOCATOR(bqSkeletonAnimationObject);
 
+	/// Простая инициализация на основе скелета и анимации.
+	/// В анимации берётся имя джоинта, потом происходит поиск джоинта
+	/// в скелете (поиск по имени). Если найдено то будет добавлен джоинт.
+	/// По сути нужен более полный доступ для гибкой настройки, но пока будет так.
+	/// \param `name` имя для создаваемого объекта
 	void Init(bqSkeletonAnimation*, bqSkeleton*, const char* name);
+
+	/// Получить имя
 	const bqStringA& GetName() { return m_name; }
+
+	/// Анимировать без интерполяции
 	void Animate(float dt);
+
+	/// Анимировать с интерполяцией
 	void AnimateInterpolate(float dt);
+
+
 	void SetFPS(float);
 	float GetFPS() { return m_fps; }
 	void SetRegion(float begin, float end);
@@ -213,6 +231,9 @@ public:
 	bqSkeletonAnimationObjectJointData& GetJointData(uint32_t i) { return m_joints[i]; }
 	uint32_t GetJointDataNum() { return m_joints.size(); }
 	bqSkeletonAnimationObjectJointData* GetJointData(const char*);
+	
+	/// Создать копию
+	bqSkeletonAnimationObject* Duplicate();
 };
 
 class bqSkeletalAnimationObjectMany

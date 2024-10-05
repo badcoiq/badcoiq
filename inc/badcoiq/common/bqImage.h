@@ -28,10 +28,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_IMAGE_H__
+/// \cond
 #define __BQ_IMAGE_H__
+/// \endcond
 
-// GS использует только r8g8b8a8 остальные форматы это смотря какой файл был загружен
-// перед использованием как текстура её надо конвертировать в r8g8b8a8
+/// GS использует только r8g8b8a8 остальные форматы это смотря какой файл был загружен
+/// перед использованием как текстура её надо конвертировать в r8g8b8a8
 enum class bqImageFormat : uint32_t
 {
 	r8g8b8,
@@ -43,7 +45,7 @@ enum class bqImageFormat : uint32_t
 	a1r5g5b5
 };
 
-// информация об изображении
+/// информация об изображении
 struct bqImageInfo
 {
 	uint32_t m_width = 0;
@@ -54,6 +56,8 @@ struct bqImageInfo
 };
 
 #ifdef BQ_WITH_IMAGE
+
+
 enum class bqImageFillType
 {
 	// Params in ""
@@ -74,7 +78,7 @@ enum class bqImageFillType
 	DottedGrid, // "int" - cell size
 };
 
-// Image это просто класс с буфером и некоторой информацией.
+/// Image это просто класс с буфером и некоторой информацией.
 class bqImage
 {
 public:

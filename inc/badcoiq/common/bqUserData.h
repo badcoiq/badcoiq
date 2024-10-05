@@ -28,17 +28,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_USERDATA_H__
+/// \cond
 #define __BQ_USERDATA_H__
+/// \endcond
 
-// Если для какого-то класса нужен user data, то можно наследовать этот класс
+/// Если для какого-то класса нужен user data, то можно наследовать этот класс
 class bqUserData
 {
 	void* m_data = 0;
 public:
 	bqUserData() {}
 	virtual ~bqUserData() {}
-
+	
+	/// Получить пользовательские данные.
 	virtual void* GetUserData() { return m_data; }
+
+	/// Установить пользовательские данные.
 	virtual void SetUserData(void* d) { m_data = d; }
 };
 

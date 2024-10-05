@@ -26,9 +26,20 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/// \mainpage BADCOIQ Engine Documentation
+/// 
+/// Движок начинается с настройки компиляции \link badcoiq/bqConfig.h \endlink
+/// 
+/// Потом идут макросы.  \link badcoiq/common/bqDefines.h \endlink Есть такие макросы,
+/// которые помогают процессу компиляции, есть такие,
+/// которые помогают облегчить программирование
+///
+
 #pragma once
 #ifndef __BQ_BADCOIQ_H__
+/// \cond
 #define __BQ_BADCOIQ_H__
+/// \endcond
 
 // если компилировать со всеми warnings и считать их ошибками
 // то решение некоторых warnings ухудшают код
