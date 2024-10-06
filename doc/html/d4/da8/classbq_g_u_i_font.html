@@ -91,6 +91,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Шрифт  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="../../dc/d1d/bq_g_u_i_font_8h_source.html">bqGUIFont.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -105,6 +108,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a407b041f502c67a13d9ffc61505f1d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e52f56607df29193e0da80f47a59083" id="r_a0e52f56607df29193e0da80f47a59083"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e52f56607df29193e0da80f47a59083">AddGlyph</a> (char32_t ch, const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;leftTop, const <a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;charSz, uint32_t texture, const <a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;textureSize)</td></tr>
 <tr class="separator:a0e52f56607df29193e0da80f47a59083"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bbce9fb0187710874a45ca5a0e39182" id="r_a7bbce9fb0187710874a45ca5a0e39182"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7bbce9fb0187710874a45ca5a0e39182">AddGlyph</a> (char32_t ch, const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;leftTop, const <a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;charSz, <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *texture)</td></tr>
+<tr class="separator:a7bbce9fb0187710874a45ca5a0e39182"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1d7f6d14e2cce018278410dd157832f" id="r_aa1d7f6d14e2cce018278410dd157832f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1d7f6d14e2cce018278410dd157832f">GetMaxSize</a> ()</td></tr>
 <tr class="separator:aa1d7f6d14e2cce018278410dd157832f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a281d8f81d33a2944c111f3f43ffbf8ef" id="r_a281d8f81d33a2944c111f3f43ffbf8ef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dc/da0/structbq_g_u_i_font_glyph.html">bqGUIFontGlyph</a> **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a281d8f81d33a2944c111f3f43ffbf8ef">GetGlyphMap</a> ()</td></tr>
@@ -121,7 +126,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ae548ea3d6b2a403d10539048d13b7ec1" id="r_ae548ea3d6b2a403d10539048d13b7ec1"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae548ea3d6b2a403d10539048d13b7ec1">m_tabSize</a> = 12</td></tr>
 <tr class="separator:ae548ea3d6b2a403d10539048d13b7ec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Шрифт </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5179ff46965c548fda98cc57ea6b233f" name="a5179ff46965c548fda98cc57ea6b233f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5179ff46965c548fda98cc57ea6b233f">&#9670;&#160;</a></span>bqGUIFont()</h2>
 
@@ -157,8 +164,39 @@ Data Fields</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7bbce9fb0187710874a45ca5a0e39182" name="a7bbce9fb0187710874a45ca5a0e39182"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bbce9fb0187710874a45ca5a0e39182">&#9670;&#160;</a></span>AddGlyph() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void bqGUIFont::AddGlyph </td>
+          <td>(</td>
+          <td class="paramtype">char32_t</td>          <td class="paramname"><span class="paramname"><em>ch</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>leftTop</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>charSz</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *</td>          <td class="paramname"><span class="paramname"><em>texture</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0e52f56607df29193e0da80f47a59083" name="a0e52f56607df29193e0da80f47a59083"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e52f56607df29193e0da80f47a59083">&#9670;&#160;</a></span>AddGlyph() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e52f56607df29193e0da80f47a59083">&#9670;&#160;</a></span>AddGlyph() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -194,7 +232,7 @@ Data Fields</h2></td></tr>
 </div>
 </div>
 <a id="a407b041f502c67a13d9ffc61505f1d2d" name="a407b041f502c67a13d9ffc61505f1d2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a407b041f502c67a13d9ffc61505f1d2d">&#9670;&#160;</a></span>AddGlyph() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a407b041f502c67a13d9ffc61505f1d2d">&#9670;&#160;</a></span>AddGlyph() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

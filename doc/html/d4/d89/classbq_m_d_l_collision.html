@@ -208,6 +208,8 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Позиция луча должна учитывать позицию объекта. Метод проверяет треугольники как есть, то есть они как бы относительно центра мира.</p>
+<p>Одно пересечение, самое близкое к <a class="el" href="../../d3/d3f/classbq_ray.html#a28a15c752a30417cf2bc5f9159102085">bqRay::m_origin</a> </p>
 
 </div>
 </div>
@@ -271,6 +273,9 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>origin - позиция указывается позиция только другого объекта, относительно этого</p>
+<p>Например CollisionSphereSphere( obj-&gt;m_radius, obj-&gt;m_pos - mdlColObj-&gt;m_pos )</p>
+<p>точка пересечения, нормаль и прочая информация помещается в переменные, указанных ниже следующих методов </p>
 
 </div>
 </div>

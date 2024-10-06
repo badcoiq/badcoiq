@@ -98,6 +98,7 @@ void bqSkeleton::CalculateBind()
 				joint->m_data.m_matrixBindInverse = joint->m_data.m_matrixBindInverse *
 					m_joints[joint->m_base.m_parentIndex].m_data.m_matrixBindInverse;
 			}
+
 		}
 	}
 }

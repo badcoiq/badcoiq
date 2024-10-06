@@ -73,22 +73,26 @@ public:
 	bqMDLBVHNode* m_bvh = 0;
 	uint32_t m_bvhNodeNum = 0;
 
-	// origin - позиция
-	// указывается позиция только другого объекта, относительно этого
-	// 
-	// Например 
-	// CollisionSphereSphere( obj->m_radius, obj->m_pos - mdlColObj->m_pos )
-	// 
-	// точка пересечения, нормаль и прочая информация помещается в переменные,
-	// указанных ниже следующих методов
-	//
+	/// origin - позиция
+	/// указывается позиция только другого объекта, относительно этого
+	/// 
+	/// Например 
+	/// CollisionSphereSphere( obj->m_radius, obj->m_pos - mdlColObj->m_pos )
+	/// 
+	/// точка пересечения, нормаль и прочая информация помещается в переменные,
+	/// указанных ниже следующих методов
+	///
 	bool CollisionSphereSphere(bqReal radius, const bqVec3& origin);
 	bool CollisionSphereBox(bqReal radius, const bqVec3& origin);
 	bool CollisionSphereBVH(bqReal radius, const bqVec3& origin);
 	bool CollisionSphereTriangle(bqReal radius, const bqVec3& origin);
 	bool CollisionTriangleTriangle(bqTriangle* t, const bqVec3& origin);
 
-	// одно пересечение, самое близкое к bqRay::m_origin
+	/// Позиция луча должна учитывать позицию объекта.
+	/// Метод проверяет треугольники как есть, то есть они
+	/// как бы относительно центра мира.
+	/// 
+	/// Одно пересечение, самое близкое к bqRay::m_origin
 	bool CollisionRayTriangle(const bqRay&);
 
 	bqVec3 m_outIntersection;

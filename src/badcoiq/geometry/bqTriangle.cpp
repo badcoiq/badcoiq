@@ -124,7 +124,7 @@ bool bqTriangle::SphereIntersect(bqReal radius, const bqVec3& origin, bqReal& T,
 	return true;
 }
 
-bool bqTriangle::RayIntersect_MT(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W)
+bool bqTriangle::RayIntersect_MT(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W, bool segment)
 {
 	bqVec3  pvec;
 	bqMath::Cross(ray.m_direction, e2, pvec);
@@ -166,12 +166,16 @@ bool bqTriangle::RayIntersect_MT(const bqRay& ray, bool withBackFace, bqReal& T,
 
 	W = 1.f - U - V;
 
-
+	if (segment)
+	{
+		if (ray.m_segmentLen < T)
+			return false;
+	}
 
 	return true;
 }
 
-bool bqTriangle::RayIntersect_Watertight(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W)
+bool bqTriangle::RayIntersect_Watertight(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W, bool segment)
 {
 	const auto A = v2 - ray.m_origin;
 	const auto B = v3 - ray.m_origin;
@@ -245,6 +249,11 @@ bool bqTriangle::RayIntersect_Watertight(const bqRay& ray, bool withBackFace, bq
 	T = Ts * invDet;
 	if (T < bqEpsilon)
 		return false;
+	if (segment)
+	{
+		if (ray.m_segmentLen < T)
+			return false;
+	}
 	return true;
 }
 

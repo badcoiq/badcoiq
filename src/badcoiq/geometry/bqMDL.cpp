@@ -788,7 +788,7 @@ bool bqMDLCollision::CollisionRayTriangle(const bqRay& ray)
 		T = U = V = W = 0;
 
 		bqVec3 ip;
-		if (tri.RayIntersect_MT(ray, true, T, U, V, W))
+		if (tri.RayIntersect_MT(ray, false, T, U, V, W))
 		{
 			if (T < m_outLen)
 			{

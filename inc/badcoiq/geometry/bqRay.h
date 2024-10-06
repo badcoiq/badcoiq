@@ -41,11 +41,12 @@ public:
 	bqVec3 m_origin;
 	bqVec3 m_end;
 
-	// Так-же полезно иметь дополнительные данные
+	/// Так-же полезно иметь дополнительные данные
 	bqVec3 m_direction;
 	bqVec3 m_invDir;
+	bqReal m_segmentLen;
 
-	// Для Watertight Ray/Triangle Intersection
+	/// Для Watertight Ray/Triangle Intersection
 	int32_t m_kz = 0;
 	int32_t m_kx = 0;
 	int32_t m_ky = 0;
@@ -53,31 +54,31 @@ public:
 	bqReal m_Sy = 0;
 	bqReal m_Sz = 0;
 
-	// Получить луч от экрана по 2D координатам
-	// rc_sz - размер прямоугольнойобласти в пикселях. Это если например делаем редактор
-	//         со множеством вьюпортов
-	// VPinv - ViewProjectionInvert
-	// depthRange - у OpenGL и DirectX различная глубина. bqGS должен иметь метод
-	//              для получения depth range.
+	/// Получить луч от экрана по 2D координатам
+	/// rc_sz - размер прямоугольнойобласти в пикселях. Это если например делаем редактор
+	///         со множеством вьюпортов
+	/// VPinv - ViewProjectionInvert
+	/// depthRange - у OpenGL и DirectX различная глубина. bqGS должен иметь метод
+	///              для получения depth range.
 	void CreateFrom2DCoords(
 		const bqVec2f& coord,
 		const bqVec2f& rc_sz,
 		const bqMat4& VPinv,
 		const bqVec2f& depthRange);
 
-	// Пересечение линий.
-	// Установить пересекает ли линия другую линию невозможно так как они не имеют
-	//  толщину. Логичнее получить расстояние между ними.
+	/// Пересечение линий.
+	/// Установить пересекает ли линия другую линию невозможно так как они не имеют
+	///  толщину. Логичнее получить расстояние между ними.
 	bqReal DistanceToLine(const bqVec3& lineP0, const bqVec3& lineP1);
 
-	// После установки m_origin или m_end
-	// Вычислить остальные значения типа m_direction, m_kz
+	/// После установки m_origin или m_end
+	/// Вычислить остальные значения типа m_direction, m_kz
 	void Update();
 
-	// Получить точку на луче, на расстоянии t от начала (m_origin)
+	/// Получить точку на луче, на расстоянии t от начала (m_origin)
 	void GetIntersectionPoint(bqReal t, bqVec3& ip);
 
-	// Пересекает ли плоскость.
+	/// Пересекает ли плоскость.
 	bool PlaneIntersection(const bqVec3& planePoint, const bqVec3& planeNormal, bqReal& T);
 };
 

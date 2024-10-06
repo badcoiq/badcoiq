@@ -49,8 +49,8 @@ public:
 	void Update();
 	void Center(bqVec3& out);
 	bool SphereIntersect(bqReal radius, const bqVec3& origin, bqReal& T, bqVec3& ip);
-	bool RayIntersect_MT(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W);
-	bool RayIntersect_Watertight(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W);
+	bool RayIntersect_MT(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W, bool segment = true);
+	bool RayIntersect_Watertight(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W, bool segment = true);
 	bool TriangleIntersect(const bqVec3& _v1, const bqVec3& _v2, const bqVec3& _v3);
 	bool TriangleIntersect(bqTriangle* t);
 };

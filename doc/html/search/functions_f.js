@@ -2,8 +2,8 @@ var searchData=
 [
   ['radius_0',['Radius',['../d9/d09/classbq_aabb.html#a6ff7adeb86877ff8b9362afc4f6941e8',1,'bqAabb']]],
   ['radtodeg_1',['RadToDeg',['../d5/d11/classbq_math.html#ac8f9c7ae5a07c355444866b02bd18f34',1,'bqMath::RadToDeg(float radians)'],['../d5/d11/classbq_math.html#a53995e671054d3bef522d301f2dfb5eb',1,'bqMath::RadToDeg(double radians)']]],
-  ['rayintersect_5fmt_2',['RayIntersect_MT',['../d0/d9f/classbq_triangle.html#abe54e9c9c5f14fdbfa7b4e625f509ad2',1,'bqTriangle']]],
-  ['rayintersect_5fwatertight_3',['RayIntersect_Watertight',['../d0/d9f/classbq_triangle.html#ab4fe11e2f4a341d1e52422ee577cde4e',1,'bqTriangle']]],
+  ['rayintersect_5fmt_2',['RayIntersect_MT',['../d0/d9f/classbq_triangle.html#a3e5004bb3fe3629ca2703a64ee3569a4',1,'bqTriangle']]],
+  ['rayintersect_5fwatertight_3',['RayIntersect_Watertight',['../d0/d9f/classbq_triangle.html#a7b39697b07efe52a63fe76f935568e6f',1,'bqTriangle']]],
   ['raytest_4',['RayTest',['../d9/d09/classbq_aabb.html#a837ad25ec6feaddeb811ea37a85db7ed',1,'bqAabb']]],
   ['read_5',['Read',['../d1/d49/classbq_file.html#a8003861eceb5ce1f9d8caff71f4c03ee',1,'bqFile::Read()'],['../dd/d19/classbq_file_buffer.html#af3c9c076f0bcd29351c8d5c01e247fa4',1,'bqFileBuffer::Read()'],['../d2/dce/classbq_sound_stream_file.html#a3f125d4e225351e39b48c9b25e9a8c32',1,'bqSoundStreamFile::Read()']]],
   ['realloc_6',['realloc',['../d5/d12/classbq_memory.html#a6ad62d7f2bd41ba713cabfd00e7344a3',1,'bqMemory']]],
@@ -26,12 +26,13 @@ var searchData=
   ['resample_23',['Resample',['../d7/d0d/classbq_sound_buffer.html#a4fb70b14b701e3fd1e85c54370e0041c',1,'bqSoundBuffer']]],
   ['reserve_24',['reserve',['../d2/db6/classbq_array.html#a57b02cbb069ebe12a555b679e1c98e7b',1,'bqArray::reserve()'],['../dd/d96/classbq_string__base.html#a78f6584e797b7fe6be0f34b968a301dc',1,'bqString_base::reserve()'],['../dc/dde/classbq_string.html#a175d40fda1900c021bcccad275b5b1a7',1,'bqString::reserve()']]],
   ['reset_25',['Reset',['../d9/d09/classbq_aabb.html#afcc349d57b5dbd8302e50a24b563ed4e',1,'bqAabb::Reset()'],['../da/da1/structbq_rigid_body_transform.html#a41e9c51aa20fc863422fc2bf6c8ad9f8',1,'bqRigidBodyTransform::Reset()'],['../da/d8f/structbq_rigid_body_motion_state.html#a24168da53023d773ecb75e8822d7b055',1,'bqRigidBodyMotionState::Reset()']]],
-  ['resize_26',['Resize',['../dc/d1a/classbq_image.html#a19f57b96e5300e92c270f0ecb0c56348',1,'bqImage']]],
-  ['restore_27',['Restore',['../d3/dfe/classbq_window.html#a13601b39b41a950d0bd74134e23fead1',1,'bqWindow']]],
-  ['reverse_28',['reverse',['../d2/d73/classbq_list.html#ad3d00ab2860014a0b6621367aa0a2a0e',1,'bqList']]],
-  ['rotate_29',['Rotate',['../d3/d1c/classbq_matrix2__t.html#ae5eb775b5cdd3487d3c733db5c1f0bad',1,'bqMatrix2_t::Rotate()'],['../d7/d59/classbq_camera.html#ad241b3cd8131bb3eadfdfa7359365823',1,'bqCamera::Rotate(const bqPointf &amp;mouseDelta, float dt)'],['../d7/d59/classbq_camera.html#aa499ba43920377d46287c0b4edeea741',1,'bqCamera::Rotate(float x, float y, float z)']]],
-  ['rotatevector_30',['RotateVector',['../d8/d59/classbq_quaternion.html#a59671f0949aa2520fc3e71b302190cf0',1,'bqQuaternion']]],
-  ['rotatex_31',['RotateX',['../d6/dda/classbq_scene_object.html#a8ed1fb212f0d1b49657d876ea6ab51f0',1,'bqSceneObject']]],
-  ['rotatey_32',['RotateY',['../d6/dda/classbq_scene_object.html#aad726bf6a38db0c0437f0d9dcd01fbfd',1,'bqSceneObject']]],
-  ['rotatez_33',['RotateZ',['../d6/dda/classbq_scene_object.html#a97c82808b07dc3c09b31841624f97dc1',1,'bqSceneObject']]]
+  ['resetplayback_26',['ResetPlayback',['../da/de1/classbq_skeleton_animation_object.html#a21daec0181eb5aed09f7f9b668d02c2b',1,'bqSkeletonAnimationObject']]],
+  ['resize_27',['Resize',['../dc/d1a/classbq_image.html#a19f57b96e5300e92c270f0ecb0c56348',1,'bqImage']]],
+  ['restore_28',['Restore',['../d3/dfe/classbq_window.html#a13601b39b41a950d0bd74134e23fead1',1,'bqWindow']]],
+  ['reverse_29',['reverse',['../d2/d73/classbq_list.html#ad3d00ab2860014a0b6621367aa0a2a0e',1,'bqList']]],
+  ['rotate_30',['Rotate',['../d3/d1c/classbq_matrix2__t.html#ae5eb775b5cdd3487d3c733db5c1f0bad',1,'bqMatrix2_t::Rotate()'],['../d7/d59/classbq_camera.html#ad241b3cd8131bb3eadfdfa7359365823',1,'bqCamera::Rotate(const bqPointf &amp;mouseDelta, float dt)'],['../d7/d59/classbq_camera.html#aa499ba43920377d46287c0b4edeea741',1,'bqCamera::Rotate(float x, float y, float z)']]],
+  ['rotatevector_31',['RotateVector',['../d8/d59/classbq_quaternion.html#a59671f0949aa2520fc3e71b302190cf0',1,'bqQuaternion']]],
+  ['rotatex_32',['RotateX',['../d6/dda/classbq_scene_object.html#a8ed1fb212f0d1b49657d876ea6ab51f0',1,'bqSceneObject']]],
+  ['rotatey_33',['RotateY',['../d6/dda/classbq_scene_object.html#aad726bf6a38db0c0437f0d9dcd01fbfd',1,'bqSceneObject']]],
+  ['rotatez_34',['RotateZ',['../d6/dda/classbq_scene_object.html#a97c82808b07dc3c09b31841624f97dc1',1,'bqSceneObject']]]
 ];

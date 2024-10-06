@@ -101,19 +101,25 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:add048cb3c61b02ec089f574a016322c9" id="r_add048cb3c61b02ec089f574a016322c9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d3/dc7/classbq_sound_stream.html">bqSoundStream</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add048cb3c61b02ec089f574a016322c9">SummonStream</a> (const char *)=0</td></tr>
 <tr class="separator:add048cb3c61b02ec089f574a016322c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b4e857f52cd26e9aacbf7a4122fae9c" id="r_a1b4e857f52cd26e9aacbf7a4122fae9c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d1/dad/structbq_sound_system_device_info.html">bqSoundSystemDeviceInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b4e857f52cd26e9aacbf7a4122fae9c">GetDeviceInfo</a> ()=0</td></tr>
+<tr class="memdesc:a1b4e857f52cd26e9aacbf7a4122fae9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить информацию о девайсе  <br /></td></tr>
 <tr class="separator:a1b4e857f52cd26e9aacbf7a4122fae9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f662de9310ac4d9646bab8846417b0c" id="r_a1f662de9310ac4d9646bab8846417b0c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d6/d63/classbq_sound_mixer.html">bqSoundMixer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f662de9310ac4d9646bab8846417b0c">SummonMixer</a> (uint32_t channels)=0</td></tr>
 <tr class="separator:a1f662de9310ac4d9646bab8846417b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a348169efc41afd983796d24d8cbf4265" id="r_a348169efc41afd983796d24d8cbf4265"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a348169efc41afd983796d24d8cbf4265">AddMixerToProcessing</a> (<a class="el" href="../../d6/d63/classbq_sound_mixer.html">bqSoundMixer</a> *)=0</td></tr>
 <tr class="separator:a348169efc41afd983796d24d8cbf4265"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7fb93f452e32c05a26c4f4f98f23398" id="r_ad7fb93f452e32c05a26c4f4f98f23398"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7fb93f452e32c05a26c4f4f98f23398">RemoveAllMixersFromProcessing</a> ()=0</td></tr>
+<tr class="memdesc:ad7fb93f452e32c05a26c4f4f98f23398"><td class="mdescLeft">&#160;</td><td class="mdescRight">Перед освобождением ресурсов нужно убрать миксеры из звукового движка  <br /></td></tr>
 <tr class="separator:ad7fb93f452e32c05a26c4f4f98f23398"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d6d3c81e5db9e1351104b5ced2c37cd" id="r_a2d6d3c81e5db9e1351104b5ced2c37cd"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../de/dc7/classbq_sound_effect_volume.html">bqSoundEffectVolume</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d6d3c81e5db9e1351104b5ced2c37cd">SummonEffectVolume</a> ()=0</td></tr>
 <tr class="separator:a2d6d3c81e5db9e1351104b5ced2c37cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a505a38f0d729aa6fa5bab454c708ec2c" id="r_a505a38f0d729aa6fa5bab454c708ec2c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d3/d9e/classbq_sound_effect_delay.html">bqSoundEffectDelay</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a505a38f0d729aa6fa5bab454c708ec2c">SummonEffectDelay</a> (uint32_t steps, uint32_t time)=0</td></tr>
 <tr class="separator:a505a38f0d729aa6fa5bab454c708ec2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><ul>
+<li>спрячу реализацию в наследнике Перед использованием нужно инициализировать. Перед завершением работы нужно убрать все миксеры вызвав <a class="el" href="#ad7fb93f452e32c05a26c4f4f98f23398" title="Перед освобождением ресурсов нужно убрать миксеры из звукового движка">RemoveAllMixersFromProcessing()</a> </li>
+</ul>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a908703928a1ee4ed7019be126aa0303e" name="a908703928a1ee4ed7019be126aa0303e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a908703928a1ee4ed7019be126aa0303e">&#9670;&#160;</a></span>bqSoundSystem()</h2>
 
@@ -187,6 +193,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Добавить миксер в аудиодвижок. Для воспроизведения звука нужно будет добавить. </p>
 
 </div>
 </div>
@@ -213,6 +220,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить информацию о девайсе </p>
+
 </div>
 </div>
 <a id="ad7fb93f452e32c05a26c4f4f98f23398" name="ad7fb93f452e32c05a26c4f4f98f23398"></a>
@@ -237,6 +246,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Перед освобождением ресурсов нужно убрать миксеры из звукового движка </p>
 
 </div>
 </div>
@@ -266,6 +277,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>time - какая-то величина, не связана с реальным отсчётом времени чем выше тем дольше задержка между получившимся <code>эхо</code> steps - количество <code>эхо</code>. Ограничен 10 максимум. </p>
 
 </div>
 </div>
@@ -316,6 +328,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Создать миксер. Параметры будут как <a class="el" href="#a1b4e857f52cd26e9aacbf7a4122fae9c" title="Получить информацию о девайсе">GetDeviceInfo()</a> Нужно только указать количество каналов. </p>
 
 </div>
 </div>
@@ -341,6 +354,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Создать объект для воспроизведения звука в отдельной нитке. Файл будет открыт для чтения и потихоньку будет происходить чтение. чтото пока не реализовано </p>
 
 </div>
 </div>

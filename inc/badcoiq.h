@@ -33,6 +33,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Потом идут макросы.  \link badcoiq/common/bqDefines.h \endlink Есть такие макросы,
 /// которые помогают процессу компиляции, есть такие,
 /// которые помогают облегчить программирование
+/// 
+/// В badcoiq.h добавлены другие базовые include.
+/// 
+/// В \link badcoiq/common/bqUserData.h \endlink находится класс который можно наследовать.
+/// Он даёт возможность установить и получить user data.
+/// Иногда бывает необходимым подобный функционал. Достаточно просто наследовать этот класс.
+/// 
+/// В \link badcoiq/common/bqMemory.h \endlink находится класс который можно наследовать.
 ///
 
 #pragma once

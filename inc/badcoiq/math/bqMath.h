@@ -58,7 +58,8 @@ const bqVec3 bqVec3FltMax = bqVec3(DBL_MAX);
 const bqVec3 bqVec3FltMaxNeg = bqVec3(-DBL_MAX);
 const bqVec4 bqZeroVector4 = bqVec4(0.0, 0.0, 0.0, 0.0);
 const bqVec3 bqZeroVector3 = bqVec3(0.0, 0.0, 0.0);
-const bqVec3 bqUpVector3 = bqVec3(0.0,1.0,0.0);
+const bqVec3 bqUpVector3 = bqVec3(0.0, 1.0, 0.0);
+const bqMat4 bqEmptyMatrix = bqMat4();
 
 #ifdef DegToRad
 #undef DegToRad
