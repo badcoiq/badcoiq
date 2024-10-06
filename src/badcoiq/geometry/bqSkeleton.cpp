@@ -289,7 +289,11 @@ void bqSkeletonAnimationObject::Animate(float dt)
 	m_frameCurr += (dt * m_fps);
 
 	if (m_frameCurr >= m_frameEnd)
+	{
 		m_frameCurr = m_frameBegin;
+		if (m_callback)
+			m_callback->OnEnd();
+	}
 }
 
 void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
@@ -347,7 +351,11 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 	m_frameCurr += (dt * m_fps);
 
 	if (m_frameCurr >= m_frameEnd)
+	{
 		m_frameCurr = m_frameBegin;
+		if (m_callback)
+			m_callback->OnEnd();
+	}
 }
 
 void bqSkeletonAnimationObject::SetRegion(float begin, float end)
@@ -367,6 +375,11 @@ void bqSkeletonAnimationObject::SetRegion(float begin, float end)
 	m_frameCurr = m_frameBegin;
 }
 
+void bqSkeletonAnimationObject::ResetPlayback()
+{
+	m_frameCurr = m_frameBegin;
+}
+
 bqSkeletonAnimationObjectJointData* bqSkeletonAnimationObject::GetJointData(const char* name)
 {
 	BQ_ASSERT_ST(name);
@@ -383,6 +396,11 @@ bqSkeletonAnimationObject* bqSkeletonAnimationObject::Duplicate()
 	bqSkeletonAnimationObject* n = new bqSkeletonAnimationObject;
 	*n = *this;
 	return n;
+}
+
+void bqSkeletonAnimationObject::SetCallback(bqSkeletonAnimationObjectCallback* cb)
+{
+	m_callback = cb;
 }
 
 #endif

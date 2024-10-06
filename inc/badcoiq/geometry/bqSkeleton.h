@@ -177,11 +177,20 @@ struct bqSkeletonAnimationObjectJointData
 	};
 };
 
-/*! \class bqSkeletonAnimationObject
-	\brief То что играет анимацию.
-	
-	Конструктор с параметрами автоматически всё инициализирует.
-*/ 
+class bqSkeletonAnimationObjectCallback
+{
+public:
+	bqSkeletonAnimationObjectCallback() {}
+	virtual ~bqSkeletonAnimationObjectCallback() {}
+
+	virtual void OnEnd() {}
+};
+
+/// \class bqSkeletonAnimationObject
+///	\brief То что играет анимацию.
+///	
+///	Конструктор с параметрами автоматически всё инициализирует.
+/// 
 class bqSkeletonAnimationObject
 {
 	// можно дать только определённые джоинты
@@ -193,6 +202,8 @@ class bqSkeletonAnimationObject
 	float m_frameBegin = 0.f;
 	float m_frameEnd = 0.f;
 	float m_fps = 30.f;
+
+	bqSkeletonAnimationObjectCallback* m_callback = 0;
 public:
 	bqSkeletonAnimationObject();
 
@@ -228,12 +239,17 @@ public:
 
 	void AddJoint(bqJoint*);
 
+	void SetCallback(bqSkeletonAnimationObjectCallback*);
+
 	bqSkeletonAnimationObjectJointData& GetJointData(uint32_t i) { return m_joints[i]; }
 	uint32_t GetJointDataNum() { return m_joints.size(); }
 	bqSkeletonAnimationObjectJointData* GetJointData(const char*);
 	
 	/// Создать копию
 	bqSkeletonAnimationObject* Duplicate();
+
+	/// Установить текущее воспроизведение на начало
+	void ResetPlayback();
 };
 
 class bqSkeletalAnimationObjectMany

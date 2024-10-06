@@ -539,7 +539,14 @@ bqImage* bqFramework::SummonImage(const char* path)
 			if (strcmp((const char*)stra.data(), stre.c_str()) == 0)
 			{
 				bqLog::PrintInfo("Load image: %s\n", path);
-				return il->Load(path);
+
+				bqImage* image = il->Load(path);
+				if (image)
+				{
+					image->m_info.m_md5 = bqCryptography::MD5(path, strlen(path));
+				}
+
+				return image;
 			}
 		}
 	}

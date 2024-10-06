@@ -26,53 +26,43 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* \file bqCryptography
-*  
-*/
+#include "badcoiq.h"
+#include "badcoiq/cryptography/bqCryptography.h"
 
-#pragma once
-#ifndef __BQ_Cryptography_H__
-/// \cond
-#define __BQ_Cryptography_H__
-/// \endcond
+#include "md5.h"
 
-
-
-/// \struct bqMD5
-///	\brief Структура хранит MD5 хеш
-///	
-///	Для того чтобы не делать большой класс,
-/// сравнение будет реализовано методом в 
-/// классе bqCryptography.
-struct bqMD5
+bqMD5 bqCryptography::MD5(const void* b, uint32_t sz)
 {
-	uint32_t m_a = 0;
-	uint32_t m_b = 0;
-	uint32_t m_c = 0;
-	uint32_t m_d = 0;
-};
+	bqMD5 md5;
 
-///  \class bqCryptography
-///  \brief Набор методов криптографической тематики
-class bqCryptography
+	MD5Context ctx;
+	md5Init(&ctx);
+	md5Update(&ctx, (uint8_t*)b, sz);
+	md5Finalize(&ctx);
+
+	memcpy(&md5.m_a, ctx.digest, 16);
+    
+	return md5;
+}
+
+bool bqCryptography::Compare(const bqMD5& a, const bqMD5& b)
 {
-public:
+	if (a.m_a != b.m_a)
+		return false;
+	if (a.m_b != b.m_b)
+		return false;
+	if (a.m_c != b.m_c)
+		return false;
+	if (a.m_d != b.m_d)
+		return false;
+	return true;
+}
 
-	/// \brief Вычислить md5.
-	/// @param b - входной буфер
-	/// @param sz - размер буфера
-	static bqMD5 MD5(const void* b, uint32_t sz);
-	
-	/// \brief Сравнение md5.
-	static bool Compare(const bqMD5&, const bqMD5&);
-
-	/// \brief Проверка правильности.
-	///
-	/// Если всё 0 то возврат false
-	static bool Valid(const bqMD5&);
-
-
-};
-
-#endif
-
+bool bqCryptography::Valid(const bqMD5& md5)
+{
+	if (md5.m_a) return true;
+	if (md5.m_b) return true;
+	if (md5.m_c) return true;
+	if (md5.m_d) return true;
+	return false;
+}

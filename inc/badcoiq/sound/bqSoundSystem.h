@@ -28,7 +28,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_SS_H__
+/// \cond
 #define __BQ_SS_H__
+/// \endcond
+
+
 #ifdef BQ_WITH_SOUND
 
 #include "bqSound.h"
@@ -37,54 +41,62 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bqSoundMixer.h"
 #include "bqSoundStreamFile.h"
 
-// информация о типе звука который воспроизводит аудио девайс
+/// информация о типе звука который воспроизводит аудио девайс
 struct bqSoundSystemDeviceInfo
 {
+	/// Формат звука
 	bqSoundFormat m_format = bqSoundFormat::unsupported;
+
+	/// количество самплов в секунду
 	uint32_t m_sampleRate = 0;
+
+	/// количество каналов
 	uint32_t m_channels = 0;
 
-	// размер того буфера который передаётся в звуковой драйвер
-	// Со всеми каналами
+	/// размер того буфера который передаётся в звуковой драйвер
+	/// Со всеми каналами
 	uint32_t m_bufferSize = 0;
+
+	/// количество битов на один сампл
 	uint32_t m_bitsPerSample = 0;
 };
 
-// * спрячу реализацию в наследнике
-// Перед использованием нужно инициализировать.
-// Перед завершением работы нужно убрать все миксеры
-//  вызвав RemoveAllMixersFromProcessing()
+/// * спрячу реализацию в наследнике
+/// Перед использованием нужно инициализировать.
+/// Перед завершением работы нужно убрать все миксеры
+///  вызвав RemoveAllMixersFromProcessing()
 class bqSoundSystem
 {
 public:
 	bqSoundSystem() {};
 	virtual ~bqSoundSystem() {};
 
-	// Создать объект для воспроизведения звука в отдельной нитке.
-	// Файл будет открыт для чтения и потихоньку будет происходить
-	// чтение.
-	// чтото пока не реализовано
+	/// Создать объект для воспроизведения звука в отдельной нитке.
+	/// Файл будет открыт для чтения и потихоньку будет происходить
+	/// чтение.
+	/// чтото пока не реализовано
 	virtual bqSoundStream* SummonStream(const char*) = 0;
 
+	/// Получить информацию о девайсе
 	virtual bqSoundSystemDeviceInfo GetDeviceInfo() = 0;
 
-	// Создать миксер. 
-	// Параметры будут как GetDeviceInfo()
-	// Нужно только указать количество каналов.
+	/// Создать миксер. 
+	/// Параметры будут как GetDeviceInfo()
+	/// Нужно только указать количество каналов.
 	virtual bqSoundMixer* SummonMixer(uint32_t channels) = 0;
 
-	// Добавить миксер в аудиодвижок.
-	// Для воспроизведения звука нужно будет добавить.
+	/// Добавить миксер в аудиодвижок.
+	/// Для воспроизведения звука нужно будет добавить.
 	virtual void AddMixerToProcessing(bqSoundMixer*) = 0;
 
-	// Перед освобождением ресурсов нужно убрать миксеры из звукового движка
+	/// Перед освобождением ресурсов нужно убрать миксеры из звукового движка
 	virtual void RemoveAllMixersFromProcessing() = 0;
 
 	virtual bqSoundEffectVolume* SummonEffectVolume() = 0;
 
-	// time - какая-то величина, не связана с реальным отсчётом времени
-	// чем выше тем дольше задержка между получившимся `эхо`
-	// steps - количество `эхо`. Ограничен 10 максимум.
+	/// time - какая-то величина, не связана с реальным отсчётом времени
+	/// чем выше тем дольше задержка между получившимся `эхо`
+	/// steps - количество `эхо`. Ограничен 10 максимум.
 	virtual bqSoundEffectDelay* SummonEffectDelay(uint32_t steps, uint32_t time) = 0;
 
 };

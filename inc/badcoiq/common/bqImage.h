@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_IMAGE_H__
 /// \endcond
 
+#include "badcoiq/cryptography/bqCryptography.h"
+
 /// GS использует только r8g8b8a8 остальные форматы это смотря какой файл был загружен
 /// перед использованием как текстура её надо конвертировать в r8g8b8a8
 enum class bqImageFormat : uint32_t
@@ -53,6 +55,7 @@ struct bqImageInfo
 	uint32_t m_bits = 32;
 	uint32_t m_pitch = 0;
 	bqImageFormat m_format = bqImageFormat::r8g8b8a8;
+	bqMD5 m_md5;
 };
 
 #ifdef BQ_WITH_IMAGE

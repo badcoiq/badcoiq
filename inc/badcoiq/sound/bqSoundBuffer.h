@@ -27,31 +27,49 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #pragma once
 #ifndef __BQ_SoundBuffer_H__
+/// \cond
 #define __BQ_SoundBuffer_H__
+/// \endcond
 
 #ifdef BQ_WITH_SOUND
 #include "badcoiq/containers/bqArray.h"
+#include "badcoiq/cryptography/bqCryptography.h"
 
+/// В данной структуре хранятся звуковые данные
 struct bqSoundBufferData
 {
+	/// массив данных
 	uint8_t* m_data = 0;
+
+	/// размер массива
 	uint32_t m_dataSize = 0;
 };
 
-// по умолчанию звук формата float
+/// Информация о звуковом буфере
+/// по умолчанию звук формата float
 struct bqSoundBufferInfo
 {
+
+	/// формат
 	bqSoundFormat m_format = bqSoundFormat::float32;
 
 	// всё должно быть вычислено правильно.
 	// используется в генерации, конвертации и эффектах
 
+	/// Количество самплов в секунду
 	uint32_t m_sampleRate = 44100;
+
+	/// количество каналов.
+	/// 1 - моно, 2 - стерео
 	uint32_t m_channels = 1;
+
+	/// количество бит на один сампл
 	uint32_t m_bitsPerSample = 32;
 
+	/// размер в виде времени
 	float m_time = 0.f;
 	
+	/// количество самплов
 	uint32_t m_numOfSamples = 0;// когда 2 канала это 2 сэмпла или 1?
 	                            // ответ - у каждого канала свой сэмпл.
 								// при проигрывании имеем столько-то сэмплов 
@@ -62,17 +80,22 @@ struct bqSoundBufferInfo
 	// на основе времени
 	// newSound->m_bufferInfo.m_numOfSamples = (uint32_t)ceil((float)newSound->m_bufferInfo.m_sampleRate * time);
 
+	/// Количество байт на один сампл
 	uint32_t m_bytesPerSample = 0; // m_bitsPerSample / 8;
 	
-	// nBlockAlign
-	// блоком называется текущий сэмпл на каждый канал
-	// размер в байтах
+	/// nBlockAlign
+	/// блоком называется текущий сэмпл с каждого канала
+	/// размер в байтах
 	uint32_t m_blockSize = 0;// m_bytesPerSample * m_channels;
+
+	/// Если объект был создан из файла то bqMD5 вычислится на основании пути к файлу.
+	/// Сделано для быстрого сравнения (поиска) загруженного звука.
+	bqMD5 m_md5;
 };
 
-// возможно лучше это сунуть в bqSound
-// думал что bqSound будет выступать в качестве управляющего объекта
-// но теперь есть bqSoundObject
+/// возможно лучше это сунуть в bqSound
+/// думал что bqSound будет выступать в качестве управляющего объекта
+/// но теперь есть bqSoundObject
 class bqSoundBuffer
 {
 	void _reallocate(uint32_t);

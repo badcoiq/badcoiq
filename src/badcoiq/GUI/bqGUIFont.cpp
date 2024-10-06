@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/math/bqMath.h"
+#include "badcoiq/gs/bqTexture.h"
 
 bqGUIFont::bqGUIFont()
 {
@@ -96,6 +97,31 @@ void bqGUIFont::AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& cha
 	glyph.m_UV.z = bqMath::CoordToUV(leftTop.x + (float)charSz.x, (float)texSz.x);
 	glyph.m_UV.w = bqMath::CoordToUV(leftTop.y + (float)charSz.y, (float)texSz.y);
 	AddGlyph(glyph);
+}
+
+void bqGUIFont::AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& charSz, bqTexture* texture)
+{
+	size_t textureIndex = 0xFFFFFFFF;
+	for (size_t i = 0, sz = m_textures.m_size; i < sz; ++i)
+	{
+		if (m_textures.m_data[i] == texture)
+		{
+			textureIndex = i;
+			break;
+		}
+	}
+
+	if (textureIndex == 0xFFFFFFFF)
+	{
+		AddTexture(texture);
+		textureIndex = 0;
+	}
+
+	bqPoint textureSize;
+	textureSize.x = texture->GetInfo().m_imageInfo.m_width;
+	textureSize.y = texture->GetInfo().m_imageInfo.m_height;
+
+	AddGlyph(ch, leftTop, charSz, textureIndex, textureSize);
 }
 
 #endif

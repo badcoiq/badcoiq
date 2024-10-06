@@ -844,6 +844,11 @@ bool bqSoundBuffer::LoadFromFile(const char* fn)
 		r = _loadWav(fn);
 	}
 
+	if (r)
+	{
+		this->m_bufferInfo.m_md5 = bqCryptography::MD5(path.c_str(), path.size() * sizeof(bqString::char_type));
+	}
+
 	return r;
 }
 

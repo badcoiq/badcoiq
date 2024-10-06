@@ -52,6 +52,9 @@
     <Filter Include="Source Files\vg">
       <UniqueIdentifier>{752e7c8f-b359-42be-a2b1-80a15d64542f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\cryptography">
+      <UniqueIdentifier>{6131d93b-11cf-4e3a-9f23-a76a62e0f252}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -215,6 +218,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\geometry\bqTriangle.cpp">
       <Filter>Source Files\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\cryptography\bqCryptography.cpp">
+      <Filter>Source Files\cryptography</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\cryptography\md5.c">
+      <Filter>Source Files\cryptography</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

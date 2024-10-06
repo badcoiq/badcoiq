@@ -686,6 +686,8 @@ public:
 	bqString(bqString&&);
 	~bqString();
 
+	using char_type = char32_t;
+
 	const char32_t* c_str()const;
 	size_t size() const;
 	void reserve(size_t size);

@@ -59,20 +59,20 @@ struct bqGUIFontGlyph
 	uint32_t m_textureSlot = 0;
 };
 
-// Шрифт
+/// Шрифт
 class bqGUIFont
 {
-	// текстуры
+	/// текстуры
 	bqArray<bqTexture*> m_textures;
 
-	// символы
+	/// символы
 	bqArray<bqGUIFontGlyph*> m_glyphs;
 
-	// максимальный размер
+	/// максимальный размер
 	bqPoint m_maxSize;
 
-	// для скоростного получения bqGUIFontGlyph по коду
-	// индекс соответствует Unicode. Максимальное значение 0x32000-1
+	/// для скоростного получения bqGUIFontGlyph по коду
+	/// индекс соответствует Unicode. Максимальное значение 0x32000-1
 	bqGUIFontGlyph* m_glyphMap[0x32000];
 public:
 	bqGUIFont();
@@ -81,6 +81,7 @@ public:
 	void AddTexture(bqTexture*);
 	void AddGlyph(const bqGUIFontGlyph&);
 	void AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& charSz, uint32_t texture, const bqPoint& textureSize);
+	void AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& charSz, bqTexture* texture);
 
 	const bqPoint& GetMaxSize() { return m_maxSize; }
 	bqGUIFontGlyph** GetGlyphMap() { return m_glyphMap; }

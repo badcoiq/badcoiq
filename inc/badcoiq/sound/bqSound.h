@@ -27,26 +27,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #pragma once
 #ifndef __BQ_Sound_H__
+/// \cond
 #define __BQ_Sound_H__
+/// \endcond
 
 #ifdef BQ_WITH_SOUND
 
 #include "badcoiq/containers/bqArray.h"
 #include "badcoiq/math/bqMath.h"
 
+/// тип звукового файла
 enum class bqSoundFileType
 {
 	wav
 };
 
+/// тип волны
 enum class bqSoundWaveType
 {
+	/// синусоида
 	sin,
+
+	/// квадрат
 	square,
+
+	/// треугольник
 	triangle,
+
+	/// пила
 	saw
 };
 
+/// формат сампла
 enum class bqSoundFormat
 {
 	uint8,
@@ -60,13 +72,13 @@ enum class bqSoundFormat
 
 #include "badcoiq/sound/bqSoundBuffer.h"
 
-// По умолчанию bqSound не удаляет m_soundBuffer
-// так как предполагается что звук из m_soundBuffer
-// может быть использован во множестве bqSound.
-// Если bqSound создан с использованием спец. конструктора
-// то деструктор уничтожит m_soundBuffer. Этот спец.конструктор
-// создан для упрощённого тестирования функциональности. 
-//
+/// По умолчанию bqSound не удаляет m_soundBuffer
+/// так как предполагается что звук из m_soundBuffer
+/// может быть использован во множестве bqSound.
+/// Если bqSound создан с использованием спец. конструктора
+/// то деструктор уничтожит m_soundBuffer. Этот спец.конструктор
+/// создан для упрощённого тестирования функциональности. 
+///
 class bqSound
 {
 

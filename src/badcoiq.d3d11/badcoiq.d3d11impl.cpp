@@ -1182,6 +1182,7 @@ bqTexture* bqGSD3D11::SummonTexture(bqImage* img, const bqTextureInfo& inf)
 	newTexture->m_DSV = _depthStencilView;
 
 	ti.m_imageInfo = img->m_info;
+	
 	newTexture->SetInfo(ti);
 
 	return newTexture;
