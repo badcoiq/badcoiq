@@ -43,45 +43,21 @@ bqD3D11ShaderLine3D::~bqD3D11ShaderLine3D()
 }
 
 bool bqD3D11ShaderLine3D::Init(){
-	const char* text =
-		"struct VSIn{\n"
-		"	uint vertexID : SV_VertexID;\n"
-		"};\n"
-		"cbuffer cbVertex{\n"
-		"	double4x4 VP;\n"
-		"	double4 P1;\n"
-		"	double4 P2;\n"
-		"	float4 Color;\n"
-		"};\n"
-		"struct VSOut{\n"
-		"   float4 pos : SV_POSITION;\n"
-		"   float4 color : COLOR0;\n"
-		"};\n"
-		
-		"struct PSOut{\n"
-		"    float4 color : SV_Target;\n"
-		"};\n"
+	uint32_t sz = 0;
+	bqString appPath = bqFramework::GetAppPath();
+	bqString shaderPath = std::move(appPath + "../data/shaders/d3d11/badcoiq.d3d11.shader.Line3D.hlsl");
+	bqStringA shaderPathA;
+	shaderPath.to_utf8(shaderPathA);
 
-		"VSOut VSMain(VSIn input){\n"
-			"double4 vertices[2] = {\n"
-			"double4( P1.xyz, 1.0),\n"
-			"double4( P2.xyz, 1.0)\n"
-			"};\n"
-		"   VSOut output;\n"
-		"	output.pos  = mul(VP, vertices[input.vertexID]);\n"
-		"	output.color = Color;\n"
-		"	return output;\n"
-		"}\n"
-		"PSOut PSMain(VSOut input){\n"
-		"    PSOut output;\n"
-		"    output.color = input.color;\n"
-		"    return output;\n"
-		"}\n";
+	//char* text = (char*)bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true);
+	//bqPtr pText(text, bqPtr::Free());
+	BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+
 	if (!m_gs->CreateShaders(
 		"vs_5_0",
 		"ps_5_0",
-		text,
-		text,
+		text.Ptr(),
+		text.Ptr(),
 		"VSMain",
 		"PSMain",
 		bqMeshVertexType::Null,

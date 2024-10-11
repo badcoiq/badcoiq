@@ -210,6 +210,9 @@ public:
 			//     return TREE_CONTINUE;
 
 
+			if(node->IsHidden())
+				return TREE_CONTINUE;
+
 			Object* obj = node->EvalWorldState(m_plugin->m_timeValue).obj;
 
 			auto superClassID = obj->SuperClassID();
