@@ -28,12 +28,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_MESH_H__
+/// \cond
 #define __BQ_MESH_H__
+/// \endcond
+
 #ifdef BQ_WITH_MESH
 
 #include "badcoiq/geometry/bqAABB.h"
 
-// Тип вершины
+/// Тип вершины
 enum class bqMeshVertexType : uint32_t
 {
 	Null, // 0
@@ -41,13 +44,14 @@ enum class bqMeshVertexType : uint32_t
 	// TriangleSkinned, // пока лишнее. всё работает норм благодоря m_stride
 };
 
-// Тип индекса
+/// Тип индекса
 enum class bqMeshIndexType : uint32_t
 {
-	u16,
-	u32
+	u16, /// uint16_t
+	u32  /// uint32_t
 };
 
+/// Дефолтная вершина
 struct bqVertexTriangle
 {
 	bqVec3f Position;
@@ -58,6 +62,7 @@ struct bqVertexTriangle
 	bqVec4f Color;
 };
 
+/// Дефолтная вершина + данные для скининга
 struct bqVertexTriangleSkinned
 {
 	bqVertexTriangle BaseData;
@@ -65,6 +70,7 @@ struct bqVertexTriangleSkinned
 	bqVec4f Weights;
 };
 
+/// Информация о модели
 struct bqMeshInfo
 {
 	bqMeshVertexType m_vertexType = bqMeshVertexType::Triangle;
@@ -76,6 +82,7 @@ struct bqMeshInfo
 	bqAabb m_aabb;
 };
 
+/// 3Д моделька
 class bqMesh
 {
 	uint8_t* m_vertices = nullptr;
@@ -106,10 +113,10 @@ public:
 	void ToSkinned();
 	void ApplySkeleton(bqSkeleton* skeleton);
 
-	// Получить указатель на вершину.
-	// Превеводить в другой тип нужно самостоятельно.
-	// Индексы предпологается брать из индексного буфера.
-	//  например GetVertex(m_indices[i])
+	/// Получить указатель на вершину.
+	/// Превеводить в другой тип нужно самостоятельно.
+	/// Индексы предпологается брать из индексного буфера.
+	///  например GetVertex(m_indices[i])
 	bqVertexTriangle* GetVertex(uint32_t index);
 };
 

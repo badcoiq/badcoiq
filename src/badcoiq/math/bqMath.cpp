@@ -1136,3 +1136,28 @@ bqMat4 bqMath::ScaleMatrix(float v)
 	sM.m_data[2].z = v;
 	return sM;
 }
+
+void bqMath::Reflect(bqVec3& v, const bqVec3& N)
+{
+	bqReal DN = v.Dot(N);
+	v = v - (2.0 * DN) * N;
+}
+
+void bqMath::Reflect(bqVec4& v, const bqVec4& N)
+{
+	bqReal DN = v.Dot(N);
+	v = v - (2.0 * DN) * N;
+}
+
+void bqMath::Reflect(bqVec3f& v, const bqVec3f& N)
+{
+	float32_t DN = v.Dot(N);
+	v = v - (2.0 * DN) * N;
+}
+
+void bqMath::Reflect(bqVec4f& v, const bqVec4f& N)
+{
+	float32_t DN = v.Dot(N);
+	v = v - (2.0 * DN) * N;
+}
+

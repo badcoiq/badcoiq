@@ -91,6 +91,20 @@ public:
 		m_data[2].Set(zx, zy, zz, 0.f);
 	}
 
+	void SetTranslation(const bqVec3& v)
+	{
+		m_data[3].x = v.x;
+		m_data[3].y = v.y;
+		m_data[3].z = v.z;
+	}
+
+	void SetTranslation(const bqVec4& v)
+	{
+		m_data[3].x = v.x;
+		m_data[3].y = v.y;
+		m_data[3].z = v.z;
+	}
+
 	void SetRotation(const bqQuaternion& q)
 	{
 		T d = q.Length();

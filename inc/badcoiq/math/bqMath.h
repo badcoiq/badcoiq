@@ -139,6 +139,11 @@ public:
 	static float Length(const bqVec4f& v);
 	static float Length(const bqQuaternion& v);
 
+	static void Reflect(bqVec3& v, const bqVec3& N);
+	static void Reflect(bqVec4& v, const bqVec4& N);
+	static void Reflect(bqVec3f& v, const bqVec3f& N);
+	static void Reflect(bqVec4f& v, const bqVec4f& N);
+
 	// wikipedia:
 	// Imprecise method, which does not guarantee v = v1 when t = 1, due to floating-point arithmetic error.
 	// This method is monotonic. This form may be used when the hardware has a native fused Multiply-add instruction.

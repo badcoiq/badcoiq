@@ -34,6 +34,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq/geometry/bqPolygonMesh.h"
 
+/// Класс для ручного создания 3Д моделей
+/// Пример использования:
+/// 
+/// bqMeshPolygonCreator pc;
+/// pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_max.z));
+/// pc.SetUV(bqVec2f(0.f, 0.f));
+/// pc.AddVertex();
+/// pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_max.z));
+/// pc.SetUV(bqVec2f(1.f, 0.f));
+/// pc.AddVertex();
+/// pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_min.z));
+/// pc.SetUV(bqVec2f(1.f, 1.f));
+/// pc.AddVertex();
+/// pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_min.z));
+/// pc.SetUV(bqVec2f(0.f, 1.f));
+/// pc.AddVertex();
+/// pc.Mul(m);      // опционально
+/// 
+/// bqPolygonMesh pm;
+/// pm.AddPolygon(&pc, true);
+/// pc.Clear();
 class bqMeshPolygonCreator
 {
 	bqVertexTriangleSkinned m_vertexData;

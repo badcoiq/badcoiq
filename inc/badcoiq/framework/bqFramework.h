@@ -28,7 +28,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_FRAMEWORK_H__
+/// \cond
 #define __BQ_FRAMEWORK_H__
+/// \endcond
 
 #include "badcoiq/common/bqUID.h"
 
@@ -43,24 +45,27 @@ const T& bqMin(const T& a, const T& b)
 	return (b < a) ? b : a;
 }
 
+/// Указатель на матрицу хранится внутри фреймворка.
+/// Установка и получения указателей происходит
+/// с указанием типа.
 enum class bqMatrixType : uint32_t
 {
-	// Это матрица описывающая трансформацию объекта
+	/// Это матрица описывающая трансформацию объекта
 	World,
 
-	// Эти матрицы вычисляются в классе камеры
-	View,           // так называемая видовая. Матрица вращения которая крутит мир вокруг зрителя.
-	Projection,     // проекционная. в ней настраиваются FOV. Может быть без перспективы вообще (ортогоналная проекция)
-	ViewProjection, // Для 3D линии. View * Projection
-	ViewInvert,     // Инвертированная View
+	/// Эти матрицы вычисляются в классе камеры
+	View,           /// так называемая видовая. Матрица вращения которая крутит мир вокруг зрителя.
+	Projection,     /// проекционная. в ней настраиваются FOV. Может быть без перспективы вообще (ортогоналная проекция)
+	ViewProjection, /// Для 3D линии. View * Projection
+	ViewInvert,     /// Инвертированная View
 
-	WorldViewProjection, // Как ViewProjection только ещё учитывается World. Для 3D объектов.
+	WorldViewProjection, /// Как ViewProjection только ещё учитывается World. Для 3D объектов.
 
 	_count
 };
 
-// Предполагаю что фреймворк должен посылать какие-то сообщения.
-// Я это ещё не реализовал
+/// Предполагаю что фреймворк должен посылать какие-то сообщения.
+/// Я это ещё не реализовал
 class bqFrameworkCallback
 {
 public:
@@ -71,64 +76,78 @@ public:
 	virtual void OnMessage() = 0;
 };
 
-// API для фреймворка.
+/// API для фреймворка.
 class bqFramework
 {
 public:
 
-	// Когда нам нужно запустить ДВИЖЁК, вызываем Start
-	// Он выделит память для внутреннего класса
+	/// Когда нам нужно запустить ДВИЖЁК, вызываем Start
+	/// Он выделит память для внутреннего класса
 	static void Start(bqFrameworkCallback*);
 
-	// для завершения работы, он освободит ту память
+	/// для завершения работы, он освободит ту память
 	static void Stop();
 
-	// Например, он вычислит DeltaTime, обновит состояния ввода, GUI, окна.
+	/// Например, он вычислит DeltaTime, обновит состояния ввода, GUI, окна.
 	static void Update();
 
-	static float* GetDeltaTime();
+	/// Получить время затраченное между вызовами Update
+	static float32_t* GetDeltaTime();
 
 #ifdef BQ_WITH_WINDOW
-	// Создать окно
+	/// Создать окно
 	static bqWindow* SummonWindow(bqWindowCallback*);
 #endif
 
 #ifdef BQ_WITH_GS
-	// Получить количество реализаций графических систем
+	/// Получить количество реализаций графических систем
 	static uint32_t GetGSNum();
-	// Получить имя реализации графической стсиемы. Надо указать индекс.
+	
+	/// Получить имя реализации графической стсиемы. Надо указать индекс.
 	static bqString GetGSName(uint32_t);
-	// Получить ID реализации графической системы по индексу
+	
+	/// Получить ID реализации графической системы по индексу
 	static bqUID GetGSUID(uint32_t);
-	// Получить графическую систему указав ID
+	
+	/// Получить графическую систему указав ID
 	static bqGS* SummonGS(bqUID);
-	// Получить графическую систему указав имя
+	
+	/// Получить графическую систему указав имя
 	static bqGS* SummonGS(const char*);
-	// Получить графическую систему указав имя и ID
+	
+	/// Получить графическую систему указав имя и ID
 	static bqGS* SummonGS(bqUID, const char*);
 #endif
 
-	// Сравнить UID
+	/// Сравнить UID
 	static bool CompareUIDs(const bqUID&, const bqUID&);
 
-	// Получить указатель на матрицу
+	/// Получить указатель на матрицу
 	static bqMat4* GetMatrix(bqMatrixType);
 
 #ifdef BQ_WITH_MESH
-	// Получить указатель на первую из 255 матриц для скелета
+	/// Получить указатель на первую из 255 матриц для скелета
 	static bqMat4* GetMatrixSkinned();
+
+
 	static bqPolygonMesh* SummonPolygonMesh();
+
+
 	static uint32_t GetMeshLoadersNum();
+
+
 	static bqMeshLoader* GetMeshLoader(uint32_t);
+
+
 	static void SummonMesh(const char*, bqMeshLoaderCallback*);
 #endif
 
-	// Установить указатель на матрицу
+	/// Установить указатель на матрицу
 	static void SetMatrix(bqMatrixType, bqMat4*);
 
-	// Прочитать файл в буфер
-	// если isText будут добавлены ' ' и 0 в конец
-	// Функция выделит память для буфера. Использовать bqMemory::free для освобождения.
+	/// Прочитать файл в буфер
+	/// если isText будут добавлены ' ' и 0 в конец
+	/// Функция выделит память для буфера. Использовать bqMemory::free для освобождения.
 	static uint8_t* SummonFileBuffer(const char* path, uint32_t* szOut, bool isText);
 
 #ifdef BQ_WITH_IMAGE

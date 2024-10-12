@@ -165,7 +165,7 @@ bool bqTriangle::RayIntersect_MT(const bqRay& ray, bool withBackFace, bqReal& T,
 	if (T < bqEpsilon) return false;
 
 	W = 1.f - U - V;
-
+	
 	if (segment)
 	{
 		if (ray.m_segmentLen < T)

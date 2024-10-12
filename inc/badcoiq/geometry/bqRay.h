@@ -46,6 +46,10 @@ public:
 	bqVec3 m_invDir;
 	bqReal m_segmentLen;
 
+	/// Вычислить m_segmentLen.
+	/// Расстояние от m_origin до m_end
+	void UpdateSegmentLen();
+
 	/// Для Watertight Ray/Triangle Intersection
 	int32_t m_kz = 0;
 	int32_t m_kx = 0;
