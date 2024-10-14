@@ -1139,25 +1139,33 @@ bqMat4 bqMath::ScaleMatrix(float v)
 
 void bqMath::Reflect(bqVec3& v, const bqVec3& N)
 {
-	bqReal DN = v.Dot(N);
-	v = v - (2.0 * DN) * N;
+	bqReal DN2 = N.Dot(v) * 2.0;
+	v.x = v.x - DN2 * N.x;
+	v.y = v.y - DN2 * N.y;
+	v.z = v.z - DN2 * N.z;
 }
 
 void bqMath::Reflect(bqVec4& v, const bqVec4& N)
 {
-	bqReal DN = v.Dot(N);
-	v = v - (2.0 * DN) * N;
+	bqReal DN2 = N.Dot(v) * 2.0;
+	v.x = v.x - DN2 * N.x;
+	v.y = v.y - DN2 * N.y;
+	v.z = v.z - DN2 * N.z;
 }
 
 void bqMath::Reflect(bqVec3f& v, const bqVec3f& N)
 {
-	float32_t DN = v.Dot(N);
-	v = v - (2.0 * DN) * N;
+	float32_t DN2 = N.Dot(v) * 2.f;
+	v.x = v.x - DN2 * N.x;
+	v.y = v.y - DN2 * N.y;
+	v.z = v.z - DN2 * N.z;
 }
 
 void bqMath::Reflect(bqVec4f& v, const bqVec4f& N)
 {
-	float32_t DN = v.Dot(N);
-	v = v - (2.0 * DN) * N;
+	float32_t DN2 = N.Dot(v) * 2.f;
+	v.x = v.x - DN2 * N.x;
+	v.y = v.y - DN2 * N.y;
+	v.z = v.z - DN2 * N.z;
 }
 

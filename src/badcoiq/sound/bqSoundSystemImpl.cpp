@@ -750,9 +750,12 @@ void bqWASAPIRenderer::Shutdown()
 //
 HRESULT bqWASAPIRenderer::OnSessionDisconnected(AudioSessionDisconnectReason DisconnectReason)
 {
+	bqLog::PrintInfo("WASAPI: %s\n", "OnSessionDisconnected");
+
 	if (DisconnectReason == DisconnectReasonDeviceRemoval)
 	{
-		//
+		bqLog::PrintInfo("WASAPI: %s\n", "DisconnectReasonDeviceRemoval");
+		// 
 		//  The stream was disconnected because the device we're rendering to was removed.
 		//
 		//  We want to reset the stream switch complete event (so we'll block when the HandleStreamSwitchEvent function
@@ -765,6 +768,7 @@ HRESULT bqWASAPIRenderer::OnSessionDisconnected(AudioSessionDisconnectReason Dis
 	}
 	if (DisconnectReason == DisconnectReasonFormatChanged)
 	{
+		bqLog::PrintInfo("WASAPI: %s\n", "DisconnectReasonFormatChanged");
 		//
 		//  The stream was disconnected because the format changed on our render device.
 		//
@@ -783,6 +787,7 @@ HRESULT bqWASAPIRenderer::OnSessionDisconnected(AudioSessionDisconnectReason Dis
 //
 HRESULT bqWASAPIRenderer::OnDefaultDeviceChanged(EDataFlow /*Flow*/, ERole /*Role*/, LPCWSTR /*NewDefaultDeviceId*/)
 {
+	bqLog::PrintInfo("WASAPI: %s\n", "OnDefaultDeviceChanged");
 	//if (Flow == eRender && Role == _EndpointRole)
 	//{
 	//    //
