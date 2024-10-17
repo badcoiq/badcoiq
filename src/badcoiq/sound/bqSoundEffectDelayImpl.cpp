@@ -57,7 +57,7 @@ bqSoundEffectDelayImpl::bqSoundEffectDelayImpl(uint32_t steps, uint32_t time)
 	auto blockSize = soundDeviceInfo.m_bufferSize
 		/ (soundDeviceInfo.m_bitsPerSample / 8)
 		/ soundDeviceInfo.m_channels;
-	m_blockOut = new bqFloat32[blockSize];
+	m_blockOut = new float32_t[blockSize];
 	_createSteps();
 }
 
@@ -103,8 +103,8 @@ void bqSoundEffectDelayImpl::Process(bqSoundMixer* mixer)
 				break;
 			auto channel = mixer->GetChannel(i);
 
-			bqFloat32* src = (bqFloat32*)channel->m_data;
-			bqFloat32* dst32 = (bqFloat32*)channel->m_data;
+			float32_t* src = (float32_t*)channel->m_data;
+			float32_t* dst32 = (float32_t*)channel->m_data;
 
 			if (si)
 				src = m_delaySteps.m_data[si - 1]->m_delayBuffers[i]->GetCurrentData();

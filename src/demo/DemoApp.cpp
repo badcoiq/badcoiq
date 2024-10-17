@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "DemoApp.h"
 
 #include "badcoiq/geometry/bqPolygonMesh.h"
+#include "badcoiq/common/bqUID.h"
 
 BQ_LINK_LIBRARY("badcoiq");
 

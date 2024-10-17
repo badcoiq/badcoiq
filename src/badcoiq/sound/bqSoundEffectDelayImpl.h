@@ -45,8 +45,8 @@ class bqSoundEffectDelayImpl : public bqSoundEffectDelay
 				/ (soundDeviceInfo.m_bitsPerSample / 8)
 				/ soundDeviceInfo.m_channels;
 
-			m_delayBuffers[0] = new bqBlockQueue<bqFloat32>(blockSize, o);
-			m_delayBuffers[1] = new bqBlockQueue<bqFloat32>(blockSize, o);
+			m_delayBuffers[0] = new bqBlockQueue<float32_t>(blockSize, o);
+			m_delayBuffers[1] = new bqBlockQueue<float32_t>(blockSize, o);
 		}
 
 		~DelayStep()
@@ -56,7 +56,7 @@ class bqSoundEffectDelayImpl : public bqSoundEffectDelay
 		}
 
 		// Стерео
-		bqBlockQueue<bqFloat32>* m_delayBuffers[2];
+		bqBlockQueue<float32_t>* m_delayBuffers[2];
 
 	};
 
@@ -65,7 +65,7 @@ class bqSoundEffectDelayImpl : public bqSoundEffectDelay
 	uint32_t m_delayStepsNum = 5;
 	uint32_t m_delayTime = 20;
 
-	bqFloat32* m_blockOut = 0;
+	float32_t* m_blockOut = 0;
 
 	void _deleteSteps();
 	void _createSteps();

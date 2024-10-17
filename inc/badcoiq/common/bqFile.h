@@ -133,13 +133,13 @@ public:
 		return fwrite(&v, 1, 8, m_file);
 	}
 
-	size_t WriteFloat32(bqFloat32 v)
+	size_t WriteFloat32(float32_t v)
 	{
 		BQ_ASSERT_ST(m_file);
 		return fwrite(&v, 1, 4, m_file);
 	}
 
-	size_t WriteFloat64(bqFloat64 v)
+	size_t WriteFloat64(float64_t v)
 	{
 		BQ_ASSERT_ST(m_file);
 		return fwrite(&v, 1, 8, m_file);

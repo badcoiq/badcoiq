@@ -225,5 +225,8 @@
     <ClCompile Include="..\..\src\badcoiq\cryptography\md5.c">
       <Filter>Source Files\cryptography</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\common\bqTimerDT.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

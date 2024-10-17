@@ -26,28 +26,12 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
-#ifndef __BQ_UID_H__
-/// \cond
-#define __BQ_UID_H__
-/// \endcond
+#include "badcoiq.h"
+#include "badcoiq/common/bqTimerDT.h"
 
-/// Уникальный ID
-/// Как GUID от Microsoft
-struct bqUID
+bqTimerDT::bqTimerDT(float32_t l)
+	:
+	m_dt(bqFramework::GetDeltaTime()),
+	m_limit(l)
 {
-	uint32_t d1;
-	uint16_t d2;
-	uint16_t d3;
-	uint16_t d4;
-	uint8_t  d5[6];
-};
-
-/// Создать bqUID
-#define bqDEFINE_UID(name, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10) \
-        const bqUID name \
-                = { d1, d2, d3, d4, d5,  d6,  d7,  d8,  d9,  d10 }
-
-
-#endif
-
+}

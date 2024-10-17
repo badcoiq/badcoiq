@@ -217,7 +217,7 @@ public:
 		w = w * q.w - x * q.x - y * q.y - z * q.z;
 	}
 
-	void operator*=(bqFloat32 v)
+	void operator*=(float32_t v)
 	{
 		x *= v;
 		y *= v;

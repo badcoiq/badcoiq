@@ -27,27 +27,56 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_UID_H__
+#ifndef __BQ_TIMERDT_H__
 /// \cond
-#define __BQ_UID_H__
-/// \endcond
+#define __BQ_TIMERDT_H__
+/// \eddcond
 
-/// Уникальный ID
-/// Как GUID от Microsoft
-struct bqUID
+/// Таймер. Используется delta time для приращения времени.
+class bqTimerDT
 {
-	uint32_t d1;
-	uint16_t d2;
-	uint16_t d3;
-	uint16_t d4;
-	uint8_t  d5[6];
+	float32_t* m_dt = 0;
+	float32_t m_limit = 1.f;
+	float32_t m_time = 0.f;
+public:
+	bqTimerDT(float32_t* dt, float32_t limit)
+		:
+		m_dt(dt),
+		m_limit(limit)
+	{
+	}
+
+	bqTimerDT(float32_t limit);
+
+	float32_t Time() { return m_time; }
+
+	void SetLimit(float32_t l) { m_limit = l; }
+
+	void Update()
+	{
+		m_time += *m_dt;
+		if (m_time >= m_limit)
+		{
+			m_isTime = true;
+
+			if (m_infinite)
+				m_time = 0;
+		}
+		else
+		{
+			m_isTime = false;
+		}
+	}
+
+	void Reset()
+	{
+		m_time = 0.f;
+		m_isTime = false;
+	}
+
+	bool m_infinite = true;	
+	bool m_isTime = false;
 };
-
-/// Создать bqUID
-#define bqDEFINE_UID(name, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10) \
-        const bqUID name \
-                = { d1, d2, d3, d4, d5,  d6,  d7,  d8,  d9,  d10 }
-
 
 #endif
 

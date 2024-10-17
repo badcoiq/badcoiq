@@ -58,15 +58,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BQ_FORCEINLINE inline
 #endif
 
+//using float16_t = float;
+using float32_t = float;
+using float64_t = double;
+
 /// Для координат в 3D, матриц и  т.д. надо дать возможность указать что использовать, double или float.
 /// Такому типу обычно дают имя `real`
-using bqReal = double;
-
-using bqFloat32 = float;
-using bqFloat64 = double;
-
-using float32_t = bqFloat32;
-using float64_t = bqFloat64;
+using bqReal = float64_t;
 
 #if defined(WIN32) | defined(_WIN64) | defined(_WIN32)
 /// Определяем платформу

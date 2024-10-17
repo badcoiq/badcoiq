@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_SOUND
 
+
 #include "badcoiq/sound/bqSoundSystem.h"
 
 #include "bqSoundEffectVolumeImpl.h"
@@ -43,10 +44,12 @@ bqSoundEffectVolumeImpl::bqSoundEffectVolumeImpl()
 
 bqSoundEffectVolumeImpl::~bqSoundEffectVolumeImpl()
 {
+	
 }
 
 void bqSoundEffectVolumeImpl::SetVolume(float v)
 {
+	
 	m_volume = v;
 	if (m_volume < 0.f)
 		m_volume = 0.f;
@@ -85,8 +88,8 @@ void bqSoundEffectVolumeImpl::Process(bqSoundBufferData* data, bqSoundBufferInfo
 
 	if (info->m_format == bqSoundFormat::float32)
 	{
-		bqFloat32* data32 = (bqFloat32*)data->m_data;
-		uint32_t dataSize = data->m_dataSize / sizeof(bqFloat32);
+		float32_t* data32 = (float32_t*)data->m_data;
+		uint32_t dataSize = data->m_dataSize / sizeof(float32_t);
 
 		for (uint32_t i = 0; i < dataSize; ++i)
 		{

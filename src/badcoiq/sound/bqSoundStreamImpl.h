@@ -48,7 +48,7 @@ class bqSoundStreamImpl : public bqSoundStream
 		{
 			uint64_t _64bit;
 			uint32_t _32bit[2];
-			bqFloat32 _float32[2];
+			float32_t _float32[2];
 			uint16_t _16bit[4];
 			uint8_t _8bit[8];
 		};

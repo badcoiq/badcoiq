@@ -96,6 +96,7 @@
       <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../src/libvorbis/include/;../../src/libogg/include/;../../src/opus/include/;../../src/opusfile/include/</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,6 +119,7 @@
       <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../src/libvorbis/include/;../../src/libogg/include/;../../src/opus/include/;../../src/opusfile/include/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,6 +141,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../src/libvorbis/include/;../../src/libogg/include/;../../src/opus/include/;../../src/opusfile/include/</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,6 +163,7 @@
       <AdditionalIncludeDirectories>../../inc/;../../src/zlib/;../../src/minizip/;../../src/fastlz/;../../src/bzip2/;../../src/badcoiq/;../../src/libvorbis/include/;../../src/libogg/include/;../../src/opus/include/;../../src/opusfile/include/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -178,6 +182,7 @@
     <ClCompile Include="..\..\src\badcoiq\common\bqImage.cpp" />
     <ClCompile Include="..\..\src\badcoiq\common\bqLog.cpp" />
     <ClCompile Include="..\..\src\badcoiq\common\bqMemory.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\common\bqTimerDT.cpp" />
     <ClCompile Include="..\..\src\badcoiq\cryptography\bqCryptography.cpp" />
     <ClCompile Include="..\..\src\badcoiq\cryptography\md5.c" />
     <ClCompile Include="..\..\src\badcoiq\framework\bqFramework.cpp" />

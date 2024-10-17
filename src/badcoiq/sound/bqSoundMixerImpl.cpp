@@ -217,9 +217,9 @@ void bqSoundMixerImpl::Process()
 		bqSoundBufferData* _channel = &(m_channels.m_data[i])->m_data;
 		
 		uint8_t* dataMixer8 = _channel->m_data;
-		bqFloat32* dataMixer32 = (bqFloat32*)dataMixer8;
+		float32_t* dataMixer32 = (float32_t*)dataMixer8;
 
-		size_t isz = m_bufferSizeForOneChannel / sizeof(bqFloat32);
+		size_t isz = m_bufferSizeForOneChannel / sizeof(float32_t);
 
 		for (size_t ii = 0; ii < isz; ++ii)
 		{
@@ -266,11 +266,11 @@ void bqSoundMixerImpl::Process()
 			}
 
 			uint8_t* dataSound8 = sound->m_soundBuffer->m_bufferData.m_data;
-			bqFloat32* dataSound32 = (bqFloat32*)(&dataSound8[sPos]);
+			float32_t* dataSound32 = (float32_t*)(&dataSound8[sPos]);
 
 			// Сразу возьму звук. + умножу на значение громкости
-			bqFloat32 ch1 = *dataSound32 * sound->m_volume;
-			bqFloat32 ch2 = ch1;
+			float32_t ch1 = *dataSound32 * sound->m_volume;
+			float32_t ch2 = ch1;
 			// Если каналов больше то беру второй
 			if (soundChannelsNum > 1)
 			{
@@ -327,11 +327,11 @@ void bqSoundMixerImpl::Process()
 
 			// теперь надо передать звук во временный буфер
 			uint8_t* dataTmp8 = (uint8_t*)m_channelsTmp.m_data[0]->m_data.m_data;
-			bqFloat32* dataTmp32 = (bqFloat32*)dataTmp8;
+			float32_t* dataTmp32 = (float32_t*)dataTmp8;
 			dataTmp32[i_tmp] = ch1;
 
 			dataTmp8 = (uint8_t*)m_channelsTmp.m_data[1]->m_data.m_data;
-			dataTmp32 = (bqFloat32*)dataTmp8;
+			dataTmp32 = (float32_t*)dataTmp8;
 			dataTmp32[i_tmp] = ch2;
 
 			++i_tmp;
@@ -469,9 +469,9 @@ void bqSoundMixerImpl::Process()
 			if (i >= m_bufferSizeForOneChannel)
 				break;
 			uint8_t* dataSound8 = streamBuffer->m_data;
-			bqFloat32* dataSound32 = (bqFloat32*)(&dataSound8[sPos]);
-			bqFloat32 ch1 = *dataSound32 * stream->m_volume;
-			bqFloat32 ch2 = ch1;
+			float32_t* dataSound32 = (float32_t*)(&dataSound8[sPos]);
+			float32_t ch1 = *dataSound32 * stream->m_volume;
+			float32_t ch2 = ch1;
 			// Если каналов больше то беру второй
 			if (soundChannelsNum > 1)
 			{
@@ -487,10 +487,10 @@ void bqSoundMixerImpl::Process()
 			sPos += stream->GetBlockSize();
 			i += m_dataInfo.m_bytesPerSample;
 			uint8_t* dataTmp8 = (uint8_t*)m_channelsTmp.m_data[0]->m_data.m_data;
-			bqFloat32* dataTmp32 = (bqFloat32*)dataTmp8;
+			float32_t* dataTmp32 = (float32_t*)dataTmp8;
 			dataTmp32[i_tmp] = ch1;
 			dataTmp8 = (uint8_t*)m_channelsTmp.m_data[1]->m_data.m_data;
-			dataTmp32 = (bqFloat32*)dataTmp8;
+			dataTmp32 = (float32_t*)dataTmp8;
 			dataTmp32[i_tmp] = ch2;
 			++i_tmp;
 			if (sPos >= streamBuffer->m_size)
@@ -543,11 +543,11 @@ void bqSoundMixerImpl::Process()
 						break;
 					auto src = input_mixer->m_channels.m_data[ti];
 					auto dst = m_channels.m_data[ti];
-					bqFloat32* src32 = (bqFloat32*)src->m_data.m_data;
-					bqFloat32* dst32 = (bqFloat32*)dst->m_data.m_data;
-					for (uint32_t i = 0, sz = src->m_data.m_dataSize / sizeof(bqFloat32); i < sz; ++i)
+					float32_t* src32 = (float32_t*)src->m_data.m_data;
+					float32_t* dst32 = (float32_t*)dst->m_data.m_data;
+					for (uint32_t i = 0, sz = src->m_data.m_dataSize / sizeof(float32_t); i < sz; ++i)
 					{
-						bqFloat32 v = *src32;
+						float32_t v = *src32;
 						*dst32 += v * m_mixerVolume;
 						if (*dst32 > 1.f) *dst32 = 1.f;
 						if (*dst32 < -1.f) *dst32 = -1.f;
@@ -571,15 +571,15 @@ void bqSoundMixerImpl::_mixTmp()
 		{
 			uint8_t* dst8 = (uint8_t*)m_channels.m_data[ci]->m_data.m_data;
 			dst8 += bi;
-			bqFloat32* dst32 = (bqFloat32*)dst8;
+			float32_t* dst32 = (float32_t*)dst8;
 
 			if (ci < m_channelsTmp.m_size)
 			{
 				uint8_t* src8 = (uint8_t*)m_channelsTmp.m_data[ci]->m_data.m_data;
 				src8 += bi;
-				bqFloat32* src32 = (bqFloat32*)src8;
+				float32_t* src32 = (float32_t*)src8;
 
-				bqFloat32 v = *src32;
+				float32_t v = *src32;
 
 				// Если миксер имеет 1 канал а звук более 1го то нужно
 				// присваивать сумму значений.
@@ -588,7 +588,7 @@ void bqSoundMixerImpl::_mixTmp()
 				{
 					src8 = (uint8_t*)m_channelsTmp.m_data[ci + 1]->m_data.m_data;
 					src8 += bi;
-					src32 = (bqFloat32*)src8;
+					src32 = (float32_t*)src8;
 					v += *src32;
 				}
 

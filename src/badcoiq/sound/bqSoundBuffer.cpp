@@ -230,7 +230,7 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 			
 			// Надо получить сумму со всех каналов и поделить на количество каналов
 			int64_t summInt = 0;
-			bqFloat64 summReal = 0.0;
+			float64_t summReal = 0.0;
 			for (uint32_t o = 0; o < m_bufferInfo.m_channels; ++o)
 			{
 				switch (m_bufferInfo.m_format)
@@ -260,7 +260,7 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 
 				case bqSoundFormat::float32:
 				{
-					bqFloat32* float_data = (bqFloat32*)src_block;
+					float32_t* float_data = (float32_t*)src_block;
 					summReal += float_data[o];
 				}break;
 
@@ -276,7 +276,7 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 			}
 
 			int64_t avgInt = 0;
-			bqFloat64 avgReal = 0.0;
+			float64_t avgReal = 0.0;
 
 			if (summReal != 0.0)
 				avgReal = summReal / m_bufferInfo.m_channels;
@@ -325,8 +325,8 @@ void bqSoundBuffer::MakeMono(uint32_t how)
 
 				case bqSoundFormat::float32:
 				{
-					bqFloat32* float_data = (bqFloat32*)dst_block;
-					*float_data = (bqFloat32)avgReal;
+					float32_t* float_data = (float32_t*)dst_block;
+					*float_data = (float32_t)avgReal;
 				}break;
 
 				/*case bqSoundFormat::float64:
@@ -1156,13 +1156,13 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 				dataSizePerChannel = ceil(dataSizePerChannel / m_bufferInfo.m_channels);
 			}
 
-			bqFloat64 time = dataSizePerChannel / (m_bufferInfo.m_sampleRate * m_bufferInfo.m_bytesPerSample);
+			float64_t time = dataSizePerChannel / (m_bufferInfo.m_sampleRate * m_bufferInfo.m_bytesPerSample);
 			//printf("RESAMPLE TIME: %f\n", time);
 
 			if (time > 0.0)
 			{
 				// теперь вычисляю размер для нового массива
-				newDataSize = ceil((bqFloat64)(newSampleRate * m_bufferInfo.m_bytesPerSample * m_bufferInfo.m_channels) * time);
+				newDataSize = ceil((float64_t)(newSampleRate * m_bufferInfo.m_bytesPerSample * m_bufferInfo.m_channels) * time);
 			}
 
 			//printf("RESAMPLE newDataSize: %u\n", newDataSize);
@@ -1212,8 +1212,8 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 						// Надо сначала конвертировать один канал, потом другой и т.д.
 						for (uint32_t ic = 0; ic < m_bufferInfo.m_channels; ++ic)
 						{
-							bqFloat32* ptrNew = (bqFloat32*)newData;
-							bqFloat32* ptrOld = (bqFloat32*)m_bufferData.m_data;
+							float32_t* ptrNew = (float32_t*)newData;
+							float32_t* ptrOld = (float32_t*)m_bufferData.m_data;
 
 							// проход по всем блокам - то есть по всем данным
 							for (uint32_t ib = 0; ib < numOfBlocksNew; /*++ib*/)
@@ -1272,8 +1272,8 @@ void bqSoundBuffer::Resample(uint32_t newSampleRate)
 
 						for (uint32_t ic = 0; ic < m_bufferInfo.m_channels; ++ic)
 						{
-							bqFloat32* ptrNew = (bqFloat32*)newData;
-							bqFloat32* ptrOld = (bqFloat32*)m_bufferData.m_data;
+							float32_t* ptrNew = (float32_t*)newData;
+							float32_t* ptrOld = (float32_t*)m_bufferData.m_data;
 
 							for (uint32_t ib = 0; ib < numOfBlocksNew; /*++ib*/)
 							{

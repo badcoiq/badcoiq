@@ -37,16 +37,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
-uint32_t bqSound_GetPlaybackPosition(bqFloat64 secondsOnly, const bqSoundBufferInfo& info)
+uint32_t bqSound_GetPlaybackPosition(float64_t secondsOnly, const bqSoundBufferInfo& info)
 {
 	// Если m_sampleRate == 41000
 	// То при 1 секунде значение должно стать 41000 
 	//    если однобайтовый и одноканальный
 	// f = SRate * Sec * BSize
 
-	bqFloat64 f = (bqFloat64)info.m_sampleRate;
-	f = f * (bqFloat64)secondsOnly;
-	f = f * (bqFloat64)info.m_blockSize;
+	float64_t f = (float64_t)info.m_sampleRate;
+	f = f * (float64_t)secondsOnly;
+	f = f * (float64_t)info.m_blockSize;
 	return (uint32_t)floor(f);
 }
 

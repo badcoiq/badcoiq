@@ -28,7 +28,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_MATH_H__
+/// \cond
 #define __BQ_MATH_H__
+/// \endcond
 
 #include <cmath>
 #include <limits>
@@ -40,12 +42,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef PI
 #endif
 
-const float PIf = static_cast<float>(3.14159265358979323846);
-const float PIfHalf = static_cast<float>(3.14159265358979323846 * 0.5);
-const float PIfPI = 6.2831853f;
-const double PI = 3.14159265358979323846;
-const double PIHalf = 3.14159265358979323846 * 0.5;
-const double PIPI = 6.283185307179586476925286766559;
+const float32_t PIf = static_cast<float32_t>(3.14159265358979323846);
+const float32_t PIfHalf = static_cast<float32_t>(3.14159265358979323846 * 0.5);
+const float32_t PIfPI = 6.2831853f;
+const float64_t PI = 3.14159265358979323846;
+const float64_t PIHalf = 3.14159265358979323846 * 0.5;
+const float64_t PIPI = 6.283185307179586476925286766559;
 
 // Сюда будут добавляться #include вектр, матрица, кватернион
 #include "badcoiq/math/bqVector.h"
@@ -69,47 +71,52 @@ const bqMat4 bqEmptyMatrix = bqMat4();
 #undef RadToDeg
 #endif
 
+/// Набор статических методов
 class bqMath
 {
 public:
-	static float DegToRad(float degrees);
-	static double DegToRad(double degrees);
-	static float RadToDeg(float radians);
-	static double RadToDeg(double radians);
 
-	static float Abs(float);
-	static double Abs(double);
+	/// Градусы в радианы
+	static float32_t DegToRad(float32_t degrees);
+	static float64_t DegToRad(float64_t degrees);
+	
+	/// Радианы в градусы
+	static float32_t RadToDeg(float32_t radians);
+	static float64_t RadToDeg(float64_t radians);
+
+	static float32_t Abs(float32_t);
+	static float64_t Abs(float64_t);
 	static int32_t Abs(int32_t);
 
 	// Expect value form -1 to +1
-	static float Acos(float);
-	static double Acos(double);
+	static float32_t Acos(float32_t);
+	static float64_t Acos(float64_t);
 
 	// Expect value form -1 to +1
-	static float Asin(float);
-	static double Asin(double);
+	static float32_t Asin(float32_t);
+	static float64_t Asin(float64_t);
 
 	// Expect value form -2 to +2
-	static float Atan(float);
-	static double Atan(double);
+	static float32_t Atan(float32_t);
+	static float64_t Atan(float64_t);
 
 	// Expect value form -1 to +1
-	static float Atan2(float y, float x);
-	static double Atan2(double y, double x);
+	static float32_t Atan2(float32_t y, float32_t x);
+	static float64_t Atan2(float64_t y, float64_t x);
 
-	static float Clamp(float, float mn, float mx);
-	static double Clamp(double, double mn, double mx);
+	static float32_t Clamp(float32_t, float32_t mn, float32_t mx);
+	static float64_t Clamp(float64_t, float64_t mn, float64_t mx);
 
 	// Expect value from -PI to +PI
 	// It will do this
 	// if (v > 3.141f) v = 3.141f;
 	// if (v < -3.141f) v = -3.141f;
-	static float Cos(float);
-	static double Cos(double);
-	static float Sin(float);
-	static double Sin(double);
-	static float Tan(float);
-	static double Tan(double);
+	static float32_t Cos(float32_t);
+	static float64_t Cos(float64_t);
+	static float32_t Sin(float32_t);
+	static float64_t Sin(float64_t);
+	static float32_t Tan(float32_t);
+	static float64_t Tan(float64_t);
 
 	static void Cross(const bqVec3& v1, const bqVec3& v2, bqVec3& r);
 	static void Cross(const bqVec3f& v1, const bqVec3f& v2, bqVec3f& r);
@@ -121,23 +128,23 @@ public:
 	static bqReal Distance(const bqVec3& v1, const bqVec3& v2);
 	static bqReal Distance(const bqVec4& v1, const bqVec4& v2);
 	static bqReal Distance(const bqVec3& v1, const bqVec4& v2);
-	static float Distance(const bqVec3f& v1, const bqVec3f& v2);
-	static float Distance(const bqVec4f& v1, const bqVec4f& v2);
-	static float Distance(const bqVec3f& v1, const bqVec4f& v2);
+	static float32_t Distance(const bqVec3f& v1, const bqVec3f& v2);
+	static float32_t Distance(const bqVec4f& v1, const bqVec4f& v2);
+	static float32_t Distance(const bqVec3f& v1, const bqVec4f& v2);
 
 	static bqReal Dot(const bqVec3& v1, const bqVec3& v2);
 	static bqReal Dot(const bqVec4& v1, const bqVec4& v2);
 	static bqReal Dot(const bqVec3& v1, const bqVec4& v2);
-	static float Dot(const bqVec3f& v1, const bqVec3f& v2);
-	static float Dot(const bqVec4f& v1, const bqVec4f& v2);
-	static float Dot(const bqVec3f& v1, const bqVec4f& v2);
-	static float Dot(const bqQuaternion& v1, const bqQuaternion& v2);
+	static float32_t Dot(const bqVec3f& v1, const bqVec3f& v2);
+	static float32_t Dot(const bqVec4f& v1, const bqVec4f& v2);
+	static float32_t Dot(const bqVec3f& v1, const bqVec4f& v2);
+	static float32_t Dot(const bqQuaternion& v1, const bqQuaternion& v2);
 
 	static bqReal Length(const bqVec3& v);
 	static bqReal Length(const bqVec4& v);
-	static float Length(const bqVec3f& v);
-	static float Length(const bqVec4f& v);
-	static float Length(const bqQuaternion& v);
+	static float32_t Length(const bqVec3f& v);
+	static float32_t Length(const bqVec4f& v);
+	static float32_t Length(const bqQuaternion& v);
 
 	static void Reflect(bqVec3& v, const bqVec3& N);
 	static void Reflect(bqVec4& v, const bqVec4& N);
@@ -150,30 +157,30 @@ public:
 	// 
 	// типа, Lerp1 не гарантирует что x станет равным y (...Lerp2 тоже)
 	//  ... имеет 1 умножение. Lerp2 имеет 2 умножения.
-	static float Lerp1(float x, float y, float t);
-	static double Lerp1(double x, double y, double t);
+	static float32_t Lerp1(float32_t x, float32_t y, float32_t t);
+	static float64_t Lerp1(float64_t x, float64_t y, float64_t t);
 	static void Lerp1(const bqVec3& x, const bqVec3& y, bqReal t, bqVec3& r);
 	static void Lerp1(const bqVec3& x, const bqVec4& y, bqReal t, bqVec3& r);
 	static void Lerp1(const bqVec4& x, const bqVec4& y, bqReal t, bqVec4& r);
-	static void Lerp1(const bqVec3f& x, const bqVec3f& y, float t, bqVec3f& r);
-	static void Lerp1(const bqVec3f& x, const bqVec4f& y, float t, bqVec3f& r);
-	static void Lerp1(const bqVec4f& x, const bqVec4f& y, float t, bqVec4f& r);
-	static void Lerp1(const bqQuaternion& x, const bqQuaternion& y, float t, bqQuaternion& r);
+	static void Lerp1(const bqVec3f& x, const bqVec3f& y, float32_t t, bqVec3f& r);
+	static void Lerp1(const bqVec3f& x, const bqVec4f& y, float32_t t, bqVec3f& r);
+	static void Lerp1(const bqVec4f& x, const bqVec4f& y, float32_t t, bqVec4f& r);
+	static void Lerp1(const bqQuaternion& x, const bqQuaternion& y, float32_t t, bqQuaternion& r);
 
 	// wikipedia:
 	// Precise method, which guarantees v = v1 when t = 1. This method is monotonic only when v0 * v1 < 0.
 	// Lerping between same values might not produce the same value
-	static float Lerp2(float x, float y, float t);
-	static double Lerp2(double x, double y, double t);
+	static float32_t Lerp2(float32_t x, float32_t y, float32_t t);
+	static float64_t Lerp2(float64_t x, float64_t y, float64_t t);
 	static void Lerp2(const bqVec3& x, const bqVec3& y, bqReal t, bqVec3& r);
 	static void Lerp2(const bqVec3& x, const bqVec4& y, bqReal t, bqVec3& r);
 	static void Lerp2(const bqVec4& x, const bqVec4& y, bqReal t, bqVec4& r);
-	static void Lerp2(const bqVec3f& x, const bqVec3f& y, float t, bqVec3f& r);
-	static void Lerp2(const bqVec3f& x, const bqVec4f& y, float t, bqVec3f& r);
-	static void Lerp2(const bqVec4f& x, const bqVec4f& y, float t, bqVec4f& r);
-	static void Lerp2(const bqQuaternion& x, const bqQuaternion& y, float t, bqQuaternion& r);
+	static void Lerp2(const bqVec3f& x, const bqVec3f& y, float32_t t, bqVec3f& r);
+	static void Lerp2(const bqVec3f& x, const bqVec4f& y, float32_t t, bqVec3f& r);
+	static void Lerp2(const bqVec4f& x, const bqVec4f& y, float32_t t, bqVec4f& r);
+	static void Lerp2(const bqQuaternion& x, const bqQuaternion& y, float32_t t, bqQuaternion& r);
 
-	// Находится ли точка в прямоугольной области
+	/// Находится ли точка в прямоугольной области
 	static bool PointInRect(const bqPoint&, const bqRect&);
 	static bool PointInRect(const bqPoint&, const bqVec4f&);
 	static bool PointInRect(const bqPointf&, const bqRect&);
@@ -186,14 +193,14 @@ public:
 	static void Normalize(bqVec4f& v);
 	static void Normalize(bqQuaternion& v);
 
-	static void SetRotation(bqQuaternion&, float x, float y, float z);
+	static void SetRotation(bqQuaternion&, float32_t x, float32_t y, float32_t z);
 	static void SetRotation(bqQuaternion&, const bqVec3& axis, const bqReal& _angle);
-	static void SetRotation(bqQuaternion&, const bqVec3f& axis, const float& _angle);
+	static void SetRotation(bqQuaternion&, const bqVec3f& axis, const float32_t& _angle);
 	static void SetRotation(bqQuaternion&, const bqVec4& axis, const bqReal& _angle);
-	static void SetRotation(bqQuaternion&, const bqVec4f& axis, const float& _angle);
+	static void SetRotation(bqQuaternion&, const bqVec4f& axis, const float32_t& _angle);
 	static void SetRotation(bqMat4&, const bqQuaternion&);
 	// from irrlicht or assimp?
-	static void Slerp(bqQuaternion& q1, bqQuaternion& q2, float time, float threshold, bqQuaternion& r);
+	static void Slerp(bqQuaternion& q1, bqQuaternion& q2, float32_t time, float32_t threshold, bqQuaternion& r);
 
 	static void Mul(const bqMat4&, const bqMat4&, bqMat4&);
 	static void Mul(const bqMat4&, const bqVec3&, bqVec3&);
@@ -207,25 +214,25 @@ public:
 
 	static void Invert(bqMat4&);
 
-	// View матрица
+	/// View матрица
 	static void LookAtLH(bqMat4&, const bqVec3& eye, const bqVec3& center, const bqVec3& up);
 	static void LookAtRH(bqMat4&, const bqVec3& eye, const bqVec3& center, const bqVec3& up);
 
-	// Projection матрица
+	/// Projection матрица
 	static void PerspectiveLH(bqMat4&, bqReal FOV, bqReal aspect, bqReal Near, bqReal Far);
 	static void PerspectiveRH(bqMat4&, bqReal FOV, bqReal aspect, bqReal Near, bqReal Far);
-	static void OrthoLH(bqMat4&, float width, float height, float near, float far);
-	static void OrthoRH(bqMat4&, float width, float height, float near, float far);
-	static void OrthoOfCenterLH(bqMat4&, float left, float right, float top, float bottom, float near, float far);
-	static void OrthoOfCenterRH(bqMat4&, float left, float right, float top, float bottom, float near, float far);
+	static void OrthoLH(bqMat4&, float32_t width, float32_t height, float32_t near, float32_t far);
+	static void OrthoRH(bqMat4&, float32_t width, float32_t height, float32_t near, float32_t far);
+	static void OrthoOfCenterLH(bqMat4&, float32_t left, float32_t right, float32_t top, float32_t bottom, float32_t near, float32_t far);
+	static void OrthoOfCenterRH(bqMat4&, float32_t left, float32_t right, float32_t top, float32_t bottom, float32_t near, float32_t far);
 
-	// Получить текстурную координату
-	// Если картинка имеет ширину например 100 пикселей, то,
-	// value равное 100 должно вернуть 1.f
-	// textureSz не может равняться 0
-	static float CoordToUV(float value, float textureSz);
+	/// Получить текстурную координату
+	/// Если картинка имеет ширину например 100 пикселей, то,
+	/// value равное 100 должно вернуть 1.f
+	/// textureSz не может равняться 0
+	static float32_t CoordToUV(float32_t value, float32_t textureSz);
 
-	static bqMat4 ScaleMatrix(float v);
+	static bqMat4 ScaleMatrix(float32_t v);
 };
 
 

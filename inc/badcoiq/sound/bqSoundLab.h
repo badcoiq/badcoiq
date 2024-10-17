@@ -49,8 +49,8 @@ using bqSoundSample_8bit = bqSoundSample<uint8_t>;
 using bqSoundSample_16bit = bqSoundSample<int16_t>;
 using bqSoundSample_24bit = bqSoundSample<bqSoundSample24Base>;
 using bqSoundSample_32bit = bqSoundSample<int32_t>;
-using bqSoundSample_32bitFloat = bqSoundSample<bqFloat32>;
-using bqSoundSample_64bitFloat = bqSoundSample<bqFloat64>;
+using bqSoundSample_32bitFloat = bqSoundSample<float32_t>;
+using bqSoundSample_64bitFloat = bqSoundSample<float64_t>;
 
 union bqInteger4
 {
@@ -100,10 +100,10 @@ public:
 	static bqSoundSample_64bitFloat SampleTo64bitFloat(bqSoundSample_32bit);
 	static bqSoundSample_64bitFloat SampleTo64bitFloat(bqSoundSample_32bitFloat);*/
 
-	static uint8_t _32_to_8(float v);
-	static int16_t _32_to_16(float v);
-	static float _8_to_32(uint8_t v);
-	static float _16_to_32(int16_t v);
+	static uint8_t _32_to_8(float32_t v);
+	static int16_t _32_to_16(float32_t v);
+	static float32_t _8_to_32(uint8_t v);
+	static float32_t _16_to_32(int16_t v);
 	static int32_t _24_to_32i(bqSoundSample_24bit* in_sample);
 };
 

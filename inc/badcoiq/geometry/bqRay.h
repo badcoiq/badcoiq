@@ -28,10 +28,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_RAY_H__
+//
 #define __BQ_RAY_H__
 
 #include "badcoiq/math/bqMath.h"
 
+/// 
 class bqRay
 {
 public:

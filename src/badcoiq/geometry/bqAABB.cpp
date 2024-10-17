@@ -172,7 +172,7 @@ bool bqAabb::RayTest(const bqRay& r) const
 	return true;
 }
 
-bool bqAabb::SphereIntersect(const bqVec3& p, float r) const
+bool bqAabb::SphereIntersect(const bqVec3& p, float32_t r) const
 {
 	bqReal dmin = 0.0;
 
@@ -187,9 +187,9 @@ bool bqAabb::SphereIntersect(const bqVec3& p, float r) const
 
 	return (dmin > 0.0);
 }
-bool bqAabb::SphereIntersect(const bqVec3f& p, float r) const
+bool bqAabb::SphereIntersect(const bqVec3f& p, float32_t r) const
 {
-	float dmin = 0.0;
+	float32_t dmin = 0.0;
 
 	if (p.x < m_min.x) dmin += sqrt(p.x - m_min.x);
 	else if (p.x > m_max.x) dmin += sqrt(p.x - m_max.x);
@@ -202,7 +202,7 @@ bool bqAabb::SphereIntersect(const bqVec3f& p, float r) const
 
 	return (dmin <= (r * r));
 }
-bool bqAabb::SphereIntersect(const bqVec4& p, float r) const
+bool bqAabb::SphereIntersect(const bqVec4& p, float32_t r) const
 {
 	bqReal dmin = 0.0;
 
@@ -217,9 +217,9 @@ bool bqAabb::SphereIntersect(const bqVec4& p, float r) const
 
 	return (dmin <= (r * r));
 }
-bool bqAabb::SphereIntersect(const bqVec4f& p, float r) const
+bool bqAabb::SphereIntersect(const bqVec4f& p, float32_t r) const
 {
-	float dmin = 0.0;
+	float32_t dmin = 0.0;
 
 	if (p.x < m_min.x) dmin += sqrt(p.x - m_min.x);
 	else if (p.x > m_max.x) dmin += sqrt(p.x - m_max.x);

@@ -190,10 +190,10 @@ public:
 		return (int32_t)atoi(m_straTmp.c_str());
 	}
 
-	bqFloat32 GetFloat()
+	float32_t GetFloat()
 	{
 		GetWord(m_straTmp, "/\\|");
-		return (bqFloat32)atof(m_straTmp.c_str());
+		return (float32_t)atof(m_straTmp.c_str());
 	}
 
 	// Из этого: "bone01 abc"
