@@ -188,6 +188,7 @@ public:
 	std::map<std::string, SkeletonBone> m_skeleton;
 	int m_bonesNum = 0;
 
+	int32_t GetBoneIndexForHitbox(INode* node);
 
 	void AddBone(INode* node, Object* obj);
 	void BuildSkeleton();
@@ -277,6 +278,23 @@ public:
 	// спокойно создать sub meshes.
 	// информация не касающаяся subMesh
 	void AddMesh(INode* node, Object* obj);
+
+	struct HitBoxInfo
+	{
+		INode* m_node = 0;
+		Object* m_obj = 0;
+		ISkinContextData* skinData = 0;
+		ISkin* skin = 0;
+		INode* m_bone = 0;
+
+		// индекс mdl кости
+		int32_t m_boneIndex = -1;
+
+		bool m_readyToExport = false;
+	};
+	std::vector<HitBoxInfo> m_hitboxes;
+	void AddHitBox(INode* node, Object* obj);
+
 	Point3 GetVertexNormal(Mesh* mesh, int faceNo, RVertex* rv);
 	void BuildMeshes();
 

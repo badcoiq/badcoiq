@@ -55,3 +55,4 @@ tools/3dsmaxplugin/x64/Release
 data/models/Jill
 *.dle
 build/badcoiq/badcoiq/Debug
+tools/3dsmaxplugin/bmdl/x64

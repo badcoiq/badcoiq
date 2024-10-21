@@ -194,6 +194,7 @@ void PluginExporter::Save(const MCHAR* name)
 
 			// если m_GUI_checkUseCollision то
 			// будет записан 1 меш для колизии.
+			// !!! НЕТ НЕ 1 МЕШ...а meshChunkNum
 			if (meshChunkNum && m_GUI_checkUseCollision)
 			{
 				fileHeader.m_chunkNum += meshChunkNum;
@@ -203,10 +204,46 @@ void PluginExporter::Save(const MCHAR* name)
 		fileHeader.m_chunkNum += stringChunkNum;
 
 
-
+		uint32_t hitboxNum = 0;
 		if (m_bonesNum)
 		{
 			++fileHeader.m_chunkNum; // bqMDLChunkHeaderSkeleton
+
+			// hitbox
+			if (!m_GUI_checkOnlySkeleton)
+			{
+				for (int32_t i = 0, sz = m_hitboxes.size(); i < sz; ++i)
+				{
+					auto& hitboxInfo = m_hitboxes[i];
+					
+					if (hitboxInfo.skinData && hitboxInfo.skin)
+					{
+						int boneNum = hitboxInfo.skin->GetNumBones();
+						if (boneNum)
+						{
+							for (int bi = 0; bi < boneNum; ++bi)
+							{
+								auto bone = hitboxInfo.skin->GetBone(bi);
+								// надо взять первую попавшуюся кость из скелета
+								int32_t boneInd = GetBoneIndexForHitbox(bone);
+								if (boneInd > -1)
+								{
+									hitboxInfo.m_boneIndex = boneInd;
+									hitboxInfo.m_readyToExport = true;
+									++hitboxNum;
+									break;
+								}
+							}
+						}
+					}
+				//	hitboxInfo.m_node
+				}
+			}
+		}
+
+		if (hitboxNum)
+		{
+			fileHeader.m_chunkNum += hitboxNum;
 		}
 
 		fileHeader.m_rotation[0] = m_rotation.x;
@@ -318,6 +355,8 @@ void PluginExporter::Save(const MCHAR* name)
 					m_fileBuffer.Add(&boneData, sizeof(boneData));
 				}
 			}
+
+			
 		}
 
 		if (!m_GUI_checkOnlySkeleton)
@@ -582,6 +621,20 @@ void PluginExporter::Save(const MCHAR* name)
 
 			}
 		}
+
+		if (hitboxNum)
+		{
+			printf("Add hitboxes\n");
+			for (int32_t i = 0, sz = m_hitboxes.size(); i < sz; ++i)
+			{
+				auto& hitboxInfo = m_hitboxes[i];
+				if (hitboxInfo.m_readyToExport)
+				{
+
+				}
+			}
+		}
+
 
 		fileHeader.m_compression = fileHeader.compression_fastlz;
 		if (fileHeader.m_compression)
@@ -850,7 +903,23 @@ PluginExporter::SkeletonBone PluginExporter::GetBone(int index)
 	}
 	return bone;
 }
+int32_t PluginExporter::GetBoneIndexForHitbox(INode* node)
+{
+	int32_t r = -1;
 
+	auto it = m_skeleton.begin();
+	while (it != m_skeleton.end())
+	{
+		if ((*it).second.m_node == node)
+		{
+			r = (*it).second.m_index;
+			break;
+		}
+		it++;
+	}
+
+	return r;
+}
 
 std::string PluginExporter::GetAString(const wchar_t* str)
 {
@@ -996,13 +1065,81 @@ void PluginExporter::AddMtl(Mtl* mtl, _Mesh* _mesh)
 	printf("\n");
 }
 
+void PluginExporter::AddHitBox(INode* node, Object* obj)
+{
+	HitBoxInfo i;
+	i.m_node = node;
+	i.m_obj = obj;
+
+	Modifier* skinModifier = 0;
+	ISkin* skin = 0;
+	ISkinContextData* skinData = 0;
+
+	Object* pObj = node->GetObjectRef();
+	while (pObj->SuperClassID() == GEN_DERIVOB_CLASS_ID)
+	{
+		IDerivedObject* pDerObj = (IDerivedObject*)(pObj);
+		int Idx = 0;
+		while (Idx < pDerObj->NumModifiers())
+		{
+			Modifier* mod = pDerObj->GetModifier(Idx);
+			if (mod->ClassID() == SKIN_CLASSID)
+			{
+				skinModifier = mod;
+				break;
+			}
+			Idx++;
+		}
+		pObj = pDerObj->GetObjRef();
+	}
+
+	if (skinModifier)
+	{
+		skin = (ISkin*)skinModifier->GetInterface(I_SKIN);
+		if (skin)
+			skinData = skin->GetContextInterface(node);
+	}
+
+	if (skinData)
+	{
+		i.skinData = skinData;
+		i.skin = skin;
+		m_hitboxes.push_back(i);
+	}
+}
+
 // надо добавить определённую информацию чтобы потом
 // спокойно создать sub meshes.
 // информация не касающаяся subMesh
 void PluginExporter::AddMesh(INode* node, Object* obj)
 {
 	printf("Add Mesh\n");
-	printf("-\tName: %s\n", GetAString(node->GetName()).c_str());
+	auto astring = GetAString(node->GetName());
+	if (astring.size() > 3)
+	{
+		auto astr = astring.data();
+		if (astr[0] == 'h')
+		{
+			if (astr[1] == 'b')
+			{
+				// HIT BOX
+
+				// head
+			//	if (astr[2] == 'h')
+				{
+					// добавляется если имя начинается с 'hb'
+					// добавляется только нода.
+					// хитбоксы цепляются к костям. определение к какой кости прицепить хитбокс
+					// будет происходить при сохранении модели.
+					// К каждому хитбоксу нужно будет добавить модификатор skin и соответствующую кость.
+					AddHitBox(node, obj);
+					return;
+				}
+			}
+		}
+	}
+
+	printf("-\tName: %s\n", astring.c_str());
 
 	bqMDLChunkHeaderMesh meshHeader;
 	meshHeader.m_nameIndex = AddString(node->GetName());

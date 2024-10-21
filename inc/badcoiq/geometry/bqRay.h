@@ -51,6 +51,9 @@ public:
 	/// Вычислить m_segmentLen.
 	/// Расстояние от m_origin до m_end
 	void UpdateSegmentLen();
+	
+	/// Вычислить m_direction.
+	void UpdateDirection();
 
 	/// Для Watertight Ray/Triangle Intersection
 	int32_t m_kz = 0;

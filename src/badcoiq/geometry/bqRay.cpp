@@ -74,11 +74,7 @@ void bqRay::CreateFrom2DCoords(
 void bqRay::Update()
 {
 	UpdateSegmentLen();
-
-	m_direction.x = m_end.x - m_origin.x;
-	m_direction.y = m_end.y - m_origin.y;
-	m_direction.z = m_end.z - m_origin.z;
-	m_direction.Normalize();
+	UpdateDirection();
 
 	m_invDir.x = 1.f / m_direction.x;
 	m_invDir.y = 1.f / m_direction.y;
@@ -171,4 +167,12 @@ bool bqRay::PlaneIntersection(const bqVec3& planePoint, const bqVec3& planeNorma
 void bqRay::UpdateSegmentLen()
 {
 	m_segmentLen = bqMath::Distance(m_origin, m_end);
+}
+
+void bqRay::UpdateDirection()
+{
+	m_direction.x = m_end.x - m_origin.x;
+	m_direction.y = m_end.y - m_origin.y;
+	m_direction.z = m_end.z - m_origin.z;
+	m_direction.Normalize();
 }

@@ -112,9 +112,9 @@ using bqReal = float64_t;
 
 #ifdef _MSC_VER
 
-/// Используемы Visual Studio
+/// Используем Visual Studio
 /// \cond
-#if _MSC_VER >= 1930 && _MSC_VER <= 1937
+#if _MSC_VER >= 1930 && _MSC_VER <= 1941
 /// \endcond
 #define BQ_LINK_LIBRARY_CMP "_v143"
 #elif _MSC_VER >= 1920 && _MSC_VER <= 1929

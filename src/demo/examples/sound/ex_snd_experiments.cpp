@@ -45,8 +45,8 @@ class NewDelay : public bqSoundEffectDelay
 				/ (soundDeviceInfo.m_bitsPerSample / 8)
 				/ soundDeviceInfo.m_channels;
 
-			m_delayBuffers[0] = new bqBlockQueue<bqFloat32>(blockSize, o);
-			m_delayBuffers[1] = new bqBlockQueue<bqFloat32>(blockSize, o);
+			m_delayBuffers[0] = new bqBlockQueue<float32_t>(blockSize, o);
+			m_delayBuffers[1] = new bqBlockQueue<float32_t>(blockSize, o);
 		}
 
 		~DelayStep()
@@ -56,7 +56,7 @@ class NewDelay : public bqSoundEffectDelay
 		}
 
 		// Стерео
-		bqBlockQueue<bqFloat32>* m_delayBuffers[2];
+		bqBlockQueue<float32_t>* m_delayBuffers[2];
 
 	};
 
@@ -65,7 +65,7 @@ class NewDelay : public bqSoundEffectDelay
 	uint32_t m_delayStepsNum = 5;
 	uint32_t m_delayTime = 20;
 
-	bqFloat32* m_blockOut = 0;
+	float32_t* m_blockOut = 0;
 
 	void _deleteSteps() {
 		for (uint32_t i = 0; i < m_delayStepsNum; ++i)
@@ -109,7 +109,7 @@ public:
 		auto blockSize = soundDeviceInfo.m_bufferSize
 			/ (soundDeviceInfo.m_bitsPerSample / 8)
 			/ soundDeviceInfo.m_channels;
-		m_blockOut = new bqFloat32[blockSize];
+		m_blockOut = new float32_t[blockSize];
 		_createSteps();
 	}
 
@@ -130,8 +130,8 @@ public:
 					break;
 				auto channel = mixer->GetChannel(i);
 
-				bqFloat32* src = (bqFloat32*)channel->m_data;
-				bqFloat32* dst32 = (bqFloat32*)channel->m_data;
+				float32_t* src = (float32_t*)channel->m_data;
+				float32_t* dst32 = (float32_t*)channel->m_data;
 
 				if (si)
 					src = m_delaySteps.m_data[si - 1]->m_delayBuffers[i]->GetCurrentData();
