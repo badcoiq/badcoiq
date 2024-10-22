@@ -329,7 +329,29 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 
 					m_collision = newCollision;
 				}break;
+				case bqMDLChunkHeader::ChunkType_HitboxMesh:
+				{
+					bqMDLChunkHeaderHitboxMesh chunkHeaderMesh;
+					file.Read(&chunkHeaderMesh, sizeof(chunkHeaderMesh));
 
+					if (chunkHeaderMesh.m_vNum)
+					{
+						uint32_t vSz = chunkHeaderMesh.m_vNum * sizeof(bqVec3f);
+						uint32_t iSz = chunkHeaderMesh.m_vNum * sizeof(uint16_t);
+						//chunkHeaderMesh.m_bone
+
+						bqMDLHitbox* newHitbox = new bqMDLHitbox;
+						newHitbox->m_aabb = chunkHeaderMesh.m_aabb;
+						newHitbox->m_vBuf = new bqVec3f[chunkHeaderMesh.m_vNum];
+						newHitbox->m_iBuf = new uint16_t[chunkHeaderMesh.m_vNum];
+						newHitbox->m_vNum = chunkHeaderMesh.m_vNum;
+
+						file.Read(newHitbox->m_vBuf, vSz);
+						file.Read(newHitbox->m_iBuf, iSz);
+
+						m_hitboxes.push_back(newHitbox);
+					}
+				}break;
 				case bqMDLChunkHeader::ChunkType_String:
 				{
 					bqMDLChunkHeaderString chunkHeaderString;
@@ -811,6 +833,15 @@ bqMDLBVHNode::bqMDLBVHNode()
 bqMDLBVHNode::~bqMDLBVHNode()
 {
 	BQ_SAFEDESTROY_A(m_tris);
+}
+
+bqMDLHitbox::bqMDLHitbox()
+{
+}
+bqMDLHitbox::~bqMDLHitbox()
+{
+	BQ_SAFEDESTROY_A(m_vBuf);
+	BQ_SAFEDESTROY_A(m_iBuf);
 }
 
 #endif

@@ -630,7 +630,78 @@ void PluginExporter::Save(const MCHAR* name)
 				auto& hitboxInfo = m_hitboxes[i];
 				if (hitboxInfo.m_readyToExport)
 				{
+					auto & maxMesh = hitboxInfo.triObj->GetMesh();
+					auto maxVerts = maxMesh.getVertPtr(0);
+					int faceNum = maxMesh.getNumFaces();
+					if (faceNum)
+					{
+						uint32_t vNum = faceNum * 3;
+						uint32_t iNum = faceNum * 3;
+						bqVec3f* vBuf = new bqVec3f[vNum];
+						uint16_t* iBuf = new uint16_t[iNum];
+						int vertInds[3] = { 0, 2, 1 };
 
+						uint32_t vSz = vNum * sizeof(bqVec3f);
+						uint32_t iSz = vNum * sizeof(uint16_t);
+
+						Quat qRot;
+						qRot.SetEuler(-m_rotation.x, m_rotation.y, m_rotation.z);
+						Matrix3 mRot;
+						qRot.MakeMatrix(mRot);
+
+						bqAabb _aabb;
+
+						bqVec3f* vBufPtr = vBuf;
+						uint16_t* iBufPtr = iBuf;
+						uint16_t indexCount = 0;
+						auto faces = maxMesh.getFacePtr(0);
+						for (int fi = 0; fi < faceNum; ++fi)
+						{
+							Face* face = &faces[fi];
+
+							int vx1 = 0;
+							int vx2 = 1;
+							int vx3 = 2;
+							for (int ii = 0; ii < 3; ++ii)
+							{
+								auto faceVertIndex = face->v[vertInds[ii]];
+								Point3 pos = maxVerts[faceVertIndex];
+								pos = pos * mRot;
+
+								vBufPtr->x = pos.x;
+								vBufPtr->y = pos.y;
+								vBufPtr->z = pos.z;
+
+								//_aabb.Add(vBufPtr->x, vBufPtr->y, vBufPtr->z);
+								bq::bqAabb_add(_aabb, *vBufPtr);
+
+								*iBufPtr = indexCount;
+								++indexCount;
+								++iBufPtr;
+								++vBufPtr;
+							}
+						}
+
+						bqMDLChunkHeaderHitboxMesh hitboxChunkHeader;
+						hitboxChunkHeader.m_aabb = _aabb;
+						hitboxChunkHeader.m_vNum = vNum;
+						hitboxChunkHeader.m_bone = (uint16_t)hitboxInfo.m_boneIndex;
+
+						bqMDLChunkHeader chunkHeader;
+						chunkHeader.m_chunkType = bqMDLChunkHeader::ChunkType_HitboxMesh;
+						chunkHeader.m_chunkSz = sizeof(bqMDLChunkHeader)
+							+ sizeof(bqMDLChunkHeaderHitboxMesh)
+							+ vSz
+							+ iSz;
+						m_fileBuffer.Add(&chunkHeader, sizeof(chunkHeader));
+						m_fileBuffer.Add(&hitboxChunkHeader, sizeof(hitboxChunkHeader));
+						m_fileBuffer.Add(vBuf, vSz);
+						m_fileBuffer.Add(iBuf, iSz);
+
+
+						delete[] vBuf;
+						delete[] iBuf;
+					}
 				}
 			}
 		}
@@ -1104,7 +1175,14 @@ void PluginExporter::AddHitBox(INode* node, Object* obj)
 	{
 		i.skinData = skinData;
 		i.skin = skin;
-		m_hitboxes.push_back(i);
+
+		//bool good = false;
+
+		i.triObj = dynamic_cast<TriObject*>(obj);
+		if (i.triObj)
+		{
+			m_hitboxes.push_back(i);
+		}
 	}
 }
 

@@ -101,6 +101,21 @@ public:
 	bqTriangle m_outTriangle;
 };
 
+class bqMDLHitbox
+{
+public:
+	bqMDLHitbox();
+	~bqMDLHitbox();
+
+	bqVec3f* m_vBuf = 0;
+	uint16_t* m_iBuf = 0;
+	uint16_t m_vNum = 0;
+	bqAabb m_aabb;
+	
+	uint16_t m_jointIndex = 0;
+	bqJoint* m_joint = 0;
+};
+
 // 
 class bqMDL
 {
@@ -138,6 +153,8 @@ class bqMDL
 
 	bqAabb m_aabb;
 	bqReal m_radius = 0.f;
+
+	bqArray<bqMDLHitbox*> m_hitboxes;
 public:
 	bqMDL();
 	~bqMDL();
@@ -160,6 +177,9 @@ public:
 
 	bqAabb& GetAabb() { return m_aabb; }
 	bqReal GetBoundingRadius() { return m_radius; }
+	
+	size_t GetHitboxNum() { return m_hitboxes.m_size; }
+	bqMDLHitbox* GetHitbox(size_t i) { return m_hitboxes.m_data[i]; }
 };
 
 

@@ -149,6 +149,7 @@ struct bqMDLChunkHeader
 		ChunkType_Material,
 		ChunkType_Animation,
 		ChunkType_CollisionMesh,
+		ChunkType_HitboxMesh,
 	};
 	uint32_t m_chunkType = ChunkType__null;
 	
@@ -271,6 +272,14 @@ struct bqMDLChunkHeaderCollisionMesh
 	uint32_t m_numOfBVHAabbs = 0;
 	uint32_t m_numOfBVHLeaves = 0;
 };
+
+struct bqMDLChunkHeaderHitboxMesh
+{
+	bqAabb m_aabb;
+	uint16_t m_vNum = 0;
+	uint16_t m_bone = 0;
+};
+
 
 // Чанк строки
 struct bqMDLChunkHeaderString

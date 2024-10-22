@@ -287,6 +287,8 @@ public:
 		ISkin* skin = 0;
 		INode* m_bone = 0;
 
+		TriObject* triObj = 0;
+
 		// индекс mdl кости
 		int32_t m_boneIndex = -1;
 

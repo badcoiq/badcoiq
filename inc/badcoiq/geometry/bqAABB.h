@@ -97,6 +97,19 @@ public:
 	bqReal m_radius = 0.f;
 };
 
+namespace bq
+{
+	BQ_FORCEINLINE void bqAabb_add(bqAabb& b, const bqVec3f& v)
+	{
+		if (v.x > b.m_max[0]) b.m_max[0] = v.x;
+		if (v.y > b.m_max[1]) b.m_max[1] = v.y;
+		if (v.z > b.m_max[2]) b.m_max[2] = v.z;
+
+		if (v.x < b.m_min[0]) b.m_min[0] = v.x;
+		if (v.y < b.m_min[1]) b.m_min[1] = v.y;
+		if (v.z < b.m_min[2]) b.m_min[2] = v.z;
+	}
+}
 
 #endif
 
