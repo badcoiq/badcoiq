@@ -54,6 +54,7 @@ public:
 	
 	/// Вычислить m_direction.
 	void UpdateDirection();
+	void UpdateInvDir();
 
 	/// Для Watertight Ray/Triangle Intersection
 	int32_t m_kz = 0;
@@ -89,6 +90,8 @@ public:
 
 	/// Пересекает ли плоскость.
 	bool PlaneIntersection(const bqVec3& planePoint, const bqVec3& planeNormal, bqReal& T);
+	
+	bool SphereIntersection(const bqVec3& spherePoint, bqReal radius, bqReal& T, bool segment);
 };
 
 #endif

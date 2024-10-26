@@ -245,7 +245,7 @@ void bqSkeletonAnimationObject::Init(bqSkeletonAnimation* a, bqSkeleton* s, cons
 		m_name = name;
 
 	m_joints.clear();
-//	m_skeleton = s;
+	m_skeleton = s;
 	m_animation = a;
 	m_frameBegin = 0.f;
 	m_frameEnd = (float)a->GetFramesNumber();
@@ -347,6 +347,18 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 		jad.m_joint->m_data.m_transformation.m_base.m_scale = S;
 
 		jad.m_joint->m_data.m_transformation.CalculateMatrix();
+
+		// Лишние вычисления.
+		// Если в случае необходимости получения трансформации джоинта
+		// относительно мира (напр. установка оружия в руку), то проще
+		// инвертировать final матрицу. Если без неё, то придётся:
+		//  - использовать код ниже
+		//  - потребуется дополнительное умножение чтобы повернуть всё напр на 90гр (такое мб из за 3Д редактора)
+		/*jad.m_joint->m_data.m_world = jad.m_joint->m_data.m_transformation.m_matrix;
+		if (jad.m_joint->m_base.m_parentIndex != -1)
+			jad.m_joint->m_data.m_world
+			= m_skeleton->GetJoint(jad.m_joint->m_base.m_parentIndex)->m_data.m_world
+				* jad.m_joint->m_data.m_world;*/
 	}
 
 	m_frameCurr += (dt * m_fps);

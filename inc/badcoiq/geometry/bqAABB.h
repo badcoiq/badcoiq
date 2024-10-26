@@ -56,6 +56,7 @@ public:
 	void Add(float64_t x, float64_t y, float64_t z);
 	void Add(const bqAabb& box);
 	bool RayTest(const bqRay& r) const;
+	bool RayTest(const bqRay& r, const bqVec3& aabbOrigin) const;
 	
 	bool SphereIntersect(const bqVec3& p, float32_t r) const;
 	bool SphereIntersect(const bqVec3f& p, float32_t r) const;

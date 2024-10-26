@@ -645,9 +645,15 @@ void PluginExporter::Save(const MCHAR* name)
 						uint32_t iSz = vNum * sizeof(uint16_t);
 
 						Quat qRot;
-						qRot.SetEuler(-m_rotation.x, m_rotation.y, m_rotation.z);
+						//qRot.SetEuler(-m_rotation.x, m_rotation.y, m_rotation.z);
+
 						Matrix3 mRot;
 						qRot.MakeMatrix(mRot);
+						
+						Matrix3 TM = hitboxInfo.m_node->GetNodeTM(m_timeValue);
+						TM.NoTrans();
+						TM.Invert();
+						mRot = TM;
 
 						bqAabb _aabb;
 

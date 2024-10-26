@@ -345,6 +345,7 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 						newHitbox->m_vBuf = new bqVec3f[chunkHeaderMesh.m_vNum];
 						newHitbox->m_iBuf = new uint16_t[chunkHeaderMesh.m_vNum];
 						newHitbox->m_vNum = chunkHeaderMesh.m_vNum;
+						newHitbox->m_jointIndex = chunkHeaderMesh.m_bone;
 
 						file.Read(newHitbox->m_vBuf, vSz);
 						file.Read(newHitbox->m_iBuf, iSz);

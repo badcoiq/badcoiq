@@ -75,10 +75,7 @@ void bqRay::Update()
 {
 	UpdateSegmentLen();
 	UpdateDirection();
-
-	m_invDir.x = 1.f / m_direction.x;
-	m_invDir.y = 1.f / m_direction.y;
-	m_invDir.z = 1.f / m_direction.z;
+	UpdateInvDir();
 
 	m_kz = bqRay_max_dim
 	(
@@ -176,3 +173,40 @@ void bqRay::UpdateDirection()
 	m_direction.z = m_end.z - m_origin.z;
 	m_direction.Normalize();
 }
+
+void bqRay::UpdateInvDir()
+{
+	m_invDir.x = 1.f / m_direction.x;
+	m_invDir.y = 1.f / m_direction.y;
+	m_invDir.z = 1.f / m_direction.z;
+}
+
+bool bqRay::SphereIntersection(const bqVec3& pos, bqReal radius, bqReal& T, bool segment)
+{
+	bqVec3 m = m_origin - pos;
+	bqReal b = bqMath::Dot(m, m_direction);
+	bqReal c = bqMath::Dot(m, m) - radius * radius;
+
+	// Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0) 
+	if (c > 0.0f && b > 0.0f) return 0;
+	bqReal discr = b * b - c;
+
+	// A negative discriminant corresponds to ray missing sphere 
+	if (discr < 0.0f) return 0;
+
+	// Ray now found to intersect sphere, compute smallest t value of intersection
+	T = -b - sqrt(discr);
+
+	// If t is negative, ray started inside sphere so clamp t to zero 
+	if (T < 0.0f) T = 0.0f;
+	//ip = m_origin + T * m_direction;
+
+	if (segment)
+	{
+		if (m_segmentLen < T)
+			return false;
+	}
+
+	return true;
+}
+

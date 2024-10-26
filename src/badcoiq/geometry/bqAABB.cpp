@@ -172,6 +172,23 @@ bool bqAabb::RayTest(const bqRay& r) const
 	return true;
 }
 
+bool bqAabb::RayTest(const bqRay& r, const bqVec3& aabbOrigin) const
+{
+	bqReal t1 = (m_min.x + aabbOrigin.x - r.m_origin.x) * r.m_invDir.x;
+	bqReal t2 = (m_max.x + aabbOrigin.x - r.m_origin.x) * r.m_invDir.x;
+	bqReal t3 = (m_min.y + aabbOrigin.y - r.m_origin.y) * r.m_invDir.y;
+	bqReal t4 = (m_max.y + aabbOrigin.y - r.m_origin.y) * r.m_invDir.y;
+	bqReal t5 = (m_min.z + aabbOrigin.z - r.m_origin.z) * r.m_invDir.z;
+	bqReal t6 = (m_max.z + aabbOrigin.z - r.m_origin.z) * r.m_invDir.z;
+
+	bqReal tmin = bqMax(bqMax(bqMin(t1, t2), bqMin(t3, t4)), bqMin(t5, t6));
+	bqReal tmax = bqMin(bqMin(bqMax(t1, t2), bqMax(t3, t4)), bqMax(t5, t6));
+
+	if (tmax < 0 || tmin > tmax) return false;
+
+	return true;
+}
+
 bool bqAabb::SphereIntersect(const bqVec3& p, float32_t r) const
 {
 	bqReal dmin = 0.0;

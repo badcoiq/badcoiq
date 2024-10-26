@@ -76,6 +76,7 @@ struct bqJointData
 	bqMat4 m_matrixBindInverse; // та матрица которая переместит вершины на нужную позицию
 	bqMat4 m_matrixFinal;     // эта матрица пойдёт в GPU
 
+	//bqMat4 m_world;
 	// лучше не надо
 	// лишщние вычисления.
 	// если необходимо установить что-то на позицию джоинта (напр дать оружие в руку героя)
@@ -205,7 +206,7 @@ class bqSkeletonAnimationObject
 	bqArray<bqSkeletonAnimationObjectJointData> m_joints;
 	bqStringA m_name;
 	bqSkeletonAnimation* m_animation = 0;
-	//bqSkeleton* m_skeleton = 0; // пока лишнее
+	bqSkeleton* m_skeleton = 0;
 	float m_frameCurr = 0.f;
 	float m_frameBegin = 0.f;
 	float m_frameEnd = 0.f;

@@ -82,6 +82,7 @@ class bqPolygonMeshPolygon;
 class bqMeshPolygonCreator;
 class bqPolygonMeshControlPoint;
 class bqGPUMesh;
+class bqMDLHitbox;
 class bqMesh;
 class bqPolygonMesh;
 class bqMeshLoader;
