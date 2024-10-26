@@ -293,7 +293,7 @@ void bqSkeletonAnimationObject::Animate(float dt)
 	{
 		m_frameCurr = m_frameBegin;
 		if (m_callback)
-			m_callback->OnEnd();
+			m_callback->OnEnd(this);
 	}
 }
 
@@ -306,7 +306,9 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 
 	uint32_t prevFrameIndex = currFrameIndex;
 	if (prevFrameIndex <= (uint32_t)floor(m_frameBegin))
+	{
 		prevFrameIndex = (uint32_t)floor(m_frameEnd) - 1;
+	}
 	else
 	{
 		//if (!prevFrameIndex)
@@ -345,6 +347,10 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 		bqMath::Lerp1(prevFrame->m_transformations.m_data[i].m_scale,
 			frame->m_transformations.m_data[i].m_scale, t, S);
 		jad.m_joint->m_data.m_transformation.m_base.m_scale = S;
+		if (jad.m_joint->m_data.m_transformation.m_useAdd)
+		{
+			jad.m_joint->m_data.m_transformation.m_base.m_scale *= jad.m_joint->m_data.m_transformation.m_add.m_scale;
+		}
 
 		jad.m_joint->m_data.m_transformation.CalculateMatrix();
 
@@ -367,7 +373,84 @@ void bqSkeletonAnimationObject::AnimateInterpolate(float dt)
 	{
 		m_frameCurr = m_frameBegin;
 		if (m_callback)
-			m_callback->OnEnd();
+			m_callback->OnEnd(this);
+	}
+}
+
+void bqSkeletonAnimationObject::AnimateInterpolateOnce(float32_t dt)
+{
+	uint32_t currFrameIndex = (uint32_t)floor(m_frameCurr);
+	float t = m_frameCurr - (float)currFrameIndex;
+
+	bqSkeletonAnimationFrame* frame = m_animation->GetFrame(currFrameIndex);
+
+	uint32_t nextFrameIndex = currFrameIndex + 1;
+	if (nextFrameIndex > (uint32_t)floor(m_frameEnd))
+	{
+		nextFrameIndex = (uint32_t)floor(m_frameBegin);
+	}
+	
+	bqSkeletonAnimationFrame* nextFrame = m_animation->GetFrame(nextFrameIndex);
+
+	for (size_t i = 0; i < frame->m_transformations.m_size; ++i)
+	{
+		auto& jad = m_joints.m_data[i];
+		if (jad.m_flags & bqSkeletonAnimationObjectJointData::flag_skipTransform)
+			continue;
+
+		bqVec4 P;
+		bqMath::Lerp1(frame->m_transformations.m_data[i].m_position, 
+			nextFrame->m_transformations.m_data[i].m_position,
+			t, P);
+
+		jad.m_joint->m_data.m_transformation.m_base.m_position = P;
+
+		bqQuaternion Q;
+		bqMath::Slerp(frame->m_transformations.m_data[i].m_rotation,
+			nextFrame->m_transformations.m_data[i].m_rotation,
+			t, 1.f, Q);
+
+		if (jad.m_joint->m_data.m_transformation.m_useAdd)
+		{
+			Q *= jad.m_joint->m_data.m_transformation.m_add.m_rotation;
+			Q.Normalize();
+		}
+
+		jad.m_joint->m_data.m_transformation.m_base.m_rotation = Q;
+
+		bqVec4 S;
+		bqMath::Lerp1(
+			frame->m_transformations.m_data[i].m_scale, 
+			nextFrame->m_transformations.m_data[i].m_scale,
+			t, S);
+		jad.m_joint->m_data.m_transformation.m_base.m_scale = S;
+		if (jad.m_joint->m_data.m_transformation.m_useAdd)
+		{
+			jad.m_joint->m_data.m_transformation.m_base.m_scale *= jad.m_joint->m_data.m_transformation.m_add.m_scale;
+		}
+
+		jad.m_joint->m_data.m_transformation.CalculateMatrix();
+
+		// Лишние вычисления.
+		// Если в случае необходимости получения трансформации джоинта
+		// относительно мира (напр. установка оружия в руку), то проще
+		// инвертировать final матрицу. Если без неё, то придётся:
+		//  - использовать код ниже
+		//  - потребуется дополнительное умножение чтобы повернуть всё напр на 90гр (такое мб из за 3Д редактора)
+		/*jad.m_joint->m_data.m_world = jad.m_joint->m_data.m_transformation.m_matrix;
+		if (jad.m_joint->m_base.m_parentIndex != -1)
+			jad.m_joint->m_data.m_world
+			= m_skeleton->GetJoint(jad.m_joint->m_base.m_parentIndex)->m_data.m_world
+				* jad.m_joint->m_data.m_world;*/
+	}
+
+	m_frameCurr += (dt * m_fps);
+
+	if (m_frameCurr > m_frameEnd)
+	{
+		m_frameCurr = m_frameBegin;
+		if (m_callback)
+			m_callback->OnEnd(this);
 	}
 }
 

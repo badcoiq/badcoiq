@@ -192,7 +192,7 @@ public:
 	bqSkeletonAnimationObjectCallback() {}
 	virtual ~bqSkeletonAnimationObjectCallback() {}
 
-	virtual void OnEnd() {}
+	virtual void OnEnd(bqSkeletonAnimationObject*) {}
 };
 
 /// \class bqSkeletonAnimationObject
@@ -200,17 +200,17 @@ public:
 ///	
 ///	Конструктор с параметрами автоматически всё инициализирует.
 /// 
-class bqSkeletonAnimationObject
+class bqSkeletonAnimationObject : public bqUserData
 {
 	// можно дать только определённые джоинты
 	bqArray<bqSkeletonAnimationObjectJointData> m_joints;
 	bqStringA m_name;
 	bqSkeletonAnimation* m_animation = 0;
 	bqSkeleton* m_skeleton = 0;
-	float m_frameCurr = 0.f;
-	float m_frameBegin = 0.f;
-	float m_frameEnd = 0.f;
-	float m_fps = 30.f;
+	float32_t m_frameCurr = 0.f;
+	float32_t m_frameBegin = 0.f;
+	float32_t m_frameEnd = 0.f;
+	float32_t m_fps = 30.f;
 
 	bqSkeletonAnimationObjectCallback* m_callback = 0;
 public:
@@ -222,7 +222,7 @@ public:
 	/// Init, SetRegion SetFPS
 	bqSkeletonAnimationObject(bqSkeletonAnimation*, bqSkeleton*, const char* name, float b, float e, float fps);
 	
-	~bqSkeletonAnimationObject();
+	virtual ~bqSkeletonAnimationObject();
 	BQ_PLACEMENT_ALLOCATOR(bqSkeletonAnimationObject);
 
 	/// Простая инициализация на основе скелета и анимации.
@@ -236,15 +236,24 @@ public:
 	const bqStringA& GetName() { return m_name; }
 
 	/// Анимировать без интерполяции
-	void Animate(float dt);
+	void Animate(float32_t dt);
 
 	/// Анимировать с интерполяцией
-	void AnimateInterpolate(float dt);
+	void AnimateInterpolate(float32_t dt);
+
+	/// Проблема с AnimateInterpolate.
+	/// Интерполяция осуществляется с предидущим фреймом.
+	/// Это ок для зацикленных анимашек.
+
+	/// Анимировать без loop
+	void AnimateInterpolateOnce(float32_t dt);
 
 
-	void SetFPS(float);
-	float GetFPS() { return m_fps; }
-	void SetRegion(float begin, float end);
+	void SetFPS(float32_t);
+	float32_t GetFPS() { return m_fps; }
+	void SetRegion(float32_t begin, float32_t end);
+
+	float32_t GetCurrFrame() { return m_frameCurr; }
 
 	void AddJoint(bqJoint*);
 
