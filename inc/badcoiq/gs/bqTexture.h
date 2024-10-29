@@ -28,19 +28,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_TEXTURE_H__
+/// \cond
 #define __BQ_TEXTURE_H__
+/// \endcond
 
 #include "badcoiq/common/bqImage.h"
 #include "badcoiq/cryptography/bqCryptography.h"
 
-// Тип текстуры
+/// Тип текстуры
 enum class bqTextureType : uint32_t
 {
 	Texture2D,
 	RTT       // Render Target Texture / FBO
 };
 
-// Если фильтр стоит CMP_...
+/// Если фильтр стоит CMP_...
 enum class bqTextureComparisonFunc : uint32_t
 {
 	Never,
@@ -53,22 +55,22 @@ enum class bqTextureComparisonFunc : uint32_t
 	Always
 };
 
-// Так как текстурные координаты от 0 до 1, можно решить, как рисовать то, что за
-// пределами этой области
+/// Так как текстурные координаты от 0 до 1, можно решить, как рисовать то, что за
+/// пределами этой области
 enum class bqTextureAddressMode : uint32_t
 {
-	Wrap,   // текстура будет повторяться
-	Mirror, // отразиться
-	Clamp,  // будет растягиваться крайними пикселями
-	Border, // будет залито указанным цветом (D3D11->D3D11_SAMPLER_DESC::BorderColor)
-	MirrorOnce // сначала Mirror потом Clamp
+	Wrap,      /// текстура будет повторяться
+	Mirror,    /// отразиться
+	Clamp,     /// будет растягиваться крайними пикселями
+	Border,    /// будет залито указанным цветом (D3D11->D3D11_SAMPLER_DESC::BorderColor)
+	MirrorOnce /// сначала Mirror потом Clamp
 };
 
-// Фильтрация. 
-// PPP самый простой, пиксельный
+/// Фильтрация. 
+/// PPP самый простой, пиксельный
 enum class bqTextureFilter : uint32_t
 {
-	// min mag mip / point linear
+	/// min mag mip / point linear
 	PPP,
 	PPL,
 	PLP,
@@ -79,7 +81,7 @@ enum class bqTextureFilter : uint32_t
 	LLL,
 	ANISOTROPIC,
 	
-	// comparison, для PCF
+	/// comparison, для PCF
 	CMP_PPP,
 	CMP_PPL,
 	CMP_PLP,
@@ -91,11 +93,11 @@ enum class bqTextureFilter : uint32_t
 	CMP_ANISOTROPIC,
 };
 
-// Вся информация о текстуре.
-// Так-же заполняется при создании новой текстуры
+/// Вся информация о текстуре.
+/// Так-же заполняется при создании новой текстуры
 struct bqTextureInfo
 {
-	// Шейдеру может понадобиться знать размер текстуры
+	/// Шейдеру может понадобиться знать размер текстуры
 	bqImageInfo m_imageInfo;
 
 	bqTextureType m_type = bqTextureType::Texture2D;
@@ -106,7 +108,7 @@ struct bqTextureInfo
 	bool m_generateMipmaps = false;
 };
 
-// GPU текстура
+/// GPU текстура
 class bqTexture
 {
 protected:
@@ -120,6 +122,62 @@ public:
 	void SetInfo(const bqTextureInfo& ti) { m_info = ti; }
 };
 
+/// Работает на основе динамического массива
+/// Can framework::summon
+class bqTextureCache
+{
+	bqGS* m_gs = 0;
+
+	struct _node
+	{
+		bqTexture* m_texture = 0;
+		bqMD5 m_md5;
+	};
+
+	bqArray<_node*> m_data;
+
+public:
+	bqTextureCache(bqGS*);
+	~bqTextureCache();
+	BQ_PLACEMENT_ALLOCATOR(bqTextureCache);
+
+	/// Загрузить текстуру или получить уже загруженную
+	bqTexture* GetTexture(const char* path);
+	bqTexture* GetTexture(const bqMD5&);
+	bqTexture* GetTexture(const char* path, uint32_t* outIndex, bool load = true);
+
+	/// Получить текстуру по индексу
+	bqTexture* GetTexture(uint32_t i);
+
+	/// Получить количество текстур в кеше
+	uint32_t GetTextureNum();
+
+	/// Удалить все текстуры (освободить память)
+	void Clear();
+
+	/// Получить индекс текстуры.
+	/// Она должна быть ранее загружена.
+	/// Если текстуры нет то вернётся 0xFFFFFFFF
+	uint32_t GetIndex(const char*);
+	uint32_t GetIndex(const bqMD5&);
+	uint32_t GetIndex(bqTexture*);
+
+	/// Загрузить текстуру или освободить память
+	/// по индексу.
+	/// Объекты могут иметь индексы текстур.
+	/// Текстуру можно будет выгружать из памяти,
+	/// и заново загружать.
+	void Unload(uint32_t);
+	bqTexture* Reload(uint32_t);
+
+	/// Генерировать mip maps
+	/// Значение будет применяться при новой загрузке
+	bool m_genMipmaps = true;
+
+	/// Настройка фильтрации и прочее.
+	/// Значение будет применяться при новой загрузке
+	bqTextureInfo m_textureInfo;
+};
 
 #endif
 

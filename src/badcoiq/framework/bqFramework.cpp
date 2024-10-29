@@ -576,6 +576,11 @@ bqTexture* bqFramework::SummonTexture(bqGS* gs, const char* fn, bool genMipMaps,
 
 	return newTexture;
 }
+bqTextureCache* bqFramework::SummonTextureCache(bqGS* gs)
+{
+	bqTextureCache* tc = new bqTextureCache(gs);
+	return tc;
+}
 #endif
 
 bool bqFramework::FileExist(const char* p)

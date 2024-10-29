@@ -112,6 +112,7 @@ class bqSoundEffect;
 #ifdef BQ_WITH_IMAGE
 class bqImage;
 class bqTexture;
+class bqTextureCache;
 class bqImageLoader;
 #endif
 

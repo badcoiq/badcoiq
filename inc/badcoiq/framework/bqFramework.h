@@ -159,6 +159,8 @@ public:
 #ifdef BQ_WITH_GS
 	// Метод сам загрузит bqImage, создаст текстуру и удалит bqImage
 	static bqTexture* SummonTexture(bqGS*, const char*, bool genMipMaps = true, bool linearFilter = true);
+	
+	static bqTextureCache* SummonTextureCache(bqGS*);
 #endif
 
 	static bool FileExist(const char*);

@@ -28,12 +28,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_SCENECAMERA_H__
+/// \cond
 #define __BQ_SCENECAMERA_H__
+/// \endcond
 
 #ifdef BQ_WITH_SCENE
 
 #include "badcoiq/math/bqMath.h"
 
+/// Для frustum culling.
+/// Если создаётся своя камера и нужен 
+/// frustum culling то можно сделать объект
+/// этого класса и вызвать CalculateFrustum
 class bqCameraFrustum
 {
 public:
