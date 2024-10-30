@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_TEXTURE_H__
 /// \endcond
 
+#include "badcoiq/containers/bqArray.h"
 #include "badcoiq/common/bqImage.h"
 #include "badcoiq/cryptography/bqCryptography.h"
 
@@ -132,10 +133,14 @@ class bqTextureCache
 	{
 		bqTexture* m_texture = 0;
 		bqMD5 m_md5;
+
+		// чтобы заного загрузить текстуру нужно знать где
+		// лежит файл
+		bqStringA* m_path = 0;
 	};
 
 	bqArray<_node*> m_data;
-
+	
 public:
 	bqTextureCache(bqGS*);
 	~bqTextureCache();
@@ -168,7 +173,8 @@ public:
 	/// Текстуру можно будет выгружать из памяти,
 	/// и заново загружать.
 	void Unload(uint32_t);
-	bqTexture* Reload(uint32_t);
+	bqTexture* Reload(uint32_t, bool forceUnload = false);
+	bool IsLoaded(uint32_t);
 
 	/// Генерировать mip maps
 	/// Значение будет применяться при новой загрузке

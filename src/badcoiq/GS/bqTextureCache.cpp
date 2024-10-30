@@ -57,7 +57,6 @@ bqTexture* bqTextureCache::GetTexture(const bqMD5& md5)
 			return m_data.m_data[i]->m_texture;
 		}
 	}
-
 	return 0;
 }
 
@@ -66,24 +65,29 @@ bqTexture* bqTextureCache::GetTexture(const char* path)
 	bqTexture* t = GetTexture(bqCryptography::MD5(path, strlen(path)));
 
 	if (!t)
+		t = GetTexture(path, 0, true);
+	return t;
+}
+
+bqTexture* bqTextureCache::GetTexture(const char* path, uint32_t* outIndex, bool load)
+{
+	bqTexture* t = GetTexture(bqCryptography::MD5(path, strlen(path)));
+	if (!t)
 	{
-		bqImage* img = bqFramework::SummonImage(path);
-		if (img)
-		{
-			t = m_gs->SummonTexture(img, m_textureInfo);
-			delete img;
+		_node* n = new _node;
+		n->m_texture = 0;
+		n->m_md5 = bqCryptography::MD5(path, strlen(path));
+		n->m_path = new bqStringA(path);
+		m_data.push_back(n);
 
-			if (t)
-			{
-				_node * n = new _node;
-				n->m_texture = t;
-				n->m_md5 = bqCryptography::MD5(path, strlen(path));
+		uint32_t index = m_data.size() - 1;
 
-				m_data.push_back(n);
-			}
-		}
+		if (outIndex)
+			*outIndex = index;
+
+		if (load)
+			t = Reload(index);
 	}
-
 	return t;
 }
 
@@ -93,12 +97,11 @@ void bqTextureCache::Clear()
 	for (size_t i = 0; i < m_data.m_size; ++i)
 	{
 		if (m_data.m_data[i]->m_texture)
-		{
 			delete m_data.m_data[i]->m_texture;
-		}
+		if (m_data.m_data[i]->m_path)
+			delete m_data.m_data[i]->m_path;
 		delete m_data.m_data[i];
 	}
-
 	m_data.clear();
 }
 
@@ -114,6 +117,50 @@ bqTexture* bqTextureCache::GetTexture(uint32_t i)
 	if(i < m_data.m_size)
 		return m_data.m_data[i]->m_texture;
 	return 0;
+}
+
+void bqTextureCache::Unload(uint32_t i)
+{
+	if (i < m_data.m_size)
+	{
+		if (m_data.m_data[i]->m_texture)
+		{
+			delete m_data.m_data[i]->m_texture;
+			m_data.m_data[i]->m_texture = 0;
+		}
+	}
+}
+
+bqTexture* bqTextureCache::Reload(uint32_t index, bool forceUnload)
+{
+	bqTexture* t = 0;
+	if (index < m_data.m_size)
+	{
+		if (forceUnload)
+			Unload(index);
+
+		if (m_data.m_data[index]->m_path
+			&& !m_data.m_data[index]->m_texture)
+		{
+			bqImage* img = bqFramework::SummonImage(m_data.m_data[index]->m_path->c_str());
+			if (img)
+			{
+				m_data.m_data[index]->m_texture = m_gs->SummonTexture(img, m_textureInfo);
+				delete img;
+
+				if (m_data.m_data[index]->m_texture)
+					t = m_data.m_data[index]->m_texture;
+			}
+		}
+	}
+	return t;
+}
+
+bool bqTextureCache::IsLoaded(uint32_t i)
+{
+	if (i < m_data.m_size)
+		return (m_data.m_data[i]->m_texture != 0);
+	return false;
 }
 
 

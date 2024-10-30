@@ -194,6 +194,7 @@
     <ClCompile Include="..\..\src\badcoiq\geometry\bqRay.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqSkeleton.cpp" />
     <ClCompile Include="..\..\src\badcoiq\geometry\bqTriangle.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\GS\bqTextureCache.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIButton.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUICheckRadioBox.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUICommon.cpp" />

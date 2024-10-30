@@ -55,6 +55,9 @@
     <Filter Include="Source Files\cryptography">
       <UniqueIdentifier>{6131d93b-11cf-4e3a-9f23-a76a62e0f252}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GS">
+      <UniqueIdentifier>{377c51f8-c500-4286-bfa5-d3331e65778c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -227,6 +230,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\common\bqTimerDT.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\GS\bqTextureCache.cpp">
+      <Filter>Source Files\GS</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
