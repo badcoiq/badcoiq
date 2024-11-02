@@ -35,3 +35,8 @@ bqTimerDT::bqTimerDT(float32_t l)
 	m_limit(l)
 {
 }
+
+void bqTimerDT::SetDT(float32_t* dt)
+{
+	m_dt = dt;
+}

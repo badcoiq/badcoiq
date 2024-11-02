@@ -48,6 +48,8 @@ public:
 
 	bqTimerDT(float32_t limit);
 
+	void SetDT(float32_t*);
+
 	float32_t Time() { return m_time; }
 
 	void SetLimit(float32_t l) { m_limit = l; }
