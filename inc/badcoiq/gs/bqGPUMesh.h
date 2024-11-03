@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_MESH
 
+#include "badcoiq/common/bqResourceCache.h"
+
 #include "badcoiq/geometry/bqMesh.h"
 
 class bqGPUMesh
@@ -42,6 +44,19 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqGPUMesh);
 
 	bqMeshInfo m_meshInfo;
+};
+
+
+class bqGPUMeshCache : public bqResourceCache<bqGPUMesh*>
+{
+	bqGS* m_gs = 0;
+public:
+	bqGPUMeshCache(bqGS* gs);
+	virtual ~bqGPUMeshCache();
+	BQ_PLACEMENT_ALLOCATOR(bqGPUMeshCache);
+
+	virtual void Free(bqGPUMesh* r) override;
+	virtual bqGPUMesh* Load(const char* path) override;
 };
 
 #endif

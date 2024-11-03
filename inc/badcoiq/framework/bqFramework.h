@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \endcond
 
 #include "badcoiq/common/bqUID.h"
+#include "badcoiq/containers/bqArray.h"
 
 template<class T>
 const T& bqMax(const T& a, const T& b)
@@ -138,8 +139,19 @@ public:
 
 	static bqMeshLoader* GetMeshLoader(uint32_t);
 
-
+	/// Загрузить 3D модель.
+	/// Модельки приходят через коллбэк.
+	/// В файле может быть множество 3D моделей.
 	static void SummonMesh(const char*, bqMeshLoaderCallback*);
+
+	/// Упрощённая функция загрузки 3D модели.
+	/// Пока, вернётся первый мешбуфер который попадётся в файле.
+	static bqMesh* SummonMesh(const char*);
+	
+	/// Упрощённая функция загрузки 3D модели.
+	/// Мешбуферы будут добавлены в указанный массив.
+	/// При вызове массив очищается
+	static void SummonMesh(const char*, bqArray<bqMesh*>*);
 #endif
 
 	/// Установить указатель на матрицу
@@ -211,6 +223,12 @@ public:
 	static void ShowPopup(bqPopupData*);
 	
 	static void ShowCursor(bool);
+	
+	/// Вернётся ссылка на внутренний bqStringA.
+	/// Необходимо иметь возможность быстрого преобразования
+	/// Unicode в UTF-8.
+	static const bqStringA& GetUTF8String(const bqString&);
+	static const bqStringW& GetUTF16String(const bqString&);
 };
 
 #endif

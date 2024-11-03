@@ -578,6 +578,7 @@ bqTexture* bqFramework::SummonTexture(bqGS* gs, const char* fn, bool genMipMaps,
 }
 bqTextureCache* bqFramework::SummonTextureCache(bqGS* gs)
 {
+	BQ_ASSERT_ST(gs);
 	bqTextureCache* tc = new bqTextureCache(gs);
 	return tc;
 }
@@ -585,6 +586,7 @@ bqTextureCache* bqFramework::SummonTextureCache(bqGS* gs)
 
 bool bqFramework::FileExist(const char* p)
 {
+	BQ_ASSERT_ST(p);
 	return std::filesystem::exists(p);
 }
 
@@ -597,6 +599,7 @@ bool bqFramework::FileExist(const bqString& p)
 
 uint64_t bqFramework::FileSize(const char* p)
 {
+	BQ_ASSERT_ST(p);
 	return (uint64_t)std::filesystem::file_size(p);
 }
 
@@ -626,6 +629,7 @@ bqMeshLoader* bqFramework::GetMeshLoader(uint32_t i)
 
 void bqFramework::SummonMesh(const char* path, bqMeshLoaderCallback* cb)
 {
+	BQ_ASSERT_ST(path);
 	bqStringA stra;
 	std::filesystem::path p = path;
 	auto e = p.extension();
@@ -648,6 +652,57 @@ void bqFramework::SummonMesh(const char* path, bqMeshLoaderCallback* cb)
 			}
 		}
 	}
+}
+
+class bqFramework_defaultMeshLoadCallback : public bqMeshLoaderCallback
+{
+	bqArray<bqMesh*>* m_a = 0;
+public:
+	bqFramework_defaultMeshLoadCallback(bqArray<bqMesh*>* a)
+	:
+		m_a(a)
+	{}
+	virtual ~bqFramework_defaultMeshLoadCallback() {}
+	virtual void OnMesh(bqMesh* newMesh, bqString* n, bqString* mn)
+	{
+		if (newMesh)
+		{
+			bqMeshLoaderCallback::OnMeshLog(newMesh, n, mn);
+			m_a->push_back(newMesh);
+		}
+	}
+};
+
+bqMesh* bqFramework::SummonMesh(const char* path)
+{
+	BQ_ASSERT_ST(path);
+	bqMesh* r = 0;
+
+	bqArray<bqMesh*> a;
+	bqFramework_defaultMeshLoadCallback cb(&a);
+	SummonMesh(path, &cb);
+
+	if (a.size())
+	{
+		r = a.m_data[0];
+
+		for (size_t i = 1; i < a.m_size; ++i)
+		{
+			delete a.m_data[i];
+		}
+	}
+
+	return r;
+}
+
+void bqFramework::SummonMesh(const char* p, bqArray<bqMesh*>* a)
+{
+	BQ_ASSERT_ST(p);
+	BQ_ASSERT_ST(a);
+
+	a->clear();
+	bqFramework_defaultMeshLoadCallback cb(a);
+	SummonMesh(p, &cb);
 }
 #endif
 
@@ -1302,4 +1357,18 @@ void bqFramework::ShowCursor(bool v)
 #ifdef BQ_WITH_WINDOW
 	::ShowCursor((BOOL)v);
 #endif
+}
+
+const bqStringA& bqFramework::GetUTF8String(const bqString& s)
+{
+	g_framework->m_UTF8String.clear();
+	s.to_utf8(g_framework->m_UTF8String);
+	return g_framework->m_UTF8String.c_str();
+}
+
+const bqStringW& bqFramework::GetUTF16String(const bqString& s)
+{
+	g_framework->m_UTF16String.clear();
+	s.to_utf16(g_framework->m_UTF16String);
+	return g_framework->m_UTF16String.c_str();
 }

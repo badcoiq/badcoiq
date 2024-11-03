@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/common/bqImage.h"
 #include "badcoiq/cryptography/bqCryptography.h"
 
+#include "badcoiq/common/bqResourceCache.h"
+
 /// Тип текстуры
 enum class bqTextureType : uint32_t
 {
@@ -124,66 +126,23 @@ public:
 };
 
 /// Работает на основе динамического массива
-/// Can framework::summon
-class bqTextureCache
+class bqTextureCache : public bqResourceCache<bqTexture*>
 {
 	bqGS* m_gs = 0;
-
-	struct _node
-	{
-		bqTexture* m_texture = 0;
-		bqMD5 m_md5;
-
-		// чтобы заного загрузить текстуру нужно знать где
-		// лежит файл
-		bqStringA* m_path = 0;
-	};
-
-	bqArray<_node*> m_data;
-	
 public:
-	bqTextureCache(bqGS*);
-	~bqTextureCache();
+	bqTextureCache(bqGS* gs);
+	virtual ~bqTextureCache();
 	BQ_PLACEMENT_ALLOCATOR(bqTextureCache);
-
-	/// Загрузить текстуру или получить уже загруженную
-	bqTexture* GetTexture(const char* path);
-	bqTexture* GetTexture(const bqMD5&);
-	bqTexture* GetTexture(const char* path, uint32_t* outIndex, bool load = true);
-
-	/// Получить текстуру по индексу
-	bqTexture* GetTexture(uint32_t i);
-
-	/// Получить количество текстур в кеше
-	uint32_t GetTextureNum();
-
-	/// Удалить все текстуры (освободить память)
-	void Clear();
-
-	/// Получить индекс текстуры.
-	/// Она должна быть ранее загружена.
-	/// Если текстуры нет то вернётся 0xFFFFFFFF
-	uint32_t GetIndex(const char*);
-	uint32_t GetIndex(const bqMD5&);
-	uint32_t GetIndex(bqTexture*);
-
-	/// Загрузить текстуру или освободить память
-	/// по индексу.
-	/// Объекты могут иметь индексы текстур.
-	/// Текстуру можно будет выгружать из памяти,
-	/// и заново загружать.
-	void Unload(uint32_t);
-	bqTexture* Reload(uint32_t, bool forceUnload = false);
-	bool IsLoaded(uint32_t);
-
-	/// Генерировать mip maps
-	/// Значение будет применяться при новой загрузке
-	bool m_genMipmaps = true;
+	
+	virtual void Free(bqTexture* r) override;
+	virtual bqTexture* Load(const char* path) override;
 
 	/// Настройка фильтрации и прочее.
 	/// Значение будет применяться при новой загрузке
 	bqTextureInfo m_textureInfo;
 };
+
+
 
 #endif
 

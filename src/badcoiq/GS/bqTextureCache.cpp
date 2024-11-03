@@ -27,7 +27,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+
 #include "badcoiq/gs/bqTexture.h"
+#include "badcoiq/geometry/bqMeshLoader.h"
 
 #ifdef BQ_WITH_GS
 
@@ -37,10 +39,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern bqFrameworkImpl* g_framework;
 
 bqTextureCache::bqTextureCache(bqGS* gs)
-	:
-	m_gs(gs)
 {
-	m_data.reserve(100);
+	m_gs = gs;
+//	m_data.reserve(100);
 }
 
 bqTextureCache::~bqTextureCache()
@@ -48,120 +49,39 @@ bqTextureCache::~bqTextureCache()
 	Clear();
 }
 
-bqTexture* bqTextureCache::GetTexture(const bqMD5& md5)
+void bqTextureCache::Free(bqTexture* r)
 {
-	for (size_t i = 0; i < m_data.m_size; ++i)
-	{
-		if (bqCryptography::Compare(m_data.m_data[i]->m_md5, md5))
-		{
-			return m_data.m_data[i]->m_texture;
-		}
-	}
-	return 0;
+	BQ_SAFEDESTROY(r);
 }
 
-bqTexture* bqTextureCache::GetTexture(const char* path)
-{
-	bqTexture* t = GetTexture(bqCryptography::MD5(path, strlen(path)));
-
-	if (!t)
-		t = GetTexture(path, 0, true);
-	return t;
-}
-
-bqTexture* bqTextureCache::GetTexture(const char* path, uint32_t* outIndex, bool load)
-{
-	bqTexture* t = GetTexture(bqCryptography::MD5(path, strlen(path)));
-	if (!t)
-	{
-		_node* n = new _node;
-		n->m_texture = 0;
-		n->m_md5 = bqCryptography::MD5(path, strlen(path));
-		n->m_path = new bqStringA(path);
-		m_data.push_back(n);
-
-		uint32_t index = m_data.size() - 1;
-
-		if (outIndex)
-			*outIndex = index;
-
-		if (load)
-			t = Reload(index);
-	}
-	return t;
-}
-
-/// Удалить все текстуры (освободить память)
-void bqTextureCache::Clear()
-{
-	for (size_t i = 0; i < m_data.m_size; ++i)
-	{
-		if (m_data.m_data[i]->m_texture)
-			delete m_data.m_data[i]->m_texture;
-		if (m_data.m_data[i]->m_path)
-			delete m_data.m_data[i]->m_path;
-		delete m_data.m_data[i];
-	}
-	m_data.clear();
-}
-
-/// Получить количество текстур в кеше
-uint32_t bqTextureCache::GetTextureNum()
-{
-	return (uint32_t)m_data.m_size;
-}
-
-/// Получить текстуру по индексу
-bqTexture* bqTextureCache::GetTexture(uint32_t i)
-{
-	if(i < m_data.m_size)
-		return m_data.m_data[i]->m_texture;
-	return 0;
-}
-
-void bqTextureCache::Unload(uint32_t i)
-{
-	if (i < m_data.m_size)
-	{
-		if (m_data.m_data[i]->m_texture)
-		{
-			delete m_data.m_data[i]->m_texture;
-			m_data.m_data[i]->m_texture = 0;
-		}
-	}
-}
-
-bqTexture* bqTextureCache::Reload(uint32_t index, bool forceUnload)
+bqTexture* bqTextureCache::Load(const char* p)
 {
 	bqTexture* t = 0;
-	if (index < m_data.m_size)
+	bqImage* img = bqFramework::SummonImage(p);
+	if (img)
 	{
-		if (forceUnload)
-			Unload(index);
-
-		if (m_data.m_data[index]->m_path
-			&& !m_data.m_data[index]->m_texture)
-		{
-			bqImage* img = bqFramework::SummonImage(m_data.m_data[index]->m_path->c_str());
-			if (img)
-			{
-				m_data.m_data[index]->m_texture = m_gs->SummonTexture(img, m_textureInfo);
-				delete img;
-
-				if (m_data.m_data[index]->m_texture)
-					t = m_data.m_data[index]->m_texture;
-			}
-		}
+		t = m_gs->SummonTexture(img, m_textureInfo);
+		delete img;
 	}
 	return t;
 }
 
-bool bqTextureCache::IsLoaded(uint32_t i)
+bqGPUMeshCache::bqGPUMeshCache(bqGS* gs):m_gs(gs) {}
+bqGPUMeshCache::~bqGPUMeshCache() {}
+void bqGPUMeshCache::Free(bqGPUMesh* r) 
 {
-	if (i < m_data.m_size)
-		return (m_data.m_data[i]->m_texture != 0);
-	return false;
+	BQ_SAFEDESTROY(r);
 }
-
+bqGPUMesh* bqGPUMeshCache::Load(const char* path) 
+{
+	bqGPUMesh* gm = 0;
+	bqMesh* m = bqFramework::SummonMesh(path);
+	if (m)
+	{
+		gm = m_gs->SummonMesh(m);
+		delete m;
+	}
+	return gm;
+}
 
 #endif

@@ -97,6 +97,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2023, badcoiq
+Copyright (c) 2024, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -42,14 +42,77 @@ public:
 	virtual ~bqMeshLoaderCallback() {}
 	BQ_PLACEMENT_ALLOCATOR(bqMeshLoaderCallback);
 
-	virtual void OnMaterial(bqMaterial*)
+	virtual void OnMaterialLog(bqMaterial* m)
 	{
+		if (m)
+		{
+			bqLog::PrintInfo("Mesh Callback: Material:\n");
+			if (m->m_name.size())
+				bqLog::PrintInfo("\t\tname: %s\n", bqFramework::GetUTF8String(m->m_name).c_str());
+			else
+				bqLog::PrintInfo("\t\tname: without name :(\n");
+		}
 	}
 
-	virtual void OnMesh(bqMesh* newMesh, bqString* /*name*/, bqString* /*materialName*/)
+	virtual void OnMeshLog(bqMesh* newMesh, bqString* name, bqString* materialName)
 	{
 		if (newMesh)
 		{
+			bqLog::PrintInfo("Mesh Callback: new mesh:\n");
+			if (name->size())
+				bqLog::PrintInfo("\tname: %s\n", bqFramework::GetUTF8String(*name).c_str());
+			else
+				bqLog::PrintInfo("\tname: without name :(\n");
+
+			if (materialName->size())
+				bqLog::PrintInfo("\tmaterialName: %s\n", bqFramework::GetUTF8String(*materialName).c_str());
+			else
+				bqLog::PrintInfo("\tmaterialName: without name :(\n");
+
+
+			switch (newMesh->GetInfo().m_indexType)
+			{
+			case bqMeshIndexType::u16:
+				bqLog::PrintInfo("\tindex type: u16\n");
+				break;
+			case bqMeshIndexType::u32:
+				bqLog::PrintInfo("\tindex type: u32\n");
+				break;
+			}
+
+			switch (newMesh->GetInfo().m_vertexType)
+			{
+			case bqMeshVertexType::Null:
+				bqLog::PrintInfo("\tvertex type: Null\n");
+				break;
+			case bqMeshVertexType::Triangle:
+				bqLog::PrintInfo("\tvertex type: Triangle\n");
+				break;
+			}
+		
+			bqLog::PrintInfo("\tv num: %u\n", newMesh->GetInfo().m_vCount);
+			bqLog::PrintInfo("\ti num: %u\n", newMesh->GetInfo().m_iCount);
+			bqLog::PrintInfo("\tstride: %u\n", newMesh->GetInfo().m_stride);
+			
+			bqLog::PrintInfo("\tskinned: %s\n", newMesh->GetInfo().m_skinned ? "true" : "false");
+			bqLog::PrintInfo("\taabb: \n");
+			bqLog::PrintInfo("\t\tminx: [%f] [%f] :maxx\n", newMesh->GetInfo().m_aabb.m_min.x, newMesh->GetInfo().m_aabb.m_max.x);
+			bqLog::PrintInfo("\t\tminy: [%f] [%f] :maxy\n", newMesh->GetInfo().m_aabb.m_min.y, newMesh->GetInfo().m_aabb.m_max.y);
+			bqLog::PrintInfo("\t\tminz: [%f] [%f] :maxz\n", newMesh->GetInfo().m_aabb.m_min.z, newMesh->GetInfo().m_aabb.m_max.z);
+		}
+	}
+
+	virtual void OnMaterial(bqMaterial* m)
+	{
+		OnMaterialLog(m);
+	}
+
+	virtual void OnMesh(bqMesh* newMesh, bqString* n, bqString* mn)
+	{
+		if (newMesh)
+		{
+			OnMeshLog(newMesh, n, mn);
+
 			// if don't need then destroy this mesh
 			bqDestroy(newMesh);
 		}

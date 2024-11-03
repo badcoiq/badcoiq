@@ -72,6 +72,9 @@ public:
 
 	bqString m_appPath;
 	bqStringA m_appPathA;
+	
+	bqStringA m_UTF8String;
+	bqStringW m_UTF16String;
 
 #ifdef BQ_WITH_GS
 	std::vector<bqGS*> m_gss;
