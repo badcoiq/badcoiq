@@ -78,6 +78,7 @@ bqGPUMesh* bqGPUMeshCache::Load(const char* path)
 	bqMesh* m = bqFramework::SummonMesh(path);
 	if (m)
 	{
+		m->GetInfo().m_aabb.Radius();
 		gm = m_gs->SummonMesh(m);
 		delete m;
 	}

@@ -514,4 +514,8 @@ bool bqTriangle::TriangleIntersect(bqTriangle* t)
 	return TriangleIntersect(t->v1, t->v2, t->v3);
 }
 
+//bool bqTriangle::AabbIntersect(const bqAabb& a)
+//{
+//}
+
 #endif

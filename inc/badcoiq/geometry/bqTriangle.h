@@ -53,6 +53,8 @@ public:
 	bool RayIntersect_Watertight(const bqRay& ray, bool withBackFace, bqReal& T, bqReal& U, bqReal& V, bqReal& W, bool segment = true);
 	bool TriangleIntersect(const bqVec3& _v1, const bqVec3& _v2, const bqVec3& _v3);
 	bool TriangleIntersect(bqTriangle* t);
+	/// Почему я не могу использовать или только указатели или только ссылки?
+	//bool AabbIntersect(const bqAabb& a);
 };
 
 #endif

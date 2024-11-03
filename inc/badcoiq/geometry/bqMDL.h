@@ -87,6 +87,7 @@ public:
 	bool CollisionSphereBVH(bqReal radius, const bqVec3& origin);
 	bool CollisionSphereTriangle(bqReal radius, const bqVec3& origin);
 	bool CollisionTriangleTriangle(bqTriangle* t, const bqVec3& origin);
+	//bool CollisionAabbTriangle(const bqAabb& a, const bqVec3& origin);
 
 	/// Позиция луча должна учитывать позицию объекта.
 	/// Метод проверяет треугольники как есть, то есть они

@@ -828,6 +828,43 @@ bool bqMDLCollision::CollisionRayTriangle(const bqRay& ray)
 	return result;
 }
 
+//bool bqMDLCollision::CollisionAabbTriangle(const bqAabb& a, const bqVec3& origin)
+//{
+//	bqTriangle tri;
+//
+//	m_outLen = FLT_MAX;
+//
+//	bool result = false;
+//
+//	for (uint32_t i = 0; i < m_indNum; )
+//	{
+//		tri.v1 = m_vBuf[m_iBuf[i]];
+//		tri.v2 = m_vBuf[m_iBuf[i + 1]];
+//		tri.v3 = m_vBuf[m_iBuf[i + 2]];
+//
+//		tri.Update();
+//
+//		bqReal T, U, V, W;
+//		T = U = V = W = 0;
+//
+//		bqVec3 ip;
+//		if (tri.RayIntersect_MT(ray, false, T, U, V, W))
+//		{
+//			if (T < m_outLen)
+//			{
+//				m_outIntersection = ray.m_origin + (ray.m_direction * T);
+//				m_outNormal = tri.normal;
+//				m_outLen = T;
+//				m_outTriangle = tri;
+//				result = true;
+//			}
+//		}
+//
+//		i += 3;
+//	}
+//	return result;
+//}
+
 bqMDLBVHNode::bqMDLBVHNode()
 {
 }

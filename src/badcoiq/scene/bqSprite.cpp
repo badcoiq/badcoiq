@@ -56,6 +56,10 @@ void bqSprite::SetSize(float x, float y)
 	float hy = y * 0.5f;
 
 	m_rect.Set(-hx, -hy, hx, hy);
+
+	GetAabb().Add(-hx, -hy, 0.f);
+	GetAabb().Add(hx, hy, 0.f);
+	GetAabb().Radius();
 }
 
 bqSpriteState* bqSprite::CreateNewState()
