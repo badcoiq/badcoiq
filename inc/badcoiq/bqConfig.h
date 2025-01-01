@@ -70,7 +70,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// (2) If only executable code is distributed, then the accompanying
 /// documentation must state that "this software is based in part on the work of
 /// the Independent JPEG Group".
-#define BQ_WITH_IMAGE_JPG
+//#define BQ_WITH_IMAGE_JPG
 
 /// Чтение .tga  (если используется BQ_WITH_IMAGE)
 #define BQ_WITH_IMAGE_TGA

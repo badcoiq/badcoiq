@@ -54,6 +54,8 @@ static bqSoundMixerCallbackDefault g_defaultCallback;
 
 bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceInfo& info)
 {
+	bqLog::PrintInfo("Creating sound mixer...\n");
+
 	BQ_ASSERT_ST(channels > 0);
 	BQ_ASSERT_ST(channels < 10);
 	BQ_ASSERT_ST(info.m_bufferSize);
@@ -66,6 +68,10 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 
 	m_callback = &g_defaultCallback;
 
+	// Формат миксера должен быть внутренним, не зависящим от формата девайса.
+	// Но. Для удобства, нужно чтобы размер буфера был таким-же как у девайса.
+	// вопрос остаётся по samplerate. нужно ли использовать свой или оставить как есть?
+
 	m_bufferSizeForOneChannel = info.m_bufferSize / info.m_channels;
 
 	m_dataInfo.m_bitsPerSample = 32;
@@ -75,7 +81,7 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 	m_dataInfo.m_format = bqSoundFormat::float32; // всё миксуется единым форматом
 	m_dataInfo.m_numOfSamples = m_bufferSizeForOneChannel / m_dataInfo.m_blockSize;
 	m_dataInfo.m_sampleRate = info.m_sampleRate;
-	m_dataInfo.m_time = (float)m_bufferSizeForOneChannel / ((float)m_dataInfo.m_sampleRate * (float)m_dataInfo.m_bytesPerSample);;
+	m_dataInfo.m_time = (float)m_bufferSizeForOneChannel / ((float)m_dataInfo.m_sampleRate * (float)m_dataInfo.m_bytesPerSample);
 
 	for (uint32_t i = 0; i < channels; ++i)
 	{
@@ -96,6 +102,7 @@ bqSoundMixerImpl::bqSoundMixerImpl(uint32_t channels, const bqSoundSystemDeviceI
 
 		m_channelsTmp.push_back(_new_channel);
 	}
+	bqLog::PrintInfo("done\n");
 }
 
 bqSoundMixerImpl::~bqSoundMixerImpl()

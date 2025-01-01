@@ -90,13 +90,13 @@ $(function(){ initResizable(false); });
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">bqFramework.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="../../de/d3e/bq_u_i_d_8h_source.html">badcoiq/common/bqUID.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="../../de/de5/bq_array_8h_source.html">badcoiq/containers/bqArray.h</a>&quot;</code><br />
 </div>
 <p><a href="../../d9/de7/bq_framework_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -105,12 +105,8 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d43/classbq_framework_callback.html">bqFrameworkCallback</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d6a/classbq_framework.html">bqFramework</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">API для фреймворка.  <a href="../../da/d6a/classbq_framework.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a9826221ce843435096789ffa76fa30a2" id="r_a9826221ce843435096789ffa76fa30a2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9826221ce843435096789ffa76fa30a2">__BQ_FRAMEWORK_H__</a></td></tr>
-<tr class="separator:a9826221ce843435096789ffa76fa30a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -136,21 +132,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ac2c7c5adbfeb8eaed8761d6e603aa497"><td class="memTemplItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ac2c7c5adbfeb8eaed8761d6e603aa497">bqMin</a> (const T &amp;a, const T &amp;b)</td></tr>
 <tr class="separator:ac2c7c5adbfeb8eaed8761d6e603aa497"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a9826221ce843435096789ffa76fa30a2" name="a9826221ce843435096789ffa76fa30a2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9826221ce843435096789ffa76fa30a2">&#9670;&#160;</a></span>__BQ_FRAMEWORK_H__</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define __BQ_FRAMEWORK_H__</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a0d1ae4516f04aa7b37f298026834164a" name="a0d1ae4516f04aa7b37f298026834164a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0d1ae4516f04aa7b37f298026834164a">&#9670;&#160;</a></span>bqMatrixType</h2>
@@ -171,14 +152,22 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Указатель на матрицу хранится внутри фреймворка. Установка и получения указателей происходит с указанием типа. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aaf5a7924e621e84c9280a9a27e1bcb7f6" name="a0d1ae4516f04aa7b37f298026834164aaf5a7924e621e84c9280a9a27e1bcb7f6"></a>World&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aa4351cfebe4b61d8aa5efa1d020710005" name="a0d1ae4516f04aa7b37f298026834164aa4351cfebe4b61d8aa5efa1d020710005"></a>View&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aa2121e8333850befac5412d69d52306f7" name="a0d1ae4516f04aa7b37f298026834164aa2121e8333850befac5412d69d52306f7"></a>Projection&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aa9fde6bae71caf2cc649c93fe0743ddb6" name="a0d1ae4516f04aa7b37f298026834164aa9fde6bae71caf2cc649c93fe0743ddb6"></a>ViewProjection&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aabee9436283b9ffc019f823973be1e1cc" name="a0d1ae4516f04aa7b37f298026834164aabee9436283b9ffc019f823973be1e1cc"></a>ViewInvert&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aa94d3423d2be7cb7584f3285e0c14f285" name="a0d1ae4516f04aa7b37f298026834164aa94d3423d2be7cb7584f3285e0c14f285"></a>WorldViewProjection&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aad69186af02738a9b3ced1bc5b652ba55" name="a0d1ae4516f04aa7b37f298026834164aad69186af02738a9b3ced1bc5b652ba55"></a>_count&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aaf5a7924e621e84c9280a9a27e1bcb7f6" name="a0d1ae4516f04aa7b37f298026834164aaf5a7924e621e84c9280a9a27e1bcb7f6"></a>World&#160;</td><td class="fielddoc"><p>Это матрица описывающая трансформацию объекта </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aa4351cfebe4b61d8aa5efa1d020710005" name="a0d1ae4516f04aa7b37f298026834164aa4351cfebe4b61d8aa5efa1d020710005"></a>View&#160;</td><td class="fielddoc"><p>Эти матрицы вычисляются в классе камеры </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aa2121e8333850befac5412d69d52306f7" name="a0d1ae4516f04aa7b37f298026834164aa2121e8333850befac5412d69d52306f7"></a>Projection&#160;</td><td class="fielddoc"><p>так называемая видовая. Матрица вращения которая крутит мир вокруг зрителя. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aa9fde6bae71caf2cc649c93fe0743ddb6" name="a0d1ae4516f04aa7b37f298026834164aa9fde6bae71caf2cc649c93fe0743ddb6"></a>ViewProjection&#160;</td><td class="fielddoc"><p>проекционная. в ней настраиваются FOV. Может быть без перспективы вообще (ортогоналная проекция) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aabee9436283b9ffc019f823973be1e1cc" name="a0d1ae4516f04aa7b37f298026834164aabee9436283b9ffc019f823973be1e1cc"></a>ViewInvert&#160;</td><td class="fielddoc"><p>Для 3D линии. View * Projection. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aa94d3423d2be7cb7584f3285e0c14f285" name="a0d1ae4516f04aa7b37f298026834164aa94d3423d2be7cb7584f3285e0c14f285"></a>WorldViewProjection&#160;</td><td class="fielddoc"><p>Инвертированная View. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a0d1ae4516f04aa7b37f298026834164aad69186af02738a9b3ced1bc5b652ba55" name="a0d1ae4516f04aa7b37f298026834164aad69186af02738a9b3ced1bc5b652ba55"></a>_count&#160;</td><td class="fielddoc"><p>Как ViewProjection только ещё учитывается World. Для 3D объектов. </p>
+</td></tr>
 </table>
 
 </div>

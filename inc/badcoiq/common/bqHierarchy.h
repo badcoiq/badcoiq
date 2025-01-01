@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2025, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ protected:
 public:
 	bqHierarchy() {}
 	virtual ~bqHierarchy() {}
-	BQ_DELETED_METHODS(bqHierarchy);
+	BQ_PLACEMENT_ALLOCATOR(bqHierarchy);
 
 	void SetParent(bqHierarchy* o)
 	{

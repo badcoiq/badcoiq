@@ -90,6 +90,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>API для фреймворка.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="../../d9/de7/bq_framework_8h_source.html">bqFramework.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
@@ -97,30 +100,43 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a51551006ffc7fda155ab75d98404b4b9" id="r_a51551006ffc7fda155ab75d98404b4b9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a51551006ffc7fda155ab75d98404b4b9">Start</a> (<a class="el" href="../../d4/d43/classbq_framework_callback.html">bqFrameworkCallback</a> *)</td></tr>
 <tr class="separator:a51551006ffc7fda155ab75d98404b4b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97a1a194d5c7b52deedb76a2bff00158" id="r_a97a1a194d5c7b52deedb76a2bff00158"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97a1a194d5c7b52deedb76a2bff00158">Stop</a> ()</td></tr>
+<tr class="memdesc:a97a1a194d5c7b52deedb76a2bff00158"><td class="mdescLeft">&#160;</td><td class="mdescRight">для завершения работы, он освободит ту память  <br /></td></tr>
 <tr class="separator:a97a1a194d5c7b52deedb76a2bff00158"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a063a4dffdf69b0fc175db0a7b16a6c50" id="r_a063a4dffdf69b0fc175db0a7b16a6c50"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a063a4dffdf69b0fc175db0a7b16a6c50">Update</a> ()</td></tr>
+<tr class="memdesc:a063a4dffdf69b0fc175db0a7b16a6c50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Например, он вычислит DeltaTime, обновит состояния ввода, GUI, окна.  <br /></td></tr>
 <tr class="separator:a063a4dffdf69b0fc175db0a7b16a6c50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7663a1fec513c61e9989add00de8fb8" id="r_aa7663a1fec513c61e9989add00de8fb8"><td class="memItemLeft" align="right" valign="top">static float *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa7663a1fec513c61e9989add00de8fb8">GetDeltaTime</a> ()</td></tr>
-<tr class="separator:aa7663a1fec513c61e9989add00de8fb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a938c3ee1cd8c2763eba19c57e6b91ffd" id="r_a938c3ee1cd8c2763eba19c57e6b91ffd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../db/d65/bq_defines_8h.html#a3068631062aaf7da4cc0371da9e7a377">float32_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a938c3ee1cd8c2763eba19c57e6b91ffd">GetDeltaTime</a> ()</td></tr>
+<tr class="memdesc:a938c3ee1cd8c2763eba19c57e6b91ffd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить время затраченное между вызовами Update.  <br /></td></tr>
+<tr class="separator:a938c3ee1cd8c2763eba19c57e6b91ffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a507bf9c60099dc38edf710370624fa77" id="r_a507bf9c60099dc38edf710370624fa77"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a507bf9c60099dc38edf710370624fa77">SummonWindow</a> (<a class="el" href="../../df/d4a/classbq_window_callback.html">bqWindowCallback</a> *)</td></tr>
+<tr class="memdesc:a507bf9c60099dc38edf710370624fa77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создать окно  <br /></td></tr>
 <tr class="separator:a507bf9c60099dc38edf710370624fa77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a745d00fe2230b9cd16b533e0ad860994" id="r_a745d00fe2230b9cd16b533e0ad860994"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a745d00fe2230b9cd16b533e0ad860994">GetGSNum</a> ()</td></tr>
+<tr class="memdesc:a745d00fe2230b9cd16b533e0ad860994"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить количество реализаций графических систем  <br /></td></tr>
 <tr class="separator:a745d00fe2230b9cd16b533e0ad860994"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51e58f4ec788cc7b24b0b82ccb758fef" id="r_a51e58f4ec788cc7b24b0b82ccb758fef"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../dc/dde/classbq_string.html">bqString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a51e58f4ec788cc7b24b0b82ccb758fef">GetGSName</a> (uint32_t)</td></tr>
+<tr class="memdesc:a51e58f4ec788cc7b24b0b82ccb758fef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить имя реализации графической стсиемы. Надо указать индекс.  <br /></td></tr>
 <tr class="separator:a51e58f4ec788cc7b24b0b82ccb758fef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8eb5dc52dc6e7c8923ecc0acac5a3857" id="r_a8eb5dc52dc6e7c8923ecc0acac5a3857"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../d4/ddf/structbq_u_i_d.html">bqUID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8eb5dc52dc6e7c8923ecc0acac5a3857">GetGSUID</a> (uint32_t)</td></tr>
+<tr class="memdesc:a8eb5dc52dc6e7c8923ecc0acac5a3857"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить ID реализации графической системы по индексу  <br /></td></tr>
 <tr class="separator:a8eb5dc52dc6e7c8923ecc0acac5a3857"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fc626ff9edb45a4b569f6fddb3029fc" id="r_a1fc626ff9edb45a4b569f6fddb3029fc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fc626ff9edb45a4b569f6fddb3029fc">SummonGS</a> (<a class="el" href="../../d4/ddf/structbq_u_i_d.html">bqUID</a>)</td></tr>
+<tr class="memdesc:a1fc626ff9edb45a4b569f6fddb3029fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить графическую систему указав ID.  <br /></td></tr>
 <tr class="separator:a1fc626ff9edb45a4b569f6fddb3029fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a6d9bd7698c59b2af2cec0650f7c251" id="r_a7a6d9bd7698c59b2af2cec0650f7c251"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a6d9bd7698c59b2af2cec0650f7c251">SummonGS</a> (const char *)</td></tr>
+<tr class="memdesc:a7a6d9bd7698c59b2af2cec0650f7c251"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить графическую систему указав имя  <br /></td></tr>
 <tr class="separator:a7a6d9bd7698c59b2af2cec0650f7c251"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a233690364834955a67b2ef7af1d3435a" id="r_a233690364834955a67b2ef7af1d3435a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a233690364834955a67b2ef7af1d3435a">SummonGS</a> (<a class="el" href="../../d4/ddf/structbq_u_i_d.html">bqUID</a>, const char *)</td></tr>
+<tr class="memdesc:a233690364834955a67b2ef7af1d3435a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить графическую систему указав имя и ID.  <br /></td></tr>
 <tr class="separator:a233690364834955a67b2ef7af1d3435a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d256a4e3c86c8ae9437ce8abf2dfd8b" id="r_a2d256a4e3c86c8ae9437ce8abf2dfd8b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d256a4e3c86c8ae9437ce8abf2dfd8b">CompareUIDs</a> (const <a class="el" href="../../d4/ddf/structbq_u_i_d.html">bqUID</a> &amp;, const <a class="el" href="../../d4/ddf/structbq_u_i_d.html">bqUID</a> &amp;)</td></tr>
+<tr class="memdesc:a2d256a4e3c86c8ae9437ce8abf2dfd8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Сравнить UID.  <br /></td></tr>
 <tr class="separator:a2d256a4e3c86c8ae9437ce8abf2dfd8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc48cced652e0d9c238ee75b51baca05" id="r_acc48cced652e0d9c238ee75b51baca05"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../df/d9e/bq_forward_8h.html#a9e8175c0fcbac999cdfa70f4b89bd4d6">bqMat4</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc48cced652e0d9c238ee75b51baca05">GetMatrix</a> (<a class="el" href="../../d9/de7/bq_framework_8h.html#a0d1ae4516f04aa7b37f298026834164a">bqMatrixType</a>)</td></tr>
+<tr class="memdesc:acc48cced652e0d9c238ee75b51baca05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить указатель на матрицу  <br /></td></tr>
 <tr class="separator:acc48cced652e0d9c238ee75b51baca05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31dd7cf5d52afa7d3bd631ae49e86245" id="r_a31dd7cf5d52afa7d3bd631ae49e86245"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../df/d9e/bq_forward_8h.html#a9e8175c0fcbac999cdfa70f4b89bd4d6">bqMat4</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a31dd7cf5d52afa7d3bd631ae49e86245">GetMatrixSkinned</a> ()</td></tr>
+<tr class="memdesc:a31dd7cf5d52afa7d3bd631ae49e86245"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить указатель на первую из 255 матриц для скелета  <br /></td></tr>
 <tr class="separator:a31dd7cf5d52afa7d3bd631ae49e86245"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e922c06bae96b931bea1e6c5808284f" id="r_a7e922c06bae96b931bea1e6c5808284f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../d2/dda/classbq_polygon_mesh.html">bqPolygonMesh</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7e922c06bae96b931bea1e6c5808284f">SummonPolygonMesh</a> ()</td></tr>
 <tr class="separator:a7e922c06bae96b931bea1e6c5808284f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,7 +146,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a154b1ecde2cd8b92ef88d44827149eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00b8bee6ef2b3b87998002d7e16615dd" id="r_a00b8bee6ef2b3b87998002d7e16615dd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00b8bee6ef2b3b87998002d7e16615dd">SummonMesh</a> (const char *, <a class="el" href="../../dc/dd6/classbq_mesh_loader_callback.html">bqMeshLoaderCallback</a> *)</td></tr>
 <tr class="separator:a00b8bee6ef2b3b87998002d7e16615dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0aef644d3c72bfc0df3db798bf94857" id="r_ae0aef644d3c72bfc0df3db798bf94857"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../da/dd2/classbq_mesh.html">bqMesh</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0aef644d3c72bfc0df3db798bf94857">SummonMesh</a> (const char *)</td></tr>
+<tr class="separator:ae0aef644d3c72bfc0df3db798bf94857"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54fc1a19834191c446b1f3f3cb7ec86e" id="r_a54fc1a19834191c446b1f3f3cb7ec86e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a54fc1a19834191c446b1f3f3cb7ec86e">SummonMesh</a> (const char *, <a class="el" href="../../d2/db6/classbq_array.html">bqArray</a>&lt; <a class="el" href="../../da/dd2/classbq_mesh.html">bqMesh</a> * &gt; *)</td></tr>
+<tr class="separator:a54fc1a19834191c446b1f3f3cb7ec86e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6c22062e3916ffd60eb9af2bd5a08d1" id="r_ac6c22062e3916ffd60eb9af2bd5a08d1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6c22062e3916ffd60eb9af2bd5a08d1">SetMatrix</a> (<a class="el" href="../../d9/de7/bq_framework_8h.html#a0d1ae4516f04aa7b37f298026834164a">bqMatrixType</a>, <a class="el" href="../../df/d9e/bq_forward_8h.html#a9e8175c0fcbac999cdfa70f4b89bd4d6">bqMat4</a> *)</td></tr>
+<tr class="memdesc:ac6c22062e3916ffd60eb9af2bd5a08d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить указатель на матрицу  <br /></td></tr>
 <tr class="separator:ac6c22062e3916ffd60eb9af2bd5a08d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8b21600cc5692c15d4d17e5f8547eff" id="r_ab8b21600cc5692c15d4d17e5f8547eff"><td class="memItemLeft" align="right" valign="top">static uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab8b21600cc5692c15d4d17e5f8547eff">SummonFileBuffer</a> (const char *path, uint32_t *szOut, bool isText)</td></tr>
 <tr class="separator:ab8b21600cc5692c15d4d17e5f8547eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,6 +163,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a3aa4880f675e2823d6c75e24f545f014"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebbecb57145c49249e7c9c6b96168ad5" id="r_aebbecb57145c49249e7c9c6b96168ad5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aebbecb57145c49249e7c9c6b96168ad5">SummonTexture</a> (<a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *, const char *, bool genMipMaps=true, bool linearFilter=true)</td></tr>
 <tr class="separator:aebbecb57145c49249e7c9c6b96168ad5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb2e1bb1894edd83489b95b0dc5b73b4" id="r_afb2e1bb1894edd83489b95b0dc5b73b4"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../d0/d88/classbq_texture_cache.html">bqTextureCache</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb2e1bb1894edd83489b95b0dc5b73b4">SummonTextureCache</a> (<a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *)</td></tr>
+<tr class="separator:afb2e1bb1894edd83489b95b0dc5b73b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf9fa239eb5882f61839c8bf87a08a56" id="r_acf9fa239eb5882f61839c8bf87a08a56"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf9fa239eb5882f61839c8bf87a08a56">FileExist</a> (const char *)</td></tr>
 <tr class="separator:acf9fa239eb5882f61839c8bf87a08a56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ce473d72d25371ff373af5e0cee07a2" id="r_a1ce473d72d25371ff373af5e0cee07a2"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ce473d72d25371ff373af5e0cee07a2">FileExist</a> (const <a class="el" href="../../dc/dde/classbq_string.html">bqString</a> &amp;)</td></tr>
@@ -194,8 +217,14 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:afbf8176ff0b05aade08c36ea7c3fd9c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96a1a574bf9661033455aebe5465f625" id="r_a96a1a574bf9661033455aebe5465f625"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a96a1a574bf9661033455aebe5465f625">ShowCursor</a> (bool)</td></tr>
 <tr class="separator:a96a1a574bf9661033455aebe5465f625"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18c2e36b04cab8a8ecaa5fa50a0e4914" id="r_a18c2e36b04cab8a8ecaa5fa50a0e4914"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="../../db/dd6/bq_string_8h.html#ad2c5b6cc367df70caacb4278ad15b2f4">bqStringA</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a18c2e36b04cab8a8ecaa5fa50a0e4914">GetUTF8String</a> (const <a class="el" href="../../dc/dde/classbq_string.html">bqString</a> &amp;)</td></tr>
+<tr class="separator:a18c2e36b04cab8a8ecaa5fa50a0e4914"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40975450a22a32a3cebe4911f643988a" id="r_a40975450a22a32a3cebe4911f643988a"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="../../db/dd6/bq_string_8h.html#a7e9cb2747044fcce7209850568ea29a3">bqStringW</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40975450a22a32a3cebe4911f643988a">GetUTF16String</a> (const <a class="el" href="../../dc/dde/classbq_string.html">bqString</a> &amp;)</td></tr>
+<tr class="separator:a40975450a22a32a3cebe4911f643988a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>API для фреймворка. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a2d256a4e3c86c8ae9437ce8abf2dfd8b" name="a2d256a4e3c86c8ae9437ce8abf2dfd8b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2d256a4e3c86c8ae9437ce8abf2dfd8b">&#9670;&#160;</a></span>CompareUIDs()</h2>
 
@@ -222,6 +251,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Сравнить UID. </p>
 
 </div>
 </div>
@@ -525,8 +556,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa7663a1fec513c61e9989add00de8fb8" name="aa7663a1fec513c61e9989add00de8fb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7663a1fec513c61e9989add00de8fb8">&#9670;&#160;</a></span>GetDeltaTime()</h2>
+<a id="a938c3ee1cd8c2763eba19c57e6b91ffd" name="a938c3ee1cd8c2763eba19c57e6b91ffd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a938c3ee1cd8c2763eba19c57e6b91ffd">&#9670;&#160;</a></span>GetDeltaTime()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -535,7 +566,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static float * bqFramework::GetDeltaTime </td>
+          <td class="memname">static <a class="el" href="../../db/d65/bq_defines_8h.html#a3068631062aaf7da4cc0371da9e7a377">float32_t</a> * bqFramework::GetDeltaTime </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -547,6 +578,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Получить время затраченное между вызовами Update. </p>
 
 </div>
 </div>
@@ -598,6 +631,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить имя реализации графической стсиемы. Надо указать индекс. </p>
+
 </div>
 </div>
 <a id="a745d00fe2230b9cd16b533e0ad860994" name="a745d00fe2230b9cd16b533e0ad860994"></a>
@@ -623,6 +658,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить количество реализаций графических систем </p>
+
 </div>
 </div>
 <a id="a8eb5dc52dc6e7c8923ecc0acac5a3857" name="a8eb5dc52dc6e7c8923ecc0acac5a3857"></a>
@@ -647,6 +684,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Получить ID реализации графической системы по индексу </p>
 
 </div>
 </div>
@@ -748,6 +787,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить указатель на матрицу </p>
+
 </div>
 </div>
 <a id="a31dd7cf5d52afa7d3bd631ae49e86245" name="a31dd7cf5d52afa7d3bd631ae49e86245"></a>
@@ -772,6 +813,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Получить указатель на первую из 255 матриц для скелета </p>
 
 </div>
 </div>
@@ -900,6 +943,57 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a40975450a22a32a3cebe4911f643988a" name="a40975450a22a32a3cebe4911f643988a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40975450a22a32a3cebe4911f643988a">&#9670;&#160;</a></span>GetUTF16String()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const <a class="el" href="../../db/dd6/bq_string_8h.html#a7e9cb2747044fcce7209850568ea29a3">bqStringW</a> &amp; bqFramework::GetUTF16String </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../dc/dde/classbq_string.html">bqString</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a18c2e36b04cab8a8ecaa5fa50a0e4914" name="a18c2e36b04cab8a8ecaa5fa50a0e4914"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18c2e36b04cab8a8ecaa5fa50a0e4914">&#9670;&#160;</a></span>GetUTF8String()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const <a class="el" href="../../db/dd6/bq_string_8h.html#ad2c5b6cc367df70caacb4278ad15b2f4">bqStringA</a> &amp; bqFramework::GetUTF8String </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../dc/dde/classbq_string.html">bqString</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Вернётся ссылка на внутренний bqStringA. Необходимо иметь возможность быстрого преобразования Unicode в UTF-8. </p>
+
+</div>
+</div>
 <a id="aa36b56e0cb15414aa4f4b1850a8b6b97" name="aa36b56e0cb15414aa4f4b1850a8b6b97"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa36b56e0cb15414aa4f4b1850a8b6b97">&#9670;&#160;</a></span>InitDefaultFonts()</h2>
 
@@ -1002,6 +1096,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Установить указатель на матрицу </p>
+
 </div>
 </div>
 <a id="a96a1a574bf9661033455aebe5465f625" name="a96a1a574bf9661033455aebe5465f625"></a>
@@ -1076,6 +1172,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Когда нам нужно запустить ДВИЖЁК, вызываем Start Он выделит память для внутреннего класса </p>
 
 </div>
 </div>
@@ -1101,6 +1198,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>для завершения работы, он освободит ту память </p>
 
 </div>
 </div>
@@ -1160,6 +1259,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Прочитать файл в буфер если isText будут добавлены ' ' и 0 в конец Функция выделит память для буфера. Использовать <a class="el" href="../../d5/d12/classbq_memory.html#a162b8dde8e7f5aa27e503ea9e131cc06">bqMemory::free</a> для освобождения. </p>
 
 </div>
 </div>
@@ -1211,6 +1311,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить графическую систему указав ID. </p>
+
 </div>
 </div>
 <a id="a233690364834955a67b2ef7af1d3435a" name="a233690364834955a67b2ef7af1d3435a"></a>
@@ -1240,6 +1342,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить графическую систему указав имя и ID. </p>
+
 </div>
 </div>
 <a id="a7a6d9bd7698c59b2af2cec0650f7c251" name="a7a6d9bd7698c59b2af2cec0650f7c251"></a>
@@ -1264,6 +1368,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Получить графическую систему указав имя </p>
 
 </div>
 </div>
@@ -1326,8 +1432,64 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ae0aef644d3c72bfc0df3db798bf94857" name="ae0aef644d3c72bfc0df3db798bf94857"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0aef644d3c72bfc0df3db798bf94857">&#9670;&#160;</a></span>SummonMesh() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="../../da/dd2/classbq_mesh.html">bqMesh</a> * bqFramework::SummonMesh </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Упрощённая функция загрузки 3D модели. Пока, вернётся первый мешбуфер который попадётся в файле. </p>
+
+</div>
+</div>
+<a id="a54fc1a19834191c446b1f3f3cb7ec86e" name="a54fc1a19834191c446b1f3f3cb7ec86e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54fc1a19834191c446b1f3f3cb7ec86e">&#9670;&#160;</a></span>SummonMesh() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void bqFramework::SummonMesh </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d2/db6/classbq_array.html">bqArray</a>&lt; <a class="el" href="../../da/dd2/classbq_mesh.html">bqMesh</a> * &gt; *</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Упрощённая функция загрузки 3D модели. Мешбуферы будут добавлены в указанный массив. При вызове массив очищается </p>
+
+</div>
+</div>
 <a id="a00b8bee6ef2b3b87998002d7e16615dd" name="a00b8bee6ef2b3b87998002d7e16615dd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a00b8bee6ef2b3b87998002d7e16615dd">&#9670;&#160;</a></span>SummonMesh()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a00b8bee6ef2b3b87998002d7e16615dd">&#9670;&#160;</a></span>SummonMesh() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1352,6 +1514,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Загрузить 3D модель. Модельки приходят через коллбэк. В файле может быть множество 3D моделей. </p>
 
 </div>
 </div>
@@ -1419,6 +1582,31 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="afb2e1bb1894edd83489b95b0dc5b73b4" name="afb2e1bb1894edd83489b95b0dc5b73b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb2e1bb1894edd83489b95b0dc5b73b4">&#9670;&#160;</a></span>SummonTextureCache()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="../../d0/d88/classbq_texture_cache.html">bqTextureCache</a> * bqFramework::SummonTextureCache </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a507bf9c60099dc38edf710370624fa77" name="a507bf9c60099dc38edf710370624fa77"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a507bf9c60099dc38edf710370624fa77">&#9670;&#160;</a></span>SummonWindow()</h2>
 
@@ -1441,6 +1629,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Создать окно </p>
 
 </div>
 </div>
@@ -1466,6 +1656,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Например, он вычислит DeltaTime, обновит состояния ввода, GUI, окна. </p>
 
 </div>
 </div>

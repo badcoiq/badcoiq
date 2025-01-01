@@ -220,7 +220,7 @@ bool bqSoundSystemImpl::Init()
 	if (FAILED(hr))
 	{
 		retValue = false;
-		bqLog::PrintInfo("GetDefaultAudioEndpoint\n");
+		bqLog::PrintError("on GetDefaultAudioEndpoint\n");
 	}
 
 	if (deviceCollection) deviceCollection->Release();
@@ -234,6 +234,7 @@ bool bqSoundSystemImpl::Init()
 		{
 			delete m_WASAPIrenderer;
 			m_WASAPIrenderer = 0;
+			bqLog::PrintError("on m_WASAPIrenderer->Initialize\n");
 		}
 		else
 		{
@@ -269,6 +270,7 @@ bool bqSoundSystemImpl::Init()
 
 	if (!retValue)
 	{
+		bqLog::PrintError("!retValue\n");
 		if (m_device)
 		{
 			m_device->Release();
@@ -573,10 +575,14 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 	BQ_ASSERT_ST(!m_endpoint);
 	BQ_ASSERT_ST(Endpoint);
 
+	bqLog::PrintInfo("bqWASAPIRenderer::Initialize\n");
+
 	if (!m_endpoint)
 	{
 		m_endpoint = Endpoint;
 		m_endpoint->AddRef();
+
+		bqLog::PrintInfo("Activate endpoint...\n");
 
 		HRESULT hr = m_endpoint->Activate(__uuidof(IAudioClient),
 			CLSCTX_INPROC_SERVER, NULL,
@@ -587,6 +593,8 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 			return false;
 		}
 
+		bqLog::PrintInfo("Get mix format...\n");
+
 		hr = m_audioClient->GetMixFormat(&m_mixFormat);
 		if (FAILED(hr))
 		{
@@ -594,6 +602,15 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 			return false;
 		}
 		m_frameSize = m_mixFormat->nBlockAlign;
+
+		bqLog::PrintInfo("Mix format:\n");
+		bqLog::PrintInfo("\twFormatTag:%i\n", m_mixFormat->wFormatTag);
+		bqLog::PrintInfo("\tnChannels:%i\n", m_mixFormat->nChannels);
+		bqLog::PrintInfo("\tnSamplesPerSec:%i\n", m_mixFormat->nSamplesPerSec);
+		bqLog::PrintInfo("\tnAvgBytesPerSec:%i\n", m_mixFormat->nAvgBytesPerSec);
+		bqLog::PrintInfo("\tnBlockAlign:%i\n", m_mixFormat->nBlockAlign);
+		bqLog::PrintInfo("\twBitsPerSample:%i\n", m_mixFormat->wBitsPerSample);
+
 
 		//  If the mix format is a float format, just try to convert the format to PCM.
 		if (m_mixFormat->wFormatTag == WAVE_FORMAT_PCM ||
@@ -603,6 +620,7 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 			if (m_mixFormat->wBitsPerSample == 16)
 			{
 				m_renderSampleType = SampleType16BitPCM;
+				bqLog::PrintInfo("SampleType16BitPCM\n");
 			}
 			else
 			{
@@ -615,6 +633,7 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 				reinterpret_cast<WAVEFORMATEXTENSIBLE*>(m_mixFormat)->SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
 		{
 			m_renderSampleType = SampleTypeFloat;
+			bqLog::PrintInfo("SampleTypeFloat\n");
 		}
 		else
 		{
@@ -627,6 +646,7 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 		REFERENCE_TIME bufferDuration = EngineLatency * 10000;
 		REFERENCE_TIME periodicity = EngineLatency * 10000;
 
+		bqLog::PrintInfo("Initialize Audio Client...\n");
 		hr = m_audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
 			AUDCLNT_STREAMFLAGS_NOPERSIST,
 			bufferDuration,
@@ -643,6 +663,7 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 		// AUDCLNT_E_BUFFER_TOO_LARGE = decimal code 2290679814
 
 		//  Retrieve the buffer size for the audio client.
+		bqLog::PrintInfo("Audio Client...Get Buffer Size...\n");
 		hr = m_audioClient->GetBufferSize(&m_bufferSize);
 		if (FAILED(hr))
 		{
@@ -650,6 +671,9 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 			return false;
 		}
 
+		bqLog::PrintInfo("Audio Client...Buffer Size : %u\n", m_bufferSize);
+
+		bqLog::PrintInfo("Audio Client...Get Service...\n");
 		hr = m_audioClient->GetService(IID_PPV_ARGS(&m_renderClient));
 		if (FAILED(hr))
 		{
@@ -666,13 +690,18 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 		ssdi.m_channels = ch;
 		ssdi.m_format = GetFormat();
 		ssdi.m_sampleRate = m_mixFormat->nSamplesPerSec;
+
 		m_mainMixer = new bqSoundMixerImpl(ch, ssdi);
 
 		this->ThreadCommand_SetMainMixer(m_mainMixer);
 
 		m_threadContext.m_run = true;
+		
+		bqLog::PrintInfo("Creating audio engine thread...\n");
+
 		m_thread = new std::thread(&bqWASAPIRenderer::_thread_function, this);
 
+		bqLog::PrintInfo("done\n");
 		return true;
 	}
 	return false;

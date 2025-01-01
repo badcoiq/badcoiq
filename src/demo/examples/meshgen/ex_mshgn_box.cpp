@@ -28,21 +28,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../../DemoApp.h"
 
-class TestGUIScrollbar : public bqGUIScrollbar
-{
-public:
-	TestGUIScrollbar(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
-		:
-		bqGUIScrollbar(w, position, size)
-	{}
-
-	virtual ~TestGUIScrollbar() {}
-	BQ_PLACEMENT_ALLOCATOR(TestGUIScrollbar);
-};
+//class TestGUIScrollbar : public bqGUIScrollbar
+//{
+//public:
+//	TestGUIScrollbar(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+//		:
+//		bqGUIScrollbar(w, position, size)
+//	{}
+//
+//	virtual ~TestGUIScrollbar() {}
+//	BQ_PLACEMENT_ALLOCATOR(TestGUIScrollbar);
+//};
 
 void ExampleMshGnBox_WindowCallback::OnSizeChange(bqGUIWindow* w)
 {
-	m_scrollbar->SetSize(m_scrollbar->GetSize().x, w->GetSize().y - w->m_titlebarHeight);
+///	m_scrollbar->SetSize(m_scrollbar->GetSize().x, w->GetSize().y - w->m_titlebarHeight);
 }
 
 ExampleMshGnBox::ExampleMshGnBox(DemoApp* app)
@@ -95,24 +95,20 @@ bool ExampleMshGnBox::Init()
 	}
 
 	
-	m_guiWindow = bqFramework::SummonGUIWindow(m_app->GetWindow(), bqVec2f(), bqVec2f(300.f, 300.f));
-	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withTitleBar;
-	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canMove;
-	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canResize;
-	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCloseButton;
-	m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCollapseButton;
-	m_guiWindow->SetTitle(U"Parameters");
-	m_guiWindow->SetCallback(&m_guiWindowCallback);
+	//m_guiWindow = bqFramework::SummonGUIWindow(m_app->GetWindow(), bqVec2f(), bqVec2f(300.f, 300.f));
+	//m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withTitleBar;
+	//m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canMove;
+	//m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canResize;
+	//m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCloseButton;
+	//m_guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withCollapseButton;
+	//m_guiWindow->SetTitle(U"Parameters");
+	//m_guiWindow->SetCallback(&m_guiWindowCallback);
 
-	TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(m_guiWindow, bqVec2f(), bqVec2f(20.f, 200.f));
-	
+	/*TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(m_guiWindow, bqVec2f(), bqVec2f(20.f, 200.f));
 	m_guiWindowCallback.m_scrollbar = testScrollbar;
-	//	testScrollbar->m_alignment = bqGUIElement::Alignment::Center;
-//	testScrollbar->m_alignment = bqGUIElement::Alignment::RightTop;
-	//testScrollbar->m_valueMax = 3000.f;
 	testScrollbar->m_valueMax = 420.f;
 	testScrollbar->m_valueVisible = 280.f;
-	testScrollbar->m_value = 0.f;
+	testScrollbar->m_value = 0.f;*/
 
 	bqFramework::RebuildGUI();
 

@@ -39,139 +39,139 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern bqFrameworkImpl* g_framework;
 #include "bqGUIDefaultTextDrawCallbacks.h"
 
-bqGUIStaticTextTextDrawCallback::bqGUIStaticTextTextDrawCallback()
-{
-}
-
-bqGUIStaticTextTextDrawCallback::~bqGUIStaticTextTextDrawCallback()
-{
-}
-
-bqGUIFont* bqGUIStaticTextTextDrawCallback::OnFont(uint32_t, char32_t)
-{
-	return m_element->GetStyle()->m_staticTextFont;
-}
-
-bqColor* bqGUIStaticTextTextDrawCallback::OnColor(uint32_t, char32_t)
-{
-	return &m_element->GetStyle()->m_staticTextTextColor;
-}
-
-bqGUIStaticText::bqGUIStaticText(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
-	:
-	bqGUIElement::bqGUIElement(w, position, size)
-{
-	m_textDrawCallback = g_framework->m_defaultTextDrawCallback_staticText;
-}
-
-bqGUIStaticText::~bqGUIStaticText()
-{
-}
-
-void bqGUIStaticText::SetText(const bqString& text)
-{
-	m_text = text;
-}
-
-void bqGUIStaticText::Rebuild()
-{
-	m_textDrawCallback->m_element = this;
-	bqGUIElement::Rebuild();
-	m_lineHeight = 0.f;
-	const char32_t b[] = { U"X#$@WHM_" };
-	for (int i = 0; i < 9; ++i)
-	{
-		bqGUIFont* font = m_textDrawCallback->OnFont(0, b[i]);
-		if (font->GetMaxSize().y > m_lineHeight)
-			m_lineHeight = (float)font->GetMaxSize().y;
-	}
-}
-
-void bqGUIStaticText::Update()
-{
-	bqGUIElement::Update();
-}
-
-void bqGUIStaticText::Draw(bqGS* gs, float)
-{
-	gs->SetScissorRect(m_clipRect);
-	if (IsDrawBG())
-		gs->DrawGUIRectangle(m_buildRect, m_style->m_staticTextBGColor, m_style->m_staticTextBGColor, 0, 0);
-	m_textDrawCallback->m_element = this;
-
-	auto sz = m_text.size();
-	if (sz)
-	{
-		bqVec2f pos;
-		pos.x = m_buildRect.x;
-		pos.y = m_buildRect.y;
-
-		bqVec2f textPosition = pos;
-
-		bool draw = true;
-		for (size_t i = 0; i < sz; ++i)
-		{
-			if (m_useDrawLimit)
-			{
-				if (i >= m_drawLimit)
-					draw = false;
-			}
-
-			char32_t ch = m_text[i];
-			bqGUIFont* font = m_textDrawCallback->OnFont(0, ch);
-			bqGUIFontGlyph* g = font->GetGlyphMap()[ch];
-			
-			bqVec4f chrct;
-			chrct.x = textPosition.x;
-			chrct.y = textPosition.y;
-			chrct.z = chrct.x + g->m_width + g->m_overhang + g->m_underhang;
-			chrct.w = chrct.y + g->m_height;
-
-			if (chrct.z > m_buildRect.z)
-			{
-				textPosition.y += m_lineHeight;
-				textPosition.x = pos.x;
-
-				// надо заново вычислить chrct
-				// просто дубликат кода
-				chrct.x = textPosition.x;
-				chrct.y = textPosition.y;
-				chrct.z = chrct.x + g->m_width + g->m_overhang + g->m_underhang;
-				chrct.w = chrct.y + g->m_height;
-			}
-
-
-			if (draw)
-			{
-				bqColor* clr = m_textDrawCallback->OnColor(0, ch);
-				gs->DrawGUIRectangle(chrct,
-					*clr, *clr,
-					font->GetTexture(g->m_textureSlot),
-					&g->m_UV);
-				/*gs->DrawGUICharacter(
-					ch,
-					font,
-					textPosition,
-					*m_textDrawCallback->OnColor(0, ch));*/
-			}
-
-			textPosition.x += g->m_width + g->m_overhang + g->m_underhang + font->m_characterSpacing;
-
-			switch (ch)
-			{
-			case U' ':
-				textPosition.x += font->m_spaceSize;
-				break;
-			case U'\t':
-				textPosition.x += font->m_tabSize;
-				break;
-			case U'\n':
-				textPosition.x = pos.x;
-				textPosition.y += m_lineHeight;
-				break;
-			}
-		}
-	}
-}
+//bqGUIStaticTextTextDrawCallback::bqGUIStaticTextTextDrawCallback()
+//{
+//}
+//
+//bqGUIStaticTextTextDrawCallback::~bqGUIStaticTextTextDrawCallback()
+//{
+//}
+//
+//bqGUIFont* bqGUIStaticTextTextDrawCallback::OnFont(uint32_t, char32_t)
+//{
+//	return m_element->GetStyle()->m_staticTextFont;
+//}
+//
+//bqColor* bqGUIStaticTextTextDrawCallback::OnColor(uint32_t, char32_t)
+//{
+//	return &m_element->GetStyle()->m_staticTextTextColor;
+//}
+//
+//bqGUIStaticText::bqGUIStaticText(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
+//	:
+//	bqGUIElement::bqGUIElement(w, position, size)
+//{
+//	m_textDrawCallback = g_framework->m_defaultTextDrawCallback_staticText;
+//}
+//
+//bqGUIStaticText::~bqGUIStaticText()
+//{
+//}
+//
+//void bqGUIStaticText::SetText(const bqString& text)
+//{
+//	m_text = text;
+//}
+//
+//void bqGUIStaticText::Rebuild()
+//{
+//	m_textDrawCallback->m_element = this;
+//	bqGUIElement::Rebuild();
+//	m_lineHeight = 0.f;
+//	const char32_t b[] = { U"X#$@WHM_" };
+//	for (int i = 0; i < 9; ++i)
+//	{
+//		bqGUIFont* font = m_textDrawCallback->OnFont(0, b[i]);
+//		if (font->GetMaxSize().y > m_lineHeight)
+//			m_lineHeight = (float)font->GetMaxSize().y;
+//	}
+//}
+//
+//void bqGUIStaticText::Update()
+//{
+//	bqGUIElement::Update();
+//}
+//
+//void bqGUIStaticText::Draw(bqGS* gs, float)
+//{
+//	gs->SetScissorRect(m_clipRect);
+//	if (IsDrawBG())
+//		gs->DrawGUIRectangle(m_buildRect, m_style->m_staticTextBGColor, m_style->m_staticTextBGColor, 0, 0);
+//	m_textDrawCallback->m_element = this;
+//
+//	auto sz = m_text.size();
+//	if (sz)
+//	{
+//		bqVec2f pos;
+//		pos.x = m_buildRect.x;
+//		pos.y = m_buildRect.y;
+//
+//		bqVec2f textPosition = pos;
+//
+//		bool draw = true;
+//		for (size_t i = 0; i < sz; ++i)
+//		{
+//			if (m_useDrawLimit)
+//			{
+//				if (i >= m_drawLimit)
+//					draw = false;
+//			}
+//
+//			char32_t ch = m_text[i];
+//			bqGUIFont* font = m_textDrawCallback->OnFont(0, ch);
+//			bqGUIFontGlyph* g = font->GetGlyphMap()[ch];
+//			
+//			bqVec4f chrct;
+//			chrct.x = textPosition.x;
+//			chrct.y = textPosition.y;
+//			chrct.z = chrct.x + g->m_width + g->m_overhang + g->m_underhang;
+//			chrct.w = chrct.y + g->m_height;
+//
+//			if (chrct.z > m_buildRect.z)
+//			{
+//				textPosition.y += m_lineHeight;
+//				textPosition.x = pos.x;
+//
+//				// надо заново вычислить chrct
+//				// просто дубликат кода
+//				chrct.x = textPosition.x;
+//				chrct.y = textPosition.y;
+//				chrct.z = chrct.x + g->m_width + g->m_overhang + g->m_underhang;
+//				chrct.w = chrct.y + g->m_height;
+//			}
+//
+//
+//			if (draw)
+//			{
+//				bqColor* clr = m_textDrawCallback->OnColor(0, ch);
+//				gs->DrawGUIRectangle(chrct,
+//					*clr, *clr,
+//					font->GetTexture(g->m_textureSlot),
+//					&g->m_UV);
+//				/*gs->DrawGUICharacter(
+//					ch,
+//					font,
+//					textPosition,
+//					*m_textDrawCallback->OnColor(0, ch));*/
+//			}
+//
+//			textPosition.x += g->m_width + g->m_overhang + g->m_underhang + font->m_characterSpacing;
+//
+//			switch (ch)
+//			{
+//			case U' ':
+//				textPosition.x += font->m_spaceSize;
+//				break;
+//			case U'\t':
+//				textPosition.x += font->m_tabSize;
+//				break;
+//			case U'\n':
+//				textPosition.x = pos.x;
+//				textPosition.y += m_lineHeight;
+//				break;
+//			}
+//		}
+//	}
+//}
 
 #endif

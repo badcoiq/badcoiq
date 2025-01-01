@@ -127,7 +127,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2d6a04f33b0134e7b98e805672a0c298" id="r_a2d6a04f33b0134e7b98e805672a0c298"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d4/df8/classbq_polygon_mesh_polygon.html">bqPolygonMeshPolygon</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d6a04f33b0134e7b98e805672a0c298">DropPolygon</a> ()</td></tr>
 <tr class="separator:a2d6a04f33b0134e7b98e805672a0c298"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Класс для ручного создания 3Д моделей Пример использования:</p>
+<p><a class="el" href="../../da/d27/classbq_mesh_polygon_creator.html">bqMeshPolygonCreator</a> pc; pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_max.z)); pc.SetUV(bqVec2f(0.f, 0.f)); pc.AddVertex(); pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_max.z)); pc.SetUV(bqVec2f(1.f, 0.f)); pc.AddVertex(); pc.SetPosition(bqVec3f((float)box.m_max.x, (float)box.m_max.y, (float)box.m_min.z)); pc.SetUV(bqVec2f(1.f, 1.f)); pc.AddVertex(); pc.SetPosition(bqVec3f((float)box.m_min.x, (float)box.m_max.y, (float)box.m_min.z)); pc.SetUV(bqVec2f(0.f, 1.f)); pc.AddVertex(); pc.Mul(m); // опционально</p>
+<p><a class="el" href="../../d2/dda/classbq_polygon_mesh.html">bqPolygonMesh</a> pm; pm.AddPolygon(&amp;pc, true); pc.Clear(); </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a65e9c63b5768dc67b8fba06b782699e8" name="a65e9c63b5768dc67b8fba06b782699e8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a65e9c63b5768dc67b8fba06b782699e8">&#9670;&#160;</a></span>bqMeshPolygonCreator()</h2>
 

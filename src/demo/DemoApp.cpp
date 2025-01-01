@@ -105,15 +105,15 @@ public:
 	bqVec4f m_uv = bqVec4f(0.f, 0.f, 1.f, 1.f);
 };
 
-class MyStaticText : public bqGUIStaticText
-{
-public:
-	MyStaticText(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size) :
-		bqGUIStaticText(w, position, size)
-	{
-	}
-	virtual ~MyStaticText() {}
-};
+//class MyStaticText : public bqGUIStaticText
+//{
+//public:
+//	MyStaticText(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size) :
+//		bqGUIStaticText(w, position, size)
+//	{
+//	}
+//	virtual ~MyStaticText() {}
+//};
 
 void DemoExample::OnWindowSize(bqWindow* w)
 {
@@ -187,19 +187,19 @@ bool DemoApp::Init()
 
 	m_textDrawCallback = new GUIDrawTextCallback(m_fontDefault);
 
-	m_GUIWindow = bqFramework::SummonGUIWindow(m_window, bqVec2f(300.f, 0.f),
+	m_GUIWindow = bqFramework::SummonGUIWindow(/*m_window, */bqVec2f(300.f, 0.f),
 		bqVec2f(300.f, 400.f));
-	m_GUIWindow->SetDrawBG(false);
-	auto staticText = new MyStaticText(m_GUIWindow, bqVec2f(0.f, 0.f), bqVec2f(300.f, 300.f));
-	m_staticTextDescription = staticText;
-	m_staticTextDescription->SetText(U" ");
+	m_GUIWindow->SetDrawBG(true);
+	//auto staticText = new MyStaticText(m_GUIWindow, bqVec2f(0.f, 0.f), bqVec2f(300.f, 300.f));
+	//m_staticTextDescription = staticText;
+	//m_staticTextDescription->SetText(U" ");
 
 	static bqGUIStyle styleInMenu;
 	styleInMenu = *bqFramework::GetGUIStyle(bqGUIStyleTheme::Light);
 	styleInMenu.m_staticTextTextColor = bq::ColorWhite;
 	
-	staticText->SetStyle(&styleInMenu);
-	staticText->SetDrawBG(false);
+//	staticText->SetStyle(&styleInMenu);
+//	staticText->SetDrawBG(false);
 
 	bqFramework::RebuildGUI();
 
@@ -501,10 +501,10 @@ void DemoApp::findDescription()
 	{
 	case DemoCategory::Element::type_parentDir:
 	case DemoCategory::Element::type_category:
-		m_staticTextDescription->SetText(U" ");
+//		m_staticTextDescription->SetText(U" ");
 		break;
 	case DemoCategory::Element::type_example:
-		m_staticTextDescription->SetText(m_currentCategory->m_elements.m_data[i].m_ex->m_description.c_str());
+//		m_staticTextDescription->SetText(m_currentCategory->m_elements.m_data[i].m_ex->m_description.c_str());
 		break;
 	}
 }

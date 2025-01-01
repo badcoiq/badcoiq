@@ -1602,10 +1602,10 @@ void bqGSD3D11::DrawText3D(
 		bqGUIFontGlyph* g = font->GetGlyphMap()[text[i]];
 
 		bqVec4 rct;
-		rct.x = position.x + ((float)g->m_width * sizeMultipler);
+		rct.z = position.x + ((float)g->m_width * sizeMultipler);
 		rct.y = position.y;
 
-		rct.z = position.x;
+		rct.x = position.x;
 		rct.w = rct.y + ((float)g->m_height * sizeMultipler);
 
 		_drawSprite(color, rct, g->m_UV, 0.5f, dynamic_cast<bqGSD3D11Texture*>(font->GetTexture(g->m_textureSlot)));

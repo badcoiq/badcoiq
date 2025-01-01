@@ -161,7 +161,7 @@ class DemoApp
 	bqArray<DemoExample*> m_allExamples;
 	DemoExample* m_activeExample = 0;
 
-	bqGUIStaticText* m_staticTextDescription = 0;
+//	bqGUIStaticText* m_staticTextDescription = 0;
 	void findDescription();
 	
 	bqGPUMesh* _createMesh(bqPolygonMesh*);

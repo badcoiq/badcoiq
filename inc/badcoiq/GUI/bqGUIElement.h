@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef BQ_WITH_GUI
 
 // Базовый класс для всех GUI элементов
-class bqGUIElement : public bqGUICommon
+class bqGUIElement : public bqGUICommon, public bqHierarchy
 {
 protected:
 	bqGUIWindow* m_window = 0; // каждый элемент принадлежит какому-то окну

@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 // Данные которые есть и у GUI элементов и у GUI окна
-class bqGUICommon : public bqUserData, public bqHierarchy
+class bqGUICommon : public bqUserData
 {
 public:
 	enum : uint32_t
@@ -68,6 +68,7 @@ protected:
 public:
 	bqGUICommon(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUICommon();
+
 	BQ_PLACEMENT_ALLOCATOR(bqGUICommon);
 	BQ_DELETED_METHODS(bqGUICommon);
 
@@ -133,11 +134,11 @@ public:
 
 	uint32_t m_id = 0;
 
-	// Вычислить m_baseRect и прочие ...Rect
-	// Надо вызывать это после создания GUI и после того как размер окна изменится
+	/// \brief Вычислить m_baseRect и прочие ...Rect
+	/// Надо вызывать это после создания GUI и после того как размер окна изменится
 	virtual void Rebuild() = 0;
 
-	// Нарисовать
+	/// \brief Нарисовать
 	virtual void Draw(bqGS* gs, float dt) = 0;
 
 	// Работа с определением была ли нажатие мышкой и т.д.

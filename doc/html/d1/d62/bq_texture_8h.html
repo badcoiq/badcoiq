@@ -90,13 +90,14 @@ $(function(){ initResizable(false); });
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle"><div class="title">bqTexture.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="../../d6/de0/bq_image_8h_source.html">badcoiq/common/bqImage.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="../../de/de5/bq_array_8h_source.html">badcoiq/containers/bqArray.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="../../d6/de0/bq_image_8h_source.html">badcoiq/common/bqImage.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="../../d5/dcc/bq_cryptography_8h_source.html">badcoiq/cryptography/bqCryptography.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="../../d8/dbf/bq_resource_cache_8h_source.html">badcoiq/common/bqResourceCache.h</a>&quot;</code><br />
 </div>
 <p><a href="../../d1/d62/bq_texture_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -105,18 +106,18 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/da8/structbq_texture_info.html">bqTextureInfo</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU текстура  <a href="../../d2/dcc/classbq_texture.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a4c759d7596ac3b04e15d57913e2555ee" id="r_a4c759d7596ac3b04e15d57913e2555ee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c759d7596ac3b04e15d57913e2555ee">__BQ_TEXTURE_H__</a></td></tr>
-<tr class="separator:a4c759d7596ac3b04e15d57913e2555ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/d88/classbq_texture_cache.html">bqTextureCache</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Работает на основе динамического массива  <a href="../../d0/d88/classbq_texture_cache.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a8ce181ad8448e3b2d462df67447a636e" id="r_a8ce181ad8448e3b2d462df67447a636e"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ce181ad8448e3b2d462df67447a636e">bqTextureType</a> : uint32_t { <a class="el" href="#a8ce181ad8448e3b2d462df67447a636eaa6e2bae752d3bf4e34cb392bca789995">Texture2D</a>
 , <a class="el" href="#a8ce181ad8448e3b2d462df67447a636eaedbfead3e0b36dd5ae9d3a0a5915556a">RTT</a>
  }</td></tr>
+<tr class="memdesc:a8ce181ad8448e3b2d462df67447a636e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Тип текстуры  <a href="#a8ce181ad8448e3b2d462df67447a636e">More...</a><br /></td></tr>
 <tr class="separator:a8ce181ad8448e3b2d462df67447a636e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7438832268b76c06727e9e0d29f43b8f" id="r_a7438832268b76c06727e9e0d29f43b8f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7438832268b76c06727e9e0d29f43b8f">bqTextureComparisonFunc</a> : uint32_t { <br />
 &#160;&#160;<a class="el" href="#a7438832268b76c06727e9e0d29f43b8fa6e7b34fa59e1bd229b207892956dc41c">Never</a>
@@ -130,6 +131,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="#a7438832268b76c06727e9e0d29f43b8fa68eec46437c384d8dad18d5464ebc35c">Always</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a7438832268b76c06727e9e0d29f43b8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Если фильтр стоит CMP_...  <a href="#a7438832268b76c06727e9e0d29f43b8f">More...</a><br /></td></tr>
 <tr class="separator:a7438832268b76c06727e9e0d29f43b8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b90ab07ab207f79489d4678683e39a7" id="r_a7b90ab07ab207f79489d4678683e39a7"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7b90ab07ab207f79489d4678683e39a7">bqTextureAddressMode</a> : uint32_t { <br />
 &#160;&#160;<a class="el" href="#a7b90ab07ab207f79489d4678683e39a7aa212b19ef5f2fb30acf92e6cbccc1f2d">Wrap</a>
@@ -168,21 +170,6 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="separator:a64978fc9fabbe421e30fe9212002bc27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a4c759d7596ac3b04e15d57913e2555ee" name="a4c759d7596ac3b04e15d57913e2555ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4c759d7596ac3b04e15d57913e2555ee">&#9670;&#160;</a></span>__BQ_TEXTURE_H__</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define __BQ_TEXTURE_H__</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a7b90ab07ab207f79489d4678683e39a7" name="a7b90ab07ab207f79489d4678683e39a7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7b90ab07ab207f79489d4678683e39a7">&#9670;&#160;</a></span>bqTextureAddressMode</h2>
@@ -203,12 +190,18 @@ Enumerations</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Так как текстурные координаты от 0 до 1, можно решить, как рисовать то, что за пределами этой области </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7b90ab07ab207f79489d4678683e39a7aa212b19ef5f2fb30acf92e6cbccc1f2d" name="a7b90ab07ab207f79489d4678683e39a7aa212b19ef5f2fb30acf92e6cbccc1f2d"></a>Wrap&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7b90ab07ab207f79489d4678683e39a7a2403def5083f02105e7802b3b315681e" name="a7b90ab07ab207f79489d4678683e39a7a2403def5083f02105e7802b3b315681e"></a>Mirror&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7b90ab07ab207f79489d4678683e39a7a08825280e3f8137556325061ba67ff8c" name="a7b90ab07ab207f79489d4678683e39a7a08825280e3f8137556325061ba67ff8c"></a>Clamp&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7b90ab07ab207f79489d4678683e39a7a070554647306343cbea29ebfdd278ba8" name="a7b90ab07ab207f79489d4678683e39a7a070554647306343cbea29ebfdd278ba8"></a>Border&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7b90ab07ab207f79489d4678683e39a7abbfe58735042c726d2d04562ea4e265a" name="a7b90ab07ab207f79489d4678683e39a7abbfe58735042c726d2d04562ea4e265a"></a>MirrorOnce&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7b90ab07ab207f79489d4678683e39a7a2403def5083f02105e7802b3b315681e" name="a7b90ab07ab207f79489d4678683e39a7a2403def5083f02105e7802b3b315681e"></a>Mirror&#160;</td><td class="fielddoc"><p>текстура будет повторяться </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7b90ab07ab207f79489d4678683e39a7a08825280e3f8137556325061ba67ff8c" name="a7b90ab07ab207f79489d4678683e39a7a08825280e3f8137556325061ba67ff8c"></a>Clamp&#160;</td><td class="fielddoc"><p>отразиться </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7b90ab07ab207f79489d4678683e39a7a070554647306343cbea29ebfdd278ba8" name="a7b90ab07ab207f79489d4678683e39a7a070554647306343cbea29ebfdd278ba8"></a>Border&#160;</td><td class="fielddoc"><p>будет растягиваться крайними пикселями </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7b90ab07ab207f79489d4678683e39a7abbfe58735042c726d2d04562ea4e265a" name="a7b90ab07ab207f79489d4678683e39a7abbfe58735042c726d2d04562ea4e265a"></a>MirrorOnce&#160;</td><td class="fielddoc"><p>будет залито указанным цветом (D3D11-&gt;D3D11_SAMPLER_DESC::BorderColor) </p>
+<p>сначала Mirror потом Clamp </p>
+</td></tr>
 </table>
 
 </div>
@@ -232,6 +225,8 @@ Enumerations</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Если фильтр стоит CMP_... </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7438832268b76c06727e9e0d29f43b8fa6e7b34fa59e1bd229b207892956dc41c" name="a7438832268b76c06727e9e0d29f43b8fa6e7b34fa59e1bd229b207892956dc41c"></a>Never&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a7438832268b76c06727e9e0d29f43b8fa1cfdf0e8d0c87a228c1f40d9bee7888b" name="a7438832268b76c06727e9e0d29f43b8fa1cfdf0e8d0c87a228c1f40d9bee7888b"></a>Less&#160;</td><td class="fielddoc"></td></tr>
@@ -264,8 +259,10 @@ Enumerations</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Фильтрация. PPP самый простой, пиксельный </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27ab55e74d4007b674b329d70f5550028ba" name="a64978fc9fabbe421e30fe9212002bc27ab55e74d4007b674b329d70f5550028ba"></a>PPP&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27ab55e74d4007b674b329d70f5550028ba" name="a64978fc9fabbe421e30fe9212002bc27ab55e74d4007b674b329d70f5550028ba"></a>PPP&#160;</td><td class="fielddoc"><p>min mag mip / point linear </p>
+</td></tr>
 <tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27a050761d8d3202128b4990287d187f09a" name="a64978fc9fabbe421e30fe9212002bc27a050761d8d3202128b4990287d187f09a"></a>PPL&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27af094e6c28b2f855656859690ca0732f7" name="a64978fc9fabbe421e30fe9212002bc27af094e6c28b2f855656859690ca0732f7"></a>PLP&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27a2d3f51fd7ed4d50ac21dec9ef605d45b" name="a64978fc9fabbe421e30fe9212002bc27a2d3f51fd7ed4d50ac21dec9ef605d45b"></a>PLL&#160;</td><td class="fielddoc"></td></tr>
@@ -274,7 +271,8 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27a6b300fec90a773526f1d37a7bf7f2048" name="a64978fc9fabbe421e30fe9212002bc27a6b300fec90a773526f1d37a7bf7f2048"></a>LLP&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27acbc3e21fc60bc1beb4c298f23d75ccb5" name="a64978fc9fabbe421e30fe9212002bc27acbc3e21fc60bc1beb4c298f23d75ccb5"></a>LLL&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27a5c56bb1e22b336ee67d2b1612b46dd1d" name="a64978fc9fabbe421e30fe9212002bc27a5c56bb1e22b336ee67d2b1612b46dd1d"></a>ANISOTROPIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27a8fe881b13d56d28dae7231fe139a3024" name="a64978fc9fabbe421e30fe9212002bc27a8fe881b13d56d28dae7231fe139a3024"></a>CMP_PPP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27a8fe881b13d56d28dae7231fe139a3024" name="a64978fc9fabbe421e30fe9212002bc27a8fe881b13d56d28dae7231fe139a3024"></a>CMP_PPP&#160;</td><td class="fielddoc"><p>comparison, для PCF </p>
+</td></tr>
 <tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27a41fee1b3fb48f0c06b67c0544d24046a" name="a64978fc9fabbe421e30fe9212002bc27a41fee1b3fb48f0c06b67c0544d24046a"></a>CMP_PPL&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27ac996b661baa934b1228aadd24a6ae1bc" name="a64978fc9fabbe421e30fe9212002bc27ac996b661baa934b1228aadd24a6ae1bc"></a>CMP_PLP&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a64978fc9fabbe421e30fe9212002bc27aeba8cefc898c76c8ff66d74cbcfdc5e1" name="a64978fc9fabbe421e30fe9212002bc27aeba8cefc898c76c8ff66d74cbcfdc5e1"></a>CMP_PLL&#160;</td><td class="fielddoc"></td></tr>
@@ -306,6 +304,8 @@ Enumerations</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Тип текстуры </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8ce181ad8448e3b2d462df67447a636eaa6e2bae752d3bf4e34cb392bca789995" name="a8ce181ad8448e3b2d462df67447a636eaa6e2bae752d3bf4e34cb392bca789995"></a>Texture2D&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a8ce181ad8448e3b2d462df67447a636eaedbfead3e0b36dd5ae9d3a0a5915556a" name="a8ce181ad8448e3b2d462df67447a636eaedbfead3e0b36dd5ae9d3a0a5915556a"></a>RTT&#160;</td><td class="fielddoc"></td></tr>

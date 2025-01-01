@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['tan_0',['Tan',['../d5/d11/classbq_math.html#a825ed564c75faf42ff4b78f8188eceec',1,'bqMath::Tan(float)'],['../d5/d11/classbq_math.html#a14818fba3e15cae6b182f3c7c6902b55',1,'bqMath::Tan(double)']]],
+  ['tan_0',['Tan',['../d5/d11/classbq_math.html#ac01d6e194e1d7fabb8077a166593fa1d',1,'bqMath::Tan(float32_t)'],['../d5/d11/classbq_math.html#a98154cbc7deac880cc940bacc7160532',1,'bqMath::Tan(float64_t)']]],
   ['tell_1',['Tell',['../d1/d49/classbq_file.html#a95ab289ed4b260cb0fb19e243f0d6853',1,'bqFile::Tell()'],['../dd/d19/classbq_file_buffer.html#a6a72a2ea94f46e5a1cac234b62bc792e',1,'bqFileBuffer::Tell()'],['../d2/dce/classbq_sound_stream_file.html#a6e274fd0bea136c510c7fc5cf1834477',1,'bqSoundStreamFile::Tell()']]],
   ['to_5fdouble_2',['to_double',['../dc/dde/classbq_string.html#a1f5cda8866f671a6e70b168a8cac8d6f',1,'bqString']]],
   ['to_5ffloat_3',['to_float',['../dd/d96/classbq_string__base.html#a5ee9b78662eb8b2043620ae2776d3017',1,'bqString_base::to_float()'],['../dc/dde/classbq_string.html#a1fb6c9e7fb044869f8c613f851eaa573',1,'bqString::to_float()']]],

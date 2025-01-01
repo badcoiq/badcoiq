@@ -34,75 +34,75 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/GUI/bqGUI.h"
 #include "badcoiq/system/bqWindow.h"
 
-bqGUIRootElement::bqGUIRootElement(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size) :
-	bqGUIElement::bqGUIElement(w, position, size)
-{
-	m_flags |= bqGUICommon::flag_wheelScroll;
-
-	// нужно вызвать так как свой Rebuild()
-	Rebuild();
-	// нужно вызвать так как свой Rebuild()
-	m_buildRectOnCreation = m_baseRect;
-}
-
-bqGUIRootElement::~bqGUIRootElement() {}
-void bqGUIRootElement::Rebuild()
-{
-	//bqGUIElement::Rebuild();
-	m_baseRect.x = m_window->GetPosition().x;
-	m_baseRect.y = m_window->GetPosition().y;
-
-	m_baseRect.z = m_baseRect.x + m_window->GetSize().x;
-	m_baseRect.w = m_baseRect.y + m_window->GetSize().y;
-	//m_baseRect = m_window->m_buildRect;
-	
-	if (m_window->m_windowFlags & bqGUIWindow::windowFlag_withTitleBar)
-	{
-		m_baseRect.y += m_window->m_titlebarHeight;
-	}
-
-
-	m_buildRect = m_baseRect;
-	m_activeRect = m_baseRect;
-	m_clipRect = m_baseRect;
-
-	bqGUIElement::Update();
-}
-void bqGUIRootElement::Update()
-{
-	bqGUIElement::Update();
-}
-void bqGUIRootElement::Draw(bqGS*, float) {}
-
-void bqGUIRootElement::UpdateContentSize()
-{
-	bqVec2f LB;
-
-	if (GetChildren()->m_head)
-	{
-		auto children = GetChildren();
-		if (children->m_head)
-		{
-			auto curr = children->m_head;
-			auto last = curr->m_left;
-			while (1)
-			{
-				bqGUIElement* child = dynamic_cast<bqGUIElement*>(curr->m_data);
-
-				if (child->m_baseRect.z > LB.x) LB.x = child->m_baseRect.z;
-				if (child->m_baseRect.w > LB.y) LB.y = child->m_baseRect.w;
-
-				if (curr == last)
-					break;
-				curr = curr->m_right;
-			}
-		}
-	}
-
-	m_contentSize.x = LB.x - m_baseRect.x;
-	m_contentSize.y = LB.y - m_baseRect.y;
-
-	bqGUICommon::UpdateScrollLimit();
-}
+//bqGUIRootElement::bqGUIRootElement(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size) :
+//	bqGUIElement::bqGUIElement(w, position, size)
+//{
+//	m_flags |= bqGUICommon::flag_wheelScroll;
+//
+//	// нужно вызвать так как свой Rebuild()
+//	Rebuild();
+//	// нужно вызвать так как свой Rebuild()
+//	m_buildRectOnCreation = m_baseRect;
+//}
+//
+//bqGUIRootElement::~bqGUIRootElement() {}
+//void bqGUIRootElement::Rebuild()
+//{
+//	//bqGUIElement::Rebuild();
+//	m_baseRect.x = m_window->GetPosition().x;
+//	m_baseRect.y = m_window->GetPosition().y;
+//
+//	m_baseRect.z = m_baseRect.x + m_window->GetSize().x;
+//	m_baseRect.w = m_baseRect.y + m_window->GetSize().y;
+//	//m_baseRect = m_window->m_buildRect;
+//	
+//	if (m_window->m_windowFlags & bqGUIWindow::windowFlag_withTitleBar)
+//	{
+//		m_baseRect.y += m_window->m_titlebarHeight;
+//	}
+//
+//
+//	m_buildRect = m_baseRect;
+//	m_activeRect = m_baseRect;
+//	m_clipRect = m_baseRect;
+//
+//	bqGUIElement::Update();
+//}
+//void bqGUIRootElement::Update()
+//{
+//	bqGUIElement::Update();
+//}
+//void bqGUIRootElement::Draw(bqGS*, float) {}
+//
+//void bqGUIRootElement::UpdateContentSize()
+//{
+//	bqVec2f LB;
+//
+//	if (GetChildren()->m_head)
+//	{
+//		auto children = GetChildren();
+//		if (children->m_head)
+//		{
+//			auto curr = children->m_head;
+//			auto last = curr->m_left;
+//			while (1)
+//			{
+//				bqGUIElement* child = dynamic_cast<bqGUIElement*>(curr->m_data);
+//
+//				if (child->m_baseRect.z > LB.x) LB.x = child->m_baseRect.z;
+//				if (child->m_baseRect.w > LB.y) LB.y = child->m_baseRect.w;
+//
+//				if (curr == last)
+//					break;
+//				curr = curr->m_right;
+//			}
+//		}
+//	}
+//
+//	m_contentSize.x = LB.x - m_baseRect.x;
+//	m_contentSize.y = LB.y - m_baseRect.y;
+//
+//	bqGUICommon::UpdateScrollLimit();
+//}
 
 #endif

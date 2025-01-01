@@ -189,6 +189,7 @@ void ExampleBasicsSprite::Shutdown()
 	{
 		delete m_loadedTextures.m_data[i];
 	}
+	m_loadedTextures.clear();
 
 	BQ_SAFEDESTROY(m_sprite);
 	BQ_SAFEDESTROY(m_spriteWithState);

@@ -1096,11 +1096,11 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeDark = g_framework->m_themeLight;
 }
 
-bqGUIWindow* bqFramework::SummonGUIWindow(bqWindow* window, const bqVec2f& position, const bqVec2f& size)
+bqGUIWindow* bqFramework::SummonGUIWindow(/*bqWindow* window, */const bqVec2f& position, const bqVec2f& size)
 {
 	bqGUIWindow* newWindow = new bqGUIWindow(position, size);
 	newWindow->SetStyle(bqFramework::GetGUIStyle(bqGUIStyleTheme::Light));
-	newWindow->m_systemWindow = window;
+	//newWindow->m_systemWindow = window;
 
 	g_framework->m_GUIWindows.push_back(newWindow);
 	return newWindow;
@@ -1172,82 +1172,82 @@ void bqFramework::RebuildGUI()
 	}
 }
 
-void DestroyGUIElement_internal(bqGUIElement* e)
-{
-	if (e->GetChildren()->m_head)
-	{
-		auto children = e->GetChildren();
-		if (children->m_head)
-		{
-			auto curr = children->m_head;
-			auto last = curr->m_left;
-			while (1)
-			{
-				DestroyGUIElement_internal(dynamic_cast<bqGUIElement*>(curr->m_data));
-				if (curr == last)
-					break;
-				curr = curr->m_right;
-			}
-		}
-	}
-
-	delete e;
-}
-
-void _DestroyGUIElement(bqGUIElement* e)
-{
-	e->SetParent(0);
-	DestroyGUIElement_internal(e);
-}
+//void DestroyGUIElement_internal(bqGUIElement* e)
+//{
+//	if (e->GetChildren()->m_head)
+//	{
+//		auto children = e->GetChildren();
+//		if (children->m_head)
+//		{
+//			auto curr = children->m_head;
+//			auto last = curr->m_left;
+//			while (1)
+//			{
+//				DestroyGUIElement_internal(dynamic_cast<bqGUIElement*>(curr->m_data));
+//				if (curr == last)
+//					break;
+//				curr = curr->m_right;
+//			}
+//		}
+//	}
+//
+//	delete e;
+//}
+//
+//void _DestroyGUIElement(bqGUIElement* e)
+//{
+//	e->SetParent(0);
+//	DestroyGUIElement_internal(e);
+//}
 
 void bqFramework::Destroy(bqGUIWindow* w)
 {
-	BQ_ASSERT_ST(w);
+	/*BQ_ASSERT_ST(w);
 	_DestroyGUIElement(w->m_rootElement);
 	g_framework->m_GUIWindows.erase_first(w);
-	delete w;
+	delete w;*/
 }
 
 void bqFramework::Destroy(bqGUIElement* e)
 {
-	BQ_ASSERT_ST(e);
+	/*BQ_ASSERT_ST(e);
 	if (e->GetWindow()->m_rootElement == e)
 		return;
-	_DestroyGUIElement(e);
+	_DestroyGUIElement(e);*/
 }
 
 void bqFrameworkImpl::_initGUITextDrawCallbacks()
 {
 	bqLog::PrintInfo("Init GUI callbacks\n");
 
-	m_defaultTextDrawCallback_button = new bqGUIButtonTextDrawCallback;
-	m_defaultTextDrawCallback_icons = new bqGUICheckRadioBoxTextDrawCallback;
-	m_defaultTextDrawCallback_textEditor = new bqGUITextEditorTextDrawCallback;
-	m_defaultTextDrawCallback_listbox = new bqGUIListBoxTextDrawCallback;
+	//m_defaultTextDrawCallback_button = new bqGUIButtonTextDrawCallback;
+	//m_defaultTextDrawCallback_icons = new bqGUICheckRadioBoxTextDrawCallback;
+	//m_defaultTextDrawCallback_textEditor = new bqGUITextEditorTextDrawCallback;
+	//m_defaultTextDrawCallback_listbox = new bqGUIListBoxTextDrawCallback;
 
 
-	// далее коллбеки работающие чуть по иному
-	// в таких коллбэках нужно будет указывать m_element, внутри этого элемента
-	// это позволяет использовать m_style - темы
-	// надо инициилизировать шрифты - в том месте где шрифты создаются bqFramework::InitDefaultFonts
-	// надо переделать остальные коллбэки.
-	// При Rebuild и Draw надо указать
-	// m_textDrawCallback->m_element = this;
-	m_defaultTextDrawCallback_staticText = new bqGUIStaticTextTextDrawCallback;
-	m_defaultTextDrawCallback_window = new bqGUIWindowTextDrawCallback;
-	
-	m_defaultTextDrawCallback_slider = new bqGUISliderTextDrawCallback;
+	//// далее коллбеки работающие чуть по иному
+	//// в таких коллбэках нужно будет указывать m_element, внутри этого элемента
+	//// это позволяет использовать m_style - темы
+	//// надо инициилизировать шрифты - в том месте где шрифты создаются bqFramework::InitDefaultFonts
+	//// надо переделать остальные коллбэки.
+	//// При Rebuild и Draw надо указать
+	//// m_textDrawCallback->m_element = this;
+	//m_defaultTextDrawCallback_staticText = new bqGUIStaticTextTextDrawCallback;
+	//m_defaultTextDrawCallback_window = new bqGUIWindowTextDrawCallback;
+	//
+	//m_defaultTextDrawCallback_slider = new bqGUISliderTextDrawCallback;
 }
 
 void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 {
-	delete m_defaultTextDrawCallback_window; m_defaultTextDrawCallback_window = 0;
-	delete m_defaultTextDrawCallback_button; m_defaultTextDrawCallback_button = 0;
-	delete m_defaultTextDrawCallback_icons; m_defaultTextDrawCallback_icons = 0;
-	delete m_defaultTextDrawCallback_textEditor; m_defaultTextDrawCallback_textEditor = 0;
-	delete m_defaultTextDrawCallback_listbox; m_defaultTextDrawCallback_listbox = 0;
-	delete m_defaultTextDrawCallback_slider; m_defaultTextDrawCallback_slider = 0;
-	delete m_defaultTextDrawCallback_staticText; m_defaultTextDrawCallback_staticText = 0;
+	//delete m_defaultTextDrawCallback_window; m_defaultTextDrawCallback_window = 0;
+	//delete m_defaultTextDrawCallback_button; m_defaultTextDrawCallback_button = 0;
+	//delete m_defaultTextDrawCallback_icons; m_defaultTextDrawCallback_icons = 0;
+	//delete m_defaultTextDrawCallback_textEditor; m_defaultTextDrawCallback_textEditor = 0;
+	//delete m_defaultTextDrawCallback_listbox; m_defaultTextDrawCallback_listbox = 0;
+	//delete m_defaultTextDrawCallback_slider; m_defaultTextDrawCallback_slider = 0;
+	//delete m_defaultTextDrawCallback_staticText; m_defaultTextDrawCallback_staticText = 0;
 }
 
 #endif
