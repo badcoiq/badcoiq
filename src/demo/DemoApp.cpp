@@ -201,7 +201,7 @@ bool DemoApp::Init()
 //	staticText->SetStyle(&styleInMenu);
 //	staticText->SetDrawBG(false);
 
-	bqFramework::RebuildGUI();
+	GetWindow()->RebuildGUI();
 
 	m_dt = bqFramework::GetDeltaTime();
 
@@ -309,9 +309,9 @@ void DemoApp::OnDraw()
 	m_gs->SetClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
 	m_gs->BeginGUI();
-	bqFramework::UpdateGUI();
+	m_window->UpdateGUI();
 
-	bqFramework::DrawGUI(m_gs);
+	m_window->DrawGUI(m_gs);
 	m_gs->SetScissorRect(bqVec4f(0.f, 0.f,
 		(float)m_window->GetCurrentSize()->x, (float)m_window->GetCurrentSize()->y));
 

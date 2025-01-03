@@ -39,6 +39,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/GUI/bqGUI.h"
 
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
+
+
 #ifdef BQ_PLATFORM_WINDOWS
 #include "badcoiq/system/bqWindowWin32.h"
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -361,6 +365,71 @@ void bqWindow::AddGUIWindow(bqGUIWindow* w)
     m_GUIWindows.push_back(w);
     w->m_systemWindow = this;
 }
+void bqWindow::RebuildGUI()
+{
+    if (m_GUIWindows.m_head)
+    {
+        auto last = m_GUIWindows.m_head;
+        auto curr = last->m_left;
+        while (1)
+        {
+            curr->m_data->Rebuild();
+
+            if (curr == last)
+                break;
+            curr = curr->m_left;
+        }
+    }
+}
+
+void bqWindow::UpdateGUI()
+{
+    if (m_GUIWindows.m_head)
+    {
+        g_framework->m_GUIState.m_scrollBlock = false;
+    	
+    	// сброс значения здеь, оно будет установлено в каком нибудь Update если курсор попадает в его область
+        g_framework->m_GUIState.m_windowUnderCursor = 0;
+
+    	auto last = m_GUIWindows.m_head;
+    	auto curr = last->m_left;
+    	while (1)
+    	{
+    		if (curr->m_data->IsVisible() 
+    			&& 
+    			!g_framework->m_GUIState.m_windowUnderCursor // запрет обрабатывать ввод другим окнам
+    			)
+    		{
+    			curr->m_data->Update();
+    		}
+
+    		if (curr == last)
+    			break;
+    		curr = curr->m_left;
+    	}
+    }
+}
+
+void bqWindow::DrawGUI(bqGS* gs)
+{
+    if (m_GUIWindows.m_head)
+    {
+        auto last = m_GUIWindows.m_head;
+        auto curr = last->m_left;
+        while (1)
+        {
+            if (curr->m_data->IsVisible())
+            {
+                curr->m_data->Draw(gs, g_framework->m_deltaTime);
+            }
+
+            if (curr == last)
+                break;
+            curr = curr->m_left;
+        }
+    }
+}
+
 #endif
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

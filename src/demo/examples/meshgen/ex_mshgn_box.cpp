@@ -110,7 +110,7 @@ bool ExampleMshGnBox::Init()
 	testScrollbar->m_valueVisible = 280.f;
 	testScrollbar->m_value = 0.f;*/
 
-	bqFramework::RebuildGUI();
+	m_app->GetWindow()->RebuildGUI();
 
 	return true;
 }
@@ -151,9 +151,9 @@ void ExampleMshGnBox::OnDraw()
 	if (bqInput::IsKeyHold(bqInput::KEY_E))
 		m_camera->m_position.y -= 10.0 * (double)(*m_app->m_dt);
 
-	bqFramework::UpdateGUI();
+	m_app->GetWindow()->UpdateGUI();
 	m_gs->BeginGUI();
-	bqFramework::DrawGUI(m_gs);
+	m_app->GetWindow()->DrawGUI(m_gs);
 	m_gs->EndGUI();
 
 	m_gs->BeginDraw();

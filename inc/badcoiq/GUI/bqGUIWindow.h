@@ -58,6 +58,8 @@ class bqGUIWindowBase : public bqHierarchy
 protected:
 	// для чего:
 	bqWindow* m_systemWindow = 0;
+	bqString m_title;
+	bqVec4f m_titlebarRect;
 public:
 	bqGUIWindowBase() {}
 	virtual ~bqGUIWindowBase() {}
@@ -67,8 +69,45 @@ public:
 
 	/// \brief Убрать элемент.
 	void RemoveElement(bqGUIElement* el);
+
+	enum
+	{
+		/// окно имеет заголовок
+		/// так-же даёт возможность использовать другие флаги
+		windowFlag_withTitleBar = 0x1,
+
+		/// далее не могут работать без windowFlag_withTitleBar
+		/// добавляет кнопку скрыть/показать содержимое
+		windowFlag_withCollapseButton = 0x2,
+		/// добавляет кнопку закрытия
+		windowFlag_withCloseButton = 0x4,
+		/// окно можно перемещать удерживая тайтлбар
+		windowFlag_canMove = 0x8,
+
+		/// можно изменять размер
+		windowFlag_canResize = 0x10,
+		/// 
+		//windowFlag_canDock = 0x20, // на будущее
+
+		/// если я правильно помню
+		/// я добавил это для того
+		/// чтобы окно можно было разместить в
+		/// качестве фона. и кликая по этому окну,
+		/// оно не должно становится самым верхним
+		/// не понимаю названия windowFlag_canToTop
+		/// надо изменить 
+		windowFlag_disableToTop = 0x40, // надо реализовать 
+		//windowFlag_disableScrollbar = 0x80,
+	};
+	uint32_t m_windowFlags = 0;
+	float32_t m_titlebarHeight = 12.f;
+
 };
 
+/// \brief Все GUI элементы добавляются в окно.
+/// 
+/// Размер окна включает всё что у окна есть,
+/// например тайтл бар.
 class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 {
 	friend class bqFramework;
@@ -86,51 +125,8 @@ public:
 	// Не надо. потому что наследуется bqHierarchy
 	// bqGUIElement* m_rootElement = 0;
 
-//	enum
-//	{
-//		windowFlag_withCloseButton = 0x1,
-//
-//		// нахер оно надо?
-//		// хотя...
-//		// если есть такой контейнер GUI, который принимает окна...
-//		// _________________________________________________________
-//		//                                     |_v_____Окно_1_____x|
-//		//                                     |                   |
-//		//                                     |   содержимое      |
-//		//                                     |       окна        |
-//		//                                     |                   |
-//		//                                     |                   |
-//		//                                     |_v_____Окно_2_____x|
-//		//                                     |                   |
-//		//                                     |   содержимое      |
-//		//                                     |       окна        |
-//		//                                     |                   |
-//		//                                     |_v_____Окно_3_____x|
-//		//                                     | и т.д.  их можно  |
-//		//                                     | будет сворачивать |
-//		//                                     |                   |
-//		//                                     |_>____Окно_4______x|
-//		//                                     |_>____Окно_5______x|
-//		//                                     |_>____Окно_6______x|
-//		// ____________________________________|___________________|
-//		windowFlag_withCollapseButton = 0x2,
-//
-//		windowFlag_withTitleBar = 0x4,
-//		windowFlag_canMove = 0x8,
-//		windowFlag_canResize = 0x10,
-//		windowFlag_canDock = 0x20, // на будущее
-//
-//// если я правильно помню
-//// я добавил это для того
-//// чтобы окно можно было разместить в
-//// качестве фона. и кликая по этому окну,
-//// оно не должно становится самым верхним
-//// не понимаю названия windowFlag_canToTop
-//// надо изменить 
-//		windowFlag_disableToTop = 0x40, // надо реализовать 
-//windowFlag_disableScrollbar = 0x80,
-//	};
-//
+	
+
 //	// нужно знать, где находится курсор
 //	enum
 //	{

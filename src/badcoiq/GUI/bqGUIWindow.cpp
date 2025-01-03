@@ -114,6 +114,8 @@ bqGUIWindow::bqGUIWindow(
 	:
 	bqGUICommon(position, size)
 {
+	m_title = U"Window";
+
 	// создаю корневой элемент
 //	m_rootElement = dynamic_cast<bqGUIElement*>(bqCreate<bqGUIRootElement>(this, position, size));
 
@@ -271,18 +273,18 @@ void bqGUIWindow::Rebuild()
 //	// 
 //	// Возможно нужно так-же изменить m_baseRect.y.
 //	// 
-//	if (m_windowFlags & windowFlag_withTitleBar)
-//	{
+	if (m_windowFlags & windowFlag_withTitleBar)
+	{
 //		// отодвину m_baseRect.y у m_rootElement
 //		m_rootElement->m_baseRect.y += m_titlebarHeight;
-//
-//		// область titlebar
-//		// возможно в будущем нужно будет учитывать значение скроллинга.
-//		// например если окно находится в контейнере (пример из комментария у windowFlag_withCollapseButton)
-//		m_titlebarRect.x = m_baseRect.x;
-//		m_titlebarRect.y = m_baseRect.y;
-//		m_titlebarRect.z = m_baseRect.z;
-//		m_titlebarRect.w = m_titlebarRect.y + m_titlebarHeight;
+
+		// область titlebar
+		// возможно в будущем нужно будет учитывать значение скроллинга.
+		// например если окно находится в контейнере (пример из комментария у windowFlag_withCollapseButton)
+		m_titlebarRect.x = m_baseRect.x;
+		m_titlebarRect.y = m_baseRect.y;
+		m_titlebarRect.z = m_baseRect.z;
+		m_titlebarRect.w = m_titlebarRect.y + m_titlebarHeight;
 //
 //		auto rectForBorder = m_titlebarRect;
 //
@@ -354,19 +356,19 @@ void bqGUIWindow::Rebuild()
 //				m_collapseButtonRect.w = m_collapseButtonRect.y + g->m_height;
 //			}
 //		}
-//
-//		
-//	}
-//
-//	if (m_baseRect.x > m_baseRect.z)
-//		m_baseRect.x = m_baseRect.z;
-//	if (m_baseRect.y > m_baseRect.w)
-//		m_baseRect.y = m_baseRect.w;
-//
+
+		
+	}
+
+	if (m_baseRect.x > m_baseRect.z)
+		m_baseRect.x = m_baseRect.z;
+	if (m_baseRect.y > m_baseRect.w)
+		m_baseRect.y = m_baseRect.w;
+
 //	m_rootElement->m_clipRect = m_rootElement->m_baseRect;
 //	m_rootElement->m_activeRect = m_rootElement->m_clipRect;
-//	
-//
+	
+
 //	// потом перестраиваю другие элементы
 //	_bqGUIWindow_RebuildElement(m_rootElement);
 //	
@@ -910,8 +912,6 @@ void bqGUIWindow::Rebuild()
 
 void bqGUIWindow::Draw(bqGS* gs, float dt)
 {
-	
-
 	gs->SetScissorRect(m_clipRect);
 
 	if (IsDrawBG()/* && (m_windowFlagsInternal & windowFlagInternal_isExpand)*/)
@@ -919,21 +919,21 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 		gs->DrawGUIRectangle(m_baseRect, m_style->m_windowActiveBGColor1, m_style->m_windowActiveBGColor2, 0, 0);
 	}
 
-//	if (m_windowFlags & windowFlag_withTitleBar)
-//	{
+	if (m_windowFlags & windowFlag_withTitleBar)
+	{
 //		bqGUIWindowTextDrawCallback* wcb = (bqGUIWindowTextDrawCallback*)m_textDrawCallback;
 //		wcb->m_window = this;
-//
-//		gs->DrawGUIRectangle(m_titlebarRect, m_style->m_windowActiveTitleBGColor1, m_style->m_windowActiveTitleBGColor2, 0, 0);
-//		if (m_title.size())
-//		{
-//
-//			bqVec2f tp;
-//			tp.x = m_titlebarRect.x + m_style->m_windowTitleIndent.x;
-//			tp.y = m_titlebarRect.y + m_style->m_windowTitleIndent.y;
-//			gs->DrawGUIText(m_title.c_str(), m_title.size(), tp, m_textDrawCallback);
-//		}
-//
+
+		gs->DrawGUIRectangle(m_titlebarRect, m_style->m_windowActiveTitleBGColor1, m_style->m_windowActiveTitleBGColor2, 0, 0);
+		if (m_title.size())
+		{
+
+			bqVec2f tp;
+			tp.x = m_titlebarRect.x + m_style->m_windowTitleIndent.x;
+			tp.y = m_titlebarRect.y + m_style->m_windowTitleIndent.y;
+			gs->DrawGUIText(m_title.c_str(), m_title.size(), tp, m_textDrawCallback);
+		}
+
 //		// для рисовании кнопки закрыть нужен дефолтный шрифт с иконками
 //		if (m_windowFlags & windowFlag_withCloseButton)
 //		{
@@ -985,7 +985,7 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 //		gs->DrawGUIRectangle(m_borderRectRightTop, bq::ColorFuchsia, bq::ColorFuchsia, 0, 0);
 //		gs->DrawGUIRectangle(m_borderRectLeftBottom, bq::ColorGoldenRod, bq::ColorGoldenRod, 0, 0);
 //		gs->DrawGUIRectangle(m_borderRectRightBottom, bq::ColorHotPink, bq::ColorHotPink, 0, 0);*/
-//	}
+	}
 //	
 //	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
 //	{

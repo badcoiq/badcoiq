@@ -1109,8 +1109,8 @@ bqGUIWindow* bqFramework::SummonGUIWindow(bqWindow* window, const bqVec2f& posit
 }
 
 
-void bqFramework::UpdateGUI()
-{
+//void bqFramework::UpdateGUI()
+//{
 	//if (g_framework->m_GUIWindows.m_head)
 	//{
 	//	g_framework->m_GUIState.m_scrollBlock = false;
@@ -1135,10 +1135,10 @@ void bqFramework::UpdateGUI()
 	//		curr = curr->m_left;
 	//	}
 	//}
-}
+//}
 
-void bqFramework::DrawGUI(bqGS* gs)
-{
+//void bqFramework::DrawGUI(bqGS* gs)
+//{
 	/*if (g_framework->m_GUIWindows.m_head)
 	{
 		auto last = g_framework->m_GUIWindows.m_head;
@@ -1155,10 +1155,10 @@ void bqFramework::DrawGUI(bqGS* gs)
 			curr = curr->m_left;
 		}
 	}*/
-}
+//}
 
-void bqFramework::RebuildGUI()
-{
+//void bqFramework::RebuildGUI()
+//{
 	/*if (g_framework->m_GUIWindows.m_head)
 	{
 		auto last = g_framework->m_GUIWindows.m_head;
@@ -1172,7 +1172,7 @@ void bqFramework::RebuildGUI()
 			curr = curr->m_left;
 		}
 	}*/
-}
+//}
 
 //void DestroyGUIElement_internal(bqGUIElement* e)
 //{

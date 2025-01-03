@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Данные которые есть и у GUI элементов и у GUI окна
 class bqGUICommon : public bqUserData
 {
+	static bool m_scrollBlock;
 public:
 	enum : uint32_t
 	{
