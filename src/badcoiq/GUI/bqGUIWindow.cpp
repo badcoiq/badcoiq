@@ -159,15 +159,6 @@ void bqGUIWindowBase::RemoveElement(bqGUIElement* el)
 	el->SetParent(0);
 }
 
-void bqGUIWindow::Rebuild()
-{
-}
-
-void bqGUIWindow::Draw(bqGS* gs, float dt)
-{
-}
-
-
 //bqGUIFont* bqGUIWindow::_OnFont_active(uint32_t, char32_t)
 //{
 //	return m_style->m_windowActiveTitleTextFont;
@@ -252,17 +243,17 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 //	e->UpdateContentSize();
 //	e->UpdateScroll();
 //}
-//
-//void bqGUIWindow::Rebuild()
-//{
-//
-//
-//	// вычисляю rects
-//	m_baseRect.x = m_position.x;
-//	m_baseRect.y = m_position.y;
-//	m_baseRect.z = m_baseRect.x + m_size.x;
-//	m_baseRect.w = m_baseRect.y + m_size.y;
-//	
+
+void bqGUIWindow::Rebuild()
+{
+
+
+	// вычисляю rects
+	m_baseRect.x = m_position.x;
+	m_baseRect.y = m_position.y;
+	m_baseRect.z = m_baseRect.x + m_size.x;
+	m_baseRect.w = m_baseRect.y + m_size.y;
+	
 //	// "перестраиваю" root здесь
 //    // ... надо проверить...
 //	// возможно тут ненадо, так как реализовал перестроение в bqGUIRootElement::Rebuild()
@@ -270,10 +261,10 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 //	m_rootElement->m_baseRect.y = m_baseRect.y;
 //	m_rootElement->m_baseRect.z = m_baseRect.x + m_size.x;
 //	m_rootElement->m_baseRect.w = m_baseRect.y + m_size.y;
-//
-//	m_clipRect = m_baseRect;
-//	m_activeRect = m_clipRect;
-//
+
+	m_clipRect = m_baseRect;
+	m_activeRect = m_clipRect;
+
 //	// GUI элементы устанавливаются используя значения из m_rootElement
 //	// Если окно с title bar, то надо изменить верхнюю границу.
 //	// Пусть будет значение m_titlebarHeight для размера titlebar
@@ -421,8 +412,8 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 //		//   скроллят свои "внутренности" сами. Если элемент нужно перестраивать в зависимости от скроллинга,
 //		//   надо делать проверку, есть ли у родителя m_scrollDelta. Я не уверен на счёт прадедов и т.д..
 //	}
-//}
-//
+}
+
 //// действия с вводом\реакция на мышь
 //// рекурсивная функция
 //// старт в bqGUIWindow::Update()
@@ -449,7 +440,7 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 //	}
 //	e->UpdateScroll();
 //}
-//
+
 //void bqGUIWindow::Update()
 //{
 //	// сброс.
@@ -916,16 +907,18 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 //		}
 //	}
 //}
-//
-//void bqGUIWindow::Draw(bqGS* gs, float dt)
-//{
-//	gs->SetScissorRect(m_clipRect);
-//
-//	if (IsDrawBG() && (m_windowFlagsInternal & windowFlagInternal_isExpand))
-//	{
-//		gs->DrawGUIRectangle(m_baseRect, m_style->m_windowActiveBGColor1, m_style->m_windowActiveBGColor2, 0, 0);
-//	}
-//
+
+void bqGUIWindow::Draw(bqGS* gs, float dt)
+{
+	
+
+	gs->SetScissorRect(m_clipRect);
+
+	if (IsDrawBG()/* && (m_windowFlagsInternal & windowFlagInternal_isExpand)*/)
+	{
+		gs->DrawGUIRectangle(m_baseRect, m_style->m_windowActiveBGColor1, m_style->m_windowActiveBGColor2, 0, 0);
+	}
+
 //	if (m_windowFlags & windowFlag_withTitleBar)
 //	{
 //		bqGUIWindowTextDrawCallback* wcb = (bqGUIWindowTextDrawCallback*)m_textDrawCallback;
@@ -998,13 +991,13 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 //	{
 //		_bqGUIWindow_DrawElement(gs, m_rootElement, dt);
 //	}
-//
-//	bqVec4f cl;
-//	cl.z = (float)m_systemWindow->GetCurrentSize()->x;
-//	cl.w = (float)m_systemWindow->GetCurrentSize()->y;
-//	gs->SetScissorRect(cl);
-//}
-//
+
+	//bqVec4f cl;
+	//cl.z = (float)m_systemWindow->GetCurrentSize()->x;
+	//cl.w = (float)m_systemWindow->GetCurrentSize()->y;
+	//gs->SetScissorRect(cl);
+}
+
 //void bqGUIWindow::Expand()
 //{
 //	m_windowFlagsInternal |= windowFlagInternal_isExpand;

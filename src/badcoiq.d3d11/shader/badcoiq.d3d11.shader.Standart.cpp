@@ -33,6 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/gs/bqMaterial.h"
 #include "badcoiq/common/bqFileBuffer.h"
 
+#include <d3dcompiler.h>
+
 
 bqD3D11ShaderStandart::bqD3D11ShaderStandart(bqGSD3D11* gs)
 	:
@@ -49,30 +51,89 @@ bool bqD3D11ShaderStandart::Init()
 {
 	uint32_t sz = 0;
 	bqString appPath = bqFramework::GetAppPath();
-	bqString shaderPath = std::move(appPath + "../data/shaders/d3d11/badcoiq.d3d11.shader.Standart.hlsl");
-	bqStringA shaderPathA;
-	shaderPath.to_utf8(shaderPathA);
 
-	//char* text = (char*)bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true);
-	//bqPtr pText(text, bqPtr::Free());
-	BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+	ID3D10Blob* VsBlob = nullptr;
+	ID3D10Blob* PsBlob = nullptr;
+	ID3D10Blob* ErrorBlob = nullptr;
 
-	if (!m_gs->CreateShaders(
-		"vs_5_0",
-		"ps_5_0",
-		text.Ptr(),
-		text.Ptr(),
-		"VSMain",
-		"PSMain",
-		bqMeshVertexType::Triangle,
-		&this->m_vShader,
-		&this->m_pShader,
-		&this->m_vLayout))
-		return false;
+	bqString textFilePath("../data/shaders/d3d11/badcoiq.d3d11.shader.Standart.hlsl");
+	bqString textFilePathBin = textFilePath + ".vs";
+
+	{
+		// чтение скомпилированного шейдера
+		bqStringW shaderPathW;
+		bqString shaderPathBin(appPath + textFilePathBin.c_str());
+		shaderPathBin.to_utf16(shaderPathW);
+		D3DReadFileToBlob(shaderPathW.c_str(), &VsBlob);
+	}
+
+	if (!VsBlob)
+	{
+		bqString shaderPath = std::move(appPath + textFilePath.c_str());
+		bqStringA shaderPathA;
+		shaderPath.to_utf8(shaderPathA);
+
+		BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+		if (m_gs->CompileShader("vs_5_0", "VSMain", text.Ptr(), &VsBlob, &ErrorBlob))
+		{
+			bqStringW shaderPathW;
+			bqString shaderPathBin(appPath + textFilePathBin.c_str());
+			shaderPathBin.to_utf16(shaderPathW);
+			D3DWriteBlobToFile(VsBlob, shaderPathW.c_str(), TRUE);
+		}
+	}
+
+	if (VsBlob)
+	{
+		if (m_gs->CreateVertexShaderInputLayout(VsBlob, &m_vLayout))
+			m_gs->CreateVertexShader(VsBlob, &m_vShader);
+	}
+
+	BQD3DSAFE_RELEASE(ErrorBlob);
+	BQD3DSAFE_RELEASE(VsBlob);
+
+	textFilePath.assign("../data/shaders/d3d11/badcoiq.d3d11.shader.Standart.hlsl");
+	textFilePathBin = textFilePath + ".ps";
+
+	{
+		// чтение скомпилированного шейдера
+		bqStringW shaderPathW;
+		bqString shaderPathBin(appPath + textFilePathBin.c_str());
+		shaderPathBin.to_utf16(shaderPathW);
+		D3DReadFileToBlob(shaderPathW.c_str(), &PsBlob);
+	}
+
+	if (!PsBlob)
+	{
+		bqString shaderPath = std::move(appPath + textFilePath.c_str());
+		bqStringA shaderPathA;
+		shaderPath.to_utf8(shaderPathA);
+
+		BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+		if (m_gs->CompileShader("ps_5_0", "PSMain", text.Ptr(), &PsBlob, &ErrorBlob))
+		{
+			bqStringW shaderPathW;
+			bqString shaderPathBin(appPath + textFilePathBin.c_str());
+			shaderPathBin.to_utf16(shaderPathW);
+			D3DWriteBlobToFile(PsBlob, shaderPathW.c_str(), TRUE);
+		}
+	}
+
+	if (PsBlob)
+	{
+		m_gs->CreatePixelShader(PsBlob, &m_pShader);
+	}
+
+	BQD3DSAFE_RELEASE(ErrorBlob);
+	BQD3DSAFE_RELEASE(PsBlob);
+
 
 	if (!m_gs->CreateConstantBuffer(sizeof(cbV), &m_cbV))
 		return false;
 	if (!m_gs->CreateConstantBuffer(sizeof(cbP), &m_cbP))
+		return false;
+
+	if(!m_vShader || !m_pShader)
 		return false;
 
 	return true;
@@ -139,32 +200,91 @@ bool bqD3D11ShaderStandartSkinned::Init()
 {
 	uint32_t sz = 0;
 	bqString appPath = bqFramework::GetAppPath();
-	bqString shaderPath = std::move(appPath + "../data/shaders/d3d11/badcoiq.d3d11.shader.Standart.hlsl");
-	bqStringA shaderPathA;
-	shaderPath.to_utf8(shaderPathA);
 
-	//char* text = (char*)bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true);
-	//bqPtr pText(text, bqPtr::Free());
-	BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+	ID3D10Blob* VsBlob = nullptr;
+	ID3D10Blob* PsBlob = nullptr;
+	ID3D10Blob* ErrorBlob = nullptr;
 
-	if (!m_gs->CreateShaders(
-		"vs_5_0",
-		"ps_5_0",
-		text.Ptr(),
-		text.Ptr(),
-		"VSMainSk",
-		"PSMain",
-		bqMeshVertexType::Triangle,
-		&this->m_vShader,
-		&this->m_pShader,
-		&this->m_vLayout))
-		return false;
+	bqString textFilePath("../data/shaders/d3d11/badcoiq.d3d11.shader.Standart.hlsl");
+	bqString textFilePathBin = textFilePath + ".sk.vs";
+
+	{
+		// чтение скомпилированного шейдера
+		bqStringW shaderPathW;
+		bqString shaderPathBin(appPath + textFilePathBin.c_str());
+		shaderPathBin.to_utf16(shaderPathW);
+		D3DReadFileToBlob(shaderPathW.c_str(), &VsBlob);
+	}
+
+	if (!VsBlob)
+	{
+		bqString shaderPath = std::move(appPath + textFilePath.c_str());
+		bqStringA shaderPathA;
+		shaderPath.to_utf8(shaderPathA);
+
+		BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+		if (m_gs->CompileShader("vs_5_0", "VSMainSk", text.Ptr(), &VsBlob, &ErrorBlob))
+		{
+			bqStringW shaderPathW;
+			bqString shaderPathBin(appPath + textFilePathBin.c_str());
+			shaderPathBin.to_utf16(shaderPathW);
+			D3DWriteBlobToFile(VsBlob, shaderPathW.c_str(), TRUE);
+		}
+	}
+
+	if (VsBlob)
+	{
+		if (m_gs->CreateVertexShaderInputLayout(VsBlob, &m_vLayout))
+			m_gs->CreateVertexShader(VsBlob, &m_vShader);
+	}
+
+	BQD3DSAFE_RELEASE(ErrorBlob);
+	BQD3DSAFE_RELEASE(VsBlob);
+
+	textFilePath.assign("../data/shaders/d3d11/badcoiq.d3d11.shader.Standart.hlsl");
+	textFilePathBin = textFilePath + ".ps";
+
+	{
+		// чтение скомпилированного шейдера
+		bqStringW shaderPathW;
+		bqString shaderPathBin(appPath + textFilePathBin.c_str());
+		shaderPathBin.to_utf16(shaderPathW);
+		D3DReadFileToBlob(shaderPathW.c_str(), &PsBlob);
+	}
+
+	if (!PsBlob)
+	{
+		bqString shaderPath = std::move(appPath + textFilePath.c_str());
+		bqStringA shaderPathA;
+		shaderPath.to_utf8(shaderPathA);
+
+		BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+		if (m_gs->CompileShader("ps_5_0", "PSMain", text.Ptr(), &PsBlob, &ErrorBlob))
+		{
+			bqStringW shaderPathW;
+			bqString shaderPathBin(appPath + textFilePathBin.c_str());
+			shaderPathBin.to_utf16(shaderPathW);
+			D3DWriteBlobToFile(PsBlob, shaderPathW.c_str(), TRUE);
+		}
+	}
+
+	if (PsBlob)
+	{
+		m_gs->CreatePixelShader(PsBlob, &m_pShader);
+	}
+
+	BQD3DSAFE_RELEASE(ErrorBlob);
+	BQD3DSAFE_RELEASE(PsBlob);
+
 
 	if (!m_gs->CreateConstantBuffer(sizeof(cbV), &m_cbV))
 		return false;
 	if (!m_gs->CreateConstantBuffer(sizeof(cbSk), &m_cbSk))
 		return false;
 	if (!m_gs->CreateConstantBuffer(sizeof(cbP), &m_cbP))
+		return false;
+
+	if (!m_vShader || !m_pShader)
 		return false;
 
 	return true;

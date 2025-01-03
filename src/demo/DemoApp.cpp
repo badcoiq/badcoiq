@@ -187,7 +187,7 @@ bool DemoApp::Init()
 
 	m_textDrawCallback = new GUIDrawTextCallback(m_fontDefault);
 
-	m_GUIWindow = bqFramework::SummonGUIWindow(/*m_window, */bqVec2f(300.f, 0.f),
+	m_GUIWindow = bqFramework::SummonGUIWindow(m_window, bqVec2f(300.f, 0.f),
 		bqVec2f(300.f, 400.f));
 	m_GUIWindow->SetDrawBG(true);
 	//auto staticText = new MyStaticText(m_GUIWindow, bqVec2f(0.f, 0.f), bqVec2f(300.f, 300.f));
@@ -309,6 +309,8 @@ void DemoApp::OnDraw()
 	m_gs->SetClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
 	m_gs->BeginGUI();
+	bqFramework::UpdateGUI();
+
 	bqFramework::DrawGUI(m_gs);
 	m_gs->SetScissorRect(bqVec4f(0.f, 0.f,
 		(float)m_window->GetCurrentSize()->x, (float)m_window->GetCurrentSize()->y));

@@ -56,8 +56,8 @@ public:
 class bqGUIWindowBase : public bqHierarchy
 {
 protected:
-	// для чего пока не помню
-	//bqWindow* m_systemWindow = 0;
+	// для чего:
+	bqWindow* m_systemWindow = 0;
 public:
 	bqGUIWindowBase() {}
 	virtual ~bqGUIWindowBase() {}
@@ -72,6 +72,7 @@ public:
 class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 {
 	friend class bqFramework;
+	friend class bqWindow;
 	
 public:
 	bqGUIWindow(/*bqWindow* systemWindow, */const bqVec2f& position, const bqVec2f& size);

@@ -117,7 +117,7 @@ public:
 	bqGUIStyle m_themeDark;
 	void _initGUIThemes();
 	bqGUIState m_GUIState;
-	bqList<bqGUIWindow*> m_GUIWindows;
+	//bqList<bqGUIWindow*> m_GUIWindows;
 
 	void _initGUITextDrawCallbacks();
 	void _onDestroy_GUITextDrawCallbacks();

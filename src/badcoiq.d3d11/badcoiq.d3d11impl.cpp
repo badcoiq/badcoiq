@@ -429,6 +429,171 @@ void bqGSD3D11::SwapBuffers()
 	m_SwapChain->Present(m_vsync, 0);
 }
 
+bool bqGSD3D11::CompileShader(const char* target,
+	const char* entryPoint,
+	const char* text,
+	ID3D10Blob** shaderData,
+	ID3D10Blob** error)
+{
+	HRESULT hr = D3DCompile(
+		text,
+		strlen(text),
+		0, 0, 0,
+		entryPoint,
+		target,
+		0,
+		0,
+		shaderData,
+		error);
+
+	if (FAILED(hr))
+	{
+		if ((*error))
+		{
+			char* message = (char*)(*error)->GetBufferPointer();
+			bqLog::PrintError("Shader compile error: %s\n", message);
+		}
+		if (*shaderData)    (*shaderData)->Release();
+		*shaderData = 0;
+
+		return false;
+	}
+	return true;
+}
+
+bool bqGSD3D11::CreateVertexShader(ID3D10Blob* shaderBlob, ID3D11VertexShader** vs)
+{
+	HRESULT hr = m_d3d11Device->CreateVertexShader(
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		0,
+		vs);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Can't create vertex shader. Error code [%u]\n", hr);
+		return false;
+	}
+	return true;
+}
+
+bool bqGSD3D11::CreatePixelShader(ID3D10Blob* shaderBlob, ID3D11PixelShader** ps)
+{
+	HRESULT hr = m_d3d11Device->CreatePixelShader(
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		0,
+		ps);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Can't create pixel shader. Error code [%u]\n", hr);
+		return false;
+	}
+	return true;
+}
+
+bool bqGSD3D11::CreateVertexShaderInputLayout(ID3D10Blob* shaderBlob, ID3D11InputLayout** il)
+{
+	D3D11_INPUT_ELEMENT_DESC vertexLayout[8];
+	uint32_t vertexLayoutSize = 0;
+		/*
+		LPCSTR SemanticName;
+		UINT SemanticIndex;
+		DXGI_FORMAT Format;
+		UINT InputSlot;
+		UINT AlignedByteOffset;
+		D3D11_INPUT_CLASSIFICATION InputSlotClass;
+		UINT InstanceDataStepRate;
+		*/
+
+	int ind = 0;
+	ind = 0;
+	vertexLayout[ind].SemanticName = "POSITION";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 0;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "TEXCOORD";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 12;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "NORMAL";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 20;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "BINORMAL";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 32;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "TANGENT";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 44;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "COLOR";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 56;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "BONES";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R8G8B8A8_UINT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 72;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "WEIGHTS";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 76;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	vertexLayoutSize = ind + 1;
+
+	HRESULT	hr = m_d3d11Device->CreateInputLayout(
+		vertexLayout,
+		vertexLayoutSize,
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		il);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Can't create input layout. Error code [%u]\n", hr);
+		return false;
+	}
+	return true;
+}
+
 bool bqGSD3D11::CreateShaders(
 	const char* vertexTarget,
 	const char* pixelTarget,

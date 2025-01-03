@@ -693,6 +693,7 @@ bool bqWASAPIRenderer::Initialize(IMMDevice* Endpoint)
 
 		m_mainMixer = new bqSoundMixerImpl(ch, ssdi);
 
+		bqLog::PrintInfo("Set Main Mixer...\n");
 		this->ThreadCommand_SetMainMixer(m_mainMixer);
 
 		m_threadContext.m_run = true;

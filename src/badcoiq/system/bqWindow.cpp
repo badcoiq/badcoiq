@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/system/bqCursor.h"
 
 #include "badcoiq/gs/bqGS.h"
+#include "badcoiq/GUI/bqGUI.h"
 
 #ifdef BQ_PLATFORM_WINDOWS
 #include "badcoiq/system/bqWindowWin32.h"
@@ -139,6 +140,7 @@ bqWindow::~bqWindow()
 
         bqMemory::free(m_data.m_implementation);
     }
+
 }
 
 void bqWindow::SetTitle(const char* s)
@@ -351,6 +353,15 @@ void bqWindow::ToWindowMode()
     bqWindowWin32_findCurrentSize(this, w32);
 #endif
 }
+
+#ifdef BQ_WITH_GUI
+void bqWindow::AddGUIWindow(bqGUIWindow* w)
+{
+    BQ_ASSERT_ST(w);
+    m_GUIWindows.push_back(w);
+    w->m_systemWindow = this;
+}
+#endif
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

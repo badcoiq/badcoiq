@@ -280,34 +280,34 @@ void bqFrameworkImpl::OnDestroy()
 		}
 		m_defaultFonts.clear();
 	}
-	if (g_framework->m_GUIWindows.m_head)
-	{
-		// надо собрать все окна в массив
-		bqArray<bqGUIWindow*> allWindows;
-		allWindows.reserve(10);
+	//if (g_framework->m_GUIWindows.m_head)
+	//{
+	//	// надо собрать все окна в массив
+	//	bqArray<bqGUIWindow*> allWindows;
+	//	allWindows.reserve(10);
 
-		auto cw = g_framework->m_GUIWindows.m_head;
-		auto lw = cw->m_left;
+	//	auto cw = g_framework->m_GUIWindows.m_head;
+	//	auto lw = cw->m_left;
 
-		while (1)
-		{
-			auto nw = cw->m_right;
+	//	while (1)
+	//	{
+	//		auto nw = cw->m_right;
 
-			allWindows.push_back(cw->m_data);
-			//bqFramework::Destroy(cw->m_data);
+	//		allWindows.push_back(cw->m_data);
+	//		//bqFramework::Destroy(cw->m_data);
 
-			if (cw == lw)
-				break;
-			cw = nw;
-		}
-		g_framework->m_GUIWindows.clear();
+	//		if (cw == lw)
+	//			break;
+	//		cw = nw;
+	//	}
+	//	g_framework->m_GUIWindows.clear();
 
-		// теперь спокойно удалять
-		for (size_t i = 0; i < allWindows.m_size; ++i)
-		{
-			bqFramework::Destroy(allWindows.m_data[i]);
-		}
-	}
+	//	// теперь спокойно удалять
+	//	for (size_t i = 0; i < allWindows.m_size; ++i)
+	//	{
+	//		bqFramework::Destroy(allWindows.m_data[i]);
+	//	}
+	//}
 	_onDestroy_GUITextDrawCallbacks();
 #endif
 
@@ -1096,48 +1096,50 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeDark = g_framework->m_themeLight;
 }
 
-bqGUIWindow* bqFramework::SummonGUIWindow(/*bqWindow* window, */const bqVec2f& position, const bqVec2f& size)
+bqGUIWindow* bqFramework::SummonGUIWindow(bqWindow* window, const bqVec2f& position, const bqVec2f& size)
 {
 	bqGUIWindow* newWindow = new bqGUIWindow(position, size);
 	newWindow->SetStyle(bqFramework::GetGUIStyle(bqGUIStyleTheme::Light));
+	
 	//newWindow->m_systemWindow = window;
+	window->AddGUIWindow(newWindow);
 
-	g_framework->m_GUIWindows.push_back(newWindow);
+	//g_framework->m_GUIWindows.push_back(newWindow);
 	return newWindow;
 }
 
 
 void bqFramework::UpdateGUI()
 {
-	if (g_framework->m_GUIWindows.m_head)
-	{
-		g_framework->m_GUIState.m_scrollBlock = false;
-		
-		// сброс значения здеь, оно будет установлено в каком нибудь Update если курсор попадает в его область
-		g_framework->m_GUIState.m_windowUnderCursor = 0;
+	//if (g_framework->m_GUIWindows.m_head)
+	//{
+	//	g_framework->m_GUIState.m_scrollBlock = false;
+	//	
+	//	// сброс значения здеь, оно будет установлено в каком нибудь Update если курсор попадает в его область
+	//	g_framework->m_GUIState.m_windowUnderCursor = 0;
 
-		auto last = g_framework->m_GUIWindows.m_head;
-		auto curr = last->m_left;
-		while (1)
-		{
-			if (curr->m_data->IsVisible() 
-				&& 
-				!g_framework->m_GUIState.m_windowUnderCursor // запрет обрабатывать ввод другим окнам
-				)
-			{
-				curr->m_data->Update();
-			}
+	//	auto last = g_framework->m_GUIWindows.m_head;
+	//	auto curr = last->m_left;
+	//	while (1)
+	//	{
+	//		if (curr->m_data->IsVisible() 
+	//			&& 
+	//			!g_framework->m_GUIState.m_windowUnderCursor // запрет обрабатывать ввод другим окнам
+	//			)
+	//		{
+	//			curr->m_data->Update();
+	//		}
 
-			if (curr == last)
-				break;
-			curr = curr->m_left;
-		}
-	}
+	//		if (curr == last)
+	//			break;
+	//		curr = curr->m_left;
+	//	}
+	//}
 }
 
 void bqFramework::DrawGUI(bqGS* gs)
 {
-	if (g_framework->m_GUIWindows.m_head)
+	/*if (g_framework->m_GUIWindows.m_head)
 	{
 		auto last = g_framework->m_GUIWindows.m_head;
 		auto curr = last->m_left;
@@ -1152,12 +1154,12 @@ void bqFramework::DrawGUI(bqGS* gs)
 				break;
 			curr = curr->m_left;
 		}
-	}
+	}*/
 }
 
 void bqFramework::RebuildGUI()
 {
-	if (g_framework->m_GUIWindows.m_head)
+	/*if (g_framework->m_GUIWindows.m_head)
 	{
 		auto last = g_framework->m_GUIWindows.m_head;
 		auto curr = last->m_left;
@@ -1169,7 +1171,7 @@ void bqFramework::RebuildGUI()
 				break;
 			curr = curr->m_left;
 		}
-	}
+	}*/
 }
 
 //void DestroyGUIElement_internal(bqGUIElement* e)
@@ -1363,12 +1365,12 @@ const bqStringA& bqFramework::GetUTF8String(const bqString& s)
 {
 	g_framework->m_UTF8String.clear();
 	s.to_utf8(g_framework->m_UTF8String);
-	return g_framework->m_UTF8String.c_str();
+	return g_framework->m_UTF8String;
 }
 
 const bqStringW& bqFramework::GetUTF16String(const bqString& s)
 {
 	g_framework->m_UTF16String.clear();
 	s.to_utf16(g_framework->m_UTF16String);
-	return g_framework->m_UTF16String.c_str();
+	return g_framework->m_UTF16String;
 }

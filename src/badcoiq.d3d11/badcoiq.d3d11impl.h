@@ -201,6 +201,16 @@ public:
 	virtual void OcclusionDraw(bqGPUOcclusionObject*) final;
 	virtual void OcclusionResult(bqGPUOcclusionObject*) final;
 
+	bool CompileShader(const char* target,
+		const char* entryPoint,
+		const char* text,
+		ID3D10Blob** shaderData,
+		ID3D10Blob** error);
+	
+	bool CreateVertexShader(ID3D10Blob* shaderBlob, ID3D11VertexShader** vs);
+	bool CreateVertexShaderInputLayout(ID3D10Blob* shaderBlob, ID3D11InputLayout**);
+	bool CreatePixelShader(ID3D10Blob* shaderBlob, ID3D11PixelShader** ps);
+
 	bool CreateShaders(
 		const char* vertexTarget,
 		const char* pixelTarget,

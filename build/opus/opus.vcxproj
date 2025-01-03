@@ -232,6 +232,7 @@
       <AdditionalIncludeDirectories>../../inc/;../../src/opus/include/;../../src/libogg/include/;../../src/opus/celt/;../../src/opus/silk/;../../src/opus/silk/float/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -273,6 +274,7 @@
       <AdditionalIncludeDirectories>../../inc/;../../src/opus/include/;../../src/libogg/include/;../../src/opus/celt/;../../src/opus/silk/;../../src/opus/silk/float/</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
