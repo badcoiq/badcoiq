@@ -51,8 +51,8 @@ public:
 
 	//void SetFont(bqGUIFont* f) { m_font = f; }
 
-	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
-	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+	virtual bqGUIFont* OnFont(/*uint32_t r, */char32_t) override;
+	virtual bqColor* OnColor(/*uint32_t r, */char32_t) override;
 };
 
 class bqGUIButtonTextDrawCallback : public bqGUIDrawTextCallback
@@ -66,8 +66,8 @@ public:
 
 	void SetFont(bqGUIFont* f) { m_font = f; }
 
-	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
-	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+	virtual bqGUIFont* OnFont(/*uint32_t r, */char32_t) override;
+	virtual bqColor* OnColor(/*uint32_t r,*/ char32_t) override;
 };
 
 class bqGUICheckRadioBoxTextDrawCallback : public bqGUIDrawTextCallback
@@ -83,8 +83,8 @@ public:
 
 	void SetFont(bqGUIFont* f) { m_font = f; }
 
-	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
-	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+	virtual bqGUIFont* OnFont(/*uint32_t r,*/ char32_t) override;
+	virtual bqColor* OnColor(/*uint32_t r, */char32_t) override;
 };
 
 class bqGUITextEditorTextDrawCallback : public bqGUIDrawTextCallback
@@ -98,8 +98,8 @@ public:
 
 	void SetFont(bqGUIFont* f) { m_font = f; }
 
-	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
-	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+	virtual bqGUIFont* OnFont(/*uint32_t r, */char32_t) override;
+	virtual bqColor* OnColor(/*uint32_t r, */char32_t) override;
 };
 
 class bqGUIListBoxTextDrawCallback : public bqGUIDrawTextCallback
@@ -114,8 +114,8 @@ public:
 
 	void SetFont(bqGUIFont* f) { m_font = f; }
 
-	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
-	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+	virtual bqGUIFont* OnFont(/*uint32_t r, */char32_t) override;
+	virtual bqColor* OnColor(/*uint32_t r, */char32_t) override;
 };
 
 class bqGUISliderTextDrawCallback : public bqGUIDrawTextCallback
@@ -129,8 +129,8 @@ public:
 
 	//void SetFont(bqGUIFont* f) { m_font = f; }
 
-	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
-	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+	virtual bqGUIFont* OnFont(/*uint32_t r,*/ char32_t) override;
+	virtual bqColor* OnColor(/*uint32_t r, */char32_t) override;
 };
 
 class bqGUIStaticTextTextDrawCallback : public bqGUIDrawTextCallback
@@ -140,8 +140,8 @@ public:
 	virtual ~bqGUIStaticTextTextDrawCallback();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIStaticTextTextDrawCallback);
 
-	virtual bqGUIFont* OnFont(uint32_t r, char32_t) override;
-	virtual bqColor* OnColor(uint32_t r, char32_t) override;
+	virtual bqGUIFont* OnFont(/*uint32_t r, */char32_t) override;
+	virtual bqColor* OnColor(/*uint32_t r, */char32_t) override;
 };
 
 #endif

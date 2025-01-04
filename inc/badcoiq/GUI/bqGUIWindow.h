@@ -102,6 +102,7 @@ public:
 	uint32_t m_windowFlags = 0;
 	float32_t m_titlebarHeight = 12.f;
 
+	bqString& GetTitleText() { return m_title; }
 };
 
 /// \brief Все GUI элементы добавляются в окно.
@@ -113,14 +114,47 @@ class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 	friend class bqFramework;
 	friend class bqWindow;
 	
+	enum
+	{
+		flagInternal_activated = 0x1
+	};
+	uint32_t m_flagsInternal = 0;
+
+	bqGUIFont* _OnFont_active(char32_t);
+	bqColor* _OnColor_active(char32_t);
+	bqGUIFont* _OnFont_Nactive(char32_t);
+	bqColor* _OnColor_Nactive(char32_t);
+	
+	bqGUIFont* (bqGUIWindow::* m_onFont)(char32_t) = 0;
+	bqColor* (bqGUIWindow::* m_onColor)(char32_t) = 0;
 public:
 	bqGUIWindow(/*bqWindow* systemWindow, */const bqVec2f& position, const bqVec2f& size);
 	BQ_PLACEMENT_ALLOCATOR(bqGUIWindow);
 	virtual ~bqGUIWindow();
 
-	/// bqGUICommon
+	/// \see bqGUICommon
 	virtual void Rebuild() override;
+	/// \see bqGUICommon
 	virtual void Draw(bqGS* gs, float dt) override;
+	/// \see bqGUICommon
+	virtual void Update() override;
+
+	/// \brief Получить шрифт который будет использоваться
+	/// для рисования указанного символа
+	bqGUIFont* OnFont(/*uint32_t r, */char32_t);
+	
+	/// \brief Получить цвет которым будет закрашен
+	/// указанный символ
+	bqColor* OnColor(/*uint32_t r, */char32_t);
+
+	/// \brief Активировать окно.
+	void Activate();
+	
+	/// \brief Деактивировать окно.
+	void Deactivate();
+
+	/// \brief Установить окно поверх других окон.
+	void ToTop();
 
 	// Не надо. потому что наследуется bqHierarchy
 	// bqGUIElement* m_rootElement = 0;

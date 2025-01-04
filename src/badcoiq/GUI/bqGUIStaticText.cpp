@@ -39,24 +39,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern bqFrameworkImpl* g_framework;
 #include "bqGUIDefaultTextDrawCallbacks.h"
 
-//bqGUIStaticTextTextDrawCallback::bqGUIStaticTextTextDrawCallback()
-//{
-//}
-//
-//bqGUIStaticTextTextDrawCallback::~bqGUIStaticTextTextDrawCallback()
-//{
-//}
-//
-//bqGUIFont* bqGUIStaticTextTextDrawCallback::OnFont(uint32_t, char32_t)
-//{
-//	return m_element->GetStyle()->m_staticTextFont;
-//}
-//
-//bqColor* bqGUIStaticTextTextDrawCallback::OnColor(uint32_t, char32_t)
-//{
-//	return &m_element->GetStyle()->m_staticTextTextColor;
-//}
-//
+bqGUIStaticTextTextDrawCallback::bqGUIStaticTextTextDrawCallback()
+{
+}
+
+bqGUIStaticTextTextDrawCallback::~bqGUIStaticTextTextDrawCallback()
+{
+}
+
+bqGUIFont* bqGUIStaticTextTextDrawCallback::OnFont(/*uint32_t, */char32_t)
+{
+	return m_element->GetStyle()->m_staticTextFont;
+}
+
+bqColor* bqGUIStaticTextTextDrawCallback::OnColor(/*uint32_t, */char32_t)
+{
+	return &m_element->GetStyle()->m_staticTextTextColor;
+}
+
 //bqGUIStaticText::bqGUIStaticText(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
 //	:
 //	bqGUIElement::bqGUIElement(w, position, size)

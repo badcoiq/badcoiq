@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2025, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef BQ_WITH_GUI
 
 
-
-// Данные которые есть и у GUI элементов и у GUI окна
+/// \brief Общие данные для GUI вещей.
+/// 
+/// Данные которые есть и у GUI элементов и у GUI окна
 class bqGUICommon : public bqUserData
 {
 	static bool m_scrollBlock;
@@ -73,7 +74,13 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqGUICommon);
 	BQ_DELETED_METHODS(bqGUICommon);
 
+	/// \brief Установить позицию. 
+	/// 
+	/// Левый верхний угол прямоугольника.
+	/// Начало координат - левый верхний угол.
 	void SetPosition(float x, float y);
+
+	/// \brief Установить размер
 	void SetSize(float x, float y);
 
 	const bqVec4f& GetBuildRectOnCreation() { return m_buildRectOnCreation; }

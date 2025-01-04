@@ -190,6 +190,16 @@ bool DemoApp::Init()
 	m_GUIWindow = bqFramework::SummonGUIWindow(m_window, bqVec2f(300.f, 0.f),
 		bqVec2f(300.f, 400.f));
 	m_GUIWindow->SetDrawBG(true);
+	m_GUIWindow->m_windowFlags |= bqGUIWindowBase::windowFlag_withTitleBar;
+
+	m_GUIWindow2 = bqFramework::SummonGUIWindow(m_window, bqVec2f(350.f, 50.f),
+		bqVec2f(300.f, 400.f));
+	m_GUIWindow2->SetDrawBG(true);
+	m_GUIWindow2->m_windowFlags |= bqGUIWindowBase::windowFlag_withTitleBar;
+	m_GUIWindow2->GetTitleText().assign(U"Second window");
+	m_GUIWindow2->ToTop();
+	m_GUIWindow2->Activate();
+
 	//auto staticText = new MyStaticText(m_GUIWindow, bqVec2f(0.f, 0.f), bqVec2f(300.f, 300.f));
 	//m_staticTextDescription = staticText;
 	//m_staticTextDescription->SetText(U" ");

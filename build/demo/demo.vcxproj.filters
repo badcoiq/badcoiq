@@ -2,95 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\src\demo\demo.cpp" />
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_3DLineAndCamera.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\demo\DemoApp.cpp" />
-    <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_fly.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_rayFromCursor.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_meshGenerator.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_3dModel.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_raytriangle.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_raytriangle2.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_sprite.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\scene\camera\ex_sc_camera_editor.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_text3D.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\meshgen\ex_mshgn_box.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\games\mario\ex_g_mario.cpp">
-      <Filter>mario</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_rot.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_OC.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_skAn.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_sound.cpp">
-      <Filter>examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\GUI\ex_GUI_systemMenu.cpp">
-      <Filter>examples\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_3d.cpp">
-      <Filter>examples\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_delay.cpp">
-      <Filter>examples\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_fft.cpp">
-      <Filter>examples\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_stream.cpp">
-      <Filter>examples\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\sound\ex_snd_experiments.cpp">
-      <Filter>examples\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\physics\ex_physics_01.cpp">
-      <Filter>examples\physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\demo\examples\basic\ex_basic_MDL.cpp">
+    <ClCompile Include="..\..\src\demo\examples\all_examples.cpp">
       <Filter>examples</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">
       <UniqueIdentifier>{36be6b63-6685-4289-9a49-ff5619cc8e5a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="mario">
-      <UniqueIdentifier>{58bcb126-0e70-4bee-8e12-cef87b6303e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="examples\GUI">
-      <UniqueIdentifier>{5d38c672-b130-48d8-a261-726e3299b2c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="examples\sound">
-      <UniqueIdentifier>{3d3715a9-164e-44a8-9c1c-9938793a596c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="examples\physics">
-      <UniqueIdentifier>{1281dc7a-6474-4947-83de-9929b7fefd3e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

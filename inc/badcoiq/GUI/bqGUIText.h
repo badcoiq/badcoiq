@@ -42,24 +42,25 @@ public:
 
 	bqGUIElement* m_element = 0;
 
-	enum {
-		Reason_default,
-		Reason_mouseEnter,
-		Reason_mouseLeave,
-		Reason_mouseAbove,
-		Reason_pressed,
-		Reason_active,
-		Reason_disabled,
-		Reason_icon,
-		Reason_selected,
-		/*Reason_, // others
-		Reason_,
-		*/
-	};
-		
-	uint32_t m_reason = Reason_default;
-	virtual bqGUIFont* OnFont(uint32_t, char32_t) = 0;
-	virtual bqColor* OnColor(uint32_t, char32_t) = 0;
+	// ВОЗМОЖНО НЕНУЖНО
+	//enum {
+	//	Reason_default,
+	//	Reason_mouseEnter,
+	//	Reason_mouseLeave,
+	//	Reason_mouseAbove,
+	//	Reason_pressed,
+	//	Reason_active,
+	//	Reason_disabled,
+	//	Reason_icon,
+	//	Reason_selected,
+	//	/*Reason_, // others
+	//	Reason_,
+	//	*/
+	//};
+	//uint32_t m_reason = Reason_default;
+
+	virtual bqGUIFont* OnFont(/*uint32_t, */char32_t) = 0;
+	virtual bqColor* OnColor(/*uint32_t, */char32_t) = 0;
 
 	virtual bqVec2f GetTextSize(const char32_t* text)
 	{
@@ -72,7 +73,7 @@ public:
 				const char32_t* p = &text[0u];
 				while ((size_t)*p)
 				{
-					auto font = OnFont(Reason_default, *p);
+					auto font = OnFont(/*Reason_default, */*p);
 					bqGUIFontGlyph* g = font->GetGlyphMap()[*p];
 
 					rct.x = position.x;

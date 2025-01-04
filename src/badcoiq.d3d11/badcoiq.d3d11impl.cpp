@@ -1651,8 +1651,8 @@ void bqGSD3D11::DrawGUIText(
 
 	for (uint32_t i = 0; i < textSz; ++i)
 	{
-		bqGUIFont* font = cb->OnFont(cb->m_reason, text[i]);
-		bqColor* color = cb->OnColor(cb->m_reason, text[i]);
+		bqGUIFont* font = cb->OnFont(text[i]);
+		bqColor* color = cb->OnColor(text[i]);
 
 		bqGUIFontGlyph* g = font->GetGlyphMap()[text[i]];
 

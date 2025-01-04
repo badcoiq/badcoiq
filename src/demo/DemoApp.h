@@ -152,6 +152,7 @@ class DemoApp
 	bqGS* m_gs = 0;
 	//slCamera* m_camera = 0;
 	bqGUIWindow* m_GUIWindow = 0;
+	bqGUIWindow* m_GUIWindow2 = 0;
 	bqInputData* m_inputData = 0;
 	bqGUIFont* m_fontDefault = 0;
 
@@ -258,19 +259,19 @@ public:
 	virtual ~GUIDrawTextCallback() {}
 	BQ_PLACEMENT_ALLOCATOR(GUIDrawTextCallback);
 
-	virtual bqGUIFont* OnFont(uint32_t reason, char32_t c) final
+	virtual bqGUIFont* OnFont(/*uint32_t reason,*/ char32_t c) final
 	{
 		return m_font;
 	}
-	virtual bqColor* OnColor(uint32_t reason, char32_t c) final
+	virtual bqColor* OnColor(/*uint32_t reason, */char32_t c) final
 	{
-		switch (reason)
+		/*switch (reason)
 		{
 		case bqGUIDrawTextCallback::Reason_default:
 			return m_curColor;
 		case bqGUIDrawTextCallback::Reason_mouseAbove:
 			return &m_colorYellow;
-		}
+		}*/
 		return m_curColor;
 	}
 

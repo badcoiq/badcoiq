@@ -1040,11 +1040,11 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeLight.m_windowActiveTitleBGColor2 = 0x64A1E4;
 	g_framework->m_themeLight.m_windowActiveTitleTextColor = 0xF8FAFC;
 
-	g_framework->m_themeLight.m_windowNActiveBGColor1 = 0xF7F7F7;
-	g_framework->m_themeLight.m_windowNActiveBGColor2 = 0xF7F7F7;
+	g_framework->m_themeLight.m_windowNActiveBGColor1 = 0xE7E7E7;
+	g_framework->m_themeLight.m_windowNActiveBGColor2 = 0xE7E7E7;
 	g_framework->m_themeLight.m_windowNActiveBorderColor = 0xE1E6F7;
-	g_framework->m_themeLight.m_windowNActiveTitleBGColor1 = 0xE5E5E5;
-	g_framework->m_themeLight.m_windowNActiveTitleBGColor2 = 0xE5E5E5;
+	g_framework->m_themeLight.m_windowNActiveTitleBGColor1 = 0xD0D0D0;
+	g_framework->m_themeLight.m_windowNActiveTitleBGColor2 = 0xD0D0D0;
 	g_framework->m_themeLight.m_windowNActiveTitleTextColor = 0x0;
 
 	g_framework->m_themeLight.m_buttonBGColor1 = 0x999999;
@@ -1235,21 +1235,21 @@ void bqFrameworkImpl::_initGUITextDrawCallbacks()
 	//// надо переделать остальные коллбэки.
 	//// При Rebuild и Draw надо указать
 	//// m_textDrawCallback->m_element = this;
-	//m_defaultTextDrawCallback_staticText = new bqGUIStaticTextTextDrawCallback;
-	//m_defaultTextDrawCallback_window = new bqGUIWindowTextDrawCallback;
-	//
-	//m_defaultTextDrawCallback_slider = new bqGUISliderTextDrawCallback;
+	m_defaultTextDrawCallback_staticText = new bqGUIStaticTextTextDrawCallback;
+	m_defaultTextDrawCallback_window = new bqGUIWindowTextDrawCallback;
+	
+//	m_defaultTextDrawCallback_slider = new bqGUISliderTextDrawCallback;
 }
 
 void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 {
-	//delete m_defaultTextDrawCallback_window; m_defaultTextDrawCallback_window = 0;
+	delete m_defaultTextDrawCallback_window; m_defaultTextDrawCallback_window = 0;
 	//delete m_defaultTextDrawCallback_button; m_defaultTextDrawCallback_button = 0;
 	//delete m_defaultTextDrawCallback_icons; m_defaultTextDrawCallback_icons = 0;
 	//delete m_defaultTextDrawCallback_textEditor; m_defaultTextDrawCallback_textEditor = 0;
 	//delete m_defaultTextDrawCallback_listbox; m_defaultTextDrawCallback_listbox = 0;
-	//delete m_defaultTextDrawCallback_slider; m_defaultTextDrawCallback_slider = 0;
-	//delete m_defaultTextDrawCallback_staticText; m_defaultTextDrawCallback_staticText = 0;
+//	delete m_defaultTextDrawCallback_slider; m_defaultTextDrawCallback_slider = 0;
+	delete m_defaultTextDrawCallback_staticText; m_defaultTextDrawCallback_staticText = 0;
 }
 
 #endif

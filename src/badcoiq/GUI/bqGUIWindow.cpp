@@ -56,14 +56,14 @@ bqGUIWindowTextDrawCallback::~bqGUIWindowTextDrawCallback()
 }
 
 
-bqGUIFont* bqGUIWindowTextDrawCallback::OnFont(uint32_t r, char32_t c)
+bqGUIFont* bqGUIWindowTextDrawCallback::OnFont(/*uint32_t r, */char32_t c)
 {
-	return 0;// m_window->OnFont(r, c);
+	return m_window->OnFont(/*r, */c);
 }
 
-bqColor* bqGUIWindowTextDrawCallback::OnColor(uint32_t r, char32_t c)
+bqColor* bqGUIWindowTextDrawCallback::OnColor(/*uint32_t r, */char32_t c)
 {
-	return 0;// m_window->OnColor(r, c);
+	return m_window->OnColor(/*r, */c);
 }
 
 class bqGUIWindowScrollbar : public bqGUIScrollbar
@@ -115,6 +115,7 @@ bqGUIWindow::bqGUIWindow(
 	bqGUICommon(position, size)
 {
 	m_title = U"Window";
+	m_titlebarHeight = 20.f;
 
 	// создаю корневой элемент
 //	m_rootElement = dynamic_cast<bqGUIElement*>(bqCreate<bqGUIRootElement>(this, position, size));
@@ -122,6 +123,8 @@ bqGUIWindow::bqGUIWindow(
 	// установка дефолтного коллбэка
 	m_textDrawCallback = g_framework->m_defaultTextDrawCallback_window;
 	
+	Deactivate();
+
 	// Далее, там, где будет использован коллбэк (напрямую или где-то внутри других методов)
 	// надо устанавливать указатель на текущее окно. Так
 	// bqGUIWindowTextDrawCallback* wcb = (bqGUIWindowTextDrawCallback*)m_textDrawCallback;
@@ -161,52 +164,60 @@ void bqGUIWindowBase::RemoveElement(bqGUIElement* el)
 	el->SetParent(0);
 }
 
-//bqGUIFont* bqGUIWindow::_OnFont_active(uint32_t, char32_t)
-//{
-//	return m_style->m_windowActiveTitleTextFont;
-//}
-//
-//bqColor* bqGUIWindow::_OnColor_active(uint32_t, char32_t)
-//{
-//	return &m_style->m_windowActiveTitleTextColor;
-//}
-//
-//bqGUIFont* bqGUIWindow::_OnFont_Nactive(uint32_t, char32_t)
-//{
-//	return m_style->m_windowNActiveTitleTextFont;
-//}
-//
-//bqColor* bqGUIWindow::_OnColor_Nactive(uint32_t, char32_t)
-//{
-//	return &m_style->m_windowNActiveTitleTextColor;
-//}
-//
-//
-//bqGUIFont* bqGUIWindow::OnFont(uint32_t r, char32_t c)
-//{
-//	return (this->*m_onFont)(r, c);
-//}
-//
-//bqColor* bqGUIWindow::OnColor(uint32_t r, char32_t c)
-//{
-//	return (this->*m_onColor)(r, c);
-//}
-//
-//void bqGUIWindow::Activate()
-//{
-//	// тут надо вырубить предидущее активированное окно
-//	// ...
-//
-//	m_onFont = &bqGUIWindow::_OnFont_active;
-//	m_onColor = &bqGUIWindow::_OnColor_active;
-//}
-//
-//void bqGUIWindow::Deactivate()
-//{
-//	m_onFont = &bqGUIWindow::_OnFont_Nactive;
-//	m_onColor = &bqGUIWindow::_OnColor_Nactive;
-//}
-//
+bqGUIFont* bqGUIWindow::_OnFont_active(char32_t)
+{
+	return m_style->m_windowActiveTitleTextFont;
+}
+
+bqColor* bqGUIWindow::_OnColor_active(char32_t)
+{
+	return &m_style->m_windowActiveTitleTextColor;
+}
+
+bqGUIFont* bqGUIWindow::_OnFont_Nactive(char32_t)
+{
+	return m_style->m_windowNActiveTitleTextFont;
+}
+
+bqColor* bqGUIWindow::_OnColor_Nactive(char32_t)
+{
+	return &m_style->m_windowNActiveTitleTextColor;
+}
+
+
+bqGUIFont* bqGUIWindow::OnFont(char32_t c)
+{
+	return (this->*m_onFont)(c);
+}
+
+bqColor* bqGUIWindow::OnColor(char32_t c)
+{
+	return (this->*m_onColor)(c);
+}
+
+void bqGUIWindow::Activate()
+{
+	// тут надо вырубить предидущее активированное окно
+	// ...
+
+	g_framework->m_GUIState.m_activeWindow = this;
+	m_flagsInternal |= flagInternal_activated;
+
+	m_onFont = &bqGUIWindow::_OnFont_active;
+	m_onColor = &bqGUIWindow::_OnColor_active;
+}
+
+void bqGUIWindow::Deactivate()
+{
+	if(g_framework->m_GUIState.m_activeWindow == this)
+		g_framework->m_GUIState.m_activeWindow = 0;
+	
+	m_flagsInternal &= ~flagInternal_activated;
+
+	m_onFont = &bqGUIWindow::_OnFont_Nactive;
+	m_onColor = &bqGUIWindow::_OnColor_Nactive;
+}
+
 //void bqGUIWindow::SetTitle(const char32_t* t)
 //{
 //	m_title = t;
@@ -443,9 +454,9 @@ void bqGUIWindow::Rebuild()
 //	e->UpdateScroll();
 //}
 
-//void bqGUIWindow::Update()
-//{
-//	// сброс.
+void bqGUIWindow::Update()
+{
+	// сброс.
 //    m_windowCursorInfo = CursorInfo_out;
 //
 //	// отступ сверху. Должен содержать высоту titlebar, возможно в будущем полосу меню и прочие вещи
@@ -819,8 +830,8 @@ void bqGUIWindow::Rebuild()
 //	{	
 //		_bqGUIWindow_UpdateElement(m_rootElement);
 //	}
-//}
-//
+}
+
 //void bqGUIWindow::_resizeL()
 //{
 //	float oldPos = m_position.x;
@@ -914,17 +925,35 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 {
 	gs->SetScissorRect(m_clipRect);
 
+	// так как используется дефолтный общий коллбэк, нужно указать коллбэку
+	// текущее окно
+	bqGUIWindowTextDrawCallback* wcb = (bqGUIWindowTextDrawCallback*)m_textDrawCallback;
+	wcb->m_window = this;
+
 	if (IsDrawBG()/* && (m_windowFlagsInternal & windowFlagInternal_isExpand)*/)
 	{
-		gs->DrawGUIRectangle(m_baseRect, m_style->m_windowActiveBGColor1, m_style->m_windowActiveBGColor2, 0, 0);
+		if (m_flagsInternal & flagInternal_activated)
+		{
+			gs->DrawGUIRectangle(m_baseRect, m_style->m_windowActiveBGColor1, m_style->m_windowActiveBGColor2, 0, 0);
+		}
+		else
+		{
+			gs->DrawGUIRectangle(m_baseRect, m_style->m_windowNActiveBGColor1, m_style->m_windowNActiveBGColor2, 0, 0);
+		}
+
 	}
 
 	if (m_windowFlags & windowFlag_withTitleBar)
 	{
-//		bqGUIWindowTextDrawCallback* wcb = (bqGUIWindowTextDrawCallback*)m_textDrawCallback;
-//		wcb->m_window = this;
 
-		gs->DrawGUIRectangle(m_titlebarRect, m_style->m_windowActiveTitleBGColor1, m_style->m_windowActiveTitleBGColor2, 0, 0);
+		if (m_flagsInternal & flagInternal_activated)
+		{
+			gs->DrawGUIRectangle(m_titlebarRect, m_style->m_windowActiveTitleBGColor1, m_style->m_windowActiveTitleBGColor2, 0, 0);
+		}
+		else
+		{
+			gs->DrawGUIRectangle(m_titlebarRect, m_style->m_windowNActiveTitleBGColor1, m_style->m_windowNActiveTitleBGColor2, 0, 0);
+		}
 		if (m_title.size())
 		{
 
@@ -1007,5 +1036,15 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 //{
 //	m_windowFlagsInternal &= ~windowFlagInternal_isExpand;
 //}
+
+void bqGUIWindow::ToTop()
+{
+	auto allWindows = m_systemWindow->GetGUIWindows();
+	if (allWindows->m_head)
+	{
+		allWindows->erase_first(this);
+		allWindows->push_front(this);
+	}
+}
 
 #endif
