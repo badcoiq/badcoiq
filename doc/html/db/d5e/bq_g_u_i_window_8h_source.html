@@ -136,233 +136,276 @@ $(function(){ initResizable(false); });
 </div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
 <div class="foldopen" id="foldopen00056" data-start="{" data-end="};">
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html">   56</a></span><span class="keyword">class </span><a class="code hl_class" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html">   56</a></span><span class="keyword">class </span><a class="code hl_class" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a> : <span class="keyword">public</span> <a class="code hl_class" href="../../d8/dd1/classbq_hierarchy.html">bqHierarchy</a></div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>{</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a379526c2587812295dddb456f4dcf6ae">   59</a></span>    <a class="code hl_function" href="../../da/dd6/classbq_g_u_i_window_base.html#a379526c2587812295dddb456f4dcf6ae">bqGUIWindowBase</a>() {}</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a8e36a68c86dbdc275b26fac3e9650bc6">   60</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="../../da/dd6/classbq_g_u_i_window_base.html#a8e36a68c86dbdc275b26fac3e9650bc6">~bqGUIWindowBase</a>() {}</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>};</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="comment">// для чего:</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a4d72d895423e06f3819e166b67cace4a">   60</a></span>    <a class="code hl_class" href="../../d3/dfe/classbq_window.html">bqWindow</a>* <a class="code hl_variable" href="../../da/dd6/classbq_g_u_i_window_base.html#a4d72d895423e06f3819e166b67cace4a">m_systemWindow</a> = 0;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a3722296ca97161a66582c1f6e3bcb9f4">   61</a></span>    <a class="code hl_class" href="../../dc/dde/classbq_string.html">bqString</a> <a class="code hl_variable" href="../../da/dd6/classbq_g_u_i_window_base.html#a3722296ca97161a66582c1f6e3bcb9f4">m_title</a>;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a32c26902287571aad0a41a6334f52ddf">   62</a></span>    <a class="code hl_class" href="../../da/d4a/classbq_vec4__t.html">bqVec4f</a> <a class="code hl_variable" href="../../da/dd6/classbq_g_u_i_window_base.html#a32c26902287571aad0a41a6334f52ddf">m_titlebarRect</a>;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a379526c2587812295dddb456f4dcf6ae">   64</a></span>    <a class="code hl_function" href="../../da/dd6/classbq_g_u_i_window_base.html#a379526c2587812295dddb456f4dcf6ae">bqGUIWindowBase</a>() {}</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a8e36a68c86dbdc275b26fac3e9650bc6">   65</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="../../da/dd6/classbq_g_u_i_window_base.html#a8e36a68c86dbdc275b26fac3e9650bc6">~bqGUIWindowBase</a>() {}</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#ae2014c4c8d340d0fda91996af66c91b8">   68</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../da/dd6/classbq_g_u_i_window_base.html#ae2014c4c8d340d0fda91996af66c91b8">AddElement</a>(<a class="code hl_class" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a>* el);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#aff3e0df4d60cb5cbc8ded51c052c1e48">   71</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../da/dd6/classbq_g_u_i_window_base.html#aff3e0df4d60cb5cbc8ded51c052c1e48">RemoveElement</a>(<a class="code hl_class" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a>* el);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keyword">enum</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    {</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a39051cf8f07f78da6b14de6a1e8db5a0">   77</a></span>        <a class="code hl_enumvalue" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a39051cf8f07f78da6b14de6a1e8db5a0">windowFlag_withTitleBar</a> = 0x1,</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9ae6e2ab34fcefcaded76e431d7080a121">   81</a></span>        <a class="code hl_enumvalue" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9ae6e2ab34fcefcaded76e431d7080a121">windowFlag_withCollapseButton</a> = 0x2,</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a61c8df64cad882c7c63f01746d78659b">   83</a></span>        <a class="code hl_enumvalue" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a61c8df64cad882c7c63f01746d78659b">windowFlag_withCloseButton</a> = 0x4,</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a76059bb91a1ac3bb1f74981e2620d978">   85</a></span>        <a class="code hl_enumvalue" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a76059bb91a1ac3bb1f74981e2620d978">windowFlag_canMove</a> = 0x8,</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a252da655c35c8c2cfcb15256adb24fdf">   88</a></span>        <a class="code hl_enumvalue" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a252da655c35c8c2cfcb15256adb24fdf">windowFlag_canResize</a> = 0x10,</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        <span class="comment">//windowFlag_canDock = 0x20, // на будущее</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9ac771f11944dba6489c6f801272563706">   99</a></span>        <a class="code hl_enumvalue" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9ac771f11944dba6489c6f801272563706">windowFlag_disableToTop</a> = 0x40, <span class="comment">// надо реализовать </span></div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="comment">//windowFlag_disableScrollbar = 0x80,</span></div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    };</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#a7d22487fa04f4559a477915cfa20bb15">  102</a></span>    uint32_t <a class="code hl_variable" href="../../da/dd6/classbq_g_u_i_window_base.html#a7d22487fa04f4559a477915cfa20bb15">m_windowFlags</a> = 0;</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#abf99b815038c08f8f8943d43fc98f991">  103</a></span>    <a class="code hl_typedef" href="../../db/d65/bq_defines_8h.html#a3068631062aaf7da4cc0371da9e7a377">float32_t</a> <a class="code hl_variable" href="../../da/dd6/classbq_g_u_i_window_base.html#abf99b815038c08f8f8943d43fc98f991">m_titlebarHeight</a> = 12.f;</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno"><a class="line" href="../../da/dd6/classbq_g_u_i_window_base.html#ac671067202e909f6dfe709e9d59af7c8">  105</a></span>    <a class="code hl_class" href="../../dc/dde/classbq_string.html">bqString</a>&amp; <a class="code hl_function" href="../../da/dd6/classbq_g_u_i_window_base.html#ac671067202e909f6dfe709e9d59af7c8">GetTitleText</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="../../da/dd6/classbq_g_u_i_window_base.html#a3722296ca97161a66582c1f6e3bcb9f4">m_title</a>; }</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>};</div>
 </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="foldopen" id="foldopen00064" data-start="{" data-end="};">
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html">   64</a></span><span class="keyword">class </span><a class="code hl_class" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> : <span class="keyword">public</span> <a class="code hl_class" href="../../d1/d48/classbq_g_u_i_common.html">bqGUICommon</a>, <span class="keyword">public</span> <a class="code hl_class" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>{</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a1a65f48bb54e2943437026095c3f3b1e">   66</a></span>    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code hl_class" href="../../da/d6a/classbq_framework.html">bqFramework</a>;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a103d34ff166f39e3cb3f5264ff6b3a9f">   70</a></span>    <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a103d34ff166f39e3cb3f5264ff6b3a9f">bqGUIWindow</a>(<span class="keyword">const</span> <a class="code hl_class" href="../../de/daa/classbq_vec2__t.html">bqVec2f</a>&amp; position, <span class="keyword">const</span> <a class="code hl_class" href="../../de/daa/classbq_vec2__t.html">bqVec2f</a>&amp; size);</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a7629bee2ef9571c9f61b83e43e55fb9a">   71</a></span>    <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a7629bee2ef9571c9f61b83e43e55fb9a">BQ_PLACEMENT_ALLOCATOR</a>(<a class="code hl_class" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a>);</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a36cecb5b76ecabd9b614140586492081">   72</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a36cecb5b76ecabd9b614140586492081">~bqGUIWindow</a>();</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a22bffbec52c30a54ccbff71a45d9c60e">   78</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a22bffbec52c30a54ccbff71a45d9c60e">AddElement</a>(<a class="code hl_class" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a>* el);</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a2e6242a49060967142a3c61f55b8c563">   79</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a2e6242a49060967142a3c61f55b8c563">RemoveElement</a>(<a class="code hl_class" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a>* el);</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="comment">// Не надо. потому что наследуется bqHierarchy</span></div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="comment">// bqGUIElement* m_rootElement = 0;</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="comment">//  enum</span></div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="comment">//  {</span></div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="comment">//      windowFlag_withCloseButton = 0x1,</span></div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="comment">//</span></div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="comment">//      // нахер оно надо?</span></div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment">//      // хотя...</span></div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="comment">//      // если есть такой контейнер GUI, который принимает окна...</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="comment">//      // _________________________________________________________</span></div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="comment">//      //                                     |_v_____Окно_1_____x|</span></div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="comment">//      //                                     |                   |</span></div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="comment">//      //                                     |   содержимое      |</span></div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="comment">//      //                                     |       окна        |</span></div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="comment">//      //                                     |                   |</span></div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="comment">//      //                                     |                   |</span></div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="comment">//      //                                     |_v_____Окно_2_____x|</span></div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="comment">//      //                                     |                   |</span></div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="comment">//      //                                     |   содержимое      |</span></div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="comment">//      //                                     |       окна        |</span></div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span><span class="comment">//      //                                     |                   |</span></div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="comment">//      //                                     |_v_____Окно_3_____x|</span></div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="comment">//      //                                     | и т.д.  их можно  |</span></div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="comment">//      //                                     | будет сворачивать |</span></div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="comment">//      //                                     |                   |</span></div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="comment">//      //                                     |_&gt;____Окно_4______x|</span></div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span><span class="comment">//      //                                     |_&gt;____Окно_5______x|</span></div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="comment">//      //                                     |_&gt;____Окно_6______x|</span></div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="comment">//      // ____________________________________|___________________|</span></div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span><span class="comment">//      windowFlag_withCollapseButton = 0x2,</span></div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="comment">//</span></div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="comment">//      windowFlag_withTitleBar = 0x4,</span></div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="comment">//      windowFlag_canMove = 0x8,</span></div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span><span class="comment">//      windowFlag_canResize = 0x10,</span></div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="comment">//      windowFlag_canDock = 0x20, // на будущее</span></div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="comment">//</span></div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span><span class="comment">//      windowFlag_disableToTop = 0x40, // надо реализовать </span></div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="comment">//windowFlag_disableScrollbar = 0x80,</span></div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span><span class="comment">//  };</span></div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span><span class="comment">//</span></div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span><span class="comment">//  // нужно знать, где находится курсор</span></div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><span class="comment">//  enum</span></div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span><span class="comment">//  {</span></div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span><span class="comment">//      CursorInfo_out,         // за пределами окна</span></div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span><span class="comment">//      CursorInfo_titlebar,    // в titlebar</span></div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="comment">//      CursorInfo_client,       // в клиентской области</span></div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span><span class="comment">//      CursorInfo_closeButton,   // на кнопке закрытия</span></div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span><span class="comment">//      CursorInfo_collapseButton, // на кнопке сворачивания</span></div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span><span class="comment">//      </span></div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span><span class="comment">//      CursorInfo_resizeRB,       // далее на границах и в  углах</span></div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span><span class="comment">//      CursorInfo_resizeB,</span></div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span><span class="comment">//      CursorInfo_resizeLB,</span></div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span><span class="comment">//      CursorInfo_resizeL,</span></div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span><span class="comment">//      CursorInfo_resizeLT,</span></div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span><span class="comment">//      CursorInfo_resizeT,</span></div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span><span class="comment">//      CursorInfo_resizeRT,</span></div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="comment">//      CursorInfo_resizeR,</span></div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="comment">//  };</span></div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span><span class="comment">//  uint32_t m_windowCursorInfo = 0;</span></div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="comment">//</span></div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="comment">//private:</span></div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span><span class="comment">//</span></div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span><span class="comment">//  bqString m_title;</span></div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span><span class="comment">//  bqVec4f m_titlebarRect;</span></div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span><span class="comment">//  bqVec4f m_closeButtonRect;</span></div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span><span class="comment">//  bqVec4f m_collapseButtonRect;</span></div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span><span class="comment">//</span></div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span><span class="comment">//  enum</span></div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="comment">//  {</span></div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span><span class="comment">//      windowFlagInternal_isMove = 0x1,</span></div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span><span class="comment">//      windowFlagInternal_isExpand = 0x2,</span></div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="comment">//      windowFlagInternal_closeBtn = 0x4, // когда нажимается кнопка для закрытия, нужно запонить первый щёлк мышки</span></div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span><span class="comment">//      windowFlagInternal_reserved1 = 0x8,</span></div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="comment">//      windowFlagInternal_reserved2 = 0x10,</span></div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="comment">//      windowFlagInternal_reserved3 = 0x20,</span></div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="comment">//      windowFlagInternal_reserved4 = 0x40,</span></div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="comment">//      windowFlagInternal_reserved5 = 0x80,</span></div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span><span class="comment">//      windowFlagInternal_reserved6 = 0x100,</span></div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="comment">//      windowFlagInternal_reserved7 = 0x200,</span></div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="comment">//      windowFlagInternal_reserved8 = 0x400,</span></div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="comment">//      windowFlagInternal_reserved9 = 0x800,</span></div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="comment">//      windowFlagInternal_reserved10 = 0x1000,</span></div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="comment">//      windowFlagInternal_reserved11 = 0x2000,</span></div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="comment">//      windowFlagInternal_reserved12 = 0x4000,</span></div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="comment">//      windowFlagInternal_reserved13 = 0x8000,</span></div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="comment">//      windowFlagInternal_reserved14 = 0x10000,</span></div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="comment">//      windowFlagInternal_reserved15 = 0x20000,</span></div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="comment">//      windowFlagInternal_reserved16 = 0x40000,</span></div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="comment">//      windowFlagInternal_reserved17 = 0x80000,</span></div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="comment">//      windowFlagInternal_reserved18 = 0x100000,</span></div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="comment">//      windowFlagInternal_reserved19 = 0x200000,</span></div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="comment">//      windowFlagInternal_reserved20 = 0x400000,</span></div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="comment">//</span></div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="comment">//      windowFlagInternal_resize = 0x800000,</span></div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="comment">//      windowFlagInternal_resizeB = 0x1000000,   // пусть флаги будут с конца</span></div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="comment">//      windowFlagInternal_resizeR = 0x2000000,   // будет проще проверять if(m_windowFlagsInternal &gt; windowFlagInternal_resize)</span></div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="comment">//      windowFlagInternal_resizeT = 0x4000000,</span></div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="comment">//      windowFlagInternal_resizeL = 0x8000000,</span></div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="comment">//      windowFlagInternal_resizeRB = 0x10000000,</span></div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="comment">//      windowFlagInternal_resizeRT = 0x20000000,</span></div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="comment">//      windowFlagInternal_resizeLB = 0x40000000,</span></div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="comment">//      windowFlagInternal_resizeLT = 0x80000000,</span></div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="comment">//  };</span></div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="comment">//  uint32_t m_windowFlagsInternal = 0;</span></div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="comment">//</span></div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="comment">//  void _resizeL();</span></div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="comment">//  void _resizeT();</span></div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="comment">//  void _resizeR();</span></div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="comment">//  void _resizeB();</span></div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="comment">//</span></div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="comment">//  bqWindow* m_systemWindow = 0;</span></div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span><span class="comment">//  </span></div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="comment">//  // пока лишь используется как отступ для иконок на titlebar</span></div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="comment">//  // и для определения попал ли курсор на рамку, которой нет.</span></div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span><span class="comment">//  float m_borderSize = 3.f;</span></div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span><span class="comment">//  // можно добавить прямоугольные области для рамки. почему бы и нет?</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="comment">//  // так будет проще определять куда вошёл курсор</span></div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="comment">//  // + возможно можно будет использовать картинки для рисования рамки</span></div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="comment">//  bqVec4f m_borderRectLeft;</span></div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="comment">//  bqVec4f m_borderRectTop;</span></div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span><span class="comment">//  bqVec4f m_borderRectRight;</span></div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span><span class="comment">//  bqVec4f m_borderRectBottom;</span></div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span><span class="comment">//  bqVec4f m_borderRectLeftTop;</span></div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span><span class="comment">//  bqVec4f m_borderRectRightTop;</span></div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span><span class="comment">//  bqVec4f m_borderRectLeftBottom;</span></div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span><span class="comment">//  bqVec4f m_borderRectRightBottom;</span></div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span><span class="comment">//</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="foldopen" id="foldopen00112" data-start="{" data-end="};">
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html">  112</a></span><span class="keyword">class </span><a class="code hl_class" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> : <span class="keyword">public</span> <a class="code hl_class" href="../../d1/d48/classbq_g_u_i_common.html">bqGUICommon</a>, <span class="keyword">public</span> <a class="code hl_class" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>{</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a1a65f48bb54e2943437026095c3f3b1e">  114</a></span>    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code hl_class" href="../../da/d6a/classbq_framework.html">bqFramework</a>;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a4c566c740bda0e75ae0fac03aed1339a">  115</a></span>    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code hl_class" href="../../d3/dfe/classbq_window.html">bqWindow</a>;</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    </div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <span class="keyword">enum</span></div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    {</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        flagInternal_activated = 0x1</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    };</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    uint32_t m_flagsInternal = 0;</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>    <a class="code hl_class" href="../../d4/da8/classbq_g_u_i_font.html">bqGUIFont</a>* _OnFont_active(<span class="keywordtype">char32_t</span>);</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    <a class="code hl_class" href="../../da/d63/classbq_color.html">bqColor</a>* _OnColor_active(<span class="keywordtype">char32_t</span>);</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    <a class="code hl_class" href="../../d4/da8/classbq_g_u_i_font.html">bqGUIFont</a>* _OnFont_Nactive(<span class="keywordtype">char32_t</span>);</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    <a class="code hl_class" href="../../da/d63/classbq_color.html">bqColor</a>* _OnColor_Nactive(<span class="keywordtype">char32_t</span>);</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    </div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    <a class="code hl_class" href="../../d4/da8/classbq_g_u_i_font.html">bqGUIFont</a>* (<a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a103d34ff166f39e3cb3f5264ff6b3a9f">bqGUIWindow</a>::* m_onFont)(<span class="keywordtype">char32_t</span>) = 0;</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    <a class="code hl_class" href="../../da/d63/classbq_color.html">bqColor</a>* (<a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a103d34ff166f39e3cb3f5264ff6b3a9f">bqGUIWindow</a>::* m_onColor)(<span class="keywordtype">char32_t</span>) = 0;</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a103d34ff166f39e3cb3f5264ff6b3a9f">  131</a></span>    <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a103d34ff166f39e3cb3f5264ff6b3a9f">bqGUIWindow</a>(<span class="comment">/*bqWindow* systemWindow, */</span><span class="keyword">const</span> <a class="code hl_class" href="../../de/daa/classbq_vec2__t.html">bqVec2f</a>&amp; position, <span class="keyword">const</span> <a class="code hl_class" href="../../de/daa/classbq_vec2__t.html">bqVec2f</a>&amp; size);</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a7629bee2ef9571c9f61b83e43e55fb9a">  132</a></span>    <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a7629bee2ef9571c9f61b83e43e55fb9a">BQ_PLACEMENT_ALLOCATOR</a>(<a class="code hl_class" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a>);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a36cecb5b76ecabd9b614140586492081">  133</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a36cecb5b76ecabd9b614140586492081">~bqGUIWindow</a>();</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#ae218dd9bb087114b0031ecce7e89a48c">  136</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#ae218dd9bb087114b0031ecce7e89a48c">Rebuild</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#adbfb9cecef58f95b2f50e499ce00a57a">  138</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#adbfb9cecef58f95b2f50e499ce00a57a">Draw</a>(<a class="code hl_class" href="../../dc/d42/classbq_g_s.html">bqGS</a>* gs, <span class="keywordtype">float</span> dt) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#af16f752941d97ef76a4bcf839aa9b799">  140</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#af16f752941d97ef76a4bcf839aa9b799">Update</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a1b75bbf2b571b5d79760df49f59356ac">  144</a></span>    <a class="code hl_class" href="../../d4/da8/classbq_g_u_i_font.html">bqGUIFont</a>* <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a1b75bbf2b571b5d79760df49f59356ac">OnFont</a>(<span class="comment">/*uint32_t r, */</span><span class="keywordtype">char32_t</span>);</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    </div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a10402435842658f3ad04966b39585f62">  148</a></span>    <a class="code hl_class" href="../../da/d63/classbq_color.html">bqColor</a>* <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a10402435842658f3ad04966b39585f62">OnColor</a>(<span class="comment">/*uint32_t r, */</span><span class="keywordtype">char32_t</span>);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#ad5c3560ef8eeb7c21dc22018fc31a0f8">  151</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#ad5c3560ef8eeb7c21dc22018fc31a0f8">Activate</a>();</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    </div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#a03d0654fd7c0b9a3d6cbd8951d160b10">  154</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#a03d0654fd7c0b9a3d6cbd8951d160b10">Deactivate</a>();</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno"><a class="line" href="../../db/dee/classbq_g_u_i_window.html#ae352e6ef297de32a5d3e699f65062b33">  157</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../db/dee/classbq_g_u_i_window.html#ae352e6ef297de32a5d3e699f65062b33">ToTop</a>();</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    <span class="comment">// Не надо. потому что наследуется bqHierarchy</span></div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    <span class="comment">// bqGUIElement* m_rootElement = 0;</span></div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    </div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span> </div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="comment">//  // нужно знать, где находится курсор</span></div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="comment">//  enum</span></div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span><span class="comment">//  {</span></div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="comment">//      CursorInfo_out,         // за пределами окна</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="comment">//      CursorInfo_titlebar,    // в titlebar</span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="comment">//      CursorInfo_client,       // в клиентской области</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="comment">//      CursorInfo_closeButton,   // на кнопке закрытия</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="comment">//      CursorInfo_collapseButton, // на кнопке сворачивания</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="comment">//      </span></div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="comment">//      CursorInfo_resizeRB,       // далее на границах и в  углах</span></div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="comment">//      CursorInfo_resizeB,</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="comment">//      CursorInfo_resizeLB,</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="comment">//      CursorInfo_resizeL,</span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="comment">//      CursorInfo_resizeLT,</span></div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="comment">//      CursorInfo_resizeT,</span></div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="comment">//      CursorInfo_resizeRT,</span></div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="comment">//      CursorInfo_resizeR,</span></div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="comment">//  };</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="comment">//  uint32_t m_windowCursorInfo = 0;</span></div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="comment">//</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="comment">//private:</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="comment">//</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="comment">//  bqString m_title;</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="comment">//  bqVec4f m_titlebarRect;</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="comment">//  bqVec4f m_closeButtonRect;</span></div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="comment">//  bqVec4f m_collapseButtonRect;</span></div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="comment">//</span></div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="comment">//  enum</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="comment">//  {</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="comment">//      windowFlagInternal_isMove = 0x1,</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="comment">//      windowFlagInternal_isExpand = 0x2,</span></div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="comment">//      windowFlagInternal_closeBtn = 0x4, // когда нажимается кнопка для закрытия, нужно запонить первый щёлк мышки</span></div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="comment">//      windowFlagInternal_reserved1 = 0x8,</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="comment">//      windowFlagInternal_reserved2 = 0x10,</span></div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="comment">//      windowFlagInternal_reserved3 = 0x20,</span></div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="comment">//      windowFlagInternal_reserved4 = 0x40,</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span><span class="comment">//      windowFlagInternal_reserved5 = 0x80,</span></div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="comment">//      windowFlagInternal_reserved6 = 0x100,</span></div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="comment">//      windowFlagInternal_reserved7 = 0x200,</span></div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span><span class="comment">//      windowFlagInternal_reserved8 = 0x400,</span></div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span><span class="comment">//      windowFlagInternal_reserved9 = 0x800,</span></div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="comment">//      windowFlagInternal_reserved10 = 0x1000,</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="comment">//      windowFlagInternal_reserved11 = 0x2000,</span></div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="comment">//      windowFlagInternal_reserved12 = 0x4000,</span></div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="comment">//      windowFlagInternal_reserved13 = 0x8000,</span></div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span><span class="comment">//      windowFlagInternal_reserved14 = 0x10000,</span></div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span><span class="comment">//      windowFlagInternal_reserved15 = 0x20000,</span></div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span><span class="comment">//      windowFlagInternal_reserved16 = 0x40000,</span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span><span class="comment">//      windowFlagInternal_reserved17 = 0x80000,</span></div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span><span class="comment">//      windowFlagInternal_reserved18 = 0x100000,</span></div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span><span class="comment">//      windowFlagInternal_reserved19 = 0x200000,</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span><span class="comment">//      windowFlagInternal_reserved20 = 0x400000,</span></div>
 <div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="comment">//</span></div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="comment">//public:</span></div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="comment">//  bqGUIWindow(const bqVec2f&amp; position, const bqVec2f&amp; size);</span></div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span><span class="comment">//  virtual ~bqGUIWindow();</span></div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span><span class="comment">//  BQ_PLACEMENT_ALLOCATOR(bqGUIWindow);</span></div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span><span class="comment">//  BQ_DELETED_METHODS(bqGUIWindow);</span></div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span><span class="comment">//</span></div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span><span class="comment">//  // Надо будет вызвать Rebuild</span></div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span><span class="comment">//  void SetPositionAndSize(const bqVec2f&amp; p, const bqVec2f&amp; sz);</span></div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span><span class="comment">//</span></div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="comment">//  virtual void Rebuild() override;</span></div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span><span class="comment">//  virtual void Update() override;</span></div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="comment">//  virtual void Draw(bqGS* gs, float dt) override;</span></div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span><span class="comment">//</span></div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="comment">//  void SetTitle(const char32_t*);</span></div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="comment">//</span></div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="comment">//  bqWindow* GetSystemWindow() { return m_systemWindow; }</span></div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="comment">//      windowFlagInternal_resize = 0x800000,</span></div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="comment">//      windowFlagInternal_resizeB = 0x1000000,   // пусть флаги будут с конца</span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span><span class="comment">//      windowFlagInternal_resizeR = 0x2000000,   // будет проще проверять if(m_windowFlagsInternal &gt; windowFlagInternal_resize)</span></div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span><span class="comment">//      windowFlagInternal_resizeT = 0x4000000,</span></div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span><span class="comment">//      windowFlagInternal_resizeL = 0x8000000,</span></div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span><span class="comment">//      windowFlagInternal_resizeRB = 0x10000000,</span></div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span><span class="comment">//      windowFlagInternal_resizeRT = 0x20000000,</span></div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span><span class="comment">//      windowFlagInternal_resizeLB = 0x40000000,</span></div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span><span class="comment">//      windowFlagInternal_resizeLT = 0x80000000,</span></div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="comment">//  };</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span><span class="comment">//  uint32_t m_windowFlagsInternal = 0;</span></div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="comment">//</span></div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span><span class="comment">//  void _resizeL();</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="comment">//  void _resizeT();</span></div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="comment">//  void _resizeR();</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="comment">//  void _resizeB();</span></div>
 <div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span><span class="comment">//</span></div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span><span class="comment">//  // элементы открыты так как не нужно производить какие-то дополнительные действия</span></div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span><span class="comment">//  // например при установке значения. Нефиг плодить глупые get/set методы.</span></div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span><span class="comment">//  bqGUIElement* m_rootElement = 0;</span></div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span><span class="comment">//  bqVec2f m_sizeMinimum = bqVec2f(100.f, 30.f);</span></div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span><span class="comment">//  uint32_t m_windowFlags = 0;</span></div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span><span class="comment">//  float m_titlebarHeight = 20.f;</span></div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span><span class="comment">//  </span></div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span><span class="comment">//public:</span></div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span><span class="comment">//  bqGUIFont* OnFont(uint32_t r, char32_t);</span></div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="comment">//  bqColor* OnColor(uint32_t r, char32_t);</span></div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span><span class="comment">//  </span></div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span><span class="comment">//  void Activate();</span></div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span><span class="comment">//  void Deactivate();</span></div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="comment">//  void Expand();</span></div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span><span class="comment">//  void Collapse();</span></div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span><span class="comment">//</span></div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span><span class="comment">//  bqGUIFont* m_icons = 0;</span></div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span><span class="comment">//  bqWindow* m_systemWindow = 0;</span></div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span><span class="comment">//  </span></div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span><span class="comment">//  // пока лишь используется как отступ для иконок на titlebar</span></div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span><span class="comment">//  // и для определения попал ли курсор на рамку, которой нет.</span></div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span><span class="comment">//  float m_borderSize = 3.f;</span></div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span><span class="comment">//  // можно добавить прямоугольные области для рамки. почему бы и нет?</span></div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span><span class="comment">//  // так будет проще определять куда вошёл курсор</span></div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span><span class="comment">//  // + возможно можно будет использовать картинки для рисования рамки</span></div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span><span class="comment">//  bqVec4f m_borderRectLeft;</span></div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="comment">//  bqVec4f m_borderRectTop;</span></div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span><span class="comment">//  bqVec4f m_borderRectRight;</span></div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span><span class="comment">//  bqVec4f m_borderRectBottom;</span></div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span><span class="comment">//  bqVec4f m_borderRectLeftTop;</span></div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="comment">//  bqVec4f m_borderRectRightTop;</span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span><span class="comment">//  bqVec4f m_borderRectLeftBottom;</span></div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span><span class="comment">//  bqVec4f m_borderRectRightBottom;</span></div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span><span class="comment">//</span></div>
 <div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="comment">//</span></div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="comment">//  void SetCallback(bqGUIWindowCallback* cb) { m_windowCallback = cb; }</span></div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span><span class="comment">//</span></div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="comment">//private:</span></div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span><span class="comment">//  bqGUIFont* _OnFont_active(uint32_t r, char32_t);</span></div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span><span class="comment">//  bqColor* _OnColor_active(uint32_t r, char32_t);</span></div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span><span class="comment">//  bqGUIFont* _OnFont_Nactive(uint32_t r, char32_t);</span></div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="comment">//  bqColor* _OnColor_Nactive(uint32_t r, char32_t);</span></div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span><span class="comment">//  </span></div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="comment">//  bqGUIFont* (bqGUIWindow::* m_onFont)(uint32_t, char32_t) = 0;</span></div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="comment">//  bqColor* (bqGUIWindow::* m_onColor)(uint32_t, char32_t) = 0;</span></div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="comment">//</span></div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="comment">//  bqGUIWindowCallback* m_windowCallback = 0;</span></div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="comment">//public:</span></div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span><span class="comment">//  bqGUIWindow(const bqVec2f&amp; position, const bqVec2f&amp; size);</span></div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="comment">//  virtual ~bqGUIWindow();</span></div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span><span class="comment">//  BQ_PLACEMENT_ALLOCATOR(bqGUIWindow);</span></div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span><span class="comment">//  BQ_DELETED_METHODS(bqGUIWindow);</span></div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span><span class="comment">//</span></div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="comment">//  // Надо будет вызвать Rebuild</span></div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span><span class="comment">//  void SetPositionAndSize(const bqVec2f&amp; p, const bqVec2f&amp; sz);</span></div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="comment">//</span></div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="comment">//  virtual void Rebuild() override;</span></div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="comment">//  virtual void Update() override;</span></div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="comment">//  virtual void Draw(bqGS* gs, float dt) override;</span></div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span><span class="comment">//</span></div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span><span class="comment">//bqGUIScrollbar* m_scrollbar = 0;</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span><span class="comment">//  void SetTitle(const char32_t*);</span></div>
 <div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span><span class="comment">//</span></div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="comment">//public:</span></div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="comment">//bqGUIScrollbar* GetScrollbar(){ return m_scrollbar; }</span></div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>};</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="comment">//  bqWindow* GetSystemWindow() { return m_systemWindow; }</span></div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="comment">//</span></div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span><span class="comment">//  // элементы открыты так как не нужно производить какие-то дополнительные действия</span></div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span><span class="comment">//  // например при установке значения. Нефиг плодить глупые get/set методы.</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span><span class="comment">//  bqGUIElement* m_rootElement = 0;</span></div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="comment">//  bqVec2f m_sizeMinimum = bqVec2f(100.f, 30.f);</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span><span class="comment">//  uint32_t m_windowFlags = 0;</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span><span class="comment">//  float m_titlebarHeight = 20.f;</span></div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span><span class="comment">//  </span></div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span><span class="comment">//public:</span></div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span><span class="comment">//  bqGUIFont* OnFont(uint32_t r, char32_t);</span></div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span><span class="comment">//  bqColor* OnColor(uint32_t r, char32_t);</span></div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span><span class="comment">//  </span></div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span><span class="comment">//  void Activate();</span></div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span><span class="comment">//  void Deactivate();</span></div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="comment">//  void Expand();</span></div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span><span class="comment">//  void Collapse();</span></div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="comment">//</span></div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span><span class="comment">//  bqGUIFont* m_icons = 0;</span></div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span><span class="comment">//</span></div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span><span class="comment">//  void SetCallback(bqGUIWindowCallback* cb) { m_windowCallback = cb; }</span></div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span><span class="comment">//</span></div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span><span class="comment">//private:</span></div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span><span class="comment">//  bqGUIFont* _OnFont_active(uint32_t r, char32_t);</span></div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span><span class="comment">//  bqColor* _OnColor_active(uint32_t r, char32_t);</span></div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span><span class="comment">//  bqGUIFont* _OnFont_Nactive(uint32_t r, char32_t);</span></div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span><span class="comment">//  bqColor* _OnColor_Nactive(uint32_t r, char32_t);</span></div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span><span class="comment">//  </span></div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span><span class="comment">//  bqGUIFont* (bqGUIWindow::* m_onFont)(uint32_t, char32_t) = 0;</span></div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span><span class="comment">//  bqColor* (bqGUIWindow::* m_onColor)(uint32_t, char32_t) = 0;</span></div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span><span class="comment">//</span></div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span><span class="comment">//  bqGUIWindowCallback* m_windowCallback = 0;</span></div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span><span class="comment">//</span></div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span><span class="comment">//bqGUIScrollbar* m_scrollbar = 0;</span></div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span><span class="comment">//</span></div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span><span class="comment">//public:</span></div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="comment">//bqGUIScrollbar* GetScrollbar(){ return m_scrollbar; }</span></div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>};</div>
 </div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span> </div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span> </div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="abq_defines_8h_html_a3068631062aaf7da4cc0371da9e7a377"><div class="ttname"><a href="../../db/d65/bq_defines_8h.html#a3068631062aaf7da4cc0371da9e7a377">float32_t</a></div><div class="ttdeci">float float32_t</div><div class="ttdef"><b>Definition</b> bqDefines.h:62</div></div>
+<div class="ttc" id="aclassbq_color_html"><div class="ttname"><a href="../../da/d63/classbq_color.html">bqColor</a></div><div class="ttdef"><b>Definition</b> bqColor.h:36</div></div>
 <div class="ttc" id="aclassbq_framework_html"><div class="ttname"><a href="../../da/d6a/classbq_framework.html">bqFramework</a></div><div class="ttdoc">API для фреймворка.</div><div class="ttdef"><b>Definition</b> bqFramework.h:82</div></div>
-<div class="ttc" id="aclassbq_g_u_i_common_html"><div class="ttname"><a href="../../d1/d48/classbq_g_u_i_common.html">bqGUICommon</a></div><div class="ttdef"><b>Definition</b> bqGUICommon.h:39</div></div>
+<div class="ttc" id="aclassbq_g_s_html"><div class="ttname"><a href="../../dc/d42/classbq_g_s.html">bqGS</a></div><div class="ttdef"><b>Definition</b> bqGS.h:66</div></div>
+<div class="ttc" id="aclassbq_g_u_i_common_html"><div class="ttname"><a href="../../d1/d48/classbq_g_u_i_common.html">bqGUICommon</a></div><div class="ttdoc">Общие данные для GUI вещей.</div><div class="ttdef"><b>Definition</b> bqGUICommon.h:40</div></div>
 <div class="ttc" id="aclassbq_g_u_i_element_html"><div class="ttname"><a href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a></div><div class="ttdef"><b>Definition</b> bqGUIElement.h:37</div></div>
+<div class="ttc" id="aclassbq_g_u_i_font_html"><div class="ttname"><a href="../../d4/da8/classbq_g_u_i_font.html">bqGUIFont</a></div><div class="ttdoc">Шрифт</div><div class="ttdef"><b>Definition</b> bqGUIFont.h:64</div></div>
 <div class="ttc" id="aclassbq_g_u_i_window_base_html"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:57</div></div>
-<div class="ttc" id="aclassbq_g_u_i_window_base_html_a379526c2587812295dddb456f4dcf6ae"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a379526c2587812295dddb456f4dcf6ae">bqGUIWindowBase::bqGUIWindowBase</a></div><div class="ttdeci">bqGUIWindowBase()</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:59</div></div>
-<div class="ttc" id="aclassbq_g_u_i_window_base_html_a8e36a68c86dbdc275b26fac3e9650bc6"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a8e36a68c86dbdc275b26fac3e9650bc6">bqGUIWindowBase::~bqGUIWindowBase</a></div><div class="ttdeci">virtual ~bqGUIWindowBase()</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:60</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a2d5dce159c9ac657514807812ecd6ca9a252da655c35c8c2cfcb15256adb24fdf"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a252da655c35c8c2cfcb15256adb24fdf">bqGUIWindowBase::windowFlag_canResize</a></div><div class="ttdeci">@ windowFlag_canResize</div><div class="ttdoc">можно изменять размер</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:88</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a2d5dce159c9ac657514807812ecd6ca9a39051cf8f07f78da6b14de6a1e8db5a0"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a39051cf8f07f78da6b14de6a1e8db5a0">bqGUIWindowBase::windowFlag_withTitleBar</a></div><div class="ttdeci">@ windowFlag_withTitleBar</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:77</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a2d5dce159c9ac657514807812ecd6ca9a61c8df64cad882c7c63f01746d78659b"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a61c8df64cad882c7c63f01746d78659b">bqGUIWindowBase::windowFlag_withCloseButton</a></div><div class="ttdeci">@ windowFlag_withCloseButton</div><div class="ttdoc">добавляет кнопку закрытия</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:83</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a2d5dce159c9ac657514807812ecd6ca9a76059bb91a1ac3bb1f74981e2620d978"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a76059bb91a1ac3bb1f74981e2620d978">bqGUIWindowBase::windowFlag_canMove</a></div><div class="ttdeci">@ windowFlag_canMove</div><div class="ttdoc">окно можно перемещать удерживая тайтлбар</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:85</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a2d5dce159c9ac657514807812ecd6ca9ac771f11944dba6489c6f801272563706"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9ac771f11944dba6489c6f801272563706">bqGUIWindowBase::windowFlag_disableToTop</a></div><div class="ttdeci">@ windowFlag_disableToTop</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:99</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a2d5dce159c9ac657514807812ecd6ca9ae6e2ab34fcefcaded76e431d7080a121"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9ae6e2ab34fcefcaded76e431d7080a121">bqGUIWindowBase::windowFlag_withCollapseButton</a></div><div class="ttdeci">@ windowFlag_withCollapseButton</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:81</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a32c26902287571aad0a41a6334f52ddf"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a32c26902287571aad0a41a6334f52ddf">bqGUIWindowBase::m_titlebarRect</a></div><div class="ttdeci">bqVec4f m_titlebarRect</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:62</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a3722296ca97161a66582c1f6e3bcb9f4"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a3722296ca97161a66582c1f6e3bcb9f4">bqGUIWindowBase::m_title</a></div><div class="ttdeci">bqString m_title</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:61</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a379526c2587812295dddb456f4dcf6ae"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a379526c2587812295dddb456f4dcf6ae">bqGUIWindowBase::bqGUIWindowBase</a></div><div class="ttdeci">bqGUIWindowBase()</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:64</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a4d72d895423e06f3819e166b67cace4a"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a4d72d895423e06f3819e166b67cace4a">bqGUIWindowBase::m_systemWindow</a></div><div class="ttdeci">bqWindow * m_systemWindow</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:60</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a7d22487fa04f4559a477915cfa20bb15"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a7d22487fa04f4559a477915cfa20bb15">bqGUIWindowBase::m_windowFlags</a></div><div class="ttdeci">uint32_t m_windowFlags</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:102</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_a8e36a68c86dbdc275b26fac3e9650bc6"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#a8e36a68c86dbdc275b26fac3e9650bc6">bqGUIWindowBase::~bqGUIWindowBase</a></div><div class="ttdeci">virtual ~bqGUIWindowBase()</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:65</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_abf99b815038c08f8f8943d43fc98f991"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#abf99b815038c08f8f8943d43fc98f991">bqGUIWindowBase::m_titlebarHeight</a></div><div class="ttdeci">float32_t m_titlebarHeight</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:103</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_ac671067202e909f6dfe709e9d59af7c8"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#ac671067202e909f6dfe709e9d59af7c8">bqGUIWindowBase::GetTitleText</a></div><div class="ttdeci">bqString &amp; GetTitleText()</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:105</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_ae2014c4c8d340d0fda91996af66c91b8"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#ae2014c4c8d340d0fda91996af66c91b8">bqGUIWindowBase::AddElement</a></div><div class="ttdeci">void AddElement(bqGUIElement *el)</div><div class="ttdoc">Добавить элемент.</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_base_html_aff3e0df4d60cb5cbc8ded51c052c1e48"><div class="ttname"><a href="../../da/dd6/classbq_g_u_i_window_base.html#aff3e0df4d60cb5cbc8ded51c052c1e48">bqGUIWindowBase::RemoveElement</a></div><div class="ttdeci">void RemoveElement(bqGUIElement *el)</div><div class="ttdoc">Убрать элемент.</div></div>
 <div class="ttc" id="aclassbq_g_u_i_window_callback_html"><div class="ttname"><a href="../../da/dc3/classbq_g_u_i_window_callback.html">bqGUIWindowCallback</a></div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:38</div></div>
 <div class="ttc" id="aclassbq_g_u_i_window_callback_html_a7382fc16846c09037f2520692106b01f"><div class="ttname"><a href="../../da/dc3/classbq_g_u_i_window_callback.html#a7382fc16846c09037f2520692106b01f">bqGUIWindowCallback::~bqGUIWindowCallback</a></div><div class="ttdeci">virtual ~bqGUIWindowCallback()</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:41</div></div>
 <div class="ttc" id="aclassbq_g_u_i_window_callback_html_a88af5cb9f43b59153ca036c6d699cbac"><div class="ttname"><a href="../../da/dc3/classbq_g_u_i_window_callback.html#a88af5cb9f43b59153ca036c6d699cbac">bqGUIWindowCallback::bqGUIWindowCallback</a></div><div class="ttdeci">bqGUIWindowCallback()</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:40</div></div>
 <div class="ttc" id="aclassbq_g_u_i_window_callback_html_ae737a5620344a8100f87a9873604b313"><div class="ttname"><a href="../../da/dc3/classbq_g_u_i_window_callback.html#ae737a5620344a8100f87a9873604b313">bqGUIWindowCallback::OnSizeChange</a></div><div class="ttdeci">virtual void OnSizeChange(bqGUIWindow *)</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:42</div></div>
-<div class="ttc" id="aclassbq_g_u_i_window_html"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a></div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:65</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_html"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a></div><div class="ttdoc">Все GUI элементы добавляются в окно.</div><div class="ttdef"><b>Definition</b> bqGUIWindow.h:113</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_html_a03d0654fd7c0b9a3d6cbd8951d160b10"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#a03d0654fd7c0b9a3d6cbd8951d160b10">bqGUIWindow::Deactivate</a></div><div class="ttdeci">void Deactivate()</div><div class="ttdoc">Деактивировать окно.</div></div>
 <div class="ttc" id="aclassbq_g_u_i_window_html_a103d34ff166f39e3cb3f5264ff6b3a9f"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#a103d34ff166f39e3cb3f5264ff6b3a9f">bqGUIWindow::bqGUIWindow</a></div><div class="ttdeci">bqGUIWindow(const bqVec2f &amp;position, const bqVec2f &amp;size)</div></div>
-<div class="ttc" id="aclassbq_g_u_i_window_html_a22bffbec52c30a54ccbff71a45d9c60e"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#a22bffbec52c30a54ccbff71a45d9c60e">bqGUIWindow::AddElement</a></div><div class="ttdeci">void AddElement(bqGUIElement *el)</div><div class="ttdoc">Добавить элемент в окно.</div></div>
-<div class="ttc" id="aclassbq_g_u_i_window_html_a2e6242a49060967142a3c61f55b8c563"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#a2e6242a49060967142a3c61f55b8c563">bqGUIWindow::RemoveElement</a></div><div class="ttdeci">void RemoveElement(bqGUIElement *el)</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_html_a10402435842658f3ad04966b39585f62"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#a10402435842658f3ad04966b39585f62">bqGUIWindow::OnColor</a></div><div class="ttdeci">bqColor * OnColor(char32_t)</div><div class="ttdoc">Получить цвет которым будет закрашен указанный символ</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_html_a1b75bbf2b571b5d79760df49f59356ac"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#a1b75bbf2b571b5d79760df49f59356ac">bqGUIWindow::OnFont</a></div><div class="ttdeci">bqGUIFont * OnFont(char32_t)</div><div class="ttdoc">Получить шрифт который будет использоваться для рисования указанного символа</div></div>
 <div class="ttc" id="aclassbq_g_u_i_window_html_a36cecb5b76ecabd9b614140586492081"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#a36cecb5b76ecabd9b614140586492081">bqGUIWindow::~bqGUIWindow</a></div><div class="ttdeci">virtual ~bqGUIWindow()</div></div>
 <div class="ttc" id="aclassbq_g_u_i_window_html_a7629bee2ef9571c9f61b83e43e55fb9a"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#a7629bee2ef9571c9f61b83e43e55fb9a">bqGUIWindow::BQ_PLACEMENT_ALLOCATOR</a></div><div class="ttdeci">BQ_PLACEMENT_ALLOCATOR(bqGUIWindow)</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_html_ad5c3560ef8eeb7c21dc22018fc31a0f8"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#ad5c3560ef8eeb7c21dc22018fc31a0f8">bqGUIWindow::Activate</a></div><div class="ttdeci">void Activate()</div><div class="ttdoc">Активировать окно.</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_html_adbfb9cecef58f95b2f50e499ce00a57a"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#adbfb9cecef58f95b2f50e499ce00a57a">bqGUIWindow::Draw</a></div><div class="ttdeci">virtual void Draw(bqGS *gs, float dt) override</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_html_ae218dd9bb087114b0031ecce7e89a48c"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#ae218dd9bb087114b0031ecce7e89a48c">bqGUIWindow::Rebuild</a></div><div class="ttdeci">virtual void Rebuild() override</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_html_ae352e6ef297de32a5d3e699f65062b33"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#ae352e6ef297de32a5d3e699f65062b33">bqGUIWindow::ToTop</a></div><div class="ttdeci">void ToTop()</div><div class="ttdoc">Установить окно поверх других окон.</div></div>
+<div class="ttc" id="aclassbq_g_u_i_window_html_af16f752941d97ef76a4bcf839aa9b799"><div class="ttname"><a href="../../db/dee/classbq_g_u_i_window.html#af16f752941d97ef76a4bcf839aa9b799">bqGUIWindow::Update</a></div><div class="ttdeci">virtual void Update() override</div></div>
+<div class="ttc" id="aclassbq_hierarchy_html"><div class="ttname"><a href="../../d8/dd1/classbq_hierarchy.html">bqHierarchy</a></div><div class="ttdef"><b>Definition</b> bqHierarchy.h:36</div></div>
+<div class="ttc" id="aclassbq_string_html"><div class="ttname"><a href="../../dc/dde/classbq_string.html">bqString</a></div><div class="ttdef"><b>Definition</b> bqString.h:671</div></div>
 <div class="ttc" id="aclassbq_vec2__t_html"><div class="ttname"><a href="../../de/daa/classbq_vec2__t.html">bqVec2_t&lt; float32_t &gt;</a></div></div>
+<div class="ttc" id="aclassbq_vec4__t_html"><div class="ttname"><a href="../../da/d4a/classbq_vec4__t.html">bqVec4_t&lt; float32_t &gt;</a></div></div>
+<div class="ttc" id="aclassbq_window_html"><div class="ttname"><a href="../../d3/dfe/classbq_window.html">bqWindow</a></div><div class="ttdoc">Системное окно</div><div class="ttdef"><b>Definition</b> bqWindow.h:101</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

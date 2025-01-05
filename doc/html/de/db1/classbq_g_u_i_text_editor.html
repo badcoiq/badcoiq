@@ -98,9 +98,9 @@ Inheritance diagram for bqGUITextEditor:</div>
   <img src="../../de/db1/classbq_g_u_i_text_editor.png" usemap="#bqGUITextEditor_map" alt=""/>
   <map id="bqGUITextEditor_map" name="bqGUITextEditor_map">
 <area href="../../d0/d62/classbq_g_u_i_element.html" alt="bqGUIElement" shape="rect" coords="55,112,156,136"/>
-<area href="../../d1/d48/classbq_g_u_i_common.html" alt="bqGUICommon" shape="rect" coords="55,56,156,80"/>
+<area href="../../d1/d48/classbq_g_u_i_common.html" title="Общие данные для GUI вещей." alt="bqGUICommon" shape="rect" coords="0,56,101,80"/>
+<area href="../../d8/dd1/classbq_hierarchy.html" alt="bqHierarchy" shape="rect" coords="111,56,212,80"/>
 <area href="../../dc/dd2/classbq_user_data.html" title="Если для какого-то класса нужен user data, то можно наследовать этот класс" alt="bqUserData" shape="rect" coords="0,0,101,24"/>
-<area href="../../d8/dd1/classbq_hierarchy.html" alt="bqHierarchy" shape="rect" coords="111,0,212,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -125,10 +125,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1c2fafbf16bd3fdb4869a91e14faa0c1" id="r_a1c2fafbf16bd3fdb4869a91e14faa0c1"><td class="memItemLeft" align="right" valign="top">const char32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c2fafbf16bd3fdb4869a91e14faa0c1">GetText</a> ()</td></tr>
 <tr class="separator:a1c2fafbf16bd3fdb4869a91e14faa0c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68f05e39ea2a4a27d0d964ef1e8661a9" id="r_a68f05e39ea2a4a27d0d964ef1e8661a9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68f05e39ea2a4a27d0d964ef1e8661a9">Rebuild</a> () final</td></tr>
+<tr class="memdesc:a68f05e39ea2a4a27d0d964ef1e8661a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вычислить m_baseRect и прочие ...Rect Надо вызывать это после создания GUI и после того как размер окна изменится  <br /></td></tr>
 <tr class="separator:a68f05e39ea2a4a27d0d964ef1e8661a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ffac2c0ff52d2c458cf2a5e459af7f9" id="r_a2ffac2c0ff52d2c458cf2a5e459af7f9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2ffac2c0ff52d2c458cf2a5e459af7f9">Update</a> () final</td></tr>
 <tr class="separator:a2ffac2c0ff52d2c458cf2a5e459af7f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8538c36cf3a24f7b4fd5939a8f43665b" id="r_a8538c36cf3a24f7b4fd5939a8f43665b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8538c36cf3a24f7b4fd5939a8f43665b">Draw</a> (<a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *gs, float dt) final</td></tr>
+<tr class="memdesc:a8538c36cf3a24f7b4fd5939a8f43665b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Нарисовать  <br /></td></tr>
 <tr class="separator:a8538c36cf3a24f7b4fd5939a8f43665b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac659d9f05a0e6b47ea1ecf6c2e0dceb7" id="r_ac659d9f05a0e6b47ea1ecf6c2e0dceb7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac659d9f05a0e6b47ea1ecf6c2e0dceb7">UpdateContentSize</a> () final</td></tr>
 <tr class="separator:ac659d9f05a0e6b47ea1ecf6c2e0dceb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -177,8 +179,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6999a56edf9d1fa31f086ee76306db1b inherit pub_methods_classbq_g_u_i_common" id="r_a6999a56edf9d1fa31f086ee76306db1b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a6999a56edf9d1fa31f086ee76306db1b">BQ_DELETED_METHODS</a> (<a class="el" href="../../d1/d48/classbq_g_u_i_common.html">bqGUICommon</a>)</td></tr>
 <tr class="separator:a6999a56edf9d1fa31f086ee76306db1b inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2487a439f0becc2fbde84c43a82b6431 inherit pub_methods_classbq_g_u_i_common" id="r_a2487a439f0becc2fbde84c43a82b6431"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a2487a439f0becc2fbde84c43a82b6431">SetPosition</a> (float x, float y)</td></tr>
+<tr class="memdesc:a2487a439f0becc2fbde84c43a82b6431 inherit pub_methods_classbq_g_u_i_common"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить позицию.  <br /></td></tr>
 <tr class="separator:a2487a439f0becc2fbde84c43a82b6431 inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa19981e3fc95d1d98fcbb52d6910550a inherit pub_methods_classbq_g_u_i_common" id="r_aa19981e3fc95d1d98fcbb52d6910550a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#aa19981e3fc95d1d98fcbb52d6910550a">SetSize</a> (float x, float y)</td></tr>
+<tr class="memdesc:aa19981e3fc95d1d98fcbb52d6910550a inherit pub_methods_classbq_g_u_i_common"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить размер  <br /></td></tr>
 <tr class="separator:aa19981e3fc95d1d98fcbb52d6910550a inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5a68075f4d0fc39de0f2710296a3a8a inherit pub_methods_classbq_g_u_i_common" id="r_ac5a68075f4d0fc39de0f2710296a3a8a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="../../df/d9e/bq_forward_8h.html#a6c395042091dbd413db81851f8122f0d">bqVec4f</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#ac5a68075f4d0fc39de0f2710296a3a8a">GetBuildRectOnCreation</a> ()</td></tr>
 <tr class="separator:ac5a68075f4d0fc39de0f2710296a3a8a inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -611,6 +615,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Нарисовать </p>
+
 <p>Implements <a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a5ec9517863efa61063207113400897dd">bqGUICommon</a>.</p>
 
 </div>
@@ -787,6 +793,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Вычислить m_baseRect и прочие ...Rect Надо вызывать это после создания GUI и после того как размер окна изменится </p>
 
 <p>Reimplemented from <a class="el" href="../../d0/d62/classbq_g_u_i_element.html#a08a99b7ea65641600cb9c386d09eb221">bqGUIElement</a>.</p>
 

@@ -27,6 +27,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
+#include "badcoiq/CRT/bqCRT.h"
+#include "badcoiq/common/bqStream.h"
 
 #include <stdarg.h>
 
@@ -41,6 +43,19 @@ void bqLogDefaultCallbackW(const wchar_t* s)
 	wprintf(s);
 }
 
+void bqLogDefaultCallbackU32(const char32_t* s)
+{
+	if (s[0] != 0)
+	{
+		const char32_t* p = &s[0u];
+		while ((size_t)*p++)
+		{
+			wprintf(L"%c", (wchar_t)*s);
+		}
+	}
+	//wprintf(s);
+}
+
 // класс который будет всё выполнять
 class bqLogImpl
 {
@@ -49,14 +64,18 @@ public:
 	{
 		m_cba = bqLogDefaultCallbackA;
 		m_cbw = bqLogDefaultCallbackW;
+		m_cbU32 = bqLogDefaultCallbackU32;
 	}
 
 	void vprintf(const char* s, va_list vl);
 	void vwprintf(const wchar_t* s, va_list vl);
+	void vprintfU32(const char32_t* s, va_list vl);
 
 	void(*m_cba)(const char*);
 	void(*m_cbw)(const wchar_t*);
+	void(*m_cbU32)(const char32_t*);
 };
+
 
 void bqLogImpl::vprintf(const char* s, va_list vl)
 {
@@ -70,6 +89,25 @@ void bqLogImpl::vwprintf(const wchar_t* s, va_list vl)
 	wchar_t buffer[0xFFFF];
 	vswprintf_s(buffer, 0xFFFF, s, vl);
 	m_cbw(buffer);
+}
+
+void bqLogImpl::vprintfU32(const char32_t* s, va_list vl)
+{
+	char32_t buffer[0xFFFF];
+	//vsU32printf_s(buffer, 0xFFFF, s, vl);
+	//m_cbU32(buffer);
+
+	bqStream st((uint8_t*)&buffer[0], 0xFFFF * sizeof(char32_t));
+	bqCRT::vfprintf(&st, s, vl);
+
+	char32_t* ptr = &buffer[0];
+	for (size_t i = 0; i < 0xFFFF; ++i)
+	{
+		if (*ptr == 0)
+			break;
+		bqLog::Print("%c", (wchar_t)*ptr);
+		++ptr;
+	}
 }
 
 static bqLogImpl g_log;
@@ -173,4 +211,12 @@ void bqLog::SetCallbackW(void(*cb)(const wchar_t*))
 		g_log.m_cbw = cb;
 	else
 		g_log.m_cbw = bqLogDefaultCallbackW;
+}
+
+void bqLog::Print(const char32_t* s, ...)
+{
+	va_list vl;
+	va_start(vl, s);
+	g_log.vprintfU32(s, vl);
+	va_end(vl);
 }

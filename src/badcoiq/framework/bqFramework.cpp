@@ -358,6 +358,8 @@ void bqFramework::Update()
 
 	g_framework->m_deltaTime = (float)(now - then) / CLOCKS_PER_SEC;
 	then = now;
+
+	g_framework->m_GUIState.m_windowUnderCursor = 0;
 }
 
 float* bqFramework::GetDeltaTime()
@@ -1251,6 +1253,12 @@ void bqFrameworkImpl::_onDestroy_GUITextDrawCallbacks()
 //	delete m_defaultTextDrawCallback_slider; m_defaultTextDrawCallback_slider = 0;
 	delete m_defaultTextDrawCallback_staticText; m_defaultTextDrawCallback_staticText = 0;
 }
+
+const bqGUIState& bqFramework::GetGUIState()
+{
+	return g_framework->m_GUIState;
+}
+
 
 #endif
 

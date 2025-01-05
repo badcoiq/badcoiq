@@ -91,6 +91,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Все GUI элементы добавляются в окно.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="../../db/d5e/bq_g_u_i_window_8h_source.html">bqGUIWindow.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for bqGUIWindow:</div>
@@ -98,8 +101,8 @@ Inheritance diagram for bqGUIWindow:</div>
  <div class="center">
   <img src="../../db/dee/classbq_g_u_i_window.png" usemap="#bqGUIWindow_map" alt=""/>
   <map id="bqGUIWindow_map" name="bqGUIWindow_map">
-<area href="../../d1/d48/classbq_g_u_i_common.html" alt="bqGUICommon" shape="rect" coords="63,56,180,80"/>
-<area href="../../da/dd6/classbq_g_u_i_window_base.html" alt="bqGUIWindowBase" shape="rect" coords="190,56,307,80"/>
+<area href="../../d1/d48/classbq_g_u_i_common.html" title="Общие данные для GUI вещей." alt="bqGUICommon" shape="rect" coords="0,56,117,80"/>
+<area href="../../da/dd6/classbq_g_u_i_window_base.html" alt="bqGUIWindowBase" shape="rect" coords="127,56,244,80"/>
 <area href="../../dc/dd2/classbq_user_data.html" title="Если для какого-то класса нужен user data, то можно наследовать этот класс" alt="bqUserData" shape="rect" coords="0,0,117,24"/>
 <area href="../../d8/dd1/classbq_hierarchy.html" alt="bqHierarchy" shape="rect" coords="127,0,244,24"/>
   </map>
@@ -113,11 +116,27 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7629bee2ef9571c9f61b83e43e55fb9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36cecb5b76ecabd9b614140586492081" id="r_a36cecb5b76ecabd9b614140586492081"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36cecb5b76ecabd9b614140586492081">~bqGUIWindow</a> ()</td></tr>
 <tr class="separator:a36cecb5b76ecabd9b614140586492081"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22bffbec52c30a54ccbff71a45d9c60e" id="r_a22bffbec52c30a54ccbff71a45d9c60e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22bffbec52c30a54ccbff71a45d9c60e">AddElement</a> (<a class="el" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a> *el)</td></tr>
-<tr class="memdesc:a22bffbec52c30a54ccbff71a45d9c60e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Добавить элемент в окно.  <br /></td></tr>
-<tr class="separator:a22bffbec52c30a54ccbff71a45d9c60e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e6242a49060967142a3c61f55b8c563" id="r_a2e6242a49060967142a3c61f55b8c563"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e6242a49060967142a3c61f55b8c563">RemoveElement</a> (<a class="el" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a> *el)</td></tr>
-<tr class="separator:a2e6242a49060967142a3c61f55b8c563"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae218dd9bb087114b0031ecce7e89a48c" id="r_ae218dd9bb087114b0031ecce7e89a48c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae218dd9bb087114b0031ecce7e89a48c">Rebuild</a> () override</td></tr>
+<tr class="separator:ae218dd9bb087114b0031ecce7e89a48c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbfb9cecef58f95b2f50e499ce00a57a" id="r_adbfb9cecef58f95b2f50e499ce00a57a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adbfb9cecef58f95b2f50e499ce00a57a">Draw</a> (<a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *gs, float dt) override</td></tr>
+<tr class="separator:adbfb9cecef58f95b2f50e499ce00a57a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af16f752941d97ef76a4bcf839aa9b799" id="r_af16f752941d97ef76a4bcf839aa9b799"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af16f752941d97ef76a4bcf839aa9b799">Update</a> () override</td></tr>
+<tr class="separator:af16f752941d97ef76a4bcf839aa9b799"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b75bbf2b571b5d79760df49f59356ac" id="r_a1b75bbf2b571b5d79760df49f59356ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d4/da8/classbq_g_u_i_font.html">bqGUIFont</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b75bbf2b571b5d79760df49f59356ac">OnFont</a> (char32_t)</td></tr>
+<tr class="memdesc:a1b75bbf2b571b5d79760df49f59356ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить шрифт который будет использоваться для рисования указанного символа  <br /></td></tr>
+<tr class="separator:a1b75bbf2b571b5d79760df49f59356ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10402435842658f3ad04966b39585f62" id="r_a10402435842658f3ad04966b39585f62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../da/d63/classbq_color.html">bqColor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a10402435842658f3ad04966b39585f62">OnColor</a> (char32_t)</td></tr>
+<tr class="memdesc:a10402435842658f3ad04966b39585f62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить цвет которым будет закрашен указанный символ  <br /></td></tr>
+<tr class="separator:a10402435842658f3ad04966b39585f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5c3560ef8eeb7c21dc22018fc31a0f8" id="r_ad5c3560ef8eeb7c21dc22018fc31a0f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5c3560ef8eeb7c21dc22018fc31a0f8">Activate</a> ()</td></tr>
+<tr class="memdesc:ad5c3560ef8eeb7c21dc22018fc31a0f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Активировать окно.  <br /></td></tr>
+<tr class="separator:ad5c3560ef8eeb7c21dc22018fc31a0f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03d0654fd7c0b9a3d6cbd8951d160b10" id="r_a03d0654fd7c0b9a3d6cbd8951d160b10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03d0654fd7c0b9a3d6cbd8951d160b10">Deactivate</a> ()</td></tr>
+<tr class="memdesc:a03d0654fd7c0b9a3d6cbd8951d160b10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Деактивировать окно.  <br /></td></tr>
+<tr class="separator:a03d0654fd7c0b9a3d6cbd8951d160b10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae352e6ef297de32a5d3e699f65062b33" id="r_ae352e6ef297de32a5d3e699f65062b33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae352e6ef297de32a5d3e699f65062b33">ToTop</a> ()</td></tr>
+<tr class="memdesc:ae352e6ef297de32a5d3e699f65062b33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить окно поверх других окон.  <br /></td></tr>
+<tr class="separator:ae352e6ef297de32a5d3e699f65062b33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classbq_g_u_i_common"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classbq_g_u_i_common')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d1/d48/classbq_g_u_i_common.html">bqGUICommon</a></td></tr>
 <tr class="memitem:a4fdcdd34160b0d4c72530b96204662c7 inherit pub_methods_classbq_g_u_i_common" id="r_a4fdcdd34160b0d4c72530b96204662c7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a4fdcdd34160b0d4c72530b96204662c7">bqGUICommon</a> (const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;position, const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;size)</td></tr>
 <tr class="separator:a4fdcdd34160b0d4c72530b96204662c7 inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -128,8 +147,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6999a56edf9d1fa31f086ee76306db1b inherit pub_methods_classbq_g_u_i_common" id="r_a6999a56edf9d1fa31f086ee76306db1b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a6999a56edf9d1fa31f086ee76306db1b">BQ_DELETED_METHODS</a> (<a class="el" href="../../d1/d48/classbq_g_u_i_common.html">bqGUICommon</a>)</td></tr>
 <tr class="separator:a6999a56edf9d1fa31f086ee76306db1b inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2487a439f0becc2fbde84c43a82b6431 inherit pub_methods_classbq_g_u_i_common" id="r_a2487a439f0becc2fbde84c43a82b6431"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a2487a439f0becc2fbde84c43a82b6431">SetPosition</a> (float x, float y)</td></tr>
+<tr class="memdesc:a2487a439f0becc2fbde84c43a82b6431 inherit pub_methods_classbq_g_u_i_common"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить позицию.  <br /></td></tr>
 <tr class="separator:a2487a439f0becc2fbde84c43a82b6431 inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa19981e3fc95d1d98fcbb52d6910550a inherit pub_methods_classbq_g_u_i_common" id="r_aa19981e3fc95d1d98fcbb52d6910550a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#aa19981e3fc95d1d98fcbb52d6910550a">SetSize</a> (float x, float y)</td></tr>
+<tr class="memdesc:aa19981e3fc95d1d98fcbb52d6910550a inherit pub_methods_classbq_g_u_i_common"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить размер  <br /></td></tr>
 <tr class="separator:aa19981e3fc95d1d98fcbb52d6910550a inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5a68075f4d0fc39de0f2710296a3a8a inherit pub_methods_classbq_g_u_i_common" id="r_ac5a68075f4d0fc39de0f2710296a3a8a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="../../df/d9e/bq_forward_8h.html#a6c395042091dbd413db81851f8122f0d">bqVec4f</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#ac5a68075f4d0fc39de0f2710296a3a8a">GetBuildRectOnCreation</a> ()</td></tr>
 <tr class="separator:ac5a68075f4d0fc39de0f2710296a3a8a inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,12 +190,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5cb3800691cd1203713e8518ec8ae8a3 inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdd3c351903bd7fa8dd3185088d5dca5 inherit pub_methods_classbq_g_u_i_common" id="r_abdd3c351903bd7fa8dd3185088d5dca5"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#abdd3c351903bd7fa8dd3185088d5dca5">IsDrawBG</a> ()</td></tr>
 <tr class="separator:abdd3c351903bd7fa8dd3185088d5dca5 inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acccfc1da3fb8a350e5e493a86e5aff19 inherit pub_methods_classbq_g_u_i_common" id="r_acccfc1da3fb8a350e5e493a86e5aff19"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#acccfc1da3fb8a350e5e493a86e5aff19">Rebuild</a> ()=0</td></tr>
-<tr class="separator:acccfc1da3fb8a350e5e493a86e5aff19 inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ec9517863efa61063207113400897dd inherit pub_methods_classbq_g_u_i_common" id="r_a5ec9517863efa61063207113400897dd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a5ec9517863efa61063207113400897dd">Draw</a> (<a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *gs, float dt)=0</td></tr>
-<tr class="separator:a5ec9517863efa61063207113400897dd inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfaeb76769bee89079148369e6520826 inherit pub_methods_classbq_g_u_i_common" id="r_abfaeb76769bee89079148369e6520826"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#abfaeb76769bee89079148369e6520826">Update</a> ()</td></tr>
-<tr class="separator:abfaeb76769bee89079148369e6520826 inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a039d2cb091cfdd5a5d006c2f9b2db73f inherit pub_methods_classbq_g_u_i_common" id="r_a039d2cb091cfdd5a5d006c2f9b2db73f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a039d2cb091cfdd5a5d006c2f9b2db73f">OnMouseEnter</a> ()</td></tr>
 <tr class="separator:a039d2cb091cfdd5a5d006c2f9b2db73f inherit pub_methods_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9d6c634c626ff7a135099b6e944a08f inherit pub_methods_classbq_g_u_i_common" id="r_aa9d6c634c626ff7a135099b6e944a08f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#aa9d6c634c626ff7a135099b6e944a08f">OnMouseLeave</a> ()</td></tr>
@@ -216,6 +231,19 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a99e5487255dbab78f5afec5a0af9879d inherit pub_methods_classbq_user_data" id="r_a99e5487255dbab78f5afec5a0af9879d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/dd2/classbq_user_data.html#a99e5487255dbab78f5afec5a0af9879d">SetUserData</a> (void *d)</td></tr>
 <tr class="memdesc:a99e5487255dbab78f5afec5a0af9879d inherit pub_methods_classbq_user_data"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить пользовательские данные.  <br /></td></tr>
 <tr class="separator:a99e5487255dbab78f5afec5a0af9879d inherit pub_methods_classbq_user_data"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classbq_g_u_i_window_base"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classbq_g_u_i_window_base')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></td></tr>
+<tr class="memitem:a379526c2587812295dddb456f4dcf6ae inherit pub_methods_classbq_g_u_i_window_base" id="r_a379526c2587812295dddb456f4dcf6ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a379526c2587812295dddb456f4dcf6ae">bqGUIWindowBase</a> ()</td></tr>
+<tr class="separator:a379526c2587812295dddb456f4dcf6ae inherit pub_methods_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e36a68c86dbdc275b26fac3e9650bc6 inherit pub_methods_classbq_g_u_i_window_base" id="r_a8e36a68c86dbdc275b26fac3e9650bc6"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a8e36a68c86dbdc275b26fac3e9650bc6">~bqGUIWindowBase</a> ()</td></tr>
+<tr class="separator:a8e36a68c86dbdc275b26fac3e9650bc6 inherit pub_methods_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2014c4c8d340d0fda91996af66c91b8 inherit pub_methods_classbq_g_u_i_window_base" id="r_ae2014c4c8d340d0fda91996af66c91b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#ae2014c4c8d340d0fda91996af66c91b8">AddElement</a> (<a class="el" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a> *el)</td></tr>
+<tr class="memdesc:ae2014c4c8d340d0fda91996af66c91b8 inherit pub_methods_classbq_g_u_i_window_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Добавить элемент.  <br /></td></tr>
+<tr class="separator:ae2014c4c8d340d0fda91996af66c91b8 inherit pub_methods_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff3e0df4d60cb5cbc8ded51c052c1e48 inherit pub_methods_classbq_g_u_i_window_base" id="r_aff3e0df4d60cb5cbc8ded51c052c1e48"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#aff3e0df4d60cb5cbc8ded51c052c1e48">RemoveElement</a> (<a class="el" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a> *el)</td></tr>
+<tr class="memdesc:aff3e0df4d60cb5cbc8ded51c052c1e48 inherit pub_methods_classbq_g_u_i_window_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Убрать элемент.  <br /></td></tr>
+<tr class="separator:aff3e0df4d60cb5cbc8ded51c052c1e48 inherit pub_methods_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac671067202e909f6dfe709e9d59af7c8 inherit pub_methods_classbq_g_u_i_window_base" id="r_ac671067202e909f6dfe709e9d59af7c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dc/dde/classbq_string.html">bqString</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#ac671067202e909f6dfe709e9d59af7c8">GetTitleText</a> ()</td></tr>
+<tr class="separator:ac671067202e909f6dfe709e9d59af7c8 inherit pub_methods_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classbq_hierarchy"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classbq_hierarchy')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d8/dd1/classbq_hierarchy.html">bqHierarchy</a></td></tr>
 <tr class="memitem:a9565ccae80c69f65e452ceec43c92e12 inherit pub_methods_classbq_hierarchy" id="r_a9565ccae80c69f65e452ceec43c92e12"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd1/classbq_hierarchy.html#a9565ccae80c69f65e452ceec43c92e12">bqHierarchy</a> ()</td></tr>
 <tr class="separator:a9565ccae80c69f65e452ceec43c92e12 inherit pub_methods_classbq_hierarchy"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -229,16 +257,13 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af916efa82e0545e0b3fdff5fb0700373 inherit pub_methods_classbq_hierarchy"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc8188fda05d614f4ef7179fa8bc8fdc inherit pub_methods_classbq_hierarchy" id="r_adc8188fda05d614f4ef7179fa8bc8fdc"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d2/d73/classbq_list.html">bqList</a>&lt; <a class="el" href="../../d8/dd1/classbq_hierarchy.html">bqHierarchy</a> * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd1/classbq_hierarchy.html#adc8188fda05d614f4ef7179fa8bc8fdc">GetChildren</a> ()</td></tr>
 <tr class="separator:adc8188fda05d614f4ef7179fa8bc8fdc inherit pub_methods_classbq_hierarchy"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classbq_g_u_i_window_base"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classbq_g_u_i_window_base')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></td></tr>
-<tr class="memitem:a379526c2587812295dddb456f4dcf6ae inherit pub_methods_classbq_g_u_i_window_base" id="r_a379526c2587812295dddb456f4dcf6ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a379526c2587812295dddb456f4dcf6ae">bqGUIWindowBase</a> ()</td></tr>
-<tr class="separator:a379526c2587812295dddb456f4dcf6ae inherit pub_methods_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e36a68c86dbdc275b26fac3e9650bc6 inherit pub_methods_classbq_g_u_i_window_base" id="r_a8e36a68c86dbdc275b26fac3e9650bc6"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a8e36a68c86dbdc275b26fac3e9650bc6">~bqGUIWindowBase</a> ()</td></tr>
-<tr class="separator:a8e36a68c86dbdc275b26fac3e9650bc6 inherit pub_methods_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
 <tr class="memitem:a1a65f48bb54e2943437026095c3f3b1e" id="r_a1a65f48bb54e2943437026095c3f3b1e"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a65f48bb54e2943437026095c3f3b1e">bqFramework</a></td></tr>
 <tr class="separator:a1a65f48bb54e2943437026095c3f3b1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c566c740bda0e75ae0fac03aed1339a" id="r_a4c566c740bda0e75ae0fac03aed1339a"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c566c740bda0e75ae0fac03aed1339a">bqWindow</a></td></tr>
+<tr class="separator:a4c566c740bda0e75ae0fac03aed1339a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -260,6 +285,18 @@ Additional Inherited Members</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:a54784b5346c9fe23a0290ba89c5bc796 inherit pub_types_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classbq_g_u_i_window_base"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_types_classbq_g_u_i_window_base')"><img src="../../closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></td></tr>
+<tr class="memitem:a2d5dce159c9ac657514807812ecd6ca9 inherit pub_types_classbq_g_u_i_window_base" id="r_a2d5dce159c9ac657514807812ecd6ca9"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+&#160;&#160;<a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a39051cf8f07f78da6b14de6a1e8db5a0">windowFlag_withTitleBar</a> = 0x1
+, <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9ae6e2ab34fcefcaded76e431d7080a121">windowFlag_withCollapseButton</a> = 0x2
+, <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a61c8df64cad882c7c63f01746d78659b">windowFlag_withCloseButton</a> = 0x4
+, <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a76059bb91a1ac3bb1f74981e2620d978">windowFlag_canMove</a> = 0x8
+, <br />
+&#160;&#160;<a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9a252da655c35c8c2cfcb15256adb24fdf">windowFlag_canResize</a> = 0x10
+, <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a2d5dce159c9ac657514807812ecd6ca9ac771f11944dba6489c6f801272563706">windowFlag_disableToTop</a> = 0x40
+<br />
+ }</td></tr>
+<tr class="separator:a2d5dce159c9ac657514807812ecd6ca9 inherit pub_types_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classbq_g_u_i_common"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_attribs_classbq_g_u_i_common')"><img src="../../closed.png" alt="-"/>&#160;Data Fields inherited from <a class="el" href="../../d1/d48/classbq_g_u_i_common.html">bqGUICommon</a></td></tr>
 <tr class="memitem:a6df9cd045aaec3338f1aca36bbe0b07c inherit pub_attribs_classbq_g_u_i_common" id="r_a6df9cd045aaec3338f1aca36bbe0b07c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a6df9cd045aaec3338f1aca36bbe0b07c">m_id</a> = 0</td></tr>
 <tr class="separator:a6df9cd045aaec3338f1aca36bbe0b07c inherit pub_attribs_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -283,6 +320,11 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a8d63f6493f11683c47fb8cffa106e6ad inherit pub_attribs_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b4e3a1eb08f712d4bdefc89ad68c931 inherit pub_attribs_classbq_g_u_i_common" id="r_a3b4e3a1eb08f712d4bdefc89ad68c931"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a3b4e3a1eb08f712d4bdefc89ad68c931">m_contentSize</a></td></tr>
 <tr class="separator:a3b4e3a1eb08f712d4bdefc89ad68c931 inherit pub_attribs_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_attribs_classbq_g_u_i_window_base"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_attribs_classbq_g_u_i_window_base')"><img src="../../closed.png" alt="-"/>&#160;Data Fields inherited from <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></td></tr>
+<tr class="memitem:a7d22487fa04f4559a477915cfa20bb15 inherit pub_attribs_classbq_g_u_i_window_base" id="r_a7d22487fa04f4559a477915cfa20bb15"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a7d22487fa04f4559a477915cfa20bb15">m_windowFlags</a> = 0</td></tr>
+<tr class="separator:a7d22487fa04f4559a477915cfa20bb15 inherit pub_attribs_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf99b815038c08f8f8943d43fc98f991 inherit pub_attribs_classbq_g_u_i_window_base" id="r_abf99b815038c08f8f8943d43fc98f991"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d65/bq_defines_8h.html#a3068631062aaf7da4cc0371da9e7a377">float32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#abf99b815038c08f8f8943d43fc98f991">m_titlebarHeight</a> = 12.f</td></tr>
+<tr class="separator:abf99b815038c08f8f8943d43fc98f991 inherit pub_attribs_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classbq_g_u_i_common"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_classbq_g_u_i_common')"><img src="../../closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="../../d1/d48/classbq_g_u_i_common.html">bqGUICommon</a></td></tr>
 <tr class="memitem:a33f8a4552d61f0355594d2d083843463 inherit pro_attribs_classbq_g_u_i_common" id="r_a33f8a4552d61f0355594d2d083843463"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d57/structbq_g_u_i_style.html">bqGUIStyle</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a33f8a4552d61f0355594d2d083843463">m_style</a> = 0</td></tr>
 <tr class="separator:a33f8a4552d61f0355594d2d083843463 inherit pro_attribs_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -296,13 +338,23 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:abcda6c5bc5c6db7260140d858bf598ff inherit pro_attribs_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4e2f4cb475701af3c3d385542f6e01b inherit pro_attribs_classbq_g_u_i_common" id="r_ac4e2f4cb475701af3c3d385542f6e01b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../df/d9e/bq_forward_8h.html#a6c395042091dbd413db81851f8122f0d">bqVec4f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d48/classbq_g_u_i_common.html#ac4e2f4cb475701af3c3d385542f6e01b">m_buildRectOnCreation</a></td></tr>
 <tr class="separator:ac4e2f4cb475701af3c3d385542f6e01b inherit pro_attribs_classbq_g_u_i_common"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classbq_g_u_i_window_base"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_classbq_g_u_i_window_base')"><img src="../../closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></td></tr>
+<tr class="memitem:a4d72d895423e06f3819e166b67cace4a inherit pro_attribs_classbq_g_u_i_window_base" id="r_a4d72d895423e06f3819e166b67cace4a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a4d72d895423e06f3819e166b67cace4a">m_systemWindow</a> = 0</td></tr>
+<tr class="separator:a4d72d895423e06f3819e166b67cace4a inherit pro_attribs_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3722296ca97161a66582c1f6e3bcb9f4 inherit pro_attribs_classbq_g_u_i_window_base" id="r_a3722296ca97161a66582c1f6e3bcb9f4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dc/dde/classbq_string.html">bqString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a3722296ca97161a66582c1f6e3bcb9f4">m_title</a></td></tr>
+<tr class="separator:a3722296ca97161a66582c1f6e3bcb9f4 inherit pro_attribs_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32c26902287571aad0a41a6334f52ddf inherit pro_attribs_classbq_g_u_i_window_base" id="r_a32c26902287571aad0a41a6334f52ddf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../df/d9e/bq_forward_8h.html#a6c395042091dbd413db81851f8122f0d">bqVec4f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html#a32c26902287571aad0a41a6334f52ddf">m_titlebarRect</a></td></tr>
+<tr class="separator:a32c26902287571aad0a41a6334f52ddf inherit pro_attribs_classbq_g_u_i_window_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classbq_hierarchy"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_classbq_hierarchy')"><img src="../../closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="../../d8/dd1/classbq_hierarchy.html">bqHierarchy</a></td></tr>
 <tr class="memitem:a638846495827b42aee98f41828497d27 inherit pro_attribs_classbq_hierarchy" id="r_a638846495827b42aee98f41828497d27"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/dd1/classbq_hierarchy.html">bqHierarchy</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd1/classbq_hierarchy.html#a638846495827b42aee98f41828497d27">m_parent</a> = 0</td></tr>
 <tr class="separator:a638846495827b42aee98f41828497d27 inherit pro_attribs_classbq_hierarchy"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9fc698f482ba2c6d9374613c06f0d02 inherit pro_attribs_classbq_hierarchy" id="r_af9fc698f482ba2c6d9374613c06f0d02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d2/d73/classbq_list.html">bqList</a>&lt; <a class="el" href="../../d8/dd1/classbq_hierarchy.html">bqHierarchy</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd1/classbq_hierarchy.html#af9fc698f482ba2c6d9374613c06f0d02">m_children</a></td></tr>
 <tr class="separator:af9fc698f482ba2c6d9374613c06f0d02 inherit pro_attribs_classbq_hierarchy"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Все GUI элементы добавляются в окно. </p>
+<p>Размер окна включает всё что у окна есть, например тайтл бар. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a103d34ff166f39e3cb3f5264ff6b3a9f" name="a103d34ff166f39e3cb3f5264ff6b3a9f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a103d34ff166f39e3cb3f5264ff6b3a9f">&#9670;&#160;</a></span>bqGUIWindow()</h2>
 
@@ -350,23 +402,22 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a22bffbec52c30a54ccbff71a45d9c60e" name="a22bffbec52c30a54ccbff71a45d9c60e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22bffbec52c30a54ccbff71a45d9c60e">&#9670;&#160;</a></span>AddElement()</h2>
+<a id="ad5c3560ef8eeb7c21dc22018fc31a0f8" name="ad5c3560ef8eeb7c21dc22018fc31a0f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5c3560ef8eeb7c21dc22018fc31a0f8">&#9670;&#160;</a></span>Activate()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void bqGUIWindow::AddElement </td>
+          <td class="memname">void bqGUIWindow::Activate </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a> *</td>          <td class="paramname"><span class="paramname"><em>el</em></span></td><td>)</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Добавить элемент в окно. </p>
-<p>Передача элементов окну происходит установкой им родителя element-&gt;SetParent(window); </p>
+<p>Активировать окно. </p>
 
 </div>
 </div>
@@ -387,20 +438,167 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a2e6242a49060967142a3c61f55b8c563" name="a2e6242a49060967142a3c61f55b8c563"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e6242a49060967142a3c61f55b8c563">&#9670;&#160;</a></span>RemoveElement()</h2>
+<a id="a03d0654fd7c0b9a3d6cbd8951d160b10" name="a03d0654fd7c0b9a3d6cbd8951d160b10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03d0654fd7c0b9a3d6cbd8951d160b10">&#9670;&#160;</a></span>Deactivate()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void bqGUIWindow::RemoveElement </td>
+          <td class="memname">void bqGUIWindow::Deactivate </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a> *</td>          <td class="paramname"><span class="paramname"><em>el</em></span></td><td>)</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Деактивировать окно. </p>
+
+</div>
+</div>
+<a id="adbfb9cecef58f95b2f50e499ce00a57a" name="adbfb9cecef58f95b2f50e499ce00a57a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbfb9cecef58f95b2f50e499ce00a57a">&#9670;&#160;</a></span>Draw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void bqGUIWindow::Draw </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *</td>          <td class="paramname"><span class="paramname"><em>gs</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>dt</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d1/d48/classbq_g_u_i_common.html" title="Общие данные для GUI вещей.">bqGUICommon</a> </dd></dl>
+
+<p>Implements <a class="el" href="../../d1/d48/classbq_g_u_i_common.html#a5ec9517863efa61063207113400897dd">bqGUICommon</a>.</p>
+
+</div>
+</div>
+<a id="a10402435842658f3ad04966b39585f62" name="a10402435842658f3ad04966b39585f62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10402435842658f3ad04966b39585f62">&#9670;&#160;</a></span>OnColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../da/d63/classbq_color.html">bqColor</a> * bqGUIWindow::OnColor </td>
+          <td>(</td>
+          <td class="paramtype">char32_t</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить цвет которым будет закрашен указанный символ </p>
+
+</div>
+</div>
+<a id="a1b75bbf2b571b5d79760df49f59356ac" name="a1b75bbf2b571b5d79760df49f59356ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b75bbf2b571b5d79760df49f59356ac">&#9670;&#160;</a></span>OnFont()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d4/da8/classbq_g_u_i_font.html">bqGUIFont</a> * bqGUIWindow::OnFont </td>
+          <td>(</td>
+          <td class="paramtype">char32_t</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить шрифт который будет использоваться для рисования указанного символа </p>
+
+</div>
+</div>
+<a id="ae218dd9bb087114b0031ecce7e89a48c" name="ae218dd9bb087114b0031ecce7e89a48c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae218dd9bb087114b0031ecce7e89a48c">&#9670;&#160;</a></span>Rebuild()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void bqGUIWindow::Rebuild </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d1/d48/classbq_g_u_i_common.html" title="Общие данные для GUI вещей.">bqGUICommon</a> </dd></dl>
+
+<p>Implements <a class="el" href="../../d1/d48/classbq_g_u_i_common.html#acccfc1da3fb8a350e5e493a86e5aff19">bqGUICommon</a>.</p>
+
+</div>
+</div>
+<a id="ae352e6ef297de32a5d3e699f65062b33" name="ae352e6ef297de32a5d3e699f65062b33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae352e6ef297de32a5d3e699f65062b33">&#9670;&#160;</a></span>ToTop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void bqGUIWindow::ToTop </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установить окно поверх других окон. </p>
+
+</div>
+</div>
+<a id="af16f752941d97ef76a4bcf839aa9b799" name="af16f752941d97ef76a4bcf839aa9b799"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af16f752941d97ef76a4bcf839aa9b799">&#9670;&#160;</a></span>Update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void bqGUIWindow::Update </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d1/d48/classbq_g_u_i_common.html" title="Общие данные для GUI вещей.">bqGUICommon</a> </dd></dl>
+
+<p>Reimplemented from <a class="el" href="../../d1/d48/classbq_g_u_i_common.html#abfaeb76769bee89079148369e6520826">bqGUICommon</a>.</p>
 
 </div>
 </div>
@@ -416,6 +614,28 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">friend class <a class="el" href="../../da/d6a/classbq_framework.html">bqFramework</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4c566c740bda0e75ae0fac03aed1339a" name="a4c566c740bda0e75ae0fac03aed1339a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c566c740bda0e75ae0fac03aed1339a">&#9670;&#160;</a></span>bqWindow</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a></td>
         </tr>
       </table>
   </td>

@@ -125,7 +125,11 @@ public:
 	void SetInfo(const bqTextureInfo& ti) { m_info = ti; }
 };
 
-/// Работает на основе динамического массива
+/// \brief Контейнер для хранения текстур.
+/// 
+/// Создано для удобства.
+/// Работает на основе динамического массива.
+/// Для большего понимания следует изучить bqResourceCache
 class bqTextureCache : public bqResourceCache<bqTexture*>
 {
 	bqGS* m_gs = 0;
@@ -134,7 +138,16 @@ public:
 	virtual ~bqTextureCache();
 	BQ_PLACEMENT_ALLOCATOR(bqTextureCache);
 	
+	/// \brief Используется классом bqResourceCache для освобождения памяти
+	///
+	/// Вручную использовать нельзя. Так как потом базовый класс будет
+	/// очищать массив.
 	virtual void Free(bqTexture* r) override;
+
+	/// \brief Используется классом bqResourceCache для загрузки текстуры
+	///
+	/// Вручную использовать нельзя...не желательно.
+	/// Для получения текстуры надо использовать метод Get
 	virtual bqTexture* Load(const char* path) override;
 
 	/// Настройка фильтрации и прочее.

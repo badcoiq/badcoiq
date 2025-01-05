@@ -172,25 +172,32 @@ public:
 	// Метод сам загрузит bqImage, создаст текстуру и удалит bqImage
 	static bqTexture* SummonTexture(bqGS*, const char*, bool genMipMaps = true, bool linearFilter = true);
 	
+	/// \brief Создать bqTextureCache
 	static bqTextureCache* SummonTextureCache(bqGS*);
 #endif
 
+	/// \brief Узнать, существует ли файл
 	static bool FileExist(const char*);
 	static bool FileExist(const bqString&);
 
+	/// \brief Получить размер файла
 	static uint64_t FileSize(const char*);
 	static uint64_t FileSize(const bqString&);
 
+	/// \brief Получить путь к программе
 	static bqString GetAppPath();
 	static bqStringA GetAppPathA();
 
-	// Получить путь к файлу относительно программы
-	// Если файла нет, то путь урежится, и его можно
-	// будет использовать в поиске файла в архиве.
-	// Например, путь ../data/img/1.png
-	// Если файла нет то вернётся
-	// data/img/1.png
+	/// \brief Получить путь к файлу относительно программы
+	/// 
+	/// Если файла нет, то путь урежится, и его можно
+	/// будет использовать в поиске файла в архиве.
+	/// Например, путь ../data/img/1.png
+	/// Если файла нет то вернётся
+	/// data/img/1.png
 	static bqStringA GetPath(const bqString& v);
+
+	
 
 #ifdef BQ_WITH_GUI
 	static void InitDefaultFonts(bqGS* gs);
@@ -202,11 +209,14 @@ public:
 	//static void UpdateGUI();
 	//static void DrawGUI(bqGS* gs);
 	//static void RebuildGUI();
-
+	
+	// пока лишнее
 	static void Destroy(bqGUIWindow*);
 	static void Destroy(bqGUIElement*);
-#endif
 
+	/// \brief Получить bqGUIState. Только для чтения.
+	static const bqGUIState& GetGUIState();
+#endif
 	static bqCursor* SummonCursor(const char* fn);
 	static bqCursor* GetDefaultCursor(bqCursorType);
 	static bqCursor* GetActiveCursor();

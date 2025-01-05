@@ -456,6 +456,14 @@ void bqGUIWindow::Rebuild()
 
 void bqGUIWindow::Update()
 {
+	bqGUICommon::Update();
+
+	if (m_flags & bqGUICommon::flag_cursorInRect)
+	{
+		if(!g_framework->m_GUIState.m_windowUnderCursor)
+			g_framework->m_GUIState.m_windowUnderCursor = this;
+	}
+
 	// сброс.
 //    m_windowCursorInfo = CursorInfo_out;
 //

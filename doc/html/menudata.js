@@ -131,7 +131,8 @@ var menudata={children:[
 {text:"r",url:"functions_eval_r.html#index_r"},
 {text:"s",url:"functions_eval_s.html#index_s"},
 {text:"t",url:"functions_eval_t.html#index_t"},
-{text:"v",url:"functions_eval_v.html#index_v"}]},
+{text:"v",url:"functions_eval_v.html#index_v"},
+{text:"w",url:"functions_eval_w.html#index_w"}]},
 {text:"Related Symbols",url:"functions_rela.html"}]}]},
 {text:"Files",url:"files.html",children:[
 {text:"File List",url:"files.html"},

@@ -290,13 +290,23 @@ void DemoApp::Run()
 	while (m_isRun)
 	{
 		bqFramework::Update();
+		
+		m_window->UpdateGUI();
 
 		m_gs->EnableBlend();
 
 		if (m_activeExample)
 			m_activeExample->OnDraw();
 		else
+		{
+			auto w = bqFramework::GetGUIState().m_windowUnderCursor;
+			if (w)
+			{
+				bqLog::Print(U"%lls\n", w->GetTitleText().c_str());
+				
+			}
 			OnDraw();
+		}
 	}
 }
 
@@ -319,8 +329,6 @@ void DemoApp::OnDraw()
 	m_gs->SetClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
 	m_gs->BeginGUI();
-	m_window->UpdateGUI();
-
 	m_window->DrawGUI(m_gs);
 	m_gs->SetScissorRect(bqVec4f(0.f, 0.f,
 		(float)m_window->GetCurrentSize()->x, (float)m_window->GetCurrentSize()->y));

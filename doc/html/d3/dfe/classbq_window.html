@@ -90,6 +90,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Системное окно  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="../../d5/da5/bq_window_8h_source.html">bqWindow.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for bqWindow:</div>
@@ -110,39 +113,71 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8d84387d59b7d4715924a4e321213120" id="r_a8d84387d59b7d4715924a4e321213120"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d84387d59b7d4715924a4e321213120">~bqWindow</a> ()</td></tr>
 <tr class="separator:a8d84387d59b7d4715924a4e321213120"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74ca155a818e68b599e4632151bbbb58" id="r_a74ca155a818e68b599e4632151bbbb58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74ca155a818e68b599e4632151bbbb58">SetTitle</a> (const char *)</td></tr>
+<tr class="memdesc:a74ca155a818e68b599e4632151bbbb58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить заголовок  <br /></td></tr>
 <tr class="separator:a74ca155a818e68b599e4632151bbbb58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a893c42fcc4005121c085e003c0a4049d" id="r_a893c42fcc4005121c085e003c0a4049d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a893c42fcc4005121c085e003c0a4049d">SetVisible</a> (bool v)</td></tr>
+<tr class="memdesc:a893c42fcc4005121c085e003c0a4049d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Скрыть\показать  <br /></td></tr>
 <tr class="separator:a893c42fcc4005121c085e003c0a4049d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80c9d18c178492e60640e2b49a75daca" id="r_a80c9d18c178492e60640e2b49a75daca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80c9d18c178492e60640e2b49a75daca">IsVisible</a> ()</td></tr>
+<tr class="memdesc:a80c9d18c178492e60640e2b49a75daca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Узнать, видимо ли окно. Можно скипать рисование если окно например свёрнуто.  <br /></td></tr>
 <tr class="separator:a80c9d18c178492e60640e2b49a75daca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9465c0877498c74f86a7d957e17f64e4" id="r_a9465c0877498c74f86a7d957e17f64e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9465c0877498c74f86a7d957e17f64e4">Maximize</a> ()</td></tr>
+<tr class="memdesc:a9465c0877498c74f86a7d957e17f64e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Развернуть в полный экран  <br /></td></tr>
 <tr class="separator:a9465c0877498c74f86a7d957e17f64e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42c3761b57eddcb8c46fdd5601c7c05c" id="r_a42c3761b57eddcb8c46fdd5601c7c05c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a42c3761b57eddcb8c46fdd5601c7c05c">Minimize</a> ()</td></tr>
+<tr class="memdesc:a42c3761b57eddcb8c46fdd5601c7c05c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Свернуть  <br /></td></tr>
 <tr class="separator:a42c3761b57eddcb8c46fdd5601c7c05c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13601b39b41a950d0bd74134e23fead1" id="r_a13601b39b41a950d0bd74134e23fead1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a13601b39b41a950d0bd74134e23fead1">Restore</a> ()</td></tr>
+<tr class="memdesc:a13601b39b41a950d0bd74134e23fead1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Восстановить оконное состояние (ну типа оконное, не полный экран)  <br /></td></tr>
 <tr class="separator:a13601b39b41a950d0bd74134e23fead1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9375f1fa1da605c30fc9400516212467" id="r_a9375f1fa1da605c30fc9400516212467"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9375f1fa1da605c30fc9400516212467">SetBorderless</a> (bool)</td></tr>
+<tr class="memdesc:a9375f1fa1da605c30fc9400516212467"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить\убрать рамку  <br /></td></tr>
 <tr class="separator:a9375f1fa1da605c30fc9400516212467"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a328f9336f43cae6c7a27d220d38687aa" id="r_a328f9336f43cae6c7a27d220d38687aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a328f9336f43cae6c7a27d220d38687aa">SetNoResize</a> (bool)</td></tr>
+<tr class="memdesc:a328f9336f43cae6c7a27d220d38687aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить\убрать возможность изменять размер  <br /></td></tr>
 <tr class="separator:a328f9336f43cae6c7a27d220d38687aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71038ba5bf2d68862cec1a1a8e06b73e" id="r_a71038ba5bf2d68862cec1a1a8e06b73e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71038ba5bf2d68862cec1a1a8e06b73e">SetNoMinimize</a> (bool)</td></tr>
+<tr class="memdesc:a71038ba5bf2d68862cec1a1a8e06b73e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Показать\скрыть кнопку "свернуть окно".  <br /></td></tr>
 <tr class="separator:a71038ba5bf2d68862cec1a1a8e06b73e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9ae957a86cc717319b473ed047593fb" id="r_ad9ae957a86cc717319b473ed047593fb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad9ae957a86cc717319b473ed047593fb">GetSizeMinimum</a> ()</td></tr>
+<tr class="memdesc:ad9ae957a86cc717319b473ed047593fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить минимальный размер окна.  <br /></td></tr>
 <tr class="separator:ad9ae957a86cc717319b473ed047593fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb552776510f412fbe2336a7cb9b0e3f" id="r_afb552776510f412fbe2336a7cb9b0e3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb552776510f412fbe2336a7cb9b0e3f">GetBorderSize</a> ()</td></tr>
+<tr class="memdesc:afb552776510f412fbe2336a7cb9b0e3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить размер рамки  <br /></td></tr>
 <tr class="separator:afb552776510f412fbe2336a7cb9b0e3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21f1957da7bf6e6d744ae46834e5d234" id="r_a21f1957da7bf6e6d744ae46834e5d234"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21f1957da7bf6e6d744ae46834e5d234">GetCurrentSize</a> ()</td></tr>
+<tr class="memdesc:a21f1957da7bf6e6d744ae46834e5d234"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить текущий размер  <br /></td></tr>
 <tr class="separator:a21f1957da7bf6e6d744ae46834e5d234"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69130e9c4453a62bdbfede25081fdecf" id="r_a69130e9c4453a62bdbfede25081fdecf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/d78/structbq_window_common_data.html">bqWindowCommonData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69130e9c4453a62bdbfede25081fdecf">GetData</a> ()</td></tr>
+<tr class="memdesc:a69130e9c4453a62bdbfede25081fdecf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить данные  <br /></td></tr>
 <tr class="separator:a69130e9c4453a62bdbfede25081fdecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6331fc4c78add0b6e0b7de58466200ac" id="r_a6331fc4c78add0b6e0b7de58466200ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6331fc4c78add0b6e0b7de58466200ac">SetPositionAndSize</a> (int x, int y, int sx, int sy)</td></tr>
+<tr class="memdesc:a6331fc4c78add0b6e0b7de58466200ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить позицию и размер  <br /></td></tr>
 <tr class="separator:a6331fc4c78add0b6e0b7de58466200ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3e5c43c4acc25925c3dcac915f3a8fa" id="r_ab3e5c43c4acc25925c3dcac915f3a8fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab3e5c43c4acc25925c3dcac915f3a8fa">ToFullscreenMode</a> ()</td></tr>
+<tr class="memdesc:ab3e5c43c4acc25925c3dcac915f3a8fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">В полный экран  <br /></td></tr>
 <tr class="separator:ab3e5c43c4acc25925c3dcac915f3a8fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ecfcca50ae6b0a8befd8e18ac928b66" id="r_a9ecfcca50ae6b0a8befd8e18ac928b66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ecfcca50ae6b0a8befd8e18ac928b66">ToWindowMode</a> ()</td></tr>
+<tr class="memdesc:a9ecfcca50ae6b0a8befd8e18ac928b66"><td class="mdescLeft">&#160;</td><td class="mdescRight">В оконный режим  <br /></td></tr>
 <tr class="separator:a9ecfcca50ae6b0a8befd8e18ac928b66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26b3d8a5bb08ee84b5169ccee0de5364" id="r_a26b3d8a5bb08ee84b5169ccee0de5364"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a26b3d8a5bb08ee84b5169ccee0de5364">GetCenter</a> (<a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;)</td></tr>
+<tr class="memdesc:a26b3d8a5bb08ee84b5169ccee0de5364"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить центр относительно окна (<a class="el" href="../../d3/dfe/classbq_window.html" title="Системное окно">bqWindow</a>)  <br /></td></tr>
 <tr class="separator:a26b3d8a5bb08ee84b5169ccee0de5364"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b494539965a40e324658b5ff99e7899" id="r_a8b494539965a40e324658b5ff99e7899"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b494539965a40e324658b5ff99e7899">AddGUIWindow</a> (<a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> *)</td></tr>
+<tr class="memdesc:a8b494539965a40e324658b5ff99e7899"><td class="mdescLeft">&#160;</td><td class="mdescRight">Добавить GUI окно.  <br /></td></tr>
+<tr class="separator:a8b494539965a40e324658b5ff99e7899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa905fe1103f51bc571986720bd67d1b7" id="r_aa905fe1103f51bc571986720bd67d1b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa905fe1103f51bc571986720bd67d1b7">RebuildGUI</a> ()</td></tr>
+<tr class="memdesc:aa905fe1103f51bc571986720bd67d1b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обновить расположение всех окон и элементов внутри.  <br /></td></tr>
+<tr class="separator:aa905fe1103f51bc571986720bd67d1b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae364176698631d6129d56cfe1210d04" id="r_aae364176698631d6129d56cfe1210d04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae364176698631d6129d56cfe1210d04">UpdateGUI</a> ()</td></tr>
+<tr class="memdesc:aae364176698631d6129d56cfe1210d04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Оживление GUI - определение нажатий на кнопки и т.д.  <br /></td></tr>
+<tr class="separator:aae364176698631d6129d56cfe1210d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebedcb297b5c04f44147287fa301d540" id="r_aebedcb297b5c04f44147287fa301d540"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aebedcb297b5c04f44147287fa301d540">DrawGUI</a> (<a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *)</td></tr>
+<tr class="memdesc:aebedcb297b5c04f44147287fa301d540"><td class="mdescLeft">&#160;</td><td class="mdescRight">Рисование всех GUI окон.  <br /></td></tr>
+<tr class="separator:aebedcb297b5c04f44147287fa301d540"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c17e97b550782a38ee299a6c981cc9c" id="r_a8c17e97b550782a38ee299a6c981cc9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d2/d73/classbq_list.html">bqList</a>&lt; <a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c17e97b550782a38ee299a6c981cc9c">GetGUIWindows</a> ()</td></tr>
+<tr class="memdesc:a8c17e97b550782a38ee299a6c981cc9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить список всех GUI окон.  <br /></td></tr>
+<tr class="separator:a8c17e97b550782a38ee299a6c981cc9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classbq_user_data"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classbq_user_data')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../dc/dd2/classbq_user_data.html">bqUserData</a></td></tr>
 <tr class="memitem:aad7f7a6610a713ce009a5f52aa84d07d inherit pub_methods_classbq_user_data" id="r_aad7f7a6610a713ce009a5f52aa84d07d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/dd2/classbq_user_data.html#aad7f7a6610a713ce009a5f52aa84d07d">bqUserData</a> ()</td></tr>
 <tr class="separator:aad7f7a6610a713ce009a5f52aa84d07d inherit pub_methods_classbq_user_data"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,7 +190,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a99e5487255dbab78f5afec5a0af9879d inherit pub_methods_classbq_user_data"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить пользовательские данные.  <br /></td></tr>
 <tr class="separator:a99e5487255dbab78f5afec5a0af9879d inherit pub_methods_classbq_user_data"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Системное окно </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa0f58d103401d7d9d5ebf5362cede7c7" name="aa0f58d103401d7d9d5ebf5362cede7c7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa0f58d103401d7d9d5ebf5362cede7c7">&#9670;&#160;</a></span>bqWindow()</h2>
 
@@ -191,6 +228,26 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8b494539965a40e324658b5ff99e7899" name="a8b494539965a40e324658b5ff99e7899"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b494539965a40e324658b5ff99e7899">&#9670;&#160;</a></span>AddGUIWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void bqWindow::AddGUIWindow </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Добавить GUI окно. </p>
+<p>GUI окна рисуются в системные окна. При создании GUI окна, установка происходит автоматически. Рисование, обновление и перестройка GUI происходит не по общему списку GUI окон как это было ранее, а в соответствии с системными окнами. Далее должно быть проще реализовать рисование во множество системных окон. </p>
+
+</div>
+</div>
 <a id="a1a7253abb43e28c98b382eadd3403c49" name="a1a7253abb43e28c98b382eadd3403c49"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1a7253abb43e28c98b382eadd3403c49">&#9670;&#160;</a></span>BQ_PLACEMENT_ALLOCATOR()</h2>
 
@@ -205,6 +262,25 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="aebedcb297b5c04f44147287fa301d540" name="aebedcb297b5c04f44147287fa301d540"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebedcb297b5c04f44147287fa301d540">&#9670;&#160;</a></span>DrawGUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void bqWindow::DrawGUI </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../dc/d42/classbq_g_s.html">bqGS</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Рисование всех GUI окон. </p>
 
 </div>
 </div>
@@ -231,6 +307,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить размер рамки </p>
+
 </div>
 </div>
 <a id="a26b3d8a5bb08ee84b5169ccee0de5364" name="a26b3d8a5bb08ee84b5169ccee0de5364"></a>
@@ -247,6 +325,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Получить центр относительно окна (<a class="el" href="../../d3/dfe/classbq_window.html" title="Системное окно">bqWindow</a>) </p>
 
 </div>
 </div>
@@ -273,6 +353,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить текущий размер </p>
+
 </div>
 </div>
 <a id="a69130e9c4453a62bdbfede25081fdecf" name="a69130e9c4453a62bdbfede25081fdecf"></a>
@@ -297,6 +379,36 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Получить данные </p>
+
+</div>
+</div>
+<a id="a8c17e97b550782a38ee299a6c981cc9c" name="a8c17e97b550782a38ee299a6c981cc9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c17e97b550782a38ee299a6c981cc9c">&#9670;&#160;</a></span>GetGUIWindows()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d2/d73/classbq_list.html">bqList</a>&lt; <a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> * &gt; * bqWindow::GetGUIWindows </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Получить список всех GUI окон. </p>
+<p>Использовать список только для чтения. </p>
 
 </div>
 </div>
@@ -323,6 +435,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить минимальный размер окна. </p>
+<p>Тут, указатели для того чтобы получить их и сохранить где-то, и не вызывать эти методы каждый раз, так как в таком случае потребуется вызывать постоянно. </p>
+
 </div>
 </div>
 <a id="a80c9d18c178492e60640e2b49a75daca" name="a80c9d18c178492e60640e2b49a75daca"></a>
@@ -348,6 +463,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Узнать, видимо ли окно. Можно скипать рисование если окно например свёрнуто. </p>
+
 </div>
 </div>
 <a id="a9465c0877498c74f86a7d957e17f64e4" name="a9465c0877498c74f86a7d957e17f64e4"></a>
@@ -364,6 +481,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Развернуть в полный экран </p>
 
 </div>
 </div>
@@ -382,6 +501,28 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Свернуть </p>
+
+</div>
+</div>
+<a id="aa905fe1103f51bc571986720bd67d1b7" name="aa905fe1103f51bc571986720bd67d1b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa905fe1103f51bc571986720bd67d1b7">&#9670;&#160;</a></span>RebuildGUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void bqWindow::RebuildGUI </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обновить расположение всех окон и элементов внутри. </p>
+<p>Вычисляются все области (для рисования, для определения нажатия, clip rect и прочие), вычисляются позиции например текста. Так-же прочие вычисления, когда достаточно обновить только 1 раз при изменении какого-то значения. Например, изменили размер окна - вызвали <a class="el" href="#aa905fe1103f51bc571986720bd67d1b7" title="Обновить расположение всех окон и элементов внутри.">RebuildGUI()</a>; Добавили или убрали элемент - вызвали <a class="el" href="#aa905fe1103f51bc571986720bd67d1b7" title="Обновить расположение всех окон и элементов внутри.">RebuildGUI()</a>; </p>
+
 </div>
 </div>
 <a id="a13601b39b41a950d0bd74134e23fead1" name="a13601b39b41a950d0bd74134e23fead1"></a>
@@ -398,6 +539,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Восстановить оконное состояние (ну типа оконное, не полный экран) </p>
 
 </div>
 </div>
@@ -416,6 +559,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Установить\убрать рамку </p>
+
 </div>
 </div>
 <a id="a71038ba5bf2d68862cec1a1a8e06b73e" name="a71038ba5bf2d68862cec1a1a8e06b73e"></a>
@@ -433,6 +578,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Показать\скрыть кнопку "свернуть окно". </p>
+
 </div>
 </div>
 <a id="a328f9336f43cae6c7a27d220d38687aa" name="a328f9336f43cae6c7a27d220d38687aa"></a>
@@ -449,6 +596,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Установить\убрать возможность изменять размер </p>
 
 </div>
 </div>
@@ -481,6 +630,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Установить позицию и размер </p>
+
 </div>
 </div>
 <a id="a74ca155a818e68b599e4632151bbbb58" name="a74ca155a818e68b599e4632151bbbb58"></a>
@@ -497,6 +648,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Установить заголовок </p>
 
 </div>
 </div>
@@ -515,6 +668,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Скрыть\показать </p>
+
 </div>
 </div>
 <a id="ab3e5c43c4acc25925c3dcac915f3a8fa" name="ab3e5c43c4acc25925c3dcac915f3a8fa"></a>
@@ -532,6 +687,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>В полный экран </p>
+
 </div>
 </div>
 <a id="a9ecfcca50ae6b0a8befd8e18ac928b66" name="a9ecfcca50ae6b0a8befd8e18ac928b66"></a>
@@ -548,6 +705,27 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>В оконный режим </p>
+
+</div>
+</div>
+<a id="aae364176698631d6129d56cfe1210d04" name="aae364176698631d6129d56cfe1210d04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae364176698631d6129d56cfe1210d04">&#9670;&#160;</a></span>UpdateGUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void bqWindow::UpdateGUI </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Оживление GUI - определение нажатий на кнопки и т.д. </p>
 
 </div>
 </div>

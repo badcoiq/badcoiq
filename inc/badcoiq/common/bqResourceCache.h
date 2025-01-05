@@ -46,7 +46,7 @@ struct bqResourceCacheNode
 	bqStringA* m_path = 0;
 };
 
-/// Базовый класс для создания контейнеров хранящих
+/// \brief Базовый класс для создания контейнеров хранящих
 /// какой-то ресурс.
 template<class _type>
 class bqResourceCache

@@ -58,6 +58,9 @@
     <Filter Include="Source Files\GS">
       <UniqueIdentifier>{377c51f8-c500-4286-bfa5-d3331e65778c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CRT">
+      <UniqueIdentifier>{9bbfc250-7bcf-44c2-a5d0-e32c2344f18d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\badcoiq\badcoiq.cpp">
@@ -233,6 +236,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\badcoiq\GS\bqTextureCache.cpp">
       <Filter>Source Files\GS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\CRT\bqCRT.cpp">
+      <Filter>CRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\common\bqStream.cpp">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

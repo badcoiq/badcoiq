@@ -90,28 +90,41 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Общие данные для системного окна  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="../../d5/da5/bq_window_8h_source.html">bqWindow.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:afab75078d827cc72f0398acf80079976" id="r_afab75078d827cc72f0398acf80079976"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../df/d4a/classbq_window_callback.html">bqWindowCallback</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afab75078d827cc72f0398acf80079976">m_cb</a> = 0</td></tr>
+<tr class="memdesc:afab75078d827cc72f0398acf80079976"><td class="mdescLeft">&#160;</td><td class="mdescRight">тут хранится указатель на коллбэк  <br /></td></tr>
 <tr class="separator:afab75078d827cc72f0398acf80079976"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a726d21714c782e2791aae0cfd028e809" id="r_a726d21714c782e2791aae0cfd028e809"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a726d21714c782e2791aae0cfd028e809">m_borderSize</a></td></tr>
+<tr class="memdesc:a726d21714c782e2791aae0cfd028e809"><td class="mdescLeft">&#160;</td><td class="mdescRight">размер рамки  <br /></td></tr>
 <tr class="separator:a726d21714c782e2791aae0cfd028e809"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca457b5d4f303ba4e734a142d0328a39" id="r_aca457b5d4f303ba4e734a142d0328a39"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aca457b5d4f303ba4e734a142d0328a39">m_sizeMinimum</a></td></tr>
+<tr class="memdesc:aca457b5d4f303ba4e734a142d0328a39"><td class="mdescLeft">&#160;</td><td class="mdescRight">минимальный размер окна  <br /></td></tr>
 <tr class="separator:aca457b5d4f303ba4e734a142d0328a39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a912f1e763fb5b1580c6aa4828795d139" id="r_a912f1e763fb5b1580c6aa4828795d139"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a912f1e763fb5b1580c6aa4828795d139">m_sizeCurrent</a></td></tr>
+<tr class="memdesc:a912f1e763fb5b1580c6aa4828795d139"><td class="mdescLeft">&#160;</td><td class="mdescRight">текущий размер окна (клиентской области)  <br /></td></tr>
 <tr class="separator:a912f1e763fb5b1580c6aa4828795d139"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92d7035927b0f4b896d2b8029187f2f3" id="r_a92d7035927b0f4b896d2b8029187f2f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92d7035927b0f4b896d2b8029187f2f3">m_position</a></td></tr>
+<tr class="memdesc:a92d7035927b0f4b896d2b8029187f2f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">координата левого верхнего угла относительно монитора  <br /></td></tr>
 <tr class="separator:a92d7035927b0f4b896d2b8029187f2f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77d2d5db044330dfb0dbb5ceb0c72950" id="r_a77d2d5db044330dfb0dbb5ceb0c72950"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77d2d5db044330dfb0dbb5ceb0c72950">m_isVisible</a> = false</td></tr>
+<tr class="memdesc:a77d2d5db044330dfb0dbb5ceb0c72950"><td class="mdescLeft">&#160;</td><td class="mdescRight">окно видимо или нет  <br /></td></tr>
 <tr class="separator:a77d2d5db044330dfb0dbb5ceb0c72950"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae515f3c4fa3dd16a4f7075d24cd2f128" id="r_ae515f3c4fa3dd16a4f7075d24cd2f128"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae515f3c4fa3dd16a4f7075d24cd2f128">m_implementation</a> = 0</td></tr>
+<tr class="memdesc:ae515f3c4fa3dd16a4f7075d24cd2f128"><td class="mdescLeft">&#160;</td><td class="mdescRight">данные специфичные для ОС  <br /></td></tr>
 <tr class="separator:ae515f3c4fa3dd16a4f7075d24cd2f128"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47c87ef922f97bd528214d0e161dfdb0" id="r_a47c87ef922f97bd528214d0e161dfdb0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a47c87ef922f97bd528214d0e161dfdb0">m_isFullscreen</a> = false</td></tr>
+<tr class="memdesc:a47c87ef922f97bd528214d0e161dfdb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Работает ли полноэкранный режим без рамки  <br /></td></tr>
 <tr class="separator:a47c87ef922f97bd528214d0e161dfdb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Общие данные для системного окна </p>
+</div><h2 class="groupheader">Field Documentation</h2>
 <a id="a726d21714c782e2791aae0cfd028e809" name="a726d21714c782e2791aae0cfd028e809"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a726d21714c782e2791aae0cfd028e809">&#9670;&#160;</a></span>m_borderSize</h2>
 
@@ -123,6 +136,8 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>размер рамки </p>
 
 </div>
 </div>
@@ -138,6 +153,8 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>тут хранится указатель на коллбэк </p>
+
 </div>
 </div>
 <a id="ae515f3c4fa3dd16a4f7075d24cd2f128" name="ae515f3c4fa3dd16a4f7075d24cd2f128"></a>
@@ -151,6 +168,8 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>данные специфичные для ОС </p>
 
 </div>
 </div>
@@ -166,6 +185,8 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Работает ли полноэкранный режим без рамки </p>
+
 </div>
 </div>
 <a id="a77d2d5db044330dfb0dbb5ceb0c72950" name="a77d2d5db044330dfb0dbb5ceb0c72950"></a>
@@ -179,6 +200,8 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>окно видимо или нет </p>
 
 </div>
 </div>
@@ -194,6 +217,8 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>координата левого верхнего угла относительно монитора </p>
+
 </div>
 </div>
 <a id="a912f1e763fb5b1580c6aa4828795d139" name="a912f1e763fb5b1580c6aa4828795d139"></a>
@@ -208,6 +233,8 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>текущий размер окна (клиентской области) </p>
+
 </div>
 </div>
 <a id="aca457b5d4f303ba4e734a142d0328a39" name="aca457b5d4f303ba4e734a142d0328a39"></a>
@@ -221,6 +248,8 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>минимальный размер окна </p>
 
 </div>
 </div>

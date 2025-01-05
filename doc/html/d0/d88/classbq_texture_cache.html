@@ -91,7 +91,7 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
-<p>Работает на основе динамического массива  
+<p>Контейнер для хранения текстур.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="../../d1/d62/bq_texture_8h_source.html">bqTexture.h</a>&gt;</code></p>
@@ -114,8 +114,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a72214dbfc034522af4977623a0d647dc" id="r_a72214dbfc034522af4977623a0d647dc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a72214dbfc034522af4977623a0d647dc">BQ_PLACEMENT_ALLOCATOR</a> (<a class="el" href="../../d0/d88/classbq_texture_cache.html">bqTextureCache</a>)</td></tr>
 <tr class="separator:a72214dbfc034522af4977623a0d647dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefda8e64c39bf85f6040db3756703f6f" id="r_aefda8e64c39bf85f6040db3756703f6f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aefda8e64c39bf85f6040db3756703f6f">Free</a> (<a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *r) override</td></tr>
+<tr class="memdesc:aefda8e64c39bf85f6040db3756703f6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Используется классом <a class="el" href="../../da/dd6/classbq_resource_cache.html" title="Базовый класс для создания контейнеров хранящих какой-то ресурс.">bqResourceCache</a> для освобождения памяти  <br /></td></tr>
 <tr class="separator:aefda8e64c39bf85f6040db3756703f6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a427b00ae55543868bbc0c36b2993f92a" id="r_a427b00ae55543868bbc0c36b2993f92a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a427b00ae55543868bbc0c36b2993f92a">Load</a> (const char *path) override</td></tr>
+<tr class="memdesc:a427b00ae55543868bbc0c36b2993f92a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Используется классом <a class="el" href="../../da/dd6/classbq_resource_cache.html" title="Базовый класс для создания контейнеров хранящих какой-то ресурс.">bqResourceCache</a> для загрузки текстуры  <br /></td></tr>
 <tr class="separator:a427b00ae55543868bbc0c36b2993f92a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classbq_resource_cache"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classbq_resource_cache')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../da/dd6/classbq_resource_cache.html">bqResourceCache&lt; bqTexture * &gt;</a></td></tr>
 <tr class="memitem:a1ed5afce12dbbbd77310b0b8529eb89c inherit pub_methods_classbq_resource_cache" id="r_a1ed5afce12dbbbd77310b0b8529eb89c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dd6/classbq_resource_cache.html#a1ed5afce12dbbbd77310b0b8529eb89c">bqResourceCache</a> ()</td></tr>
@@ -155,7 +157,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a82218d2966202241b654d2af389e0f3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Работает на основе динамического массива </p>
+<div class="textblock"><p>Контейнер для хранения текстур. </p>
+<p>Создано для удобства. Работает на основе динамического массива. Для большего понимания следует изучить <a class="el" href="../../da/dd6/classbq_resource_cache.html" title="Базовый класс для создания контейнеров хранящих какой-то ресурс.">bqResourceCache</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af4811d7e22b14f73b6ef4f99d5a41339" name="af4811d7e22b14f73b6ef4f99d5a41339"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af4811d7e22b14f73b6ef4f99d5a41339">&#9670;&#160;</a></span>bqTextureCache()</h2>
@@ -240,6 +243,9 @@ Data Fields</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Используется классом <a class="el" href="../../da/dd6/classbq_resource_cache.html" title="Базовый класс для создания контейнеров хранящих какой-то ресурс.">bqResourceCache</a> для освобождения памяти </p>
+<p>Вручную использовать нельзя. Так как потом базовый класс будет очищать массив. </p>
+
 <p>Implements <a class="el" href="../../da/dd6/classbq_resource_cache.html#a44b514d47047d990ff528ae3fde3e67d">bqResourceCache&lt; bqTexture * &gt;</a>.</p>
 
 </div>
@@ -266,6 +272,9 @@ Data Fields</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Используется классом <a class="el" href="../../da/dd6/classbq_resource_cache.html" title="Базовый класс для создания контейнеров хранящих какой-то ресурс.">bqResourceCache</a> для загрузки текстуры </p>
+<p>Вручную использовать нельзя...не желательно. Для получения текстуры надо использовать метод Get </p>
 
 <p>Implements <a class="el" href="../../da/dd6/classbq_resource_cache.html#a3320ac94331462fa9778d089cc6ddca5">bqResourceCache&lt; bqTexture * &gt;</a>.</p>
 

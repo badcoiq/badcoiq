@@ -56,6 +56,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma warning( disable : 4365 ) // выдаёт xmemory. conversion from 'long' to 'unsigned int', signed/unsigned mismatch
 #pragma warning( disable : 4244 ) // double to float, possible loss of data
 
+//https://stackoverflow.com/questions/78598141/first-stdmutexlock-crashes-in-application-built-with-latest-visual-studio
 #define _DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR
 
 #include "badcoiq/bqConfig.h"
