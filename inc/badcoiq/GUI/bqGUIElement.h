@@ -28,18 +28,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_GUIELEMENT_H__
+/// \cond
 #define __BQ_GUIELEMENT_H__
+/// \endcond
 
 #ifdef BQ_WITH_GUI
 
 // Базовый класс для всех GUI элементов
 class bqGUIElement : public bqGUICommon, public bqHierarchy
 {
+	friend class bqGUIWindowBase;
+
 protected:
 	bqGUIWindow* m_window = 0; // каждый элемент принадлежит какому-то окну
 
 public:
-	bqGUIElement(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	bqGUIElement(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIElement();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIElement);
 	BQ_DELETED_METHODS(bqGUIElement);

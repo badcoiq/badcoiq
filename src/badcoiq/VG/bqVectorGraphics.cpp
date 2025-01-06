@@ -26,57 +26,16 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "badcoiq.h"
+#include "badcoiq/common/bqImage.h"
+#include "badcoiq/math/bqMath.h"
+#include "badcoiq/VG/bqVectorGraphics.h"
 
-#include "vg_include.h"
+#include "bqVectorGraphicsTarget.h"
 
 #include "badcoiq/common/bqColor.h"
 
 
-bool bqVectorGraphicsTarget::Init(bqImage* img)
-{
-	BQ_ASSERT_ST(img);
-	BQ_ASSERT_ST(!m_img);
-
-	if (!m_img)
-	{
-		int aWidth = img->m_info.m_width;
-		int aHeight = img->m_info.m_height;
-		int aEdgeCount = 300;
-
-		unsigned int bufferWidth = aWidth + 3;
-
-		mMaskBuffer = new bq::SUBPIXEL_DATA[bufferWidth];
-		if (mMaskBuffer == NULL)
-			return false;
-		memset(mMaskBuffer, 0, bufferWidth * sizeof(bq::SUBPIXEL_DATA));
-
-		mWindingBuffer = new bq::NonZeroMask[bufferWidth];
-		if (mWindingBuffer == NULL)
-			return false;
-		memset(mWindingBuffer, 0, bufferWidth * sizeof(bq::NonZeroMask));
-
-		mEdgeTable = new bq::PolygonScanEdge * [aHeight];
-		if (mEdgeTable == NULL)
-			return false;
-		memset(mEdgeTable, 0, aHeight * sizeof(bq::PolygonScanEdge*));
-
-		mEdgeStorage = new bq::PolygonScanEdge[aEdgeCount];
-		if (mEdgeStorage == NULL)
-			return false;
-		mEdgeCount = aEdgeCount;
-
-		mWidth = aWidth;
-		mBufferWidth = bufferWidth;
-		mHeight = aHeight;
-
-		mClipRect.setClip(0, 0, mWidth, mHeight, SUBPIXEL_COUNT);
-
-		m_img = img;
-		return true;
-	}
-
-	return false;
-}
 
 // ==============================================================
 
@@ -114,7 +73,7 @@ bqVectorGraphicsTarget* bqVectorGraphics::CreateTarget(bqImage* img)
 			if (img->m_info.m_height > 0)
 			{
 				bqVectorGraphicsTarget* t = new bqVectorGraphicsTarget;
-				if (!t->Init(img))
+				if (!t->Init())
 				{
 					delete t;
 					t = 0;
@@ -136,7 +95,6 @@ void bqVectorGraphics::Draw()
 {
 	if (m_target && m_shape)
 	{
-		m_target->RenderEvenOdd(m_shape, m_color, m_transformation);
 	}
 }
 
@@ -148,77 +106,6 @@ void bqVectorGraphics::DrawLine(
 {
 	static bqVectorGraphicsShape line;
 	static bool lineReady = false;
-//	if (!lineReady)
-//	{
-//		float aVertexCount = 3;
-//		float* vertices = new float[2 * aVertexCount];
-//		if (!vertices)
-//			return;
-//		int rnd = 1;
-//#define RAND_MULTIPLIER 1103515245
-//#define RAND_ADDER 12345
-//#define UPDATE_RAND(a) RAND_MULTIPLIER * a + RAND_ADDER
-//		rnd = UPDATE_RAND(rnd);
-//		int xi = rnd >> 16;
-//		rnd = UPDATE_RAND(rnd);
-//		int yi = rnd >> 16;
-//		float aSize = 1.f;
-//		float aMinStep = 1.f;
-//		float aMaxStep = 2.f;
-//		float x = (float)xi * aSize / float(0x7fff);
-//		float y = (float)yi * aSize / float(0x7fff);
-//		float minSq = aMinStep * aMinStep;
-//		float maxSq = aMaxStep * aMaxStep;
-//		float sizeSq = aSize * aSize;
-//		int current = 0;
-//		int n;
-//		bqVec2i aCenter;
-//		for (n = 0; n < aVertexCount; n++)
-//		{
-//			float xs, xt, ys, yt, lsq;
-//			do
-//			{
-//				do
-//				{
-//					rnd = UPDATE_RAND(rnd);
-//					xi = rnd >> 16;
-//					rnd = UPDATE_RAND(rnd);
-//					yi = rnd >> 16;
-//
-//					xs = (float)xi * aMaxStep / float(0x7fff);
-//					ys = (float)yi * aMaxStep / float(0x7fff);
-//
-//					lsq = xs * xs + ys * ys;
-//				} while (lsq > maxSq || lsq < minSq);
-//
-//				xt = x + xs;
-//				yt = y + ys;
-//
-//				lsq = xt * xt + yt * yt;
-//			} while (lsq > sizeSq);
-//
-//			x = xt;
-//			y = yt;
-//
-//			vertices[current++] = aCenter.x + x;
-//			vertices[current++] = aCenter.y + y;
-//		}
-//
-//		float* vertexData[1] = { vertices };
-//		int vertexCounts[1] = { aVertexCount };
-//
-//		bq::PolygonData pdata(vertexData, vertexCounts, 1);
-//		bq::PolygonData* polygons[1] = { &pdata };
-//
-//		unsigned long colors[1] = { col.GetAsByteRed()};
-//		RENDERER_FILLMODE fillmodes[1] = { 1 };
-//		VectorGraphic* vg = VectorGraphic::create(polygons, colors, fillmodes, 1);
-//
-//		delete[] vertices;
-//
-//		//return vg;
-//		lineReady = true;
-//	}
 
 	SetColor(col);
 	SetShape(&line);
@@ -243,15 +130,3 @@ bqVectorGraphicsShape::~bqVectorGraphicsShape()
 	if (m_vBuffer)
 		delete m_vBuffer;
 }
-
-//VertexData* bqVectorGraphicsShape::GetBuffer()
-//{
-//	return m_vBuffer;
-//}
-//
-//uint32_t bqVectorGraphicsShape::GetBufSz() const
-//{
-//	return m_vBufSz;
-//}
-//
-

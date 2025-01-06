@@ -38,57 +38,57 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
-//bqGUIPictureBox::bqGUIPictureBox(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
-//	:
-//	bqGUIElement::bqGUIElement(w, position, size)
-//{
-//}
-//
-//bqGUIPictureBox::~bqGUIPictureBox()
-//{
-//}
-//
-//void bqGUIPictureBox::Rebuild()
-//{
-//	bqGUIElement::Rebuild();
-//}
-//
-//void bqGUIPictureBox::Update()
-//{
-//	bqGUIElement::Update();
-//}
-//
-//void bqGUIPictureBox::Draw(bqGS* gs, float)
-//{
-//	gs->SetScissorRect(m_clipRect);
-//	gs->DrawGUIRectangle(m_buildRect, 
-//		m_style->m_pictureBoxBGColor,
-//		m_style->m_pictureBoxBGColor,
-//		m_texture,
-//		&m_uv);
-//}
-//
-//void bqGUIPictureBox::SetTexture(bqTexture* t)
-//{
-//	m_texture = t; 
-//}
-//
-//void bqGUIPictureBox::SetUV(const bqVec4f& uv)
-//{
-//	m_uv = uv;
-//}
-//
-//void bqGUIPictureBox::SetTCoords(float left, float top, float right, float bottom)
-//{
-//	if (m_texture)
-//	{
-//		float h = (float)m_texture->GetInfo().m_imageInfo.m_height;
-//		float w = (float)m_texture->GetInfo().m_imageInfo.m_width;
-//		m_uv.x = bqMath::CoordToUV(left, w);
-//		m_uv.y = bqMath::CoordToUV(top, h);
-//		m_uv.z = bqMath::CoordToUV(right, w);
-//		m_uv.w = bqMath::CoordToUV(bottom, h);
-//	}
-//}
+bqGUIPictureBox::bqGUIPictureBox(const bqVec2f& position, const bqVec2f& size)
+	:
+	bqGUIElement::bqGUIElement(position, size)
+{
+}
+
+bqGUIPictureBox::~bqGUIPictureBox()
+{
+}
+
+void bqGUIPictureBox::Rebuild()
+{
+	bqGUIElement::Rebuild();
+}
+
+void bqGUIPictureBox::Update()
+{
+	bqGUIElement::Update();
+}
+
+void bqGUIPictureBox::Draw(bqGS* gs, float)
+{
+	gs->SetScissorRect(m_clipRect);
+	gs->DrawGUIRectangle(m_buildRect, 
+		m_style->m_pictureBoxBGColor,
+		m_style->m_pictureBoxBGColor,
+		m_texture,
+		&m_uv);
+}
+
+void bqGUIPictureBox::SetTexture(bqTexture* t)
+{
+	m_texture = t; 
+}
+
+void bqGUIPictureBox::SetUV(const bqVec4f& uv)
+{
+	m_uv = uv;
+}
+
+void bqGUIPictureBox::SetTCoords(float left, float top, float right, float bottom)
+{
+	if (m_texture)
+	{
+		float h = (float)m_texture->GetInfo().m_imageInfo.m_height;
+		float w = (float)m_texture->GetInfo().m_imageInfo.m_width;
+		m_uv.x = bqMath::CoordToUV(left, w);
+		m_uv.y = bqMath::CoordToUV(top, h);
+		m_uv.z = bqMath::CoordToUV(right, w);
+		m_uv.w = bqMath::CoordToUV(bottom, h);
+	}
+}
 
 #endif

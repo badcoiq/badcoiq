@@ -36,25 +36,68 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
-//bqGUIElement::bqGUIElement(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size) :
-//	bqGUICommon(position, size)
-//{
-//	BQ_ASSERT_ST(w);
-//	m_window = w;
-//	SetParent(w->m_rootElement);
-//	SetStyle(bqFramework::GetGUIStyle(bqGUIStyleTheme::Light));
-//}
-//bqGUIElement::~bqGUIElement() {}
+bqGUIElement::bqGUIElement( const bqVec2f& position, const bqVec2f& size) :
+	bqGUICommon(position, size)
+{
+	SetStyle(bqFramework::GetGUIStyle(bqGUIStyleTheme::Light));
+}
+bqGUIElement::~bqGUIElement() {}
 
 void bqGUIElement::ToTop() 
 {
 	// забыл написать
 	// возможно нужно вытащить элемент из списка children у родителя
 	// и сунуть его в конец или в начало списка
+	if (m_window)
+	{
+		auto children = m_window->GetChildren();
+		if (children->m_head)
+		{
+			auto curr = children->m_head;
+			auto last = curr->m_left;
+			while (true)
+			{
+				bqGUIElement* el = dynamic_cast<bqGUIElement*>(curr->m_data);
+				if (el)
+				{
+					m_window->GetChildren()->erase_by_node(curr);
+					m_window->GetChildren()->push_back(this);
+					break;
+				}
+
+				if (curr == last)
+					break;
+				curr = curr->m_right;
+			}
+		}
+
+	}
 }
 
-//void bqGUIElement::Rebuild()
-//{
+void bqGUIElement::Rebuild()
+{
+
+	m_baseRect.x = m_position.x;
+	m_baseRect.y = m_position.y;
+	m_baseRect.z = m_position.x + m_size.x;
+	m_baseRect.w = m_position.y + m_size.y;
+
+	if (m_window)
+	{
+		bool windowWithTitle = m_window->m_windowFlags & bqGUIWindowBase::windowFlag_withTitleBar;
+
+		m_baseRect.x += m_window->m_buildRect.x;
+		m_baseRect.y += m_window->m_buildRect.y;
+		m_baseRect.z += m_window->m_buildRect.x;
+		m_baseRect.w += m_window->m_buildRect.y;
+
+		if (windowWithTitle)
+		{
+			m_baseRect.y += m_window->m_titlebarHeight;
+			m_baseRect.w += m_window->m_titlebarHeight;
+		}
+	}
+
 //	bqGUIElement* parent = dynamic_cast<bqGUIElement*>(GetParent());
 //	if (parent)
 //	{
@@ -172,39 +215,53 @@ void bqGUIElement::ToTop()
 //	// перестроить root в bqGUIWindow::Rebuild();
 //
 //	bqGUIElement::Update(); // не надо вызывать -переполнение стека
-//	                         // но если написать bqGUIElement::Update() то ошибка пропадёт
-//}
-//
-//void bqGUIElement::Update()
-//{
-//	bqGUICommon::Update();
-//
-//	// m_buildRect строится каждый раз заного на основе m_baseRect
-//
-//	m_buildRect = m_baseRect;
-//	// обычно m_clipRect это == m_baseRect;
-//	m_clipRect = m_buildRect;
-//
-//	bqGUIElement* parent = dynamic_cast<bqGUIElement*>(GetParent());
-//	if (parent && !(m_flags & flag_disableParentScroll))
-//	{
-//		m_buildRect.x -= parent->m_scroll.x;
-//		m_buildRect.y -= parent->m_scroll.y;
-//		m_buildRect.z -= parent->m_scroll.x;
-//		m_buildRect.w -= parent->m_scroll.y;
-//
-//		m_clipRect = m_buildRect;
-//
-//		if (m_clipRect.x < parent->m_clipRect.x)
-//			m_clipRect.x = parent->m_clipRect.x;
-//		if (m_clipRect.y < parent->m_clipRect.y)
-//			m_clipRect.y = parent->m_clipRect.y;
-//		if (m_clipRect.z > parent->m_clipRect.z)
-//			m_clipRect.z = parent->m_clipRect.z;
-//		if (m_clipRect.w > parent->m_clipRect.w)
-//			m_clipRect.w = parent->m_clipRect.w;
-//	}
-//	m_activeRect = m_clipRect;
-//}
+	                         // но если написать bqGUIElement::Update() то ошибка пропадёт
+
+	// m_buildRect строится каждый раз заного на основе m_baseRect
+
+	m_buildRect = m_baseRect;
+
+	// обычно m_clipRect это == m_baseRect;
+	m_clipRect = m_buildRect;
+
+	bqGUIElement* parent = dynamic_cast<bqGUIElement*>(GetParent());
+	if (parent)
+	{
+		if (m_clipRect.x < parent->m_clipRect.x)
+			m_clipRect.x = parent->m_clipRect.x;
+		if (m_clipRect.y < parent->m_clipRect.y)
+			m_clipRect.y = parent->m_clipRect.y;
+		if (m_clipRect.z > parent->m_clipRect.z)
+			m_clipRect.z = parent->m_clipRect.z;
+		if (m_clipRect.w > parent->m_clipRect.w)
+			m_clipRect.w = parent->m_clipRect.w;
+	}
+	//	if (parent && !(m_flags & flag_disableParentScroll))
+	//	{
+	//		m_buildRect.x -= parent->m_scroll.x;
+	//		m_buildRect.y -= parent->m_scroll.y;
+	//		m_buildRect.z -= parent->m_scroll.x;
+	//		m_buildRect.w -= parent->m_scroll.y;
+	//
+	//		m_clipRect = m_buildRect;
+	//
+	//		if (m_clipRect.x < parent->m_clipRect.x)
+	//			m_clipRect.x = parent->m_clipRect.x;
+	//		if (m_clipRect.y < parent->m_clipRect.y)
+	//			m_clipRect.y = parent->m_clipRect.y;
+	//		if (m_clipRect.z > parent->m_clipRect.z)
+	//			m_clipRect.z = parent->m_clipRect.z;
+	//		if (m_clipRect.w > parent->m_clipRect.w)
+	//			m_clipRect.w = parent->m_clipRect.w;
+	//	}
+	m_activeRect = m_clipRect;
+}
+
+void bqGUIElement::Update()
+{
+	bqGUICommon::Update();
+
+	
+}
 
 #endif

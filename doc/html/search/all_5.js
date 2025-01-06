@@ -34,7 +34,7 @@ var searchData=
   ['enddraw_31',['EndDraw',['../dc/d42/classbq_g_s.html#a0a8f9daaa0f61ee5701dd9b476de5fff',1,'bqGS']]],
   ['endgui_32',['EndGUI',['../dc/d42/classbq_g_s.html#a92da9cf3b2b0bf2acc9d0ed217bb58e9',1,'bqGS']]],
   ['engine_20documentation_33',['BADCOIQ Engine Documentation',['../index.html',1,'']]],
-  ['eof_34',['Eof',['../d1/d49/classbq_file.html#aa79a306d7432ee94fa5e95e910c757c7',1,'bqFile::Eof()'],['../dd/d19/classbq_file_buffer.html#aaf7e2b6233038641b857e82941b90253',1,'bqFileBuffer::Eof()']]],
+  ['eof_34',['Eof',['../d1/d49/classbq_file.html#aa79a306d7432ee94fa5e95e910c757c7',1,'bqFile::Eof()'],['../dd/d19/classbq_file_buffer.html#aaf7e2b6233038641b857e82941b90253',1,'bqFileBuffer::Eof()'],['../d8/d02/classbq_stream.html#a0114dcd25acdf3ac43768944d8c7c4b9',1,'bqStream::Eof()']]],
   ['eof_35',['eof',['../d2/dce/classbq_sound_stream_file.html#ac96eaa144ed6801647a7a3c60a952322',1,'bqSoundStreamFile']]],
   ['equal_36',['Equal',['../d1/d62/bq_texture_8h.html#a7438832268b76c06727e9e0d29f43b8faf5f286e73bda105e538310b3190f75c5',1,'Equal:&#160;bqTexture.h'],['../d9/d89/bq_x_m_l_8h.html#ab0307f268d2cedb999026186835732a7af5f286e73bda105e538310b3190f75c5',1,'Equal:&#160;bqXML.h']]],
   ['erase_37',['erase',['../d2/db6/classbq_array.html#ab15b950a6f0a06755cbd93fb11f32546',1,'bqArray::erase()'],['../dd/d96/classbq_string__base.html#a597635eefb5edd4393b09d037ae84e48',1,'bqString_base::erase()'],['../dc/dde/classbq_string.html#a8e2af3ca367762a71f3796fbd2777eeb',1,'bqString::erase()']]],

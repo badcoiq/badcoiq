@@ -57,14 +57,15 @@ public:
 
 class bqGUIButtonTextDrawCallback : public bqGUIDrawTextCallback
 {
-	bqGUIFont* m_font = 0;
-	bqColor m_color;
+	//bqGUIFont* m_font = 0;
+	//bqColor m_color;
+
 public:
 	bqGUIButtonTextDrawCallback();
 	virtual ~bqGUIButtonTextDrawCallback();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIButtonTextDrawCallback);
 
-	void SetFont(bqGUIFont* f) { m_font = f; }
+	//void SetFont(bqGUIFont* f) { m_font = f; }
 
 	virtual bqGUIFont* OnFont(/*uint32_t r, */char32_t) override;
 	virtual bqColor* OnColor(/*uint32_t r,*/ char32_t) override;

@@ -113,7 +113,7 @@ Inheritance diagram for bqGUICommon:</div>
 <area href="../../d5/d12/classbq_g_u_i_root_element.html" alt="bqGUIRootElement" shape="rect" coords="124,392,238,416"/>
 <area href="../../df/d68/classbq_g_u_i_scrollbar.html" alt="bqGUIScrollbar" shape="rect" coords="124,448,238,472"/>
 <area href="../../d6/d64/classbq_g_u_i_slider.html" alt="bqGUISlider" shape="rect" coords="124,504,238,528"/>
-<area href="../../de/de3/classbq_g_u_i_static_text.html" alt="bqGUIStaticText" shape="rect" coords="124,560,238,584"/>
+<area href="../../de/de3/classbq_g_u_i_static_text.html" title="Текст." alt="bqGUIStaticText" shape="rect" coords="124,560,238,584"/>
 <area href="../../de/db1/classbq_g_u_i_text_editor.html" alt="bqGUITextEditor" shape="rect" coords="124,616,238,640"/>
   </map>
 </div></div>
@@ -225,8 +225,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a69208f42b40018401382ade88653721b" id="r_a69208f42b40018401382ade88653721b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69208f42b40018401382ade88653721b">OnReleaseX2MB</a> ()</td></tr>
 <tr class="separator:a69208f42b40018401382ade88653721b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a640221f7cceb1d11ef2f66a94e5d50d6" id="r_a640221f7cceb1d11ef2f66a94e5d50d6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a640221f7cceb1d11ef2f66a94e5d50d6">UpdateContentSize</a> ()</td></tr>
+<tr class="memdesc:a640221f7cceb1d11ef2f66a94e5d50d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вычислить размер содержимого  <br /></td></tr>
 <tr class="separator:a640221f7cceb1d11ef2f66a94e5d50d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32a6ed57507192ce5b9ee39143842ad6" id="r_a32a6ed57507192ce5b9ee39143842ad6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a32a6ed57507192ce5b9ee39143842ad6">UpdateScrollLimit</a> ()</td></tr>
+<tr class="memdesc:a32a6ed57507192ce5b9ee39143842ad6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вычислить лимиты для скроллинга  <br /></td></tr>
 <tr class="separator:a32a6ed57507192ce5b9ee39143842ad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1d87cad40fd29e5cd561c5573ad745b" id="r_aa1d87cad40fd29e5cd561c5573ad745b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1d87cad40fd29e5cd561c5573ad745b">UpdateScroll</a> ()</td></tr>
 <tr class="separator:aa1d87cad40fd29e5cd561c5573ad745b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1331,6 +1333,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Вычислить размер содержимого </p>
+
 <p>Reimplemented in <a class="el" href="../../db/dcc/classbq_g_u_i_list_box.html#a3639f4878b24a35d8edf790da531ec74">bqGUIListBox</a>, <a class="el" href="../../d5/d12/classbq_g_u_i_root_element.html#ab6e664cd98a71cb78465b3b08b4035e0">bqGUIRootElement</a>, and <a class="el" href="../../de/db1/classbq_g_u_i_text_editor.html#ac659d9f05a0e6b47ea1ecf6c2e0dceb7">bqGUITextEditor</a>.</p>
 
 </div>
@@ -1382,6 +1386,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Вычислить лимиты для скроллинга </p>
 
 </div>
 </div>
@@ -1475,6 +1481,7 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Размер элемента + все дети (не внуки). Типа AABB. Найти максимумы x и y. размер окна со всеми элементами. bqVec2f используется потому что скроллинг использует bqVec2f </p>
 
 </div>
 </div>

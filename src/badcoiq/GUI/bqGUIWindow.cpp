@@ -156,6 +156,7 @@ void bqGUIWindowBase::AddElement(bqGUIElement* el)
 {
 	BQ_ASSERT_ST(el);
 	el->SetParent(this);
+	el->m_window = (bqGUIWindow*)this;
 }
 
 void bqGUIWindowBase::RemoveElement(bqGUIElement* el)
@@ -259,7 +260,6 @@ void bqGUIWindow::Deactivate()
 
 void bqGUIWindow::Rebuild()
 {
-
 
 	// вычисляю rects
 	m_baseRect.x = m_position.x;
@@ -376,6 +376,7 @@ void bqGUIWindow::Rebuild()
 	if (m_baseRect.y > m_baseRect.w)
 		m_baseRect.y = m_baseRect.w;
 
+	m_buildRect = m_baseRect;
 //	m_rootElement->m_clipRect = m_rootElement->m_baseRect;
 //	m_rootElement->m_activeRect = m_rootElement->m_clipRect;
 	
@@ -425,6 +426,20 @@ void bqGUIWindow::Rebuild()
 //		//   скроллят свои "внутренности" сами. Если элемент нужно перестраивать в зависимости от скроллинга,
 //		//   надо делать проверку, есть ли у родителя m_scrollDelta. Я не уверен на счёт прадедов и т.д..
 //	}
+
+	if (m_children.m_head)
+	{
+		auto curr = m_children.m_head;
+		auto last = curr->m_left;
+		while (true)
+		{
+			_rebuild_element(curr);
+
+			if (curr == last)
+				break;
+			curr = curr->m_right;
+		}
+	}
 }
 
 //// действия с вводом\реакция на мышь
@@ -462,6 +477,16 @@ void bqGUIWindow::Update()
 	{
 		if(!g_framework->m_GUIState.m_windowUnderCursor)
 			g_framework->m_GUIState.m_windowUnderCursor = this;
+	}
+
+	bool underCursor = (g_framework->m_GUIState.m_windowUnderCursor == this);
+	if (underCursor)
+	{
+		if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBDOWN)
+		{
+			ToTop();
+			Activate();
+		}
 	}
 
 	// сброс.
@@ -838,6 +863,20 @@ void bqGUIWindow::Update()
 //	{	
 //		_bqGUIWindow_UpdateElement(m_rootElement);
 //	}
+
+	if (m_children.m_head)
+	{
+		auto curr = m_children.m_head;
+		auto last = curr->m_left;
+		while (true)
+		{
+			_update_element(curr);
+
+			if (curr == last)
+				break;
+			curr = curr->m_right;
+		}
+	}
 }
 
 //void bqGUIWindow::_resizeL()
@@ -1033,7 +1072,100 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 	//cl.z = (float)m_systemWindow->GetCurrentSize()->x;
 	//cl.w = (float)m_systemWindow->GetCurrentSize()->y;
 	//gs->SetScissorRect(cl);
+
+	if (m_children.m_head)
+	{
+		m_gs = gs;
+		m_dt = dt;
+
+		auto curr = m_children.m_head;
+		auto last = curr->m_left;
+		while (true)
+		{
+			_draw_element(curr);
+
+			if (curr == last)
+				break;
+			curr = curr->m_right;
+		}
+	}
 }
+
+void bqGUIWindow::_draw_element(bqListNode<bqHierarchy*>* h)
+{
+	bqGUIElement* el = dynamic_cast<bqGUIElement*>(h->m_data);
+
+	if (el)
+	{
+		el->Draw(m_gs, m_dt);
+
+		auto children = el->GetChildren();
+		if (children->m_head)
+		{
+			auto curr = children->m_head;
+			auto last = curr->m_left;
+			while (true)
+			{
+				_draw_element(curr);
+
+				curr = curr->m_right;
+				if (curr == last)
+					break;
+			}
+		}
+	}
+}
+
+void bqGUIWindow::_update_element(bqListNode<bqHierarchy*>* h)
+{
+	bqGUIElement* el = dynamic_cast<bqGUIElement*>(h->m_data);
+
+	if (el)
+	{
+		el->Update();
+
+		auto children = el->GetChildren();
+		if (children->m_head)
+		{
+			auto curr = children->m_head;
+			auto last = curr->m_left;
+			while (true)
+			{
+				_update_element(curr);
+
+				curr = curr->m_right;
+				if (curr == last)
+					break;
+			}
+		}
+	}
+}
+
+void bqGUIWindow::_rebuild_element(bqListNode<bqHierarchy*>* h)
+{
+	bqGUIElement* el = dynamic_cast<bqGUIElement*>(h->m_data);
+
+	if (el)
+	{
+		el->Rebuild();
+
+		auto children = el->GetChildren();
+		if (children->m_head)
+		{
+			auto curr = children->m_head;
+			auto last = curr->m_left;
+			while (true)
+			{
+				_rebuild_element(curr);
+
+				curr = curr->m_right;
+				if (curr == last)
+					break;
+			}
+		}
+	}
+}
+
 
 //void bqGUIWindow::Expand()
 //{
@@ -1051,7 +1183,7 @@ void bqGUIWindow::ToTop()
 	if (allWindows->m_head)
 	{
 		allWindows->erase_first(this);
-		allWindows->push_front(this);
+		allWindows->push_back(this);
 	}
 }
 

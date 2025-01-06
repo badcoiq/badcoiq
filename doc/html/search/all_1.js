@@ -60,7 +60,8 @@ var searchData=
   ['at_57',['at',['../dc/dde/classbq_string.html#afc015aab74f1043f5ee8a870cac9aa29',1,'bqString::at(size_t i) const'],['../dc/dde/classbq_string.html#a972ca9b453f8c57efe95ed0b3529c393',1,'bqString::at(size_t i)']]],
   ['atan_58',['Atan',['../d5/d11/classbq_math.html#a02fbfe1b0d3778801a8283086e50366a',1,'bqMath::Atan(float32_t)'],['../d5/d11/classbq_math.html#a9590b90131b1638ee686fdf8596d0f9a',1,'bqMath::Atan(float64_t)']]],
   ['atan2_59',['Atan2',['../d5/d11/classbq_math.html#ab2a260298931816f73fed11bddefc605',1,'bqMath::Atan2(float32_t y, float32_t x)'],['../d5/d11/classbq_math.html#a8f870e6186fbab2981753abf50400e9e',1,'bqMath::Atan2(float64_t y, float64_t x)']]],
-  ['attribute_60',['Attribute',['../d9/d89/bq_x_m_l_8h.html#ab0307f268d2cedb999026186835732a7af2bbdf9f72c085adc4d0404e370f0f4c',1,'Attribute:&#160;bqXML.h'],['../d9/d89/bq_x_m_l_8h.html#a0068bea5d70d66400cb7f7dec158f288af2bbdf9f72c085adc4d0404e370f0f4c',1,'Attribute:&#160;bqXML.h']]],
-  ['axis_61',['Axis',['../d9/d89/bq_x_m_l_8h.html#ab0307f268d2cedb999026186835732a7a39e6b4ab3e4adecf031d3aa8410bb3ce',1,'bqXML.h']]],
-  ['axis_5fnamespace_62',['Axis_namespace',['../d9/d89/bq_x_m_l_8h.html#ab0307f268d2cedb999026186835732a7a2198ccf1b95119e5fd628f40adfdf047',1,'bqXML.h']]]
+  ['atoi_60',['atoi',['../dd/d61/classbq_c_r_t.html#a5f14cee1942f592f9dfbc089ea30b250',1,'bqCRT::atoi(const char *)'],['../dd/d61/classbq_c_r_t.html#aaa90b5259b284c8e58f4557f05629697',1,'bqCRT::atoi(const wchar_t *)'],['../dd/d61/classbq_c_r_t.html#aa8f8ca12461b435d56bae46de5af347f',1,'bqCRT::atoi(const char32_t *)']]],
+  ['attribute_61',['Attribute',['../d9/d89/bq_x_m_l_8h.html#ab0307f268d2cedb999026186835732a7af2bbdf9f72c085adc4d0404e370f0f4c',1,'Attribute:&#160;bqXML.h'],['../d9/d89/bq_x_m_l_8h.html#a0068bea5d70d66400cb7f7dec158f288af2bbdf9f72c085adc4d0404e370f0f4c',1,'Attribute:&#160;bqXML.h']]],
+  ['axis_62',['Axis',['../d9/d89/bq_x_m_l_8h.html#ab0307f268d2cedb999026186835732a7a39e6b4ab3e4adecf031d3aa8410bb3ce',1,'bqXML.h']]],
+  ['axis_5fnamespace_63',['Axis_namespace',['../d9/d89/bq_x_m_l_8h.html#ab0307f268d2cedb999026186835732a7a2198ccf1b95119e5fd628f40adfdf047',1,'bqXML.h']]]
 ];

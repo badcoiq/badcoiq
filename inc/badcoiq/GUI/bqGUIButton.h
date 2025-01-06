@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Фреймворк должен иметь дефолтный bqGUIDrawTextCallback (возможно отдельные на каждый тип элемента)
 // При создании нового элемента, будет установлен дефолтный m_textDrawCallback (bqGUICommon)
 
-// кнопка
+/// \brief Кнопка
 class bqGUIButton : public bqGUIElement
 {
 protected:
@@ -46,7 +46,7 @@ protected:
 	bqTexture* m_texture = 0;
 	bqVec4f m_uv = bqVec4f(0.f, 0.f, 1.f, 1.f);
 public:
-	bqGUIButton(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	bqGUIButton(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIButton();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIButton);
 	BQ_DELETED_METHODS(bqGUIButton);

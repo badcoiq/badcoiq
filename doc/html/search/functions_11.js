@@ -1,7 +1,7 @@
 var searchData=
 [
   ['tan_0',['Tan',['../d5/d11/classbq_math.html#ac01d6e194e1d7fabb8077a166593fa1d',1,'bqMath::Tan(float32_t)'],['../d5/d11/classbq_math.html#a98154cbc7deac880cc940bacc7160532',1,'bqMath::Tan(float64_t)']]],
-  ['tell_1',['Tell',['../d1/d49/classbq_file.html#a95ab289ed4b260cb0fb19e243f0d6853',1,'bqFile::Tell()'],['../dd/d19/classbq_file_buffer.html#a6a72a2ea94f46e5a1cac234b62bc792e',1,'bqFileBuffer::Tell()'],['../d2/dce/classbq_sound_stream_file.html#a6e274fd0bea136c510c7fc5cf1834477',1,'bqSoundStreamFile::Tell()']]],
+  ['tell_1',['Tell',['../d1/d49/classbq_file.html#a95ab289ed4b260cb0fb19e243f0d6853',1,'bqFile::Tell()'],['../dd/d19/classbq_file_buffer.html#a6a72a2ea94f46e5a1cac234b62bc792e',1,'bqFileBuffer::Tell()'],['../d8/d02/classbq_stream.html#a0ec2ab8259af68cdb4092a002ac2b6c7',1,'bqStream::Tell()'],['../d2/dce/classbq_sound_stream_file.html#a6e274fd0bea136c510c7fc5cf1834477',1,'bqSoundStreamFile::Tell()']]],
   ['to_5fdouble_2',['to_double',['../dc/dde/classbq_string.html#a1f5cda8866f671a6e70b168a8cac8d6f',1,'bqString']]],
   ['to_5ffloat_3',['to_float',['../dd/d96/classbq_string__base.html#a5ee9b78662eb8b2043620ae2776d3017',1,'bqString_base::to_float()'],['../dc/dde/classbq_string.html#a1fb6c9e7fb044869f8c613f851eaa573',1,'bqString::to_float()']]],
   ['to_5fint_4',['to_int',['../dd/d96/classbq_string__base.html#aa0e61b2903019fe320e22be72c32e175',1,'bqString_base::to_int()'],['../dc/dde/classbq_string.html#a4c1d318532380a55ec12af74359a8812',1,'bqString::to_int()']]],
@@ -13,13 +13,15 @@ var searchData=
   ['to_5futf16_10',['to_utf16',['../dc/dde/classbq_string.html#af58a6e68b4e49389c040bbc9556bcdd6',1,'bqString']]],
   ['to_5futf8_11',['to_utf8',['../dc/dde/classbq_string.html#a36dc1a22e2899882ac75f85fb3e88d30',1,'bqString']]],
   ['tofullscreenmode_12',['ToFullscreenMode',['../d3/dfe/classbq_window.html#ab3e5c43c4acc25925c3dcac915f3a8fa',1,'bqWindow']]],
-  ['toskinned_13',['ToSkinned',['../da/dd2/classbq_mesh.html#acf06bccb5ec717226170f5a3a1bc8bb0',1,'bqMesh']]],
-  ['totop_14',['ToTop',['../d0/d62/classbq_g_u_i_element.html#a65ab3cbda3a0f619dedbbf0ed0b2cca4',1,'bqGUIElement::ToTop()'],['../db/dee/classbq_g_u_i_window.html#ae352e6ef297de32a5d3e699f65062b33',1,'bqGUIWindow::ToTop()']]],
-  ['towindowmode_15',['ToWindowMode',['../d3/dfe/classbq_window.html#a9ecfcca50ae6b0a8befd8e18ac928b66',1,'bqWindow']]],
-  ['transform_16',['Transform',['../d9/d09/classbq_aabb.html#ae5b44e27afc3385645bf44a5e32dfa8d',1,'bqAabb']]],
-  ['translate_17',['Translate',['../d3/d1c/classbq_matrix2__t.html#ac98b843d54c1adae6eea7cbd10e7d1e3',1,'bqMatrix2_t']]],
-  ['transpose_18',['Transpose',['../d5/d11/classbq_math.html#aa95eb8539587264ef15708dbde5acfce',1,'bqMath::Transpose()'],['../dc/d78/classbq_matrix4__t.html#a98947d1160d6f47e1283afa27665274e',1,'bqMatrix4_t::Transpose()']]],
-  ['triangleintersect_19',['TriangleIntersect',['../d0/d9f/classbq_triangle.html#a3b91e8abc69b771f0d825db628842a68',1,'bqTriangle::TriangleIntersect(const bqVec3 &amp;_v1, const bqVec3 &amp;_v2, const bqVec3 &amp;_v3)'],['../d0/d9f/classbq_triangle.html#aa71a7bbadb2e36eede7cdee33eb8782b',1,'bqTriangle::TriangleIntersect(bqTriangle *t)']]],
-  ['trim_5fspaces_20',['trim_spaces',['../dc/dde/classbq_string.html#a95a787a4e56d8ff6db312b1efe97a155',1,'bqString']]],
-  ['trypush_21',['TryPush',['../dc/d7a/classbq_fixed_f_i_f_o.html#ac8c50af0a7a8b24fa1e20fe6268465d3',1,'bqFixedFIFO::TryPush()'],['../d0/db3/classbq_fixed_thread_f_i_f_o.html#ac2684e3d3ef0ac8da9d702e773308cb1',1,'bqFixedThreadFIFO::TryPush()']]]
+  ['tolower_13',['tolower',['../dd/d61/classbq_c_r_t.html#ac62f30f57964ff633fd4a5eeaa5d95f5',1,'bqCRT::tolower(char c)'],['../dd/d61/classbq_c_r_t.html#a8153b6cb7cb93d6503ed8ed6d274863e',1,'bqCRT::tolower(wchar_t c)'],['../dd/d61/classbq_c_r_t.html#a76709c79bcb01c6176d738c764ac9581',1,'bqCRT::tolower(char32_t c)']]],
+  ['toskinned_14',['ToSkinned',['../da/dd2/classbq_mesh.html#acf06bccb5ec717226170f5a3a1bc8bb0',1,'bqMesh']]],
+  ['totop_15',['ToTop',['../d0/d62/classbq_g_u_i_element.html#a65ab3cbda3a0f619dedbbf0ed0b2cca4',1,'bqGUIElement::ToTop()'],['../db/dee/classbq_g_u_i_window.html#ae352e6ef297de32a5d3e699f65062b33',1,'bqGUIWindow::ToTop()']]],
+  ['toupper_16',['toupper',['../dd/d61/classbq_c_r_t.html#a844f9c3aa98181d025e8f5e76e612449',1,'bqCRT::toupper(char c)'],['../dd/d61/classbq_c_r_t.html#a797cb492f211262a1354350636fcedf8',1,'bqCRT::toupper(wchar_t c)'],['../dd/d61/classbq_c_r_t.html#afe883faa44a8297fbb8c06ab241e5592',1,'bqCRT::toupper(char32_t c)']]],
+  ['towindowmode_17',['ToWindowMode',['../d3/dfe/classbq_window.html#a9ecfcca50ae6b0a8befd8e18ac928b66',1,'bqWindow']]],
+  ['transform_18',['Transform',['../d9/d09/classbq_aabb.html#ae5b44e27afc3385645bf44a5e32dfa8d',1,'bqAabb']]],
+  ['translate_19',['Translate',['../d3/d1c/classbq_matrix2__t.html#ac98b843d54c1adae6eea7cbd10e7d1e3',1,'bqMatrix2_t']]],
+  ['transpose_20',['Transpose',['../d5/d11/classbq_math.html#aa95eb8539587264ef15708dbde5acfce',1,'bqMath::Transpose()'],['../dc/d78/classbq_matrix4__t.html#a98947d1160d6f47e1283afa27665274e',1,'bqMatrix4_t::Transpose()']]],
+  ['triangleintersect_21',['TriangleIntersect',['../d0/d9f/classbq_triangle.html#a3b91e8abc69b771f0d825db628842a68',1,'bqTriangle::TriangleIntersect(const bqVec3 &amp;_v1, const bqVec3 &amp;_v2, const bqVec3 &amp;_v3)'],['../d0/d9f/classbq_triangle.html#aa71a7bbadb2e36eede7cdee33eb8782b',1,'bqTriangle::TriangleIntersect(bqTriangle *t)']]],
+  ['trim_5fspaces_22',['trim_spaces',['../dc/dde/classbq_string.html#a95a787a4e56d8ff6db312b1efe97a155',1,'bqString']]],
+  ['trypush_23',['TryPush',['../dc/d7a/classbq_fixed_f_i_f_o.html#ac8c50af0a7a8b24fa1e20fe6268465d3',1,'bqFixedFIFO::TryPush()'],['../d0/db3/classbq_fixed_thread_f_i_f_o.html#ac2684e3d3ef0ac8da9d702e773308cb1',1,'bqFixedThreadFIFO::TryPush()']]]
 ];

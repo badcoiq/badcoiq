@@ -1013,6 +1013,9 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 	
 	g_framework->m_themeDark.m_staticTextFont = bqFramework::GetDefaultFont(bqGUIDefaultFont::Text);
 	g_framework->m_themeLight.m_staticTextFont = g_framework->m_themeDark.m_staticTextFont;
+
+	g_framework->m_themeDark.m_buttonTextFont = bqFramework::GetDefaultFont(bqGUIDefaultFont::Text);
+	g_framework->m_themeLight.m_buttonTextFont = g_framework->m_themeDark.m_buttonTextFont;
 }
 
 bqGUIFont* bqFramework::SummonFont()
@@ -1052,7 +1055,7 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeLight.m_buttonBGColor1 = 0x999999;
 	g_framework->m_themeLight.m_buttonBGColor2 = 0x666666;
 	g_framework->m_themeLight.m_buttonBorderColor = 0x999999;
-	g_framework->m_themeLight.m_buttonTextColor = 0x0;
+	g_framework->m_themeLight.m_buttonTextColor = 0xE7E7E7;
 	g_framework->m_themeLight.m_buttonDisabledBGColor1 = 0x999999;
 	g_framework->m_themeLight.m_buttonDisabledBGColor2 = 0x666666;
 	g_framework->m_themeLight.m_buttonDisabledBorderColor = 0x999999;
@@ -1094,6 +1097,8 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeLight.m_scrollbarControlColor = 0xC6C6C6;
 	g_framework->m_themeLight.m_scrollbarControlMouseHoverColor = 0xA6A6A6;
 	g_framework->m_themeLight.m_scrollbarControlDragColor = 0xA6A6A6;
+	
+	g_framework->m_themeLight.m_pictureBoxBGColor = 0xFFFFFF;
 
 	g_framework->m_themeDark = g_framework->m_themeLight;
 }
@@ -1224,7 +1229,7 @@ void bqFrameworkImpl::_initGUITextDrawCallbacks()
 {
 	bqLog::PrintInfo("Init GUI callbacks\n");
 
-	//m_defaultTextDrawCallback_button = new bqGUIButtonTextDrawCallback;
+	m_defaultTextDrawCallback_button = new bqGUIButtonTextDrawCallback;
 	//m_defaultTextDrawCallback_icons = new bqGUICheckRadioBoxTextDrawCallback;
 	//m_defaultTextDrawCallback_textEditor = new bqGUITextEditorTextDrawCallback;
 	//m_defaultTextDrawCallback_listbox = new bqGUIListBoxTextDrawCallback;

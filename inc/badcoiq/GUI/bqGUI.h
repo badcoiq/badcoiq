@@ -53,12 +53,13 @@ struct bqGUIState
 	bqGUIPopup* m_activePopup = 0;
 };
 
+#include "badcoiq/GUI/bqGUIStaticText.h"
+
 #include "badcoiq/GUI/bqGUIButton.h"
 #include "badcoiq/GUI/bqGUICheckRadioBox.h"
 #include "badcoiq/GUI/bqGUITextEditor.h"
 #include "badcoiq/GUI/bqGUIListBox.h"
 #include "badcoiq/GUI/bqGUISlider.h"
-#include "badcoiq/GUI/bqGUIStaticText.h"
 #include "badcoiq/GUI/bqGUIPictureBox.h"
 #include "badcoiq/GUI/bqGUIScrollbar.h"
 

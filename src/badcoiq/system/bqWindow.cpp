@@ -414,8 +414,8 @@ void bqWindow::DrawGUI(bqGS* gs)
 {
     if (m_GUIWindows.m_head)
     {
-        auto last = m_GUIWindows.m_head;
-        auto curr = last->m_left;
+        auto last = m_GUIWindows.m_head->m_left;
+        auto curr = m_GUIWindows.m_head;
         while (1)
         {
             if (curr->m_data->IsVisible())
@@ -425,7 +425,7 @@ void bqWindow::DrawGUI(bqGS* gs)
 
             if (curr == last)
                 break;
-            curr = curr->m_left;
+            curr = curr->m_right;
         }
     }
 }

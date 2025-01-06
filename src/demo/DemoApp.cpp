@@ -105,15 +105,31 @@ public:
 	bqVec4f m_uv = bqVec4f(0.f, 0.f, 1.f, 1.f);
 };
 
-//class MyStaticText : public bqGUIStaticText
-//{
-//public:
-//	MyStaticText(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size) :
-//		bqGUIStaticText(w, position, size)
-//	{
-//	}
-//	virtual ~MyStaticText() {}
-//};
+class MyStaticText : public bqGUIStaticText{public:
+	MyStaticText(const bqVec2f& position, const bqVec2f& size):bqGUIStaticText(position, size){}
+	virtual ~MyStaticText() {}
+};
+class MyPictureBox : public bqGUIPictureBox {
+	bqColor m_color1 = bq::ColorRed;
+	bqColor m_color2 = bq::ColorLime;
+	bqGUIStyle m_style;
+public:
+	MyPictureBox(const bqVec2f& position, const bqVec2f& size) :bqGUIPictureBox(position, size) 
+	{
+		m_style = *bqFramework::GetGUIStyle(bqGUIStyleTheme::Light);
+		m_style.m_pictureBoxBGColor = m_color1;
+		SetStyle(&m_style);
+	}
+	virtual ~MyPictureBox() {}
+	virtual void OnMouseEnter() { m_style.m_pictureBoxBGColor = m_color2; }
+	virtual void OnMouseLeave() { m_style.m_pictureBoxBGColor = m_color1; }
+};
+class MyButton : public bqGUIButton
+{
+public:
+	MyButton(const bqVec2f& position, const bqVec2f& size) :bqGUIButton(position, size) {}
+	virtual ~MyButton() {}
+};
 
 void DemoExample::OnWindowSize(bqWindow* w)
 {
@@ -187,20 +203,40 @@ bool DemoApp::Init()
 
 	m_textDrawCallback = new GUIDrawTextCallback(m_fontDefault);
 
-	m_GUIWindow = bqFramework::SummonGUIWindow(m_window, bqVec2f(300.f, 0.f),
+	m_GUIWindow = bqFramework::SummonGUIWindow(m_window, bqVec2f(220.f, 0.f),
 		bqVec2f(300.f, 400.f));
 	m_GUIWindow->SetDrawBG(true);
 	m_GUIWindow->m_windowFlags |= bqGUIWindowBase::windowFlag_withTitleBar;
-
-	m_GUIWindow2 = bqFramework::SummonGUIWindow(m_window, bqVec2f(350.f, 50.f),
+	m_GUIWindow->Activate();
+	/*m_GUIWindow2 = bqFramework::SummonGUIWindow(m_window, bqVec2f(350.f, 50.f),
 		bqVec2f(300.f, 400.f));
 	m_GUIWindow2->SetDrawBG(true);
 	m_GUIWindow2->m_windowFlags |= bqGUIWindowBase::windowFlag_withTitleBar;
 	m_GUIWindow2->GetTitleText().assign(U"Second window");
 	m_GUIWindow2->ToTop();
-	m_GUIWindow2->Activate();
+	m_GUIWindow2->Activate();*/
+	bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/images/4x4.png").c_str());
+	if (image)
+	{
+		bqTextureInfo tinf;
+		m_texture4x4 = m_gs->SummonTexture(image, tinf);
+		delete image;
+	}
 
-	//auto staticText = new MyStaticText(m_GUIWindow, bqVec2f(0.f, 0.f), bqVec2f(300.f, 300.f));
+	auto staticText = new MyStaticText(bqVec2f(0.f, 0.f), bqVec2f(300.f, 300.f));
+	staticText->SetText(U"Hello World!");
+	m_GUIWindow->AddElement(staticText);
+	
+	auto pictureBox = new MyPictureBox(bqVec2f(0.f, 20.f), bqVec2f(32.f, 32.f));
+	pictureBox->SetTexture(this->m_texture4x4);
+	m_GUIWindow->AddElement(pictureBox);
+
+	staticText->ToTop();
+
+	auto button = new MyButton(bqVec2f(0.f, 50.f), bqVec2f(80.f, 32.f));
+	button->SetText(U"Enter");
+	m_GUIWindow->AddElement(button);
+
 	//m_staticTextDescription = staticText;
 	//m_staticTextDescription->SetText(U" ");
 
@@ -225,14 +261,7 @@ bool DemoApp::Init()
 		m_whiteTexture = m_gs->SummonTexture(&img, tinf);
 	}
 
-	bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/images/4x4.png").c_str());
-	if (image)
-	{
-		bqTextureInfo tinf;
-		m_texture4x4 = m_gs->SummonTexture(image, tinf);
-		delete image;
-	}
-
+	
 	m_currentCategory = &m_rootCategory;
 	
 	AddExample(new textureExample(this), U"IMAGE/TEXTURE", "/", U"Для проверки bqImage и текстур");
@@ -299,12 +328,12 @@ void DemoApp::Run()
 			m_activeExample->OnDraw();
 		else
 		{
-			auto w = bqFramework::GetGUIState().m_windowUnderCursor;
+			/*auto w = bqFramework::GetGUIState().m_windowUnderCursor;
 			if (w)
 			{
 				bqLog::Print(U"%lls\n", w->GetTitleText().c_str());
 				
-			}
+			}*/
 			OnDraw();
 		}
 	}

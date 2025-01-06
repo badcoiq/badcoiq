@@ -29,73 +29,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _BQVGTARGET_H_
 #define _BQVGTARGET_H_
 
-class SpanExtents
-{
-public:
-    // Marks a span. aStart and aEnd should be sorted.
-    inline void mark(int aStart, int aEnd)
-    {
-        if (aStart < mMinimum)
-            mMinimum = aStart;
-        if (aEnd > mMaximum)
-            mMaximum = aEnd;
-    }
-
-    // Marks a span. aStart and aEnd don't have to be sorted.
-    inline void markWithSort(int aStart, int aEnd)
-    {
-        if (aStart <= aEnd)
-            mark(aStart, aEnd);
-        else
-            mark(aEnd, aStart);
-    }
-
-    inline void reset()
-    {
-        mMinimum = 0x7fffffff;
-        mMaximum = 0x80000000;
-    }
-
-    int mMinimum = 0x7fffffff;
-    int mMaximum = 0x80000000;
-};
-
 class bqVectorGraphicsTarget
 {
 	bqImage* m_img = 0;
-	bq::SUBPIXEL_DATA* mMaskBuffer = 0;
-	bq::NonZeroMask* mWindingBuffer;
-	bq::PolygonScanEdge** mEdgeTable;
-	bq::PolygonScanEdge* mEdgeStorage;
-	int mEdgeCount = 0;
-	uint32_t mWidth = 0;
-    uint32_t mBufferWidth = 0;
-    uint32_t mHeight = 0;
-	bq::ClipRectangle mClipRect;
-	bqMat2 mRemappingMatrix;
-	SpanExtents mVerticalExtents;
-    uint32_t mCurrentEdge = 0;
-   
-    inline int getFreeEdgeCount()
-    {
-        return mEdgeCount - mCurrentEdge - 1;
-    }
-    bool resizeEdgeStorage(int aIncrement);
 public:
 	bqVectorGraphicsTarget();
 	~bqVectorGraphicsTarget();
 
+	bool Init();
 
-	bool Init(bqImage*);
-
-	void RenderEvenOdd(
-		const bqVectorGraphicsShape* shape,
-        const bqColor& aColor,
-		const bqMat2& aTransformation);
-
-
-    uint32_t Width()const { return mWidth; }
-    uint32_t Height()const { return mHeight; }
 };
 
 #endif

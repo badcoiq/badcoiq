@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2025, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_GUISTTEXT_H__
+/// \cond
 #define __BQ_GUISTTEXT_H__
+/// \endcond
+
 #ifdef BQ_WITH_GUI
 
+/// \brief Текст.
 class bqGUIStaticText : public bqGUIElement
 {
 	bqString m_text;
@@ -38,11 +42,12 @@ class bqGUIStaticText : public bqGUIElement
 	size_t m_drawLimit = 0;
 	float m_lineHeight = 0.f;
 public:
-	bqGUIStaticText(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	bqGUIStaticText(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIStaticText();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIStaticText);
 	BQ_DELETED_METHODS(bqGUIStaticText);
 
+	/// 
 	virtual void Rebuild() final;
 	virtual void Update() final;
 	virtual void Draw(bqGS* gs, float dt) final;

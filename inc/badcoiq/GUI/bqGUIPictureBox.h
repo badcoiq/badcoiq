@@ -28,15 +28,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_GUIPICBOX_H__
+/// \cond
 #define __BQ_GUIPICBOX_H__
+/// \endcond
 #ifdef BQ_WITH_GUI
 
+/// \brief Картинка
 class bqGUIPictureBox : public bqGUIElement
 {
 	bqTexture* m_texture = 0;
 	bqVec4f m_uv = bqVec4f(0.f, 0.f, 1.f, 1.f);
 public:
-	bqGUIPictureBox(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
+	bqGUIPictureBox(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUIPictureBox();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIPictureBox);
 	BQ_DELETED_METHODS(bqGUIPictureBox);

@@ -44,6 +44,10 @@ public:
 
 	void SetParent(bqHierarchy* o)
 	{
+		// наверно лучше так
+		if (o == m_parent)
+			return;
+
 		if (m_parent)
 			m_parent->m_children.erase_first(this);
 

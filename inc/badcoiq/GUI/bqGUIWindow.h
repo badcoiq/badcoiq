@@ -127,16 +127,22 @@ class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 	
 	bqGUIFont* (bqGUIWindow::* m_onFont)(char32_t) = 0;
 	bqColor* (bqGUIWindow::* m_onColor)(char32_t) = 0;
+
+	bqGS* m_gs = 0;
+	float m_dt = 0.f;
+	void _draw_element(bqListNode<bqHierarchy*>*);
+	void _update_element(bqListNode<bqHierarchy*>*);
+	void _rebuild_element(bqListNode<bqHierarchy*>*);
 public:
 	bqGUIWindow(/*bqWindow* systemWindow, */const bqVec2f& position, const bqVec2f& size);
 	BQ_PLACEMENT_ALLOCATOR(bqGUIWindow);
 	virtual ~bqGUIWindow();
 
-	/// \see bqGUICommon
+	/// Смотри bqGUICommon
 	virtual void Rebuild() override;
-	/// \see bqGUICommon
+	/// Смотри bqGUICommon
 	virtual void Draw(bqGS* gs, float dt) override;
-	/// \see bqGUICommon
+	/// Смотри bqGUICommon
 	virtual void Update() override;
 
 	/// \brief Получить шрифт который будет использоваться

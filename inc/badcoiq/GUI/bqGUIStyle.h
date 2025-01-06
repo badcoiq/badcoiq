@@ -75,6 +75,7 @@ struct bqGUIStyle
 	bqColor m_buttonMousePressBGColor1;
 	bqColor m_buttonMousePressBGColor2;
 	bqColor m_buttonMousePressTextColor;
+	bqGUIFont* m_buttonTextFont = 0;
 
 	bqColor m_chkradioTextColor;
 	bqColor m_chkradioDisabledTextColor;
