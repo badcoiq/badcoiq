@@ -286,7 +286,7 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 	viewport.TopLeftY = 0.0f;
 	m_d3d11DevCon->RSSetViewports(1, &viewport);
 
-	
+
 
 	m_d3d11DevCon->OMSetDepthStencilState(m_depthStencilStateEnabled, 0);
 
@@ -495,15 +495,15 @@ bool bqGSD3D11::CreateVertexShaderInputLayout(ID3D10Blob* shaderBlob, ID3D11Inpu
 {
 	D3D11_INPUT_ELEMENT_DESC vertexLayout[8];
 	uint32_t vertexLayoutSize = 0;
-		/*
-		LPCSTR SemanticName;
-		UINT SemanticIndex;
-		DXGI_FORMAT Format;
-		UINT InputSlot;
-		UINT AlignedByteOffset;
-		D3D11_INPUT_CLASSIFICATION InputSlotClass;
-		UINT InstanceDataStepRate;
-		*/
+	/*
+	LPCSTR SemanticName;
+	UINT SemanticIndex;
+	DXGI_FORMAT Format;
+	UINT InputSlot;
+	UINT AlignedByteOffset;
+	D3D11_INPUT_CLASSIFICATION InputSlotClass;
+	UINT InstanceDataStepRate;
+	*/
 
 	int ind = 0;
 	ind = 0;
@@ -1199,7 +1199,7 @@ bqTexture* bqGSD3D11::SummonTexture(bqImage* img, const bqTextureInfo& inf)
 		if (isGenMips)
 			m_d3d11DevCon->GenerateMips(_textureResView);
 	}
-	else if(inf.m_type == bqTextureType::RTT)
+	else if (inf.m_type == bqTextureType::RTT)
 	{
 		D3D11_TEXTURE2D_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
@@ -1347,7 +1347,7 @@ bqTexture* bqGSD3D11::SummonTexture(bqImage* img, const bqTextureInfo& inf)
 	newTexture->m_DSV = _depthStencilView;
 
 	ti.m_imageInfo = img->m_info;
-	
+
 	newTexture->SetInfo(ti);
 
 	return newTexture;
@@ -1614,10 +1614,10 @@ void bqGSD3D11::EndGUI()
 }
 
 void bqGSD3D11::DrawGUIRectangle(
-	const bqVec4f& rect, 
-	const bqColor& color1, 
+	const bqVec4f& rect,
+	const bqColor& color1,
 	const bqColor& color2,
-	bqTexture* t, 
+	bqTexture* t,
 	bqVec4f* UVs)
 {
 	m_shaderGUIRectangle->m_cbDataElement.Color1 = color1;
@@ -1639,8 +1639,8 @@ void bqGSD3D11::DrawGUIRectangle(
 }
 
 void bqGSD3D11::DrawGUIText(
-	const char32_t* text, 
-	uint32_t textSz, 
+	const char32_t* text,
+	uint32_t textSz,
 	const bqVec2f& _position,
 	bqGUIDrawTextCallback* cb)
 {
@@ -1738,11 +1738,11 @@ void bqGSD3D11::_drawSprite(const bqColor& color, const bqVec4& corners, const b
 
 #ifdef BQ_WITH_GUI
 void bqGSD3D11::DrawText3D(
-	const bqVec3& pos, 
-	const char32_t* text, 
+	const bqVec3& pos,
+	const char32_t* text,
 	size_t textLen,
-	bqGUIFont* font, 
-	const bqColor& color, 
+	bqGUIFont* font,
+	const bqColor& color,
 	float sizeMultipler,
 	size_t textSizeInPixels)
 {

@@ -61,7 +61,7 @@ public:
 	bool m_visible = true;
 };
 
-// Графическая система
+/// \brief Графическая система
 class bqGS
 {
 public:
@@ -73,59 +73,57 @@ public:
 	virtual bool Init(bqWindow*, const char* parameters) = 0;
 	virtual void Shutdown() = 0;
 
-	// Инициализировать больше окон. 
-	virtual bool InitWindow(bqWindow*) = 0;
-	// Чтобы рисовать во множество окон. Пока не реализовано.
-	virtual void SetActiveWindow(bqWindow*) = 0;
-
-	// Получить имя
+	/// Получить имя
 	virtual bqString GetName() = 0;
-	// Получить остальную информацию в виде текста
+	/// Получить остальную информацию в виде текста
 	virtual bqString GetTextInfo() = 0;
-	// Получить ID
+	/// Получить ID
 	virtual bqUID GetUID() = 0;
 
-	// Цвет фона
+	/// Цвет фона
 	virtual void SetClearColor(float r, float g, float b, float a) = 0;
 
-	// Вызвать перед рисованием
+	/// Вызвать перед рисованием
 	virtual void BeginDraw() = 0;
-	// Очистить буфер с глубиной
+	/// Очистить буфер с глубиной
 	virtual void ClearDepth() = 0;
-	// Очистить фон (закрасить фон)
+	/// Очистить фон (закрасить фон)
 	virtual void ClearColor() = 0;
-	// ClearDepth и ClearColor
+	/// ClearDepth и ClearColor
 	virtual void ClearAll() = 0;
-	// Вызвать после завершения рисования
+	/// Вызвать после завершения рисования
 	virtual void EndDraw() = 0;
-	// Вызвать после EndDraw
+	/// Вызвать после EndDraw
 	virtual void SwapBuffers() = 0;
 
-	// Нарисовать линию в 3D.
-	// Обязательно нужно указать на ViewProjection матрицу
+	/// Нарисовать линию в 3D.
+	/// Обязательно нужно указать на ViewProjection матрицу
 	virtual void DrawLine3D(const bqVec3& p1, const bqVec3& p2, const bqColor& c) = 0;
 
-	// Установить текущий шейдер.
-	// Если bqShaderType::User то необходимо указать индекс шейдера
+	/// Установить текущий шейдер.
+	/// Если bqShaderType::User то необходимо указать индекс шейдера
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) = 0;
 
 #ifdef BQ_WITH_MESH
-	// Создать GPU модель для рисования
+	/// Создать GPU модель для рисования
 	virtual bqGPUMesh* SummonMesh(bqMesh* m) = 0;
 
-	// Установить текущую модель
+	/// Установить текущую модель
 	virtual void SetMesh(bqGPUMesh* m) = 0;
 #endif
 
-	// Установить текущий материал
+	/// Установить текущий материал
 	virtual void SetMaterial(bqMaterial* m) = 0;
-	// Установить как рисовать треугольники
+
+	/// Установить как рисовать треугольники
 	virtual void SetRasterizerState(bqGSRasterizerState) = 0;
-	// Нарисовать
+
+	/// Нарисовать
 	virtual void Draw() = 0;
 
 #ifdef BQ_WITH_IMAGE
-	// Создать текстуру
+	
+	/// Создать текстуру
 	virtual bqTexture* SummonTexture(bqImage*, const bqTextureInfo&) = 0;
 	virtual bqTexture* SummonTexture(bqImage* i)
 	{
@@ -133,10 +131,12 @@ public:
 		return SummonTexture(i, ti);
 	}
 
-	// Создать Render Target Texture/Frame Buffer Object
+	/// Создать Render Target Texture/Frame Buffer Object
 	virtual bqTexture* SummonRTT(const bqPoint& size, const bqTextureInfo&) = 0;
-	// Установить текстуру для рисования.
+
+	/// Установить текстуру для рисования.
 	virtual void SetRenderTarget(bqTexture* t) = 0;
+
 #endif
 	virtual void SetRenderTargetDefault() = 0;
 
@@ -151,8 +151,8 @@ public:
 	virtual void SetScissorRect(const bqRect&) = 0;
 	virtual void SetScissorRect(const bqVec4f&) = 0;
 
-	// Надо вызвать когда был изменён размер окна
-	// Будет вычислена матрица для GUI, и обновятся буферы у SwapChain
+	/// Надо вызвать когда был изменён размер окна
+	/// Будет вычислена матрица для GUI, и обновятся буферы у SwapChain
 	virtual void OnWindowSize() = 0;
 
 	virtual void SetMainTargetSize(const bqPoint&) = 0;
@@ -187,11 +187,12 @@ public:
 	// 
 	virtual bqGPUOcclusionObject* SummonOcclusionObject() = 0;
 	
-	// Все действия связанные с Occlusion culling надо делать
-	//  между вызовами этих методов
+	/// Все действия связанные с Occlusion culling надо делать
+	///  между вызовами этих методов
 	virtual void OcclusionBegin() = 0;
 	virtual void OcclusionEnd() = 0;
-	// Перед рисованием надо установить модель используя SetMesh
+	
+	/// Перед рисованием надо установить модель используя SetMesh
 	virtual void OcclusionDraw(bqGPUOcclusionObject*) = 0;
 	virtual void OcclusionResult(bqGPUOcclusionObject*) = 0;
 

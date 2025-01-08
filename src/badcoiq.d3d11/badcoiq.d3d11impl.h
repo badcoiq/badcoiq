@@ -95,9 +95,9 @@ class bqGSD3D11 : public bqGS
 	ID3D11RasterizerState* m_RasterizerWireframe = 0;
 	ID3D11BlendState* m_blendStateAlphaEnabled = 0;
 	ID3D11BlendState* m_blendStateAlphaDisabled = 0;
-	
+
 	bqVec4f m_clearColor;
-	
+
 	// bool m_vsync = true; // можно же сделать по другому.
 	UINT m_vsync = 1;       // m_SwapChain->Present(m_vsync, 0);
 
@@ -142,7 +142,7 @@ public:
 	virtual void ClearAll() final;
 	virtual void EndDraw() final;
 	virtual void SwapBuffers() final;
-	
+
 	virtual void DrawLine3D(const bqVec3& p1, const bqVec3& p2, const bqColor& c) final;
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) final;
 
@@ -176,7 +176,7 @@ public:
 	virtual void OnWindowSize() final;
 
 	virtual void SetMainTargetSize(const bqPoint&) final;
-	
+
 #ifdef BQ_WITH_GUI
 	virtual void BeginGUI() final;
 	virtual void EndGUI() final;
@@ -206,7 +206,7 @@ public:
 		const char* text,
 		ID3D10Blob** shaderData,
 		ID3D10Blob** error);
-	
+
 	bool CreateVertexShader(ID3D10Blob* shaderBlob, ID3D11VertexShader** vs);
 	bool CreateVertexShaderInputLayout(ID3D10Blob* shaderBlob, ID3D11InputLayout**);
 	bool CreatePixelShader(ID3D10Blob* shaderBlob, ID3D11PixelShader** ps);

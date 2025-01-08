@@ -149,6 +149,7 @@ class DemoApp
 	bool m_isRun = true;
 	
 	bqWindow* m_window = 0;
+
 	bqGS* m_gs = 0;
 	//slCamera* m_camera = 0;
 	bqGUIWindow* m_GUIWindow = 0;

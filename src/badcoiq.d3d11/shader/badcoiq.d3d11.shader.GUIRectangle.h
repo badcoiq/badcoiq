@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class bqGSD3D11;
 class bqGSD3D11Texture;
+class D3D11GSWindowData;
 class bqD3D11ShaderGUIRectangle : public bqGSD3D11ShaderBase
 {
 public:
@@ -45,7 +46,7 @@ public:
 
 	struct cbFrame
 	{
-		bqMatrix4_t<float> ProjMtx;
+		bqMatrix4_t<float32_t> ProjMtx;
 	}m_cbDataFrame;
 
 	struct cbElement
@@ -56,7 +57,7 @@ public:
 		bqVec4f UVs;
 	}m_cbDataElement;
 
-	virtual void SetConstants(bqMaterial* material) final;
+	virtual void SetConstants(bqMaterial* material) override;
 
 	bool Init();
 

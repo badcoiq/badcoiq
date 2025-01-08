@@ -35,7 +35,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 bqD3D11ShaderEndDraw::bqD3D11ShaderEndDraw(bqGSD3D11* gs)
 	:
 	m_gs(gs)
-{}
+{
+}
 
 bqD3D11ShaderEndDraw::~bqD3D11ShaderEndDraw()
 {
