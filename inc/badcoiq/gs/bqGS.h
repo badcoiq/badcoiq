@@ -106,7 +106,7 @@ public:
 
 #ifdef BQ_WITH_MESH
 	/// Создать GPU модель для рисования
-	virtual bqGPUMesh* SummonMesh(bqMesh* m) = 0;
+	virtual bqGPUMesh* CreateMesh(bqMesh* m) = 0;
 
 	/// Установить текущую модель
 	virtual void SetMesh(bqGPUMesh* m) = 0;
@@ -124,15 +124,15 @@ public:
 #ifdef BQ_WITH_IMAGE
 	
 	/// Создать текстуру
-	virtual bqTexture* SummonTexture(bqImage*, const bqTextureInfo&) = 0;
-	virtual bqTexture* SummonTexture(bqImage* i)
+	virtual bqTexture* CreateTexture(bqImage*, const bqTextureInfo&) = 0;
+	virtual bqTexture* CreateTexture(bqImage* i)
 	{
 		bqTextureInfo ti;
-		return SummonTexture(i, ti);
+		return CreateTexture(i, ti);
 	}
 
 	/// Создать Render Target Texture/Frame Buffer Object
-	virtual bqTexture* SummonRTT(const bqPoint& size, const bqTextureInfo&) = 0;
+	virtual bqTexture* CreateRTT(const bqPoint& size, const bqTextureInfo&) = 0;
 
 	/// Установить текстуру для рисования.
 	virtual void SetRenderTarget(bqTexture* t) = 0;

@@ -93,11 +93,11 @@ bool ExampleBasicsSprite::Init()
 	m_sprite = new bqSprite;
 	m_sprite->SetSize(10.f / 22.f, 10.f / 22.f);
 
-	bqImage* img = bqFramework::SummonImage(bqFramework::GetPath("../data/sprites/Full Coins.png").c_str());
+	bqImage* img = bqFramework::CreateImage(bqFramework::GetPath("../data/sprites/Full Coins.png").c_str());
 	if (img)
 	{
 		bqTextureInfo ti;
-		auto texture = m_gs->SummonTexture(img, ti);
+		auto texture = m_gs->CreateTexture(img, ti);
 		delete img;
 		if (texture)
 		{
@@ -155,11 +155,11 @@ bool ExampleBasicsSprite::Init()
 	m_spriteWithStateAndAnimationAndColor->GetColor() = bq::ColorYellow;
 
 	m_spriteFire = new bqSprite;
-	img = bqFramework::SummonImage(bqFramework::GetPath("../data/sprites/22 TorchDrippingYellow.png").c_str());
+	img = bqFramework::CreateImage(bqFramework::GetPath("../data/sprites/22 TorchDrippingYellow.png").c_str());
 	if (img)
 	{
 		bqTextureInfo ti;
-		auto texture = m_gs->SummonTexture(img, ti);
+		auto texture = m_gs->CreateTexture(img, ti);
 		delete img;
 		if (texture)
 		{

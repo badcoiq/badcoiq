@@ -117,7 +117,7 @@ public:
 	//  возможно в будущем появятся другие причины для удаления
 	void DeleteBadControlPoints();
 
-	bqMesh* SummonMesh(bool skinned = false);
+	bqMesh* CreateMesh(bool skinned = false);
 	void GenerateNormals(bool smooth = true);
 
 	// Удалить полигон. bqListNode должен принадлежать списку m_polygons.

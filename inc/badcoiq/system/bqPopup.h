@@ -27,41 +27,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_POPUPDATA_H__
-#define __BQ_POPUPDATA_H__
+#ifndef __BQ_POPUP_H__
+#define __BQ_POPUP_H__
 
-#include "badcoiq/containers/bqArray.h"
-#include "badcoiq/string/bqString.h"
+#ifdef BQ_WITH_POPUP
 
-// Это должен быть или GUI popup
-// или для отдельного окна с использованием векторной графики
+/// \brief Системное popup
+class bqPopup : public bqUserData
+{
+public:
+	bqPopup() {}
+	virtual ~bqPopup() {}
+	BQ_PLACEMENT_ALLOCATOR(bqPopup);
 
-//class bqPopupData
-//{
-//	
-//	struct Item
-//	{
-//		bqString m_title;
-//		bqString m_shortcutText;
-//		void(*m_callback)() = 0;
-//	};
-//	bqArray<Item> m_items;
-//public:
-//	bqPopupData() {}
-//	~bqPopupData() {}
-//
-//	void AddItem(const char* title, const char* shortcut, void(*callback)())
-//	{
-//		Item item;
-//		item.m_callback = callback;
-//		item.m_shortcutText = shortcut;
-//		item.m_title = title;
-//		m_items.push_back(item);
-//	}
-//
-//	size_t GetItemsNum() { return m_items.m_size; }
-//	Item* GetItems() { return m_items.m_data; }
-//};
+	virtual bqPopup* CreateSubMenu(const wchar_t* text) = 0;
 
+	virtual void AddItem(const wchar_t*, uint32_t id, const wchar_t* shortcut) = 0;
+	virtual void AddSeparator() = 0;
+	virtual void Show(bqWindow* activeWindow, uint32_t x, uint32_t y) = 0;
+};
+
+
+#endif
 #endif
 

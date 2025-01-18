@@ -127,79 +127,79 @@ public:
 	bqGSD3D11();
 	virtual ~bqGSD3D11();
 
-	virtual bool Init(bqWindow*, const char* parameters) final;
-	virtual void Shutdown() final;
-	virtual bool InitWindow(bqWindow*) final;
-	virtual void SetActiveWindow(bqWindow*) final;
-	virtual bqString GetName() final;
-	virtual bqString GetTextInfo() final;
-	virtual bqUID GetUID() final;
+	virtual bool Init(bqWindow*, const char* parameters) override;
+	virtual void Shutdown() override;
+	//virtual bool InitWindow(bqWindow*) override;
+	//virtual void SetActiveWindow(bqWindow*) override;
+	virtual bqString GetName() override;
+	virtual bqString GetTextInfo() override;
+	virtual bqUID GetUID() override;
 
-	virtual void SetClearColor(float r, float g, float b, float a) final;
-	virtual void BeginDraw() final;
-	virtual void ClearDepth() final;
-	virtual void ClearColor() final;
-	virtual void ClearAll() final;
-	virtual void EndDraw() final;
-	virtual void SwapBuffers() final;
+	virtual void SetClearColor(float r, float g, float b, float a) override;
+	virtual void BeginDraw() override;
+	virtual void ClearDepth() override;
+	virtual void ClearColor() override;
+	virtual void ClearAll() override;
+	virtual void EndDraw() override;
+	virtual void SwapBuffers() override;
 
-	virtual void DrawLine3D(const bqVec3& p1, const bqVec3& p2, const bqColor& c) final;
-	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) final;
+	virtual void DrawLine3D(const bqVec3& p1, const bqVec3& p2, const bqColor& c) override;
+	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) override;
 
 #ifdef BQ_WITH_MESH
-	virtual bqGPUMesh* SummonMesh(bqMesh* m) final;
-	virtual void SetMesh(bqGPUMesh* m) final;
+	virtual bqGPUMesh* CreateMesh(bqMesh* m) override;
+	virtual void SetMesh(bqGPUMesh* m) override;
 #endif
 
-	virtual void SetMaterial(bqMaterial* m) final;
-	virtual void Draw() final;
-	virtual void SetRasterizerState(bqGSRasterizerState) final;
+	virtual void SetMaterial(bqMaterial* m) override;
+	virtual void Draw() override;
+	virtual void SetRasterizerState(bqGSRasterizerState) override;
 
-	virtual bqTexture* SummonTexture(bqImage*, const bqTextureInfo&) final;
-	virtual bqTexture* SummonRTT(const bqPoint& size, const bqTextureInfo&) final;
-	virtual void SetRenderTarget(bqTexture*) final;
-	virtual void SetRenderTargetDefault() final;
+	virtual bqTexture* CreateTexture(bqImage*, const bqTextureInfo&) override;
+	virtual bqTexture* CreateRTT(const bqPoint& size, const bqTextureInfo&) override;
+	virtual void SetRenderTarget(bqTexture*) override;
+	virtual void SetRenderTargetDefault() override;
 
-	virtual void UseVSync(bool) final;
-	virtual void EnableDepth()final;
-	virtual void DisableDepth() final;
-	virtual void EnableBlend() final;
-	virtual void DisableBlend() final;
-	virtual void EnableBackFaceCulling() final;
-	virtual void DisableBackFaceCulling() final;
+	virtual void UseVSync(bool) override;
+	virtual void EnableDepth()override;
+	virtual void DisableDepth() override;
+	virtual void EnableBlend() override;
+	virtual void DisableBlend() override;
+	virtual void EnableBackFaceCulling() override;
+	virtual void DisableBackFaceCulling() override;
 
-	virtual bqVec2f GetDepthRange() final;
-	virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) final;
-	virtual void SetScissorRect(const bqRect&) final;
-	virtual void SetScissorRect(const bqVec4f&) final;
+	virtual bqVec2f GetDepthRange() override;
+	virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
+	virtual void SetScissorRect(const bqRect&) override;
+	virtual void SetScissorRect(const bqVec4f&) override;
 
-	virtual void OnWindowSize() final;
+	virtual void OnWindowSize() override;
 
-	virtual void SetMainTargetSize(const bqPoint&) final;
+	virtual void SetMainTargetSize(const bqPoint&) override;
 
 #ifdef BQ_WITH_GUI
-	virtual void BeginGUI() final;
-	virtual void EndGUI() final;
+	virtual void BeginGUI() override;
+	virtual void EndGUI() override;
 	virtual void DrawGUIRectangle(const bqVec4f& rect, const bqColor& color1, const bqColor& color2,
-		bqTexture* t, bqVec4f* UVs) final;
+		bqTexture* t, bqVec4f* UVs) override;
 	virtual void DrawGUIText(const char32_t* text, uint32_t textSz, const bqVec2f& position,
-		bqGUIDrawTextCallback*) final;
+		bqGUIDrawTextCallback*) override;
 #ifdef BQ_WITH_SPRITE
 	virtual void DrawText3D(const bqVec3& pos, const char32_t* text, size_t textLen,
-		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) final;
+		bqGUIFont* font, const bqColor& color, float sizeMultipler, size_t textSizeInPixels) override;
 #endif
 #endif
 
 #ifdef BQ_WITH_SPRITE
-	virtual void DrawSprite(bqSprite*) final;
+	virtual void DrawSprite(bqSprite*) override;
 	void _drawSprite(const bqColor& color, const bqVec4& corners, const bqVec4f& UVs, float alphaDiscard, bqGSD3D11Texture* t);
 #endif
 
-	virtual bqGPUOcclusionObject* SummonOcclusionObject() final;
-	virtual void OcclusionBegin() final;
-	virtual void OcclusionEnd() final;
-	virtual void OcclusionDraw(bqGPUOcclusionObject*) final;
-	virtual void OcclusionResult(bqGPUOcclusionObject*) final;
+	virtual bqGPUOcclusionObject* SummonOcclusionObject() override;
+	virtual void OcclusionBegin() override;
+	virtual void OcclusionEnd() override;
+	virtual void OcclusionDraw(bqGPUOcclusionObject*) override;
+	virtual void OcclusionResult(bqGPUOcclusionObject*) override;
 
 	bool CompileShader(const char* target,
 		const char* entryPoint,

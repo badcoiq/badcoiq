@@ -42,10 +42,10 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb)
 
 	uint32_t file_size = 0;
 	
-	//uint8_t* ptr = bqFramework::SummonFileBuffer(path, &file_size, true);
+	//uint8_t* ptr = bqFramework::CreateFileBuffer(path, &file_size, true);
 	//if (ptr)
-	//bqPtr<uint8_t> ptr(bqFramework::SummonFileBuffer(path, &file_size, true), bqPtr<uint8_t>::Destroy());
-	BQ_PTR_D(uint8_t, ptr, bqFramework::SummonFileBuffer(path, &file_size, true));
+	//bqPtr<uint8_t> ptr(bqFramework::CreateFileBuffer(path, &file_size, true), bqPtr<uint8_t>::Destroy());
+	BQ_PTR_D(uint8_t, ptr, bqFramework::CreateFileBuffer(path, &file_size, true));
 	if (ptr.Ptr())
 	{
 		//LoadSMD(path, cb, ptr, (uint32_t)file_size);
@@ -243,7 +243,7 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 					// create mesh here
 					Model* model = &models.m_data[i];
 
-					BQ_PTR_D(bqPolygonMesh, polygonMesh, bqFramework::SummonPolygonMesh());
+					BQ_PTR_D(bqPolygonMesh, polygonMesh, bqFramework::CreatePolygonMesh());
 					
 					for(size_t o = 0; o < model->triangles.m_size; ++o)
 					{
@@ -284,7 +284,7 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 						memcpy_s(mat.m_maps[0].m_filePath, 0x1000, model->textureName.c_str(), model->textureName.size());
 						mat.m_name = name;
 						cb->OnMaterial(&mat);
-						cb->OnMesh(polygonMesh.Ptr()->SummonMesh(true), &name, &name);
+						cb->OnMesh(polygonMesh.Ptr()->CreateMesh(true), &name, &name);
 					}
 				}
 

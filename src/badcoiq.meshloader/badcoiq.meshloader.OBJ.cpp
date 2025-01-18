@@ -145,7 +145,7 @@ void bqMeshLoaderImpl::ImportOBJ_MTL(
 	
 	// читаем файл или распаковываем
 	uint32_t file_size = 0;
-	uint8_t* ptr = bqFramework::SummonFileBuffer(utf8.c_str(), &file_size, true);
+	uint8_t* ptr = bqFramework::CreateFileBuffer(utf8.c_str(), &file_size, true);
 	if (ptr)
 	{
 		bqTextBufferReader tbr(ptr, file_size); // text buffer reader
@@ -517,7 +517,7 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb, uint8
 			}
 
 			if (!polygonMesh)
-				polygonMesh = bqFramework::SummonPolygonMesh();
+				polygonMesh = bqFramework::CreatePolygonMesh();
 			polygonMesh->AddPolygon(&polygonCreator, genNormals);
 
 		}break;
@@ -571,7 +571,7 @@ void bqMeshLoaderImpl::LoadOBJ(const char* path, bqMeshLoaderCallback* cb)
 	BQ_ASSERT_ST(cb);
 
 	uint32_t file_size = 0;
-	uint8_t* ptr = bqFramework::SummonFileBuffer(path, &file_size, true);
+	uint8_t* ptr = bqFramework::CreateFileBuffer(path, &file_size, true);
 	if (ptr)
 	{
 		LoadOBJ(path, cb, ptr, (uint32_t)file_size);
@@ -600,7 +600,7 @@ bqPolygonMesh* bqMeshLoaderImpl::_obj_createModel(
 			cb->OnMaterial(&m);
 		}
 
-		cb->OnMesh(polygonMesh->SummonMesh(), name, &matName);
+		cb->OnMesh(polygonMesh->CreateMesh(), name, &matName);
 
 		bqDestroy(polygonMesh);
 		polygonMesh = 0;

@@ -720,7 +720,7 @@ bool ExampleGameMario::Init()
 		_imageFill(&img, &stra, 80, 35, 0, 40);
 	}
 
-	m_texture = m_gs->SummonTexture(&img);
+	m_texture = m_gs->CreateTexture(&img);
 
 	return true;
 }

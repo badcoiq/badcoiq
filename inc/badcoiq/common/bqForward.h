@@ -68,6 +68,10 @@ enum class bqCursorType : uint32_t;
 class bqSceneObject;
 #endif
 
+#ifdef BQ_WITH_POPUP
+class bqPopup;
+#endif
+
 #ifdef BQ_WITH_WINDOW
 class bqWindow;
 class bqWindowCallback;

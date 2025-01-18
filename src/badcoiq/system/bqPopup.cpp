@@ -28,61 +28,71 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
-#include "badcoiq/gs/bqTexture.h"
-#include "badcoiq/geometry/bqMeshLoader.h"
+#ifdef BQ_WITH_POPUP
 
-#ifdef BQ_WITH_GS
-
-#include "badcoiq/gs/bqGS.h"
+#include "badcoiq/system/bqWindow.h"
+#include "badcoiq/system/bqWindowWin32.h"
+#include "badcoiq/system/bqPopup.h"
 
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
-bqTextureCache::bqTextureCache(bqGS* gs)
+
+#ifdef BQ_PLATFORM_WINDOWS
+#include "badcoiq/system/bqPopupWin32.h"
+#endif
+
+
+bqPopupWin32::bqPopupWin32()
 {
-	m_gs = gs;
-//	m_data.reserve(100);
+	m_hPopupMenu = CreatePopupMenu();
 }
 
-bqTextureCache::~bqTextureCache()
+bqPopupWin32::~bqPopupWin32()
 {
-	Clear();
-}
-
-void bqTextureCache::Free(bqTexture* r)
-{
-	BQ_SAFEDESTROY(r);
-}
-
-bqTexture* bqTextureCache::Load(const char* p)
-{
-	bqTexture* t = 0;
-	bqImage* img = bqFramework::CreateImage(p);
-	if (img)
+	for (size_t i = 0, sz = m_subMenus.size(); i < sz; ++i)
 	{
-		t = m_gs->CreateTexture(img, m_textureInfo);
-		delete img;
+		delete m_subMenus[i];
 	}
-	return t;
+	DestroyMenu(m_hPopupMenu);
 }
 
-bqGPUMeshCache::bqGPUMeshCache(bqGS* gs):m_gs(gs) {}
-bqGPUMeshCache::~bqGPUMeshCache() {}
-void bqGPUMeshCache::Free(bqGPUMesh* r) 
+
+bqPopup* bqPopupWin32::CreateSubMenu(const wchar_t* text)
 {
-	BQ_SAFEDESTROY(r);
+	bqPopupWin32* newSubMenu = new bqPopupWin32;
+	m_subMenus.push_back(newSubMenu);
+	AppendMenu(m_hPopupMenu, MF_POPUP | MF_BYPOSITION | MF_STRING, (UINT_PTR)newSubMenu->m_hPopupMenu, text);
+	return newSubMenu;
 }
-bqGPUMesh* bqGPUMeshCache::Load(const char* path) 
+
+void bqPopupWin32::AddItem(const wchar_t* _text, uint32_t id, const wchar_t* shortcut)
 {
-	bqGPUMesh* gm = 0;
-	bqMesh* m = bqFramework::CreateMesh(path);
-	if (m)
+	bqStringW text = _text;
+	if (shortcut)
 	{
-		m->GetInfo().m_aabb.Radius();
-		gm = m_gs->CreateMesh(m);
-		delete m;
+		text += L"\t";
+		text += shortcut;
 	}
-	return gm;
+	AppendMenu(m_hPopupMenu, MF_BYPOSITION | MF_STRING, id, text.data());
 }
+
+void bqPopupWin32::AddSeparator()
+{
+	AppendMenu(m_hPopupMenu, MF_SEPARATOR, 0, 0);
+}
+
+void bqPopupWin32::Show(bqWindow* activeWindow, uint32_t x, uint32_t y)
+{
+	auto wd = (bqWindowWin32*)activeWindow->GetData()->m_implementation;
+	HWND hWnd = wd->m_hWnd;
+	SetForegroundWindow(hWnd);
+	POINT pt;
+	pt.x = x;
+	pt.y = y;
+	ClientToScreen(hWnd, &pt);
+	TrackPopupMenu(m_hPopupMenu, TPM_TOPALIGN | TPM_LEFTALIGN, pt.x, pt.y, 0, hWnd, NULL);
+}
+
 
 #endif

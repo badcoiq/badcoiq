@@ -77,10 +77,10 @@ bool ExampleMshGnBox::Init()
 	pm.GenerateNormals(false);
 	pm.GenerateUVPlanar(1.f);
 
-	bqMesh* mesh = pm.SummonMesh();
+	bqMesh* mesh = pm.CreateMesh();
 	if (mesh)
 	{
-		m_meshBox = m_gs->SummonMesh(mesh);
+		m_meshBox = m_gs->CreateMesh(mesh);
 		delete mesh;
 	}
 	else

@@ -122,7 +122,7 @@ bqSoundBuffer::~bqSoundBuffer()
 bool bqSoundBuffer::_loadWav(const char* fn)
 {
 	uint32_t file_size = 0;
-	uint8_t* ptr = bqFramework::SummonFileBuffer(fn, &file_size, false);
+	uint8_t* ptr = bqFramework::CreateFileBuffer(fn, &file_size, false);
 	if (ptr)
 	{
 		bool b = _loadWav(ptr, (uint32_t)file_size);

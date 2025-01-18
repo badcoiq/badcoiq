@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2025, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,41 +27,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_POPUPDATA_H__
-#define __BQ_POPUPDATA_H__
+#ifndef __BQ_POPUPWIN32_H__
+#define __BQ_POPUPWIN32_H__
 
-#include "badcoiq/containers/bqArray.h"
-#include "badcoiq/string/bqString.h"
 
-// Это должен быть или GUI popup
-// или для отдельного окна с использованием векторной графики
+#ifdef BQ_PLATFORM_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <Objbase.h>
 
-//class bqPopupData
-//{
-//	
-//	struct Item
-//	{
-//		bqString m_title;
-//		bqString m_shortcutText;
-//		void(*m_callback)() = 0;
-//	};
-//	bqArray<Item> m_items;
-//public:
-//	bqPopupData() {}
-//	~bqPopupData() {}
-//
-//	void AddItem(const char* title, const char* shortcut, void(*callback)())
-//	{
-//		Item item;
-//		item.m_callback = callback;
-//		item.m_shortcutText = shortcut;
-//		item.m_title = title;
-//		m_items.push_back(item);
-//	}
-//
-//	size_t GetItemsNum() { return m_items.m_size; }
-//	Item* GetItems() { return m_items.m_data; }
-//};
+class bqPopupWin32 : public bqPopup
+{
+public:
+	bqPopupWin32();
+	virtual ~bqPopupWin32();
+
+	virtual bqPopup* CreateSubMenu(const wchar_t* text) override;
+	virtual void AddItem(const wchar_t*, uint32_t id, const wchar_t* shortcut) override;
+	virtual void AddSeparator() override;
+	virtual void Show(bqWindow* activeWindow, uint32_t x, uint32_t y) override;
+
+	HMENU m_hPopupMenu = 0;
+	bqArray<bqPopupWin32*> m_subMenus;
+};
+
+#else
+#error Для Windows
+#endif
 
 #endif
 

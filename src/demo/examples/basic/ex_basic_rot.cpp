@@ -99,8 +99,8 @@ bool ExampleBasicsRotations::Init()
 	pm.AddBox(aabb, mat);
 	pm.GenerateNormals(false);
 	pm.GenerateUVPlanar(211.f);
-	auto m = pm.SummonMesh();
-	m_airplane = m_gs->SummonMesh(m);
+	auto m = pm.CreateMesh();
+	m_airplane = m_gs->CreateMesh(m);
 	delete m;
 
 	m_sceneObject1 = new bqSceneObject;

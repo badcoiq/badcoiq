@@ -59,11 +59,11 @@ bool ExampleSound3D::Init()
 	m_spriteSpeaker = new bqSprite;
 	m_spriteSpeaker->SetSize(10.f * 0.1f, 10.f * 0.1f);
 
-	bqImage* img = bqFramework::SummonImage(bqFramework::GetPath("../data/images/editor/speaker.png").c_str());
+	bqImage* img = bqFramework::CreateImage(bqFramework::GetPath("../data/images/editor/speaker.png").c_str());
 	if (img)
 	{
 		bqTextureInfo ti;
-		auto texture = m_gs->SummonTexture(img, ti);
+		auto texture = m_gs->CreateTexture(img, ti);
 		delete img;
 		if (texture)
 		{

@@ -91,7 +91,7 @@ bool ExampleBasicsSkeletalAnimation::Init()
 	pm.GenerateNormals(true);
 	pm.GenerateUVPlanar(211.f);
 	
-	auto m = pm.SummonMesh();
+	auto m = pm.CreateMesh();
 	m->ToSkinned();
 
 	m_skeleton = new bqSkeleton;
@@ -107,7 +107,7 @@ bool ExampleBasicsSkeletalAnimation::Init()
 
 	m->ApplySkeleton(m_skeleton);
 
-	m_mesh = m_gs->SummonMesh(m);
+	m_mesh = m_gs->CreateMesh(m);
 	delete m;
 
 	m_sceneObject = new bqSceneObject;
@@ -309,7 +309,7 @@ class MyMegaModelClass
 
 				MyMegaModelClass* m = (MyMegaModelClass*)GetUserData();
 				mesh_buffer* mb = new mesh_buffer;
-				mb->m_mesh = m->m_gs->SummonMesh(newMesh);
+				mb->m_mesh = m->m_gs->CreateMesh(newMesh);
 				m->m_meshBuffers.push_back(mb);
 				mb->m_materialName = *materialName;
 
@@ -354,7 +354,7 @@ public:
 
 	void Load(const char* f)
 	{
-		bqFramework::SummonMesh(f, &m_cb);
+		bqFramework::CreateMesh(f, &m_cb);
 	}
 
 	void OnFinale()
@@ -369,11 +369,11 @@ public:
 			{
 				if (material->m_maps[0].m_filePath)
 				{
-					bqImage* img = bqFramework::SummonImage((const char*)material->m_maps[0].m_filePath);
+					bqImage* img = bqFramework::CreateImage((const char*)material->m_maps[0].m_filePath);
 					if (img)
 					{
 						bqTextureInfo ti;
-						mb->m_texture = m_gs->SummonTexture(img, ti);
+						mb->m_texture = m_gs->CreateTexture(img, ti);
 						m_loadedTextures.push_back(mb->m_texture);
 						delete img;
 					}

@@ -78,6 +78,35 @@ public:
     }
 };
 
+enum
+{
+    PopupItemID_ViewportViewPerspective,
+    PopupItemID_ViewportViewTop,
+    PopupItemID_ViewportViewBottom,
+    PopupItemID_ViewportViewLeft,
+    PopupItemID_ViewportViewRight,
+    PopupItemID_ViewportViewFront,
+    PopupItemID_ViewportViewBack,
+    PopupItemID_ViewportToggleFullView,
+    PopupItemID_ViewportToggleGrid,
+    PopupItemID_ViewportDrawMaterial,
+    PopupItemID_ViewportDrawMaterialWireframe,
+    PopupItemID_ViewportDrawWireframe,
+    PopupItemID_ViewportToggleDrawMaterial,
+    PopupItemID_ViewportToggleDrawWireframe,
+    PopupItemID_ViewportToggleDrawAABB,
+    PopupItemID_CameraReset,
+    PopupItemID_CameraMoveToSelection,
+    /*PopupItemID_,
+    PopupItemID_,
+    PopupItemID_,
+    PopupItemID_,
+    PopupItemID_,
+    PopupItemID_,
+    PopupItemID_,
+    PopupItemID_,*/
+};
+
 class GUIButton;
 class ModelEditor
 {
@@ -85,7 +114,6 @@ class ModelEditor
     MainWindowCallback m_mainWindowCallback;
     DrawTextCallback m_drawTextCallback;
 
-	bqWindow* m_mainWindow = 0;
 	bqGS* m_gs = 0;
 	float* m_deltaTime = 0;
 
@@ -99,6 +127,7 @@ class ModelEditor
     void _rebuildGUI();
     bqGUIButton* _createButton(const bqVec2f& position, const bqVec2f& size, uint32_t id);
 
+
 public:
 	ModelEditor();
 	~ModelEditor();
@@ -108,6 +137,9 @@ public:
 
 	void OnWindowCallback_onClose(bqWindow*);
 	void OnWindowCallback_onSize(bqWindow*);
+    
+    bqPopup* m_popupViewportOptions;
+    bqWindow* m_mainWindow = 0;
 };
 
 #endif

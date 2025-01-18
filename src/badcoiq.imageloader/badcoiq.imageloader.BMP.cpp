@@ -41,7 +41,7 @@ bqImage* bqImageLoaderImpl::LoadBMP(const char* path)
 
 	bqImage* img = 0;
 	uint32_t file_size = 0;
-	uint8_t* ptr = bqFramework::SummonFileBuffer(path, &file_size, false);
+	uint8_t* ptr = bqFramework::CreateFileBuffer(path, &file_size, false);
 	if (ptr)
 	{
 		img = LoadBMP(path, ptr, (uint32_t)file_size);

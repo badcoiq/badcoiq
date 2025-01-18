@@ -97,7 +97,7 @@ public:
 
 #ifdef BQ_WITH_WINDOW
 	/// Создать окно
-	static bqWindow* SummonWindow(bqWindowCallback*);
+	static bqWindow* CreateSystemWindow(bqWindowCallback*);
 #endif
 
 #ifdef BQ_WITH_GS
@@ -111,13 +111,13 @@ public:
 	static bqUID GetGSUID(uint32_t);
 	
 	/// Получить графическую систему указав ID
-	static bqGS* SummonGS(bqUID);
+	static bqGS* CreateGS(bqUID);
 	
 	/// Получить графическую систему указав имя
-	static bqGS* SummonGS(const char*);
+	static bqGS* CreateGS(const char*);
 	
 	/// Получить графическую систему указав имя и ID
-	static bqGS* SummonGS(bqUID, const char*);
+	static bqGS* CreateGS(bqUID, const char*);
 #endif
 
 	/// Сравнить UID
@@ -131,7 +131,7 @@ public:
 	static bqMat4* GetMatrixSkinned();
 
 
-	static bqPolygonMesh* SummonPolygonMesh();
+	static bqPolygonMesh* CreatePolygonMesh();
 
 
 	static uint32_t GetMeshLoadersNum();
@@ -142,16 +142,16 @@ public:
 	/// Загрузить 3D модель.
 	/// Модельки приходят через коллбэк.
 	/// В файле может быть множество 3D моделей.
-	static void SummonMesh(const char*, bqMeshLoaderCallback*);
+	static void CreateMesh(const char*, bqMeshLoaderCallback*);
 
 	/// Упрощённая функция загрузки 3D модели.
 	/// Пока, вернётся первый мешбуфер который попадётся в файле.
-	static bqMesh* SummonMesh(const char*);
+	static bqMesh* CreateMesh(const char*);
 	
 	/// Упрощённая функция загрузки 3D модели.
 	/// Мешбуферы будут добавлены в указанный массив.
 	/// При вызове массив очищается
-	static void SummonMesh(const char*, bqArray<bqMesh*>*);
+	static void CreateMesh(const char*, bqArray<bqMesh*>*);
 #endif
 
 	/// Установить указатель на матрицу
@@ -160,20 +160,20 @@ public:
 	/// Прочитать файл в буфер
 	/// если isText будут добавлены ' ' и 0 в конец
 	/// Функция выделит память для буфера. Использовать bqMemory::free для освобождения.
-	static uint8_t* SummonFileBuffer(const char* path, uint32_t* szOut, bool isText);
+	static uint8_t* CreateFileBuffer(const char* path, uint32_t* szOut, bool isText);
 
 #ifdef BQ_WITH_IMAGE
 	static uint32_t GetImageLoadersNum();
 	static bqImageLoader* GetImageLoader(uint32_t);
-	static bqImage* SummonImage(const char*);
+	static bqImage* CreateImage(const char*);
 #endif
 
 #ifdef BQ_WITH_GS
 	// Метод сам загрузит bqImage, создаст текстуру и удалит bqImage
-	static bqTexture* SummonTexture(bqGS*, const char*, bool genMipMaps = true, bool linearFilter = true);
+	static bqTexture* CreateTexture(bqGS*, const char*, bool genMipMaps = true, bool linearFilter = true);
 	
 	/// \brief Создать bqTextureCache
-	static bqTextureCache* SummonTextureCache(bqGS*);
+	static bqTextureCache* CreateTextureCache(bqGS*);
 #endif
 
 	/// \brief Узнать, существует ли файл
@@ -197,14 +197,18 @@ public:
 	/// data/img/1.png
 	static bqStringA GetPath(const bqString& v);
 
+#ifdef BQ_WITH_POPUP
+	static bqPopup* CreatePopup();
+	static void ShowPopupAtCursor(bqPopup*, bqWindow*);
+#endif
 	
 
 #ifdef BQ_WITH_GUI
 	static void InitDefaultFonts(bqGS* gs);
-	static bqGUIFont* SummonFont();
+	static bqGUIFont* CreateGUIFont();
 	static bqGUIFont* GetDefaultFont(bqGUIDefaultFont);
 	static bqGUIStyle* GetGUIStyle(bqGUIStyleTheme);
-	//static bqGUIWindow* SummonGUIWindow(bqWindow* window, const bqVec2f& position, const bqVec2f& size);
+	//static bqGUIWindow* CreateGUIWindow(bqWindow* window, const bqVec2f& position, const bqVec2f& size);
 	
 	//static void UpdateGUI();
 	//static void DrawGUI(bqGS* gs);
@@ -217,7 +221,7 @@ public:
 	/// \brief Получить bqGUIState. Только для чтения.
 	static const bqGUIState& GetGUIState();
 #endif
-	static bqCursor* SummonCursor(const char* fn);
+	static bqCursor* CreateCursor(const char* fn);
 	static bqCursor* GetDefaultCursor(bqCursorType);
 	static bqCursor* GetActiveCursor();
 	static void SetActiveCursor(bqCursor*);

@@ -96,16 +96,16 @@ bool ExampleBasicsOclCul::Init()
 	pm.AddCube(1.f, mat);
 	pm.GenerateNormals(false);
 	pm.GenerateUVPlanar(211.f);
-	auto m = pm.SummonMesh();
-	m_cube = m_gs->SummonMesh(m);
+	auto m = pm.CreateMesh();
+	m_cube = m_gs->CreateMesh(m);
 	delete m;
 
 	pm.Clear();
 	pm.AddSphere(0.5f, 30, mat);
 	pm.GenerateNormals(true);
 	pm.GenerateUVPlanar(211.f);
-	m = pm.SummonMesh();
-	m_sphere = m_gs->SummonMesh(m);
+	m = pm.CreateMesh();
+	m_sphere = m_gs->CreateMesh(m);
 	delete m;
 
 	pm.Clear();
@@ -115,8 +115,8 @@ bool ExampleBasicsOclCul::Init()
 	pm.AddBox(aabb, mat);
 	pm.GenerateNormals(false);
 	pm.GenerateUVPlanar(211.f);
-	m = pm.SummonMesh();
-	m_wall = m_gs->SummonMesh(m);
+	m = pm.CreateMesh();
+	m_wall = m_gs->CreateMesh(m);
 	delete m;
 
 	m_wallObject = bqCreate<SceneObject_ExampleOcclusionCulling>();

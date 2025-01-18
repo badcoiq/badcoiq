@@ -61,10 +61,10 @@ bool ExampleBasicsRayTri::Init()
 	m_polygonMesh->AddSphere(1.f, 33, transform);
 	m_polygonMesh->GenerateNormals(true);
 	m_polygonMesh->GenerateUVPlanar(1.f);
-	mesh = m_polygonMesh->SummonMesh();
+	mesh = m_polygonMesh->CreateMesh();
 	if (mesh)
 	{
-		m_meshSphere = m_gs->SummonMesh(mesh);
+		m_meshSphere = m_gs->CreateMesh(mesh);
 		delete mesh;
 	}
 	else

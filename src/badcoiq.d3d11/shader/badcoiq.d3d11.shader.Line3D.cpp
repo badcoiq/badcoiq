@@ -49,9 +49,9 @@ bool bqD3D11ShaderLine3D::Init(){
 	bqStringA shaderPathA;
 	shaderPath.to_utf8(shaderPathA);
 
-	//char* text = (char*)bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true);
+	//char* text = (char*)bqFramework::CreateFileBuffer(shaderPathA.c_str(), &sz, true);
 	//bqPtr pText(text, bqPtr::Free());
-	BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+	BQ_PTR_F(char, text, bqFramework::CreateFileBuffer(shaderPathA.c_str(), &sz, true));
 
 	if (!m_gs->CreateShaders(
 		"vs_5_0",

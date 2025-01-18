@@ -28,7 +28,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ModelEditor.h"
 #include "badcoiq/gs/bqGS.h"
-#include "badcoiq/framework/bqPopupData.h"
+#include "badcoiq/system/bqPopup.h"
+
+ModelEditor* g_app = 0;
 
 int main(int argc, char* argv[])
 {
@@ -58,13 +60,14 @@ public:
 
 	virtual void OnReleaseLMB()
 	{
-		printf("BUTTON: %u\n", m_id);
+		bqFramework::ShowPopupAtCursor(g_app->m_popupViewportOptions, g_app->m_mainWindow);
 	}
 };
 
 
 ModelEditor::ModelEditor()
 {
+	g_app = this;
 }
 
 ModelEditor::~ModelEditor()
@@ -78,7 +81,7 @@ bool ModelEditor::Init()
 	m_deltaTime = bqFramework::GetDeltaTime();
 
 	m_mainWindowCallback.SetUserData(this);
-	m_mainWindow = bqFramework::SummonWindow(&m_mainWindowCallback);
+	m_mainWindow = bqFramework::CreateSystemWindow(&m_mainWindowCallback);
 	if (m_mainWindow && bqFramework::GetGSNum())
 	{
 		m_mainWindow->SetPositionAndSize(10, 10, 800, 600);
@@ -90,7 +93,7 @@ bool ModelEditor::Init()
 		return false;
 	}
 
-	m_gs = bqFramework::SummonGS(bqFramework::GetGSUID(0));
+	m_gs = bqFramework::CreateGS(bqFramework::GetGSUID(0));
 	if (!m_gs)
 	{
 		APP_PRINT_ERROR;
@@ -103,7 +106,7 @@ bool ModelEditor::Init()
 		return false;
 	}
 
-	m_GUITexture = bqFramework::SummonTexture(m_gs,
+	m_GUITexture = bqFramework::CreateTexture(m_gs,
 		bqFramework::GetPath("../data/model_editor/gui.png").c_str(),
 		false, false);
 	
@@ -132,6 +135,31 @@ bool ModelEditor::Init()
 	m_GUIWindow_mainMenuBar->AddElement(button);
 
 	_rebuildGUI();
+
+	m_popupViewportOptions = bqFramework::CreatePopup();
+	m_popupViewportOptions->AddItem(L"Perspective", PopupItemID_ViewportViewPerspective, L"");
+	m_popupViewportOptions->AddItem(L"Top", PopupItemID_ViewportViewTop, L"");
+	m_popupViewportOptions->AddItem(L"Bottom", PopupItemID_ViewportViewBottom, L"");
+	m_popupViewportOptions->AddItem(L"Left", PopupItemID_ViewportViewLeft, L"");
+	m_popupViewportOptions->AddItem(L"Right", PopupItemID_ViewportViewRight, L"");
+	m_popupViewportOptions->AddItem(L"Front", PopupItemID_ViewportViewFront, L"");
+	m_popupViewportOptions->AddItem(L"Back", PopupItemID_ViewportViewBack, L"");
+	m_popupViewportOptions->AddSeparator();
+	m_popupViewportOptions->AddItem(L"Toggle full view", PopupItemID_ViewportToggleFullView, L"");
+	m_popupViewportOptions->AddItem(L"Toggle grid", PopupItemID_ViewportToggleGrid, L"");
+	m_popupViewportOptions->AddSeparator();
+	m_popupViewportOptions->AddItem(L"Material", PopupItemID_ViewportDrawMaterial, L"");
+	m_popupViewportOptions->AddItem(L"Material+Wireframe", PopupItemID_ViewportDrawMaterialWireframe, L"");
+	m_popupViewportOptions->AddItem(L"Wireframe", PopupItemID_ViewportDrawWireframe, L"");
+	m_popupViewportOptions->AddItem(L"Toggle draw material", PopupItemID_ViewportToggleDrawMaterial, L"");
+	m_popupViewportOptions->AddItem(L"Toggle draw wireframe", PopupItemID_ViewportToggleDrawWireframe, L"");
+	m_popupViewportOptions->AddSeparator();
+	m_popupViewportOptions->AddItem(L"Toggle draw AABB", PopupItemID_ViewportToggleDrawAABB, L"");
+	m_popupViewportOptions->AddSeparator();
+	m_popupViewportOptions->AddItem(L"Camera Reset", PopupItemID_CameraReset, L"");
+	m_popupViewportOptions->AddItem(L"Camera Move to selection", PopupItemID_CameraMoveToSelection, L"");
+
+
 
 	return true;
 }

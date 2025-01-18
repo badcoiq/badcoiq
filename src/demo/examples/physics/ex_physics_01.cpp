@@ -83,10 +83,10 @@ bool ExamplePhysics01::Init()
 	bqPolygonMesh pm; // генерируется используя концепцию полигонов
 	pm.AddSphere(m_sphereRadius, 12, transform);
 	pm.GenerateNormals(true);
-	auto mesh = pm.SummonMesh();
+	auto mesh = pm.CreateMesh();
 	if (mesh)
 	{
-		m_meshSphere = m_gs->SummonMesh(mesh);
+		m_meshSphere = m_gs->CreateMesh(mesh);
 		delete mesh;
 	}
 	else

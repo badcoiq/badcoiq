@@ -45,7 +45,7 @@ public:
 
 	virtual bool Init() override 
 	{
-		bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/images/img.bmp").c_str());
+		bqImage* image = bqFramework::CreateImage(bqFramework::GetPath("../data/images/img.bmp").c_str());
 		if (image)
 		{
 			bqTextureInfo info;
@@ -59,7 +59,7 @@ public:
 	//		image->SaveToFile(bqImage::SaveFileFormat::bmp24, "test.bmp");
 	//		image->SaveToFile(bqImage::SaveFileFormat::ddsRGBA8, "test.dds");
 			
-			m_texture = m_app->GetGS()->SummonTexture(image, info);
+			m_texture = m_app->GetGS()->CreateTexture(image, info);
 
 			delete image;
 
@@ -177,7 +177,7 @@ bool DemoApp::Init()
 	
 	bqFramework::Start(m_frameworkCallback);
 	
-	m_window = bqFramework::SummonWindow(m_windowCallback);
+	m_window = bqFramework::CreateSystemWindow(m_windowCallback);
 	m_window->SetPositionAndSize(0, 0, 1024, 768);
 	m_window->SetVisible(true);	
 
@@ -187,7 +187,7 @@ bool DemoApp::Init()
 	m_inputData = bqInput::GetData();
 
 	// m_gs will be auto destroyed, do not call slDestroy(m_gs);
-	m_gs = bqFramework::SummonGS(bqFramework::GetGSUID(0));
+	m_gs = bqFramework::CreateGS(bqFramework::GetGSUID(0));
 	if (m_gs)
 	{
 		if (!m_gs->Init(m_window, 0))
@@ -217,11 +217,11 @@ bool DemoApp::Init()
 	m_GUIWindow2->GetTitleText().assign(U"Second window");
 	m_GUIWindow2->ToTop();
 	m_GUIWindow2->Activate();*/
-	bqImage* image = bqFramework::SummonImage(bqFramework::GetPath("../data/images/4x4.png").c_str());
+	bqImage* image = bqFramework::CreateImage(bqFramework::GetPath("../data/images/4x4.png").c_str());
 	if (image)
 	{
 		bqTextureInfo tinf;
-		m_texture4x4 = m_gs->SummonTexture(image, tinf);
+		m_texture4x4 = m_gs->CreateTexture(image, tinf);
 		delete image;
 	}
 
@@ -260,7 +260,7 @@ bool DemoApp::Init()
 		img.Create(2, 2);
 		img.Fill(bqImageFillType::Solid, bq::ColorWhite, bq::ColorWhite);
 		bqTextureInfo tinf;
-		m_whiteTexture = m_gs->SummonTexture(&img, tinf);
+		m_whiteTexture = m_gs->CreateTexture(&img, tinf);
 	}
 
 	
@@ -564,11 +564,11 @@ void DemoApp::findDescription()
 bqTexture* DemoApp::LoadTexture(const char* f)
 {
 	bqTexture* t = 0;
-	auto image = bqFramework::SummonImage(bqFramework::GetPath(f).c_str());
+	auto image = bqFramework::CreateImage(bqFramework::GetPath(f).c_str());
 	if (image)
 	{
 		bqTextureInfo ti;
-		t = m_gs->SummonTexture(image, ti);
+		t = m_gs->CreateTexture(image, ti);
 
 		BQ_SAFEDESTROY(image);
 
@@ -598,12 +598,12 @@ bqGPUMesh* DemoApp::CreateMeshSphere(uint32_t segments, float radius, bool smoot
 bqGPUMesh* DemoApp::_createMesh(bqPolygonMesh* polygonMesh)
 {
 	bqGPUMesh* m_GPUMesh = 0;
-	bqMesh* mesh = polygonMesh->SummonMesh();
+	bqMesh* mesh = polygonMesh->CreateMesh();
 
 	if (mesh)
 	{
 		mesh->GenerateTangents();
-		m_GPUMesh = m_gs->SummonMesh(mesh);
+		m_GPUMesh = m_gs->CreateMesh(mesh);
 		BQ_SAFEDESTROY(mesh);
 		if (!m_GPUMesh)
 			bqLog::PrintError("Don't know why [%s : %i]\n", BQ_FUNCTION, BQ_LINE);
@@ -619,7 +619,7 @@ bqGPUMesh* DemoApp::CreateMeshBox(const bqAabb& b)
 {
 	bqGPUMesh* m_GPUMesh = 0;
 
-	/*bqPolygonMesh* polygonMesh = bqFramework::SummonPolygonMesh();
+	/*bqPolygonMesh* polygonMesh = bqFramework::CreatePolygonMesh();
 	polygonMesh->AddBox(b, bqMat4());
 
 	m_GPUMesh = _createMesh(polygonMesh);

@@ -30,8 +30,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_WINDOW
 #include "badcoiq/system/bqWindow.h"
-#endif
 #include "badcoiq/system/bqWindowWin32.h"
+#endif
+
+#ifdef BQ_WITH_POPUP
+#include "badcoiq/system/bqPopup.h"
+#include "badcoiq/system/bqPopupWin32.h"
+#endif
 
 #ifdef BQ_WITH_GS
 #include "badcoiq/gs/bqGS.h"
@@ -369,7 +374,7 @@ float* bqFramework::GetDeltaTime()
 }
 
 #ifdef BQ_WITH_WINDOW
-bqWindow* bqFramework::SummonWindow(bqWindowCallback* cb)
+bqWindow* bqFramework::CreateSystemWindow(bqWindowCallback* cb)
 {
 	BQ_ASSERT_STC(g_framework, "This method must be called only after framework initialization (bqFramework::Start)");
 	BQ_ASSERT_STC(cb, "You need to create callback class for window");
@@ -396,7 +401,7 @@ bqUID bqFramework::GetGSUID(uint32_t i)
 	return g_framework->m_gss[i]->GetUID();
 }
 
-bqGS* bqFramework::SummonGS(bqUID id)
+bqGS* bqFramework::CreateGS(bqUID id)
 {
 	for (auto o : g_framework->m_gss)
 	{
@@ -406,7 +411,7 @@ bqGS* bqFramework::SummonGS(bqUID id)
 	return 0;
 }
 
-bqGS* bqFramework::SummonGS(const char* _name)
+bqGS* bqFramework::CreateGS(const char* _name)
 {
 	bqString name(_name);
 	for (auto o : g_framework->m_gss)
@@ -418,7 +423,7 @@ bqGS* bqFramework::SummonGS(const char* _name)
 	return 0;
 }
 
-bqGS* bqFramework::SummonGS(bqUID id, const char* _name)
+bqGS* bqFramework::CreateGS(bqUID id, const char* _name)
 {
 	bqString name(_name);
 	for (auto o : g_framework->m_gss)
@@ -463,7 +468,7 @@ bqMat4* bqFramework::GetMatrixSkinned()
 }
 #endif
 
-uint8_t* bqFramework::SummonFileBuffer(const char* path, uint32_t* szOut, bool isText)
+uint8_t* bqFramework::CreateFileBuffer(const char* path, uint32_t* szOut, bool isText)
 {
 	BQ_ASSERT_ST(path);
 	BQ_ASSERT_ST(szOut);
@@ -521,7 +526,7 @@ bqImageLoader* bqFramework::GetImageLoader(uint32_t i)
 	return g_framework->m_imageLoaders[i];
 }
 
-bqImage* bqFramework::SummonImage(const char* path)
+bqImage* bqFramework::CreateImage(const char* path)
 {
 	bqStringA stra;
 	std::filesystem::path p = path;
@@ -557,7 +562,7 @@ bqImage* bqFramework::SummonImage(const char* path)
 #endif
 
 #ifdef BQ_WITH_GS
-bqTexture* bqFramework::SummonTexture(bqGS* gs, const char* fn, bool genMipMaps, bool linearFilter)
+bqTexture* bqFramework::CreateTexture(bqGS* gs, const char* fn, bool genMipMaps, bool linearFilter)
 {
 	BQ_ASSERT_ST(gs);
 	BQ_ASSERT_ST(fn);
@@ -565,20 +570,20 @@ bqTexture* bqFramework::SummonTexture(bqGS* gs, const char* fn, bool genMipMaps,
 
 	if (gs && fn)
 	{
-		bqImage* img = bqFramework::SummonImage(fn);
+		bqImage* img = bqFramework::CreateImage(fn);
 		if (img)
 		{
 			bqTextureInfo ti;
 			ti.m_generateMipmaps = genMipMaps;
 			ti.m_filter = linearFilter ? bqTextureFilter::LLL : bqTextureFilter::PPP;
-			newTexture = gs->SummonTexture(img, ti);
+			newTexture = gs->CreateTexture(img, ti);
 			delete img;
 		}
 	}
 
 	return newTexture;
 }
-bqTextureCache* bqFramework::SummonTextureCache(bqGS* gs)
+bqTextureCache* bqFramework::CreateTextureCache(bqGS* gs)
 {
 	BQ_ASSERT_ST(gs);
 	bqTextureCache* tc = new bqTextureCache(gs);
@@ -613,7 +618,7 @@ uint64_t bqFramework::FileSize(const bqString& p)
 }
 
 #ifdef BQ_WITH_MESH
-bqPolygonMesh* bqFramework::SummonPolygonMesh()
+bqPolygonMesh* bqFramework::CreatePolygonMesh()
 {
 	return bqCreate<bqPolygonMesh>();
 }
@@ -629,7 +634,7 @@ bqMeshLoader* bqFramework::GetMeshLoader(uint32_t i)
 	return g_framework->m_meshLoaders[i];
 }
 
-void bqFramework::SummonMesh(const char* path, bqMeshLoaderCallback* cb)
+void bqFramework::CreateMesh(const char* path, bqMeshLoaderCallback* cb)
 {
 	BQ_ASSERT_ST(path);
 	bqStringA stra;
@@ -675,14 +680,14 @@ public:
 	}
 };
 
-bqMesh* bqFramework::SummonMesh(const char* path)
+bqMesh* bqFramework::CreateMesh(const char* path)
 {
 	BQ_ASSERT_ST(path);
 	bqMesh* r = 0;
 
 	bqArray<bqMesh*> a;
 	bqFramework_defaultMeshLoadCallback cb(&a);
-	SummonMesh(path, &cb);
+	CreateMesh(path, &cb);
 
 	if (a.size())
 	{
@@ -697,14 +702,14 @@ bqMesh* bqFramework::SummonMesh(const char* path)
 	return r;
 }
 
-void bqFramework::SummonMesh(const char* p, bqArray<bqMesh*>* a)
+void bqFramework::CreateMesh(const char* p, bqArray<bqMesh*>* a)
 {
 	BQ_ASSERT_ST(p);
 	BQ_ASSERT_ST(a);
 
 	a->clear();
 	bqFramework_defaultMeshLoadCallback cb(a);
-	SummonMesh(p, &cb);
+	CreateMesh(p, &cb);
 }
 #endif
 
@@ -786,7 +791,7 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 
 		auto getTexture = [gs](bqImage* img)->bqTexture* {
 			bqTextureInfo ti;
-			bqTexture* t = gs->SummonTexture(img, ti);
+			bqTexture* t = gs->CreateTexture(img, ti);
 			if (img)
 				delete img;
 			return t;
@@ -804,7 +809,7 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 
 		g_framework->m_texturesForDestroy.push_back(myFontTexture);
 
-		bqGUIFont* myFont = bqFramework::SummonFont();
+		bqGUIFont* myFont = bqFramework::CreateGUIFont();
 	//	myFont->m_characterSpacing = 3.f;
 		myFont->AddTexture(myFontTexture);
 		myFont->AddGlyph(U'A', bqVec2f(0, 0), bqPoint(11, 16), 0, bqPoint(256, 256));
@@ -985,7 +990,7 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 			{
 				g_framework->m_texturesForDestroy.push_back(myFontTexture);
 
-				myFont = bqFramework::SummonFont();
+				myFont = bqFramework::CreateGUIFont();
 				myFont->AddTexture(myFontTexture);
 				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::CheckboxUncheck, bqVec2f(0, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
 				myFont->AddGlyph((uint32_t)bqGUIDefaultIconID::RadioUncheck, bqVec2f(0, 0), bqPoint(14, 14), 0, bqPoint(512, 512));
@@ -1018,7 +1023,7 @@ void bqFramework::InitDefaultFonts(bqGS* gs)
 	g_framework->m_themeLight.m_buttonTextFont = g_framework->m_themeDark.m_buttonTextFont;
 }
 
-bqGUIFont* bqFramework::SummonFont()
+bqGUIFont* bqFramework::CreateGUIFont()
 {
 	return new bqGUIFont();
 }
@@ -1254,7 +1259,7 @@ const bqGUIState& bqFramework::GetGUIState()
 
 #endif
 
-bqCursor* bqFramework::SummonCursor(const char* fn)
+bqCursor* bqFramework::CreateCursor(const char* fn)
 {
 	bqCursor* newCursor = 0;
 
@@ -1374,3 +1379,16 @@ const bqStringW& bqFramework::GetUTF16String(const bqString& s)
 	s.to_utf16(g_framework->m_UTF16String);
 	return g_framework->m_UTF16String;
 }
+
+#ifdef BQ_WITH_POPUP
+bqPopup* bqFramework::CreatePopup()
+{
+	bqPopupWin32* p = new bqPopupWin32();
+	return p;
+}
+
+void bqFramework::ShowPopupAtCursor(bqPopup* p, bqWindow* w)
+{
+	p->Show(w, (uint32_t)g_framework->m_input.m_mousePosition.x, (uint32_t)g_framework->m_input.m_mousePosition.y);
+}
+#endif

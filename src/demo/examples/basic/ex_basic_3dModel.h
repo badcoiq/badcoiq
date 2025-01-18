@@ -87,7 +87,7 @@ class ExampleBasics3DModel : public DemoExample
 
                     MyModel* m = (MyModel*)GetUserData();
                     mesh_buffer* mb = new mesh_buffer;
-                    mb->m_mesh = m->m_gs->SummonMesh(newMesh);
+                    mb->m_mesh = m->m_gs->CreateMesh(newMesh);
                     m->m_meshBuffers.push_back(mb);
                     mb->m_materialName = *materialName;
 
@@ -123,7 +123,7 @@ class ExampleBasics3DModel : public DemoExample
 
         void Load(const char* f)
         {
-            bqFramework::SummonMesh(f, &m_cb);
+            bqFramework::CreateMesh(f, &m_cb);
         }
 
         void OnFinale()
@@ -138,11 +138,11 @@ class ExampleBasics3DModel : public DemoExample
                 {
                     if (material->m_maps[0].m_filePath)
                     {
-                        bqImage* img = bqFramework::SummonImage((const char*)material->m_maps[0].m_filePath);
+                        bqImage* img = bqFramework::CreateImage((const char*)material->m_maps[0].m_filePath);
                         if (img)
                         {
                             bqTextureInfo ti;
-                            mb->m_texture = m_gs->SummonTexture(img, ti);
+                            mb->m_texture = m_gs->CreateTexture(img, ti);
                             m_loadedTextures.push_back(mb->m_texture);
                             delete img;
                         }

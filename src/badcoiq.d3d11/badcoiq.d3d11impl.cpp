@@ -302,7 +302,7 @@ bool bqGSD3D11::Init(bqWindow* w, const char* parameters)
 		img.Create(2, 2);
 		img.Fill(bqImageFillType::Solid, bq::ColorWhite, bq::ColorWhite);
 		bqTextureInfo tinf;
-		m_whiteTexture = (bqGSD3D11Texture*)SummonTexture(&img, tinf);
+		m_whiteTexture = (bqGSD3D11Texture*)CreateTexture(&img, tinf);
 	}
 #endif
 
@@ -349,17 +349,17 @@ void bqGSD3D11::Shutdown()
 }
 
 // не реализовано
-bool bqGSD3D11::InitWindow(bqWindow* w)
-{
-	BQ_ASSERT_ST(w);
-	return true;
-}
-
-void bqGSD3D11::SetActiveWindow(bqWindow* w)
-{
-	BQ_ASSERT_ST(w);
-	m_activeWindow = w;
-}
+//bool bqGSD3D11::InitWindow(bqWindow* w)
+//{
+//	BQ_ASSERT_ST(w);
+//	return true;
+//}
+//
+//void bqGSD3D11::SetActiveWindow(bqWindow* w)
+//{
+//	BQ_ASSERT_ST(w);
+//	m_activeWindow = w;
+//}
 
 bqString bqGSD3D11::GetName()
 {
@@ -935,7 +935,7 @@ void bqGSD3D11::SetShader(bqShaderType t, uint32_t userShaderIndex)
 
 // Надо создать два буфера. Вершинный и индексный.
 // Так-же перед созданием надо дать DirectX'у знать что за буферы создаём.
-bqGPUMesh* bqGSD3D11::SummonMesh(bqMesh* m)
+bqGPUMesh* bqGSD3D11::CreateMesh(bqMesh* m)
 {
 	BQ_ASSERT_ST(m);
 	BQ_ASSERT_ST(m->GetVBuffer());
@@ -1048,7 +1048,7 @@ void bqGSD3D11::Draw()
 	}
 }
 
-bqTexture* bqGSD3D11::SummonTexture(bqImage* img, const bqTextureInfo& inf)
+bqTexture* bqGSD3D11::CreateTexture(bqImage* img, const bqTextureInfo& inf)
 {
 	BQ_ASSERT_ST(img);
 	bqGSD3D11Texture* newTexture = 0;
@@ -1386,7 +1386,7 @@ HRESULT	bqGSD3D11::CreateSamplerState(D3D11_FILTER filter,
 	return m_d3d11Device->CreateSamplerState(&samplerDesc, samplerState);
 }
 
-bqTexture* bqGSD3D11::SummonRTT(const bqPoint& size, const bqTextureInfo& ti)
+bqTexture* bqGSD3D11::CreateRTT(const bqPoint& size, const bqTextureInfo& ti)
 {
 	bqImage img;
 	img.m_info.m_width = size.x;
@@ -1395,7 +1395,7 @@ bqTexture* bqGSD3D11::SummonRTT(const bqPoint& size, const bqTextureInfo& ti)
 	bqTextureInfo _ti = ti;
 	_ti.m_imageInfo = img.m_info;
 	_ti.m_type = bqTextureType::RTT;
-	return SummonTexture(&img, _ti);
+	return CreateTexture(&img, _ti);
 }
 
 void bqGSD3D11::SetRenderTarget(bqTexture* t)
@@ -1567,12 +1567,12 @@ void bqGSD3D11::_updateMainTarget()
 
 	bqTextureInfo tinf;
 	tinf.m_filter = bqTextureFilter::PPP;
-	m_mainTargetRTT = (bqGSD3D11Texture*)SummonRTT(
+	m_mainTargetRTT = (bqGSD3D11Texture*)CreateRTT(
 		bqPoint((uint32_t)m_mainTargetSize.x, (uint32_t)m_mainTargetSize.y),
 		tinf);
 
 #ifdef BQ_WITH_GUI
-	m_GUIRTT = (bqGSD3D11Texture*)SummonRTT(
+	m_GUIRTT = (bqGSD3D11Texture*)CreateRTT(
 		bqPoint((uint32_t)m_windowCurrentSize->x, (uint32_t)m_windowCurrentSize->y),
 		tinf);
 #endif

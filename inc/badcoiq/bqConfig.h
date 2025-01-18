@@ -86,6 +86,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Может быть такое что приложение нужно без GUI и окна,
 /// тогда можно убрать окно и всё что с ним связано совсем.
 #define BQ_WITH_WINDOW
+#define BQ_WITH_POPUP
 
 #if defined(BQ_WITH_IMAGE) && defined(BQ_WITH_WINDOW)
 

@@ -251,7 +251,7 @@ uint32_t bqPolygonMeshPolygon::GetVerticesNumber()
 }
 
 
-bqMesh* bqPolygonMesh::SummonMesh(bool skinned)
+bqMesh* bqPolygonMesh::CreateMesh(bool skinned)
 {
 	bqMesh* m = 0;
 

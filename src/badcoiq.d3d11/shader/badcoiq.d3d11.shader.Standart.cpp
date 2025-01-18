@@ -73,7 +73,7 @@ bool bqD3D11ShaderStandart::Init()
 		bqStringA shaderPathA;
 		shaderPath.to_utf8(shaderPathA);
 
-		BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+		BQ_PTR_F(char, text, bqFramework::CreateFileBuffer(shaderPathA.c_str(), &sz, true));
 		if (m_gs->CompileShader("vs_5_0", "VSMain", text.Ptr(), &VsBlob, &ErrorBlob))
 		{
 			bqStringW shaderPathW;
@@ -109,7 +109,7 @@ bool bqD3D11ShaderStandart::Init()
 		bqStringA shaderPathA;
 		shaderPath.to_utf8(shaderPathA);
 
-		BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+		BQ_PTR_F(char, text, bqFramework::CreateFileBuffer(shaderPathA.c_str(), &sz, true));
 		if (m_gs->CompileShader("ps_5_0", "PSMain", text.Ptr(), &PsBlob, &ErrorBlob))
 		{
 			bqStringW shaderPathW;
@@ -222,7 +222,7 @@ bool bqD3D11ShaderStandartSkinned::Init()
 		bqStringA shaderPathA;
 		shaderPath.to_utf8(shaderPathA);
 
-		BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+		BQ_PTR_F(char, text, bqFramework::CreateFileBuffer(shaderPathA.c_str(), &sz, true));
 		if (m_gs->CompileShader("vs_5_0", "VSMainSk", text.Ptr(), &VsBlob, &ErrorBlob))
 		{
 			bqStringW shaderPathW;
@@ -258,7 +258,7 @@ bool bqD3D11ShaderStandartSkinned::Init()
 		bqStringA shaderPathA;
 		shaderPath.to_utf8(shaderPathA);
 
-		BQ_PTR_F(char, text, bqFramework::SummonFileBuffer(shaderPathA.c_str(), &sz, true));
+		BQ_PTR_F(char, text, bqFramework::CreateFileBuffer(shaderPathA.c_str(), &sz, true));
 		if (m_gs->CompileShader("ps_5_0", "PSMain", text.Ptr(), &PsBlob, &ErrorBlob))
 		{
 			bqStringW shaderPathW;

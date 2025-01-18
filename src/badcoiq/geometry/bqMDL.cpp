@@ -108,7 +108,7 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 
 		bqMDLFileHeader fileHeader;
 		uint32_t fileSz = 0;
-		uint8_t* ptr = bqFramework::SummonFileBuffer(fn, &fileSz, false);
+		uint8_t* ptr = bqFramework::CreateFileBuffer(fn, &fileSz, false);
 		if (ptr)
 		{
 			materials.reserve(100);
@@ -237,7 +237,7 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 					else
 						m.m_mtl.m_material.m_shaderType = bqShaderType::StandartSkinned;
 					m.m_mesh = newM;
-					m.m_GPUmesh = gs->SummonMesh(newM);
+					m.m_GPUmesh = gs->CreateMesh(newM);
 					m.m_chunkHeaderMesh = chunkHeaderMesh;
 					m_meshes.push_back(m);
 
@@ -616,10 +616,10 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 
 				if (imgPath.size())
 				{
-					bqImage* img = bqFramework::SummonImage(imgPath.c_str());
+					bqImage* img = bqFramework::CreateImage(imgPath.c_str());
 					if (img)
 					{
-						m.m_mtl.m_diffuseMap = gs->SummonTexture(img, ti);
+						m.m_mtl.m_diffuseMap = gs->CreateTexture(img, ti);
 						if (m.m_mtl.m_diffuseMap)
 						{
 							m.m_mtl.m_material.m_maps[0].m_texture = m.m_mtl.m_diffuseMap;

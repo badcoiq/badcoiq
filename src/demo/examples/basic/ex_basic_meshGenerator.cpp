@@ -64,10 +64,10 @@ bool ExampleBasicsMshGnrtr::Init()
 	pm.GenerateNormals(false);
 	pm.GenerateUVPlanar(1.f);
 	// но в этом примере будет 1 на каждый bqGPUMesh
-	bqMesh* mesh = pm.SummonMesh();
+	bqMesh* mesh = pm.CreateMesh();
 	if (mesh)
 	{
-		m_meshBox = m_gs->SummonMesh(mesh);
+		m_meshBox = m_gs->CreateMesh(mesh);
 		delete mesh;
 	}
 	else
@@ -84,10 +84,10 @@ bool ExampleBasicsMshGnrtr::Init()
 
 	pm.GenerateNormals(true);
 	pm.GenerateUVPlanar(100.f);
-	mesh = pm.SummonMesh();
+	mesh = pm.CreateMesh();
 	if (mesh)
 	{
-		m_meshSphere = m_gs->SummonMesh(mesh);
+		m_meshSphere = m_gs->CreateMesh(mesh);
 		delete mesh;
 	}
 	else
