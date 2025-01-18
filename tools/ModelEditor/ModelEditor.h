@@ -62,12 +62,12 @@ public:
     DrawTextCallback() {}
     virtual ~DrawTextCallback() {}
 
-    virtual bqGUIFont* OnFont(uint32_t, char32_t)
+    virtual bqGUIFont* OnFont( char32_t)
     {
         return m_defaultFont;
     }
 
-    virtual bqColor* OnColor(uint32_t, char32_t)
+    virtual bqColor* OnColor( char32_t)
     {
         return &m_colorBlack;
     }
@@ -78,6 +78,7 @@ public:
     }
 };
 
+class GUIButton;
 class ModelEditor
 {
 	FrameworkCallback m_frameworkCallback;
@@ -90,7 +91,14 @@ class ModelEditor
 
 	bool m_run = true;
 
+    bqGUIStyle m_GUIStyle;
+    bqTexture* m_GUITexture = 0;
+    bqGUIWindow* m_GUIWindow_mainMenuBar = 0;
+    bqArray<bqGUIElement*> m_GUIElements;
 	void Shutdown();
+    void _rebuildGUI();
+    bqGUIButton* _createButton(const bqVec2f& position, const bqVec2f& size, uint32_t id);
+
 public:
 	ModelEditor();
 	~ModelEditor();

@@ -145,6 +145,21 @@ bqWindow::~bqWindow()
         bqMemory::free(m_data.m_implementation);
     }
 
+#ifdef BQ_WITH_GUI
+    if (m_GUIWindows.m_head)
+    {
+        auto last = m_GUIWindows.m_head->m_left;
+        auto curr = m_GUIWindows.m_head;
+        while (1)
+        {
+            delete curr->m_data;
+
+            if (curr == last)
+                break;
+            curr = curr->m_right;
+        }
+    }
+#endif
 }
 
 void bqWindow::SetTitle(const char* s)
@@ -359,12 +374,6 @@ void bqWindow::ToWindowMode()
 }
 
 #ifdef BQ_WITH_GUI
-void bqWindow::AddGUIWindow(bqGUIWindow* w)
-{
-    BQ_ASSERT_ST(w);
-    m_GUIWindows.push_back(w);
-    w->m_systemWindow = this;
-}
 void bqWindow::RebuildGUI()
 {
     if (m_GUIWindows.m_head)
@@ -428,6 +437,18 @@ void bqWindow::DrawGUI(bqGS* gs)
             curr = curr->m_right;
         }
     }
+}
+
+bqGUIWindow* bqWindow::CreateNewGUIWindow(const bqVec2f& position, const bqVec2f& size)
+{
+    bqGUIWindow* newWindow = new bqGUIWindow(position, size);
+    newWindow->SetStyle(bqFramework::GetGUIStyle(bqGUIStyleTheme::Light));
+
+    m_GUIWindows.push_back(newWindow);
+    newWindow->m_systemWindow = this;
+
+    //g_framework->m_GUIWindows.push_back(newWindow);
+    return newWindow;
 }
 
 #endif

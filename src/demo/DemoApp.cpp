@@ -205,7 +205,7 @@ bool DemoApp::Init()
 
 	m_textDrawCallback = new GUIDrawTextCallback(m_fontDefault);
 
-	m_GUIWindow = bqFramework::SummonGUIWindow(m_window, bqVec2f(220.f, 0.f),
+	m_GUIWindow = m_window->CreateNewGUIWindow(bqVec2f(220.f, 0.f),
 		bqVec2f(300.f, 400.f));
 	m_GUIWindow->SetDrawBG(true);
 	m_GUIWindow->m_windowFlags |= bqGUIWindowBase::windowFlag_withTitleBar;

@@ -175,7 +175,8 @@ public:
 	/// а в соответствии с системными окнами. Далее должно
 	/// быть проще реализовать рисование во множество 
 	/// системных окон.
-	void AddGUIWindow(bqGUIWindow*);
+	//void AddGUIWindow(bqGUIWindow*);
+	bqGUIWindow* CreateNewGUIWindow(const bqVec2f& position, const bqVec2f& size);
 
 	/// \brief Обновить расположение всех окон и элементов внутри.
 	/// 
@@ -192,6 +193,7 @@ public:
 
 	/// \brief Рисование всех GUI окон.
 	void DrawGUI(bqGS*);
+
 
 	/// \brief Получить список всех GUI окон.
 	///

@@ -1103,19 +1103,6 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeDark = g_framework->m_themeLight;
 }
 
-bqGUIWindow* bqFramework::SummonGUIWindow(bqWindow* window, const bqVec2f& position, const bqVec2f& size)
-{
-	bqGUIWindow* newWindow = new bqGUIWindow(position, size);
-	newWindow->SetStyle(bqFramework::GetGUIStyle(bqGUIStyleTheme::Light));
-	
-	//newWindow->m_systemWindow = window;
-	window->AddGUIWindow(newWindow);
-
-	//g_framework->m_GUIWindows.push_back(newWindow);
-	return newWindow;
-}
-
-
 //void bqFramework::UpdateGUI()
 //{
 	//if (g_framework->m_GUIWindows.m_head)
