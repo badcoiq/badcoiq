@@ -61,13 +61,19 @@ struct bqInputData
 	uint8_t m_keyboardModifier = 0;
 };
 
-// Класс с помощью которого можно узнать о состоянии клавиатуры и мышки
+/// \brief Класс с помощью которого можно узнать о состоянии клавиатуры и мышки
 class bqInput
 {
 public:
+
+	/// \brief Получить bqInputData
 	static bqInputData* GetData();
+
+	/// \brief Получить позицию курсора
 	static bqPointf& GetMousePosition();
+
 #ifdef BQ_WITH_WINDOW
+	/// \brief Установить позицию курсора
 	static void SetMousePosition(bqWindow*, int32_t x, int32_t y);
 #endif
 
@@ -137,7 +143,7 @@ public:
 
 	static const uint64_t* GetKeyToBin();
 
-	// keyboard button code
+	/// keyboard button code
 	enum : uint32_t {
 		KEY_NONE = 0,
 		KEY_BACKSPACE = 8,

@@ -90,6 +90,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Графическая система  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="../../d0/df4/bq_g_s_8h_source.html">bqGS.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -102,51 +105,65 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2c092b9c6799bdd6157f61fc8be91db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f6cffce04ffdbb6dc96c5e5bc616b32" id="r_a9f6cffce04ffdbb6dc96c5e5bc616b32"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9f6cffce04ffdbb6dc96c5e5bc616b32">Shutdown</a> ()=0</td></tr>
 <tr class="separator:a9f6cffce04ffdbb6dc96c5e5bc616b32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a7617359b7cabb467e15f0014efd98d" id="r_a9a7617359b7cabb467e15f0014efd98d"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a7617359b7cabb467e15f0014efd98d">InitWindow</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)=0</td></tr>
-<tr class="separator:a9a7617359b7cabb467e15f0014efd98d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4c855439c2f757fb654a8feef5a10b5" id="r_ae4c855439c2f757fb654a8feef5a10b5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae4c855439c2f757fb654a8feef5a10b5">SetActiveWindow</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)=0</td></tr>
-<tr class="separator:ae4c855439c2f757fb654a8feef5a10b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7235093d6cc4979710dbdbbdad548e1" id="r_aa7235093d6cc4979710dbdbbdad548e1"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../dc/dde/classbq_string.html">bqString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa7235093d6cc4979710dbdbbdad548e1">GetName</a> ()=0</td></tr>
+<tr class="memdesc:aa7235093d6cc4979710dbdbbdad548e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить имя  <br /></td></tr>
 <tr class="separator:aa7235093d6cc4979710dbdbbdad548e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fdef8995a9544cdc348d866e4886f50" id="r_a7fdef8995a9544cdc348d866e4886f50"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../dc/dde/classbq_string.html">bqString</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7fdef8995a9544cdc348d866e4886f50">GetTextInfo</a> ()=0</td></tr>
+<tr class="memdesc:a7fdef8995a9544cdc348d866e4886f50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить остальную информацию в виде текста  <br /></td></tr>
 <tr class="separator:a7fdef8995a9544cdc348d866e4886f50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a589bb088f10b728794631cbd66a27bee" id="r_a589bb088f10b728794631cbd66a27bee"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d4/ddf/structbq_u_i_d.html">bqUID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a589bb088f10b728794631cbd66a27bee">GetUID</a> ()=0</td></tr>
+<tr class="memdesc:a589bb088f10b728794631cbd66a27bee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить ID.  <br /></td></tr>
 <tr class="separator:a589bb088f10b728794631cbd66a27bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26ac273314d2728e38abed8b89677dec" id="r_a26ac273314d2728e38abed8b89677dec"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a26ac273314d2728e38abed8b89677dec">SetClearColor</a> (float r, float g, float b, float a)=0</td></tr>
+<tr class="memdesc:a26ac273314d2728e38abed8b89677dec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Цвет фона  <br /></td></tr>
 <tr class="separator:a26ac273314d2728e38abed8b89677dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90efff023c9a004fe0683eafee621fa4" id="r_a90efff023c9a004fe0683eafee621fa4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90efff023c9a004fe0683eafee621fa4">BeginDraw</a> ()=0</td></tr>
+<tr class="memdesc:a90efff023c9a004fe0683eafee621fa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вызвать перед рисованием  <br /></td></tr>
 <tr class="separator:a90efff023c9a004fe0683eafee621fa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f8c57fd642fb363ef041c148822a296" id="r_a7f8c57fd642fb363ef041c148822a296"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f8c57fd642fb363ef041c148822a296">ClearDepth</a> ()=0</td></tr>
+<tr class="memdesc:a7f8c57fd642fb363ef041c148822a296"><td class="mdescLeft">&#160;</td><td class="mdescRight">Очистить буфер с глубиной  <br /></td></tr>
 <tr class="separator:a7f8c57fd642fb363ef041c148822a296"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a550399659b1d66d2bbf6009f7a2d456c" id="r_a550399659b1d66d2bbf6009f7a2d456c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a550399659b1d66d2bbf6009f7a2d456c">ClearColor</a> ()=0</td></tr>
+<tr class="memdesc:a550399659b1d66d2bbf6009f7a2d456c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Очистить фон (закрасить фон)  <br /></td></tr>
 <tr class="separator:a550399659b1d66d2bbf6009f7a2d456c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa830decafb211927b9d47d771d09eba6" id="r_aa830decafb211927b9d47d771d09eba6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa830decafb211927b9d47d771d09eba6">ClearAll</a> ()=0</td></tr>
+<tr class="memdesc:aa830decafb211927b9d47d771d09eba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">ClearDepth и ClearColor.  <br /></td></tr>
 <tr class="separator:aa830decafb211927b9d47d771d09eba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a8f9daaa0f61ee5701dd9b476de5fff" id="r_a0a8f9daaa0f61ee5701dd9b476de5fff"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0a8f9daaa0f61ee5701dd9b476de5fff">EndDraw</a> ()=0</td></tr>
+<tr class="memdesc:a0a8f9daaa0f61ee5701dd9b476de5fff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вызвать после завершения рисования  <br /></td></tr>
 <tr class="separator:a0a8f9daaa0f61ee5701dd9b476de5fff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec6a4aadc418026a9f14325143f7d4a9" id="r_aec6a4aadc418026a9f14325143f7d4a9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aec6a4aadc418026a9f14325143f7d4a9">SwapBuffers</a> ()=0</td></tr>
+<tr class="memdesc:aec6a4aadc418026a9f14325143f7d4a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вызвать после EndDraw.  <br /></td></tr>
 <tr class="separator:aec6a4aadc418026a9f14325143f7d4a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7825854f4b2cea69db56a502a5e28aa1" id="r_a7825854f4b2cea69db56a502a5e28aa1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7825854f4b2cea69db56a502a5e28aa1">DrawLine3D</a> (const <a class="el" href="../../df/d9e/bq_forward_8h.html#a7a3bc5fab6696a573028d0ee1a7b3351">bqVec3</a> &amp;p1, const <a class="el" href="../../df/d9e/bq_forward_8h.html#a7a3bc5fab6696a573028d0ee1a7b3351">bqVec3</a> &amp;p2, const <a class="el" href="../../da/d63/classbq_color.html">bqColor</a> &amp;c)=0</td></tr>
 <tr class="separator:a7825854f4b2cea69db56a502a5e28aa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4eb89149aa560ada12d48a2cf8c5dde2" id="r_a4eb89149aa560ada12d48a2cf8c5dde2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4eb89149aa560ada12d48a2cf8c5dde2">SetShader</a> (<a class="el" href="../../dd/d0a/bq_shader_8h.html#a4beb7be3293f33f6d73d9fb678ab96e1">bqShaderType</a>, uint32_t userShaderIndex)=0</td></tr>
 <tr class="separator:a4eb89149aa560ada12d48a2cf8c5dde2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa545cfaf0008fc6d3a42ad60429d21fe" id="r_aa545cfaf0008fc6d3a42ad60429d21fe"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../dc/de4/classbq_g_p_u_mesh.html">bqGPUMesh</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa545cfaf0008fc6d3a42ad60429d21fe">SummonMesh</a> (<a class="el" href="../../da/dd2/classbq_mesh.html">bqMesh</a> *m)=0</td></tr>
-<tr class="separator:aa545cfaf0008fc6d3a42ad60429d21fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f7f1d72fe8e6b6a48d3e8fa84ed5833" id="r_a6f7f1d72fe8e6b6a48d3e8fa84ed5833"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../dc/de4/classbq_g_p_u_mesh.html">bqGPUMesh</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6f7f1d72fe8e6b6a48d3e8fa84ed5833">CreateMesh</a> (<a class="el" href="../../da/dd2/classbq_mesh.html">bqMesh</a> *m)=0</td></tr>
+<tr class="memdesc:a6f7f1d72fe8e6b6a48d3e8fa84ed5833"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создать GPU модель для рисования  <br /></td></tr>
+<tr class="separator:a6f7f1d72fe8e6b6a48d3e8fa84ed5833"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affe2b536fb29bcdd67400fdee16cae9d" id="r_affe2b536fb29bcdd67400fdee16cae9d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#affe2b536fb29bcdd67400fdee16cae9d">SetMesh</a> (<a class="el" href="../../dc/de4/classbq_g_p_u_mesh.html">bqGPUMesh</a> *m)=0</td></tr>
+<tr class="memdesc:affe2b536fb29bcdd67400fdee16cae9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить текущую модель  <br /></td></tr>
 <tr class="separator:affe2b536fb29bcdd67400fdee16cae9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15cbe01090677a78013488d7ccf8da13" id="r_a15cbe01090677a78013488d7ccf8da13"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15cbe01090677a78013488d7ccf8da13">SetMaterial</a> (<a class="el" href="../../d6/d1e/classbq_material.html">bqMaterial</a> *m)=0</td></tr>
+<tr class="memdesc:a15cbe01090677a78013488d7ccf8da13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить текущий материал  <br /></td></tr>
 <tr class="separator:a15cbe01090677a78013488d7ccf8da13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a956ae8f8bd013264f547fb8bff0981af" id="r_a956ae8f8bd013264f547fb8bff0981af"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a956ae8f8bd013264f547fb8bff0981af">SetRasterizerState</a> (<a class="el" href="../../d0/df4/bq_g_s_8h.html#aa2f1abc794c67b35d2c85709395de652">bqGSRasterizerState</a>)=0</td></tr>
+<tr class="memdesc:a956ae8f8bd013264f547fb8bff0981af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить как рисовать треугольники  <br /></td></tr>
 <tr class="separator:a956ae8f8bd013264f547fb8bff0981af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4de0da074cf5e5b56a127e79f6cb35e5" id="r_a4de0da074cf5e5b56a127e79f6cb35e5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4de0da074cf5e5b56a127e79f6cb35e5">Draw</a> ()=0</td></tr>
+<tr class="memdesc:a4de0da074cf5e5b56a127e79f6cb35e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Нарисовать  <br /></td></tr>
 <tr class="separator:a4de0da074cf5e5b56a127e79f6cb35e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67df436fb3a3cf667c476aa3198d5b23" id="r_a67df436fb3a3cf667c476aa3198d5b23"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a67df436fb3a3cf667c476aa3198d5b23">SummonTexture</a> (<a class="el" href="../../dc/d1a/classbq_image.html">bqImage</a> *, const <a class="el" href="../../d3/da8/structbq_texture_info.html">bqTextureInfo</a> &amp;)=0</td></tr>
-<tr class="separator:a67df436fb3a3cf667c476aa3198d5b23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbd469870720405d016379fc4cbdc818" id="r_abbd469870720405d016379fc4cbdc818"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abbd469870720405d016379fc4cbdc818">SummonTexture</a> (<a class="el" href="../../dc/d1a/classbq_image.html">bqImage</a> *i)</td></tr>
-<tr class="separator:abbd469870720405d016379fc4cbdc818"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4b51c34753c3906e6ecc0910b4e2a0b" id="r_af4b51c34753c3906e6ecc0910b4e2a0b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4b51c34753c3906e6ecc0910b4e2a0b">SummonRTT</a> (const <a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;size, const <a class="el" href="../../d3/da8/structbq_texture_info.html">bqTextureInfo</a> &amp;)=0</td></tr>
-<tr class="separator:af4b51c34753c3906e6ecc0910b4e2a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f51ae472c7778e23ccae2a12dbe34c7" id="r_a9f51ae472c7778e23ccae2a12dbe34c7"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9f51ae472c7778e23ccae2a12dbe34c7">CreateTexture</a> (<a class="el" href="../../dc/d1a/classbq_image.html">bqImage</a> *, const <a class="el" href="../../d3/da8/structbq_texture_info.html">bqTextureInfo</a> &amp;)=0</td></tr>
+<tr class="memdesc:a9f51ae472c7778e23ccae2a12dbe34c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создать текстуру  <br /></td></tr>
+<tr class="separator:a9f51ae472c7778e23ccae2a12dbe34c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c7b532699e7617473c1b42d7d7c4930" id="r_a0c7b532699e7617473c1b42d7d7c4930"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c7b532699e7617473c1b42d7d7c4930">CreateTexture</a> (<a class="el" href="../../dc/d1a/classbq_image.html">bqImage</a> *i)</td></tr>
+<tr class="separator:a0c7b532699e7617473c1b42d7d7c4930"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49e4aa3b962c09bbabf07d8b21709805" id="r_a49e4aa3b962c09bbabf07d8b21709805"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a49e4aa3b962c09bbabf07d8b21709805">CreateRTT</a> (const <a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;size, const <a class="el" href="../../d3/da8/structbq_texture_info.html">bqTextureInfo</a> &amp;)=0</td></tr>
+<tr class="memdesc:a49e4aa3b962c09bbabf07d8b21709805"><td class="mdescLeft">&#160;</td><td class="mdescRight">Создать Render Target Texture/Frame Buffer Object.  <br /></td></tr>
+<tr class="separator:a49e4aa3b962c09bbabf07d8b21709805"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe431e9a0fb15420bc422b55c1061884" id="r_afe431e9a0fb15420bc422b55c1061884"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe431e9a0fb15420bc422b55c1061884">SetRenderTarget</a> (<a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> *t)=0</td></tr>
+<tr class="memdesc:afe431e9a0fb15420bc422b55c1061884"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить текстуру для рисования.  <br /></td></tr>
 <tr class="separator:afe431e9a0fb15420bc422b55c1061884"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f93cc89cdc66491fa8b58617b9615c8" id="r_a3f93cc89cdc66491fa8b58617b9615c8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3f93cc89cdc66491fa8b58617b9615c8">SetRenderTargetDefault</a> ()=0</td></tr>
 <tr class="separator:a3f93cc89cdc66491fa8b58617b9615c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -195,11 +212,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8d1a6f70a6876e0f816c7fc6d0e33134" id="r_a8d1a6f70a6876e0f816c7fc6d0e33134"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d1a6f70a6876e0f816c7fc6d0e33134">OcclusionEnd</a> ()=0</td></tr>
 <tr class="separator:a8d1a6f70a6876e0f816c7fc6d0e33134"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa27e9694a6f6e1b8c9a5507c883fe1d9" id="r_aa27e9694a6f6e1b8c9a5507c883fe1d9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa27e9694a6f6e1b8c9a5507c883fe1d9">OcclusionDraw</a> (<a class="el" href="../../dd/d5b/classbq_g_p_u_occlusion_object.html">bqGPUOcclusionObject</a> *)=0</td></tr>
+<tr class="memdesc:aa27e9694a6f6e1b8c9a5507c883fe1d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Перед рисованием надо установить модель используя SetMesh.  <br /></td></tr>
 <tr class="separator:aa27e9694a6f6e1b8c9a5507c883fe1d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a642fc081678e5c28996763a62040fdfb" id="r_a642fc081678e5c28996763a62040fdfb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a642fc081678e5c28996763a62040fdfb">OcclusionResult</a> (<a class="el" href="../../dd/d5b/classbq_g_p_u_occlusion_object.html">bqGPUOcclusionObject</a> *)=0</td></tr>
 <tr class="separator:a642fc081678e5c28996763a62040fdfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Графическая система </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8e16f3c9e73e76d6209e77e0db8f6367" name="a8e16f3c9e73e76d6209e77e0db8f6367"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8e16f3c9e73e76d6209e77e0db8f6367">&#9670;&#160;</a></span>bqGS()</h2>
 
@@ -274,6 +294,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Вызвать перед рисованием </p>
+
 </div>
 </div>
 <a id="ae909f0390333227bd66f9d727c71190c" name="ae909f0390333227bd66f9d727c71190c"></a>
@@ -324,6 +346,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>ClearDepth и ClearColor. </p>
+
 </div>
 </div>
 <a id="a550399659b1d66d2bbf6009f7a2d456c" name="a550399659b1d66d2bbf6009f7a2d456c"></a>
@@ -349,6 +373,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Очистить фон (закрасить фон) </p>
+
 </div>
 </div>
 <a id="a7f8c57fd642fb363ef041c148822a296" name="a7f8c57fd642fb363ef041c148822a296"></a>
@@ -370,6 +396,122 @@ Public Member Functions</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Очистить буфер с глубиной </p>
+
+</div>
+</div>
+<a id="a6f7f1d72fe8e6b6a48d3e8fa84ed5833" name="a6f7f1d72fe8e6b6a48d3e8fa84ed5833"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f7f1d72fe8e6b6a48d3e8fa84ed5833">&#9670;&#160;</a></span>CreateMesh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="../../dc/de4/classbq_g_p_u_mesh.html">bqGPUMesh</a> * bqGS::CreateMesh </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../da/dd2/classbq_mesh.html">bqMesh</a> *</td>          <td class="paramname"><span class="paramname"><em>m</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Создать GPU модель для рисования </p>
+
+</div>
+</div>
+<a id="a49e4aa3b962c09bbabf07d8b21709805" name="a49e4aa3b962c09bbabf07d8b21709805"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49e4aa3b962c09bbabf07d8b21709805">&#9670;&#160;</a></span>CreateRTT()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> * bqGS::CreateRTT </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="../../d3/da8/structbq_texture_info.html">bqTextureInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Создать Render Target Texture/Frame Buffer Object. </p>
+
+</div>
+</div>
+<a id="a9f51ae472c7778e23ccae2a12dbe34c7" name="a9f51ae472c7778e23ccae2a12dbe34c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f51ae472c7778e23ccae2a12dbe34c7">&#9670;&#160;</a></span>CreateTexture() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> * bqGS::CreateTexture </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../dc/d1a/classbq_image.html">bqImage</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="../../d3/da8/structbq_texture_info.html">bqTextureInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Создать текстуру </p>
+
+</div>
+</div>
+<a id="a0c7b532699e7617473c1b42d7d7c4930" name="a0c7b532699e7617473c1b42d7d7c4930"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c7b532699e7617473c1b42d7d7c4930">&#9670;&#160;</a></span>CreateTexture() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> * bqGS::CreateTexture </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../dc/d1a/classbq_image.html">bqImage</a> *</td>          <td class="paramname"><span class="paramname"><em>i</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -473,6 +615,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Нарисовать </p>
 
 </div>
 </div>
@@ -590,6 +734,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Нарисовать линию в 3D. Обязательно нужно указать на ViewProjection матрицу </p>
 
 </div>
 </div>
@@ -770,6 +915,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Вызвать после завершения рисования </p>
+
 </div>
 </div>
 <a id="a92da9cf3b2b0bf2acc9d0ed217bb58e9" name="a92da9cf3b2b0bf2acc9d0ed217bb58e9"></a>
@@ -845,6 +992,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить имя </p>
+
 </div>
 </div>
 <a id="a7fdef8995a9544cdc348d866e4886f50" name="a7fdef8995a9544cdc348d866e4886f50"></a>
@@ -869,6 +1018,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Получить остальную информацию в виде текста </p>
 
 </div>
 </div>
@@ -895,6 +1046,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить ID. </p>
+
 </div>
 </div>
 <a id="a2c092b9c6799bdd6157f61fc8be91db3" name="a2c092b9c6799bdd6157f61fc8be91db3"></a>
@@ -915,31 +1068,6 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>parameters</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9a7617359b7cabb467e15f0014efd98d" name="a9a7617359b7cabb467e15f0014efd98d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a7617359b7cabb467e15f0014efd98d">&#9670;&#160;</a></span>InitWindow()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual bool bqGS::InitWindow </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
         </tr>
       </table>
   </td>
@@ -973,6 +1101,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Все действия связанные с Occlusion culling надо делать между вызовами этих методов </p>
 
 </div>
 </div>
@@ -998,6 +1127,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Перед рисованием надо установить модель используя SetMesh. </p>
 
 </div>
 </div>
@@ -1073,31 +1204,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae4c855439c2f757fb654a8feef5a10b5" name="ae4c855439c2f757fb654a8feef5a10b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4c855439c2f757fb654a8feef5a10b5">&#9670;&#160;</a></span>SetActiveWindow()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void bqGS::SetActiveWindow </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Надо вызвать когда был изменён размер окна Будет вычислена матрица для GUI, и обновятся буферы у SwapChain </p>
 
 </div>
 </div>
@@ -1137,6 +1244,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Цвет фона </p>
 
 </div>
 </div>
@@ -1188,6 +1297,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Установить текущий материал </p>
+
 </div>
 </div>
 <a id="affe2b536fb29bcdd67400fdee16cae9d" name="affe2b536fb29bcdd67400fdee16cae9d"></a>
@@ -1212,6 +1323,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Установить текущую модель </p>
 
 </div>
 </div>
@@ -1238,6 +1351,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Установить как рисовать треугольники </p>
+
 </div>
 </div>
 <a id="afe431e9a0fb15420bc422b55c1061884" name="afe431e9a0fb15420bc422b55c1061884"></a>
@@ -1262,6 +1377,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Установить текстуру для рисования. </p>
 
 </div>
 </div>
@@ -1366,6 +1483,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Установить текущий шейдер. Если <a class="el" href="../../dd/d0a/bq_shader_8h.html#a4beb7be3293f33f6d73d9fb678ab96e1a8f9bfe9d1345237cb3b2b205864da075">bqShaderType::User</a> то необходимо указать индекс шейдера </p>
 
 </div>
 </div>
@@ -1433,31 +1551,6 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa545cfaf0008fc6d3a42ad60429d21fe" name="aa545cfaf0008fc6d3a42ad60429d21fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa545cfaf0008fc6d3a42ad60429d21fe">&#9670;&#160;</a></span>SummonMesh()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="../../dc/de4/classbq_g_p_u_mesh.html">bqGPUMesh</a> * bqGS::SummonMesh </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="../../da/dd2/classbq_mesh.html">bqMesh</a> *</td>          <td class="paramname"><span class="paramname"><em>m</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="aa66f7ea368a54c2220919e833e711b97" name="aa66f7ea368a54c2220919e833e711b97"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa66f7ea368a54c2220919e833e711b97">&#9670;&#160;</a></span>SummonOcclusionObject()</h2>
 
@@ -1477,89 +1570,6 @@ Public Member Functions</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af4b51c34753c3906e6ecc0910b4e2a0b" name="af4b51c34753c3906e6ecc0910b4e2a0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4b51c34753c3906e6ecc0910b4e2a0b">&#9670;&#160;</a></span>SummonRTT()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> * bqGS::SummonRTT </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="../../d3/da8/structbq_texture_info.html">bqTextureInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a67df436fb3a3cf667c476aa3198d5b23" name="a67df436fb3a3cf667c476aa3198d5b23"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67df436fb3a3cf667c476aa3198d5b23">&#9670;&#160;</a></span>SummonTexture() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> * bqGS::SummonTexture </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="../../dc/d1a/classbq_image.html">bqImage</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="../../d3/da8/structbq_texture_info.html">bqTextureInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="abbd469870720405d016379fc4cbdc818" name="abbd469870720405d016379fc4cbdc818"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abbd469870720405d016379fc4cbdc818">&#9670;&#160;</a></span>SummonTexture() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="../../d2/dcc/classbq_texture.html">bqTexture</a> * bqGS::SummonTexture </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="../../dc/d1a/classbq_image.html">bqImage</a> *</td>          <td class="paramname"><span class="paramname"><em>i</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1588,6 +1598,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Вызвать после EndDraw. </p>
 
 </div>
 </div>

@@ -246,5 +246,8 @@
     <ClCompile Include="..\..\src\badcoiq\system\bqPopup.cpp">
       <Filter>Source Files\system</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\framework\bqShortcutManager.cpp">
+      <Filter>Source Files\framework</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

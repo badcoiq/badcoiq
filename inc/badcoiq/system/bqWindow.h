@@ -28,12 +28,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 #ifndef __BQ_WINDOW_H__
+/// \cond
 #define __BQ_WINDOW_H__
+/// \endcond
 
 #ifdef BQ_WITH_WINDOW
 
-// Когда с окном что-то происходит, оно будет вызывать эти коллбэки
-// При создании окна мы обязаны послать указатель на коллбэк
+/// \brief Когда с окном что-то происходит, оно будет вызывать эти коллбэки
+/// 
+/// При создании окна мы обязаны послать указатель на коллбэк
 class bqWindowCallback : public bqUserData
 {
 public:
@@ -41,31 +44,38 @@ public:
 	virtual ~bqWindowCallback() {}
 	BQ_PLACEMENT_ALLOCATOR(bqWindowCallback);
 
-	// Когда переключились к этому окну
+	/// Когда переключились к этому окну
 	virtual void OnActivate(bqWindow*) {}
-	// Когда переключились к другому окну
+
+	/// Когда переключились к другому окну
 	virtual void OnDeactivate(bqWindow*) {}
 
-	// После изменении размера
+	/// После изменении размера
 	virtual void OnSize(bqWindow*) {}
-	// Пока изменяем размер
+
+	/// Пока изменяем размер
 	virtual void OnSizing(bqWindow*) {} // when resizing
 
-	// Свернули окно
+	/// Свернули окно
 	virtual void OnMinimize(bqWindow*) {}
-	// Развернули на весь монитор
+
+	/// Развернули на весь монитор
 	virtual void OnMaximize(bqWindow*) {}
-	// Восстановили (из Maximized и Minimized в обычное)
+
+	/// Восстановили (из Maximized и Minimized в обычное)
 	virtual void OnRestore(bqWindow*) {}
 
-	// Когда окно перерисовывается
+	/// Когда окно перерисовывается
 	virtual void OnDraw(bqWindow*) {}
 
-	// Когда двигается
+	/// Когда двигается
 	virtual void OnMove(bqWindow*) {}
 
-	// Когда кликается кнопка закрытия
+	/// Когда кликается кнопка закрытия
 	virtual void OnClose(bqWindow*) {}
+
+	/// Когда кликается пункт в popup
+	virtual void OnPopupMenu(bqWindow*, uint32_t /*id*/) {}
 };
 
 /// \brief Общие данные для системного окна

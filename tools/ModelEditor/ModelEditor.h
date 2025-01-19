@@ -50,8 +50,9 @@ public:
     MainWindowCallback(){}
     virtual ~MainWindowCallback() {}
 
-	virtual void OnClose(bqWindow*);
-	virtual void OnSize(bqWindow* w);
+	virtual void OnClose(bqWindow*) override;
+	virtual void OnSize(bqWindow* w) override;
+    virtual void OnPopupMenu(bqWindow*, uint32_t /*id*/) override;
 };
 
 class DrawTextCallback : public bqGUIDrawTextCallback
@@ -80,31 +81,40 @@ public:
 
 enum
 {
-    PopupItemID_ViewportViewPerspective,
-    PopupItemID_ViewportViewTop,
-    PopupItemID_ViewportViewBottom,
-    PopupItemID_ViewportViewLeft,
-    PopupItemID_ViewportViewRight,
-    PopupItemID_ViewportViewFront,
-    PopupItemID_ViewportViewBack,
-    PopupItemID_ViewportToggleFullView,
-    PopupItemID_ViewportToggleGrid,
-    PopupItemID_ViewportDrawMaterial,
-    PopupItemID_ViewportDrawMaterialWireframe,
-    PopupItemID_ViewportDrawWireframe,
-    PopupItemID_ViewportToggleDrawMaterial,
-    PopupItemID_ViewportToggleDrawWireframe,
-    PopupItemID_ViewportToggleDrawAABB,
-    PopupItemID_CameraReset,
-    PopupItemID_CameraMoveToSelection,
-    /*PopupItemID_,
-    PopupItemID_,
-    PopupItemID_,
-    PopupItemID_,
-    PopupItemID_,
-    PopupItemID_,
-    PopupItemID_,
-    PopupItemID_,*/
+    CommandID_MainMenuNew,
+    CommandID_MainMenuOpen,
+    CommandID_MainMenuSave,
+    CommandID_MainMenuSaveAs,
+    CommandID_MainMenuSaveCopy,
+    CommandID_MainMenuImport,
+    CommandID_MainMenuExport,
+    CommandID_MainMenuExit,
+
+    CommandID_ViewportViewPerspective,
+    CommandID_ViewportViewTop,
+    CommandID_ViewportViewBottom,
+    CommandID_ViewportViewLeft,
+    CommandID_ViewportViewRight,
+    CommandID_ViewportViewFront,
+    CommandID_ViewportViewBack,
+    CommandID_ViewportToggleFullView,
+    CommandID_ViewportToggleGrid,
+    CommandID_ViewportDrawMaterial,
+    CommandID_ViewportDrawMaterialWireframe,
+    CommandID_ViewportDrawWireframe,
+    CommandID_ViewportToggleDrawMaterial,
+    CommandID_ViewportToggleDrawWireframe,
+    CommandID_ViewportToggleDrawAABB,
+    CommandID_CameraReset,
+    CommandID_CameraMoveToSelection,
+    /*CommandID_,
+    CommandID_,
+    CommandID_,
+    CommandID_,
+    CommandID_,
+    CommandID_,
+    CommandID_,
+    CommandID_,*/
 };
 
 class GUIButton;
@@ -127,6 +137,8 @@ class ModelEditor
     void _rebuildGUI();
     bqGUIButton* _createButton(const bqVec2f& position, const bqVec2f& size, uint32_t id);
 
+    bqShortcutManager* m_shortcutMgr = 0;
+    void _processShortcuts();
 
 public:
 	ModelEditor();
@@ -137,8 +149,11 @@ public:
 
 	void OnWindowCallback_onClose(bqWindow*);
 	void OnWindowCallback_onSize(bqWindow*);
+    void OnWindowCallback_onPopupMenu(bqWindow* w, uint32_t id);
+    void OnExit();
     
-    bqPopup* m_popupViewportOptions;
+    bqPopup* m_popupViewportOptions = 0;
+    bqPopup* m_popupMainMenuOptions = 0;
     bqWindow* m_mainWindow = 0;
 };
 

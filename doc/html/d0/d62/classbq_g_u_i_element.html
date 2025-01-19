@@ -88,7 +88,8 @@ $(function(){ initResizable(false); });
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Data Fields</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a>  </div>
+<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#friends">Friends</a>  </div>
   <div class="headertitle"><div class="title">bqGUIElement Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -103,9 +104,9 @@ Inheritance diagram for bqGUIElement:</div>
 <area href="../../d1/d48/classbq_g_u_i_common.html" title="Общие данные для GUI вещей." alt="bqGUICommon" shape="rect" coords="0,56,114,80"/>
 <area href="../../d8/dd1/classbq_hierarchy.html" alt="bqHierarchy" shape="rect" coords="124,56,238,80"/>
 <area href="../../dc/dd2/classbq_user_data.html" title="Если для какого-то класса нужен user data, то можно наследовать этот класс" alt="bqUserData" shape="rect" coords="0,0,114,24"/>
-<area href="../../dd/d6a/classbq_g_u_i_button.html" alt="bqGUIButton" shape="rect" coords="186,168,300,192"/>
+<area href="../../dd/d6a/classbq_g_u_i_button.html" title="Кнопка" alt="bqGUIButton" shape="rect" coords="186,168,300,192"/>
 <area href="../../db/dcc/classbq_g_u_i_list_box.html" alt="bqGUIListBox" shape="rect" coords="186,224,300,248"/>
-<area href="../../da/de1/classbq_g_u_i_picture_box.html" alt="bqGUIPictureBox" shape="rect" coords="186,280,300,304"/>
+<area href="../../da/de1/classbq_g_u_i_picture_box.html" title="Картинка" alt="bqGUIPictureBox" shape="rect" coords="186,280,300,304"/>
 <area href="../../d5/df8/classbq_g_u_i_popup.html" alt="bqGUIPopup" shape="rect" coords="186,336,300,360"/>
 <area href="../../d5/d12/classbq_g_u_i_root_element.html" alt="bqGUIRootElement" shape="rect" coords="186,392,300,416"/>
 <area href="../../df/d68/classbq_g_u_i_scrollbar.html" alt="bqGUIScrollbar" shape="rect" coords="186,448,300,472"/>
@@ -153,8 +154,8 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aba9fea42b4b431068837339c29317444" id="r_aba9fea42b4b431068837339c29317444"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba9fea42b4b431068837339c29317444">bqGUIElement</a> (<a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> *, const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;position, const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;size)</td></tr>
-<tr class="separator:aba9fea42b4b431068837339c29317444"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90eafc0eca6617192460b82328df3c52" id="r_a90eafc0eca6617192460b82328df3c52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90eafc0eca6617192460b82328df3c52">bqGUIElement</a> (const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;position, const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;size)</td></tr>
+<tr class="separator:a90eafc0eca6617192460b82328df3c52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a755324f7376228b470f2413536e47b72" id="r_a755324f7376228b470f2413536e47b72"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a755324f7376228b470f2413536e47b72">~bqGUIElement</a> ()</td></tr>
 <tr class="separator:a755324f7376228b470f2413536e47b72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab77a83f6d1673fc8e05fc4625ec29c4e" id="r_ab77a83f6d1673fc8e05fc4625ec29c4e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab77a83f6d1673fc8e05fc4625ec29c4e">BQ_PLACEMENT_ALLOCATOR</a> (<a class="el" href="../../d0/d62/classbq_g_u_i_element.html">bqGUIElement</a>)</td></tr>
@@ -333,6 +334,11 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a638846495827b42aee98f41828497d27 inherit pro_attribs_classbq_hierarchy"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9fc698f482ba2c6d9374613c06f0d02 inherit pro_attribs_classbq_hierarchy" id="r_af9fc698f482ba2c6d9374613c06f0d02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d2/d73/classbq_list.html">bqList</a>&lt; <a class="el" href="../../d8/dd1/classbq_hierarchy.html">bqHierarchy</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd1/classbq_hierarchy.html#af9fc698f482ba2c6d9374613c06f0d02">m_children</a></td></tr>
 <tr class="separator:af9fc698f482ba2c6d9374613c06f0d02 inherit pro_attribs_classbq_hierarchy"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a75a289cb002a264e475daa62740380b0" id="r_a75a289cb002a264e475daa62740380b0"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a75a289cb002a264e475daa62740380b0">bqGUIWindowBase</a></td></tr>
+<tr class="separator:a75a289cb002a264e475daa62740380b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="ac9fa362b312a51dae8bdbfb7cf06e741" name="ac9fa362b312a51dae8bdbfb7cf06e741"></a>
@@ -361,8 +367,8 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aba9fea42b4b431068837339c29317444" name="aba9fea42b4b431068837339c29317444"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba9fea42b4b431068837339c29317444">&#9670;&#160;</a></span>bqGUIElement()</h2>
+<a id="a90eafc0eca6617192460b82328df3c52" name="a90eafc0eca6617192460b82328df3c52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90eafc0eca6617192460b82328df3c52">&#9670;&#160;</a></span>bqGUIElement()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -370,11 +376,6 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">bqGUIElement::bqGUIElement </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>position</em></span>, </td>
         </tr>
         <tr>
@@ -554,6 +555,29 @@ Protected Attributes</h2></td></tr>
 <p>Reimplemented from <a class="el" href="../../d1/d48/classbq_g_u_i_common.html#abfaeb76769bee89079148369e6520826">bqGUICommon</a>.</p>
 
 <p>Reimplemented in <a class="el" href="../../dd/d6a/classbq_g_u_i_button.html#a8e0cf625366e96b54a6eb0dd6ac19f40">bqGUIButton</a>, <a class="el" href="../../d4/d82/classbq_g_u_i_check_radio_box.html#afacff11f2f154ad5e3ecef5c069e50f9">bqGUICheckRadioBox</a>, <a class="el" href="../../db/dcc/classbq_g_u_i_list_box.html#acae3fa5a7747881f3fd99a312b108334">bqGUIListBox</a>, <a class="el" href="../../da/de1/classbq_g_u_i_picture_box.html#ae21148953e93cf6c567cc6492c5d41f9">bqGUIPictureBox</a>, <a class="el" href="../../d5/df8/classbq_g_u_i_popup.html#a21adedec2f60812a609f024fe2fd31f2">bqGUIPopup</a>, <a class="el" href="../../d5/d12/classbq_g_u_i_root_element.html#acb33f7cc282e132aabb72203f27e55ec">bqGUIRootElement</a>, <a class="el" href="../../df/d68/classbq_g_u_i_scrollbar.html#a1e58c8ffe71f1495ccc8751e86121a9e">bqGUIScrollbar</a>, <a class="el" href="../../d6/d64/classbq_g_u_i_slider.html#a2e812f8893cf6eee04bd737754a3cc2d">bqGUISlider</a>, <a class="el" href="../../de/de3/classbq_g_u_i_static_text.html#aebd2a9507de61c7f4a9acd75000cb247">bqGUIStaticText</a>, and <a class="el" href="../../de/db1/classbq_g_u_i_text_editor.html#a2ffac2c0ff52d2c458cf2a5e459af7f9">bqGUITextEditor</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Symbol Documentation</h2>
+<a id="a75a289cb002a264e475daa62740380b0" name="a75a289cb002a264e475daa62740380b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75a289cb002a264e475daa62740380b0">&#9670;&#160;</a></span>bqGUIWindowBase</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="../../da/dd6/classbq_g_u_i_window_base.html">bqGUIWindowBase</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

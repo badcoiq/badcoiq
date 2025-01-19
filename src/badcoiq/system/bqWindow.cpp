@@ -460,6 +460,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
+    case WM_COMMAND: {
+        if (pW)
+            pW->GetData()->m_cb->OnPopupMenu(pW, (uint32_t)wParam);
+    }return 0;
+
     case WM_ACTIVATE:
     {
         switch (wmId)

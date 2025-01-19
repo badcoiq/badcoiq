@@ -77,6 +77,8 @@ class bqWindow;
 class bqWindowCallback;
 #endif
 
+class bqShortcutManager;
+
 #ifdef BQ_WITH_GS
 class bqGS;
 #endif

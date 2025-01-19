@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ModelEditor.h"
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/system/bqPopup.h"
+#include "badcoiq/framework/bqShortcutManager.h"
 
 ModelEditor* g_app = 0;
 
@@ -60,7 +61,7 @@ public:
 
 	virtual void OnReleaseLMB()
 	{
-		bqFramework::ShowPopupAtCursor(g_app->m_popupViewportOptions, g_app->m_mainWindow);
+		bqFramework::ShowPopupAtCursor(g_app->m_popupMainMenuOptions, g_app->m_mainWindow);
 	}
 };
 
@@ -106,6 +107,12 @@ bool ModelEditor::Init()
 		return false;
 	}
 
+	m_shortcutMgr = new bqShortcutManager(100);
+	m_shortcutMgr->SetCommand(CommandID_MainMenuNew, L"New", 0, 0);
+	m_shortcutMgr->SetCommand(CommandID_MainMenuExit, L"Exit", bq::KeyboardMod_Alt, bqInput::KEY_F4);
+	m_shortcutMgr->SetCommand(CommandID_MainMenuSave, L"Save", bq::KeyboardMod_Ctrl, bqInput::KEY_S);
+	m_shortcutMgr->SetCommand(CommandID_MainMenuSaveAs, L"Save As...", bq::KeyboardMod_CtrlShift, bqInput::KEY_S);
+
 	m_GUITexture = bqFramework::CreateTexture(m_gs,
 		bqFramework::GetPath("../data/model_editor/gui.png").c_str(),
 		false, false);
@@ -137,28 +144,40 @@ bool ModelEditor::Init()
 	_rebuildGUI();
 
 	m_popupViewportOptions = bqFramework::CreatePopup();
-	m_popupViewportOptions->AddItem(L"Perspective", PopupItemID_ViewportViewPerspective, L"");
-	m_popupViewportOptions->AddItem(L"Top", PopupItemID_ViewportViewTop, L"");
-	m_popupViewportOptions->AddItem(L"Bottom", PopupItemID_ViewportViewBottom, L"");
-	m_popupViewportOptions->AddItem(L"Left", PopupItemID_ViewportViewLeft, L"");
-	m_popupViewportOptions->AddItem(L"Right", PopupItemID_ViewportViewRight, L"");
-	m_popupViewportOptions->AddItem(L"Front", PopupItemID_ViewportViewFront, L"");
-	m_popupViewportOptions->AddItem(L"Back", PopupItemID_ViewportViewBack, L"");
+	m_popupViewportOptions->AddItem(L"Perspective", CommandID_ViewportViewPerspective, L"");
+	m_popupViewportOptions->AddItem(L"Top", CommandID_ViewportViewTop, L"");
+	m_popupViewportOptions->AddItem(L"Bottom", CommandID_ViewportViewBottom, L"");
+	m_popupViewportOptions->AddItem(L"Left", CommandID_ViewportViewLeft, L"");
+	m_popupViewportOptions->AddItem(L"Right", CommandID_ViewportViewRight, L"");
+	m_popupViewportOptions->AddItem(L"Front", CommandID_ViewportViewFront, L"");
+	m_popupViewportOptions->AddItem(L"Back", CommandID_ViewportViewBack, L"");
 	m_popupViewportOptions->AddSeparator();
-	m_popupViewportOptions->AddItem(L"Toggle full view", PopupItemID_ViewportToggleFullView, L"");
-	m_popupViewportOptions->AddItem(L"Toggle grid", PopupItemID_ViewportToggleGrid, L"");
+	m_popupViewportOptions->AddItem(L"Toggle full view", CommandID_ViewportToggleFullView, L"");
+	m_popupViewportOptions->AddItem(L"Toggle grid", CommandID_ViewportToggleGrid, L"");
 	m_popupViewportOptions->AddSeparator();
-	m_popupViewportOptions->AddItem(L"Material", PopupItemID_ViewportDrawMaterial, L"");
-	m_popupViewportOptions->AddItem(L"Material+Wireframe", PopupItemID_ViewportDrawMaterialWireframe, L"");
-	m_popupViewportOptions->AddItem(L"Wireframe", PopupItemID_ViewportDrawWireframe, L"");
-	m_popupViewportOptions->AddItem(L"Toggle draw material", PopupItemID_ViewportToggleDrawMaterial, L"");
-	m_popupViewportOptions->AddItem(L"Toggle draw wireframe", PopupItemID_ViewportToggleDrawWireframe, L"");
+	m_popupViewportOptions->AddItem(L"Material", CommandID_ViewportDrawMaterial, L"");
+	m_popupViewportOptions->AddItem(L"Material+Wireframe", CommandID_ViewportDrawMaterialWireframe, L"");
+	m_popupViewportOptions->AddItem(L"Wireframe", CommandID_ViewportDrawWireframe, L"");
+	m_popupViewportOptions->AddItem(L"Toggle draw material", CommandID_ViewportToggleDrawMaterial, L"");
+	m_popupViewportOptions->AddItem(L"Toggle draw wireframe", CommandID_ViewportToggleDrawWireframe, L"");
 	m_popupViewportOptions->AddSeparator();
-	m_popupViewportOptions->AddItem(L"Toggle draw AABB", PopupItemID_ViewportToggleDrawAABB, L"");
+	m_popupViewportOptions->AddItem(L"Toggle draw AABB", CommandID_ViewportToggleDrawAABB, L"");
 	m_popupViewportOptions->AddSeparator();
-	m_popupViewportOptions->AddItem(L"Camera Reset", PopupItemID_CameraReset, L"");
-	m_popupViewportOptions->AddItem(L"Camera Move to selection", PopupItemID_CameraMoveToSelection, L"");
+	m_popupViewportOptions->AddItem(L"Camera Reset", CommandID_CameraReset, L"");
+	m_popupViewportOptions->AddItem(L"Camera Move to selection", CommandID_CameraMoveToSelection, L"");
 
+	m_popupMainMenuOptions = bqFramework::CreatePopup();
+	m_popupMainMenuOptions->AddItem(L"New", CommandID_MainMenuNew, m_shortcutMgr->GetTextW(CommandID_MainMenuNew));
+	m_popupMainMenuOptions->AddItem(L"Open", CommandID_MainMenuOpen, m_shortcutMgr->GetTextW(CommandID_MainMenuOpen));
+	m_popupMainMenuOptions->AddSeparator();
+	m_popupMainMenuOptions->AddItem(L"Save", CommandID_MainMenuSave, m_shortcutMgr->GetTextW(CommandID_MainMenuSave));
+	m_popupMainMenuOptions->AddItem(L"Save As...", CommandID_MainMenuSaveAs, m_shortcutMgr->GetTextW(CommandID_MainMenuSaveAs));
+	m_popupMainMenuOptions->AddItem(L"Save Copy", CommandID_MainMenuSaveCopy, m_shortcutMgr->GetTextW(CommandID_MainMenuSaveCopy));
+	m_popupMainMenuOptions->AddSeparator();
+	m_popupMainMenuOptions->AddItem(L"Import", CommandID_MainMenuImport, m_shortcutMgr->GetTextW(CommandID_MainMenuImport));
+	m_popupMainMenuOptions->AddItem(L"Export", CommandID_MainMenuExport, m_shortcutMgr->GetTextW(CommandID_MainMenuExport));
+	m_popupMainMenuOptions->AddSeparator();
+	m_popupMainMenuOptions->AddItem(L"Exit", CommandID_MainMenuExit, m_shortcutMgr->GetTextW(CommandID_MainMenuExit));
 
 
 	return true;
@@ -179,6 +198,9 @@ void ModelEditor::Run()
 		bqFramework::Update();
 		m_mainWindow->UpdateGUI();
 
+		_processShortcuts();
+		
+
 		m_gs->BeginGUI();
 		m_mainWindow->DrawGUI(m_gs);
 
@@ -198,6 +220,8 @@ void ModelEditor::Run()
 
 void ModelEditor::Shutdown()
 {
+	BQ_SAFEDESTROY(m_shortcutMgr);
+
 	for (size_t i = 0; i < m_GUIElements.m_size; ++i)
 	{
 		delete m_GUIElements.m_data[i];
@@ -207,21 +231,22 @@ void ModelEditor::Shutdown()
 
 void MainWindowCallback::OnClose(bqWindow* w)
 {
-	ModelEditor* editor = (ModelEditor*)(GetUserData());
-	if (editor)
-		editor->OnWindowCallback_onClose(w);
+	g_app->OnWindowCallback_onClose(w);
 }
 
 void MainWindowCallback::OnSize(bqWindow* w)
 {
-	ModelEditor* editor = (ModelEditor*)(GetUserData());
-	if (editor)
-		editor->OnWindowCallback_onSize(w);
+	g_app->OnWindowCallback_onSize(w);
+}
+
+void MainWindowCallback::OnPopupMenu(bqWindow* w, uint32_t id)
+{
+	g_app->OnWindowCallback_onPopupMenu(w, id);
 }
 
 void ModelEditor::OnWindowCallback_onClose(bqWindow* w)
 {
-	m_run = false;
+	OnExit();
 }
 
 void ModelEditor::OnWindowCallback_onSize(bqWindow* w)
@@ -231,6 +256,35 @@ void ModelEditor::OnWindowCallback_onSize(bqWindow* w)
 	_rebuildGUI();
 }
 
+void ModelEditor::OnWindowCallback_onPopupMenu(bqWindow* w, uint32_t id)
+{
+	switch (id)
+	{
+	case CommandID_MainMenuNew:
+		break;
+	case CommandID_MainMenuExit:
+		OnExit();
+		break;
+	case CommandID_MainMenuExport:
+		break;
+	case CommandID_MainMenuImport:
+		break;
+	case CommandID_MainMenuOpen:
+		break;
+	case CommandID_MainMenuSave:
+		break;
+	case CommandID_MainMenuSaveAs:
+		break;
+	case CommandID_MainMenuSaveCopy:
+		break;
+	}
+}
+
+void ModelEditor::OnExit()
+{
+	m_run = false;
+}
+
 void ModelEditor::_rebuildGUI()
 {
 	if (m_GUIWindow_mainMenuBar)
@@ -238,4 +292,10 @@ void ModelEditor::_rebuildGUI()
 		m_GUIWindow_mainMenuBar->SetSize((float)m_mainWindow->GetCurrentSize()->x, 32.f);		
 		m_GUIWindow_mainMenuBar->Rebuild();
 	}
+}
+
+void ModelEditor::_processShortcuts()
+{
+	if (m_shortcutMgr->IsShortcutActive(CommandID_MainMenuExit))OnExit();
+	//if (m_shortcutMgr->IsShortcutActive(CommandID_MainMenuExit))OnExit();
 }

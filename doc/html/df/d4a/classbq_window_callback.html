@@ -90,6 +90,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Когда с окном что-то происходит, оно будет вызывать эти коллбэки  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="../../d5/da5/bq_window_8h_source.html">bqWindow.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for bqWindowCallback:</div>
@@ -110,25 +113,38 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2bb69e43df55a1db52cc4b59f132002a" id="r_a2bb69e43df55a1db52cc4b59f132002a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2bb69e43df55a1db52cc4b59f132002a">BQ_PLACEMENT_ALLOCATOR</a> (<a class="el" href="../../df/d4a/classbq_window_callback.html">bqWindowCallback</a>)</td></tr>
 <tr class="separator:a2bb69e43df55a1db52cc4b59f132002a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14dad9e7f07240c857239405527c1228" id="r_a14dad9e7f07240c857239405527c1228"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a14dad9e7f07240c857239405527c1228">OnActivate</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a14dad9e7f07240c857239405527c1228"><td class="mdescLeft">&#160;</td><td class="mdescRight">Когда переключились к этому окну  <br /></td></tr>
 <tr class="separator:a14dad9e7f07240c857239405527c1228"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81c7d4bf2d88a0a369128f37510bd69f" id="r_a81c7d4bf2d88a0a369128f37510bd69f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a81c7d4bf2d88a0a369128f37510bd69f">OnDeactivate</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a81c7d4bf2d88a0a369128f37510bd69f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Когда переключились к другому окну  <br /></td></tr>
 <tr class="separator:a81c7d4bf2d88a0a369128f37510bd69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c8925948a7742c302770576dcbd7388" id="r_a2c8925948a7742c302770576dcbd7388"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c8925948a7742c302770576dcbd7388">OnSize</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a2c8925948a7742c302770576dcbd7388"><td class="mdescLeft">&#160;</td><td class="mdescRight">После изменении размера  <br /></td></tr>
 <tr class="separator:a2c8925948a7742c302770576dcbd7388"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a5180143e1dfa6a95cb968e8b3d198c" id="r_a2a5180143e1dfa6a95cb968e8b3d198c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2a5180143e1dfa6a95cb968e8b3d198c">OnSizing</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a2a5180143e1dfa6a95cb968e8b3d198c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Пока изменяем размер  <br /></td></tr>
 <tr class="separator:a2a5180143e1dfa6a95cb968e8b3d198c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2788720f508f3b091758652e6dffeb5e" id="r_a2788720f508f3b091758652e6dffeb5e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2788720f508f3b091758652e6dffeb5e">OnMinimize</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a2788720f508f3b091758652e6dffeb5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Свернули окно  <br /></td></tr>
 <tr class="separator:a2788720f508f3b091758652e6dffeb5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b053f292adc37adcefbd0ed4af16759" id="r_a8b053f292adc37adcefbd0ed4af16759"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b053f292adc37adcefbd0ed4af16759">OnMaximize</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a8b053f292adc37adcefbd0ed4af16759"><td class="mdescLeft">&#160;</td><td class="mdescRight">Развернули на весь монитор  <br /></td></tr>
 <tr class="separator:a8b053f292adc37adcefbd0ed4af16759"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fe293ed7c851f922044df15eee6ff7a" id="r_a4fe293ed7c851f922044df15eee6ff7a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4fe293ed7c851f922044df15eee6ff7a">OnRestore</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a4fe293ed7c851f922044df15eee6ff7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Восстановили (из Maximized и Minimized в обычное)  <br /></td></tr>
 <tr class="separator:a4fe293ed7c851f922044df15eee6ff7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f755f9fe9202d378db186cfca57ce73" id="r_a4f755f9fe9202d378db186cfca57ce73"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f755f9fe9202d378db186cfca57ce73">OnDraw</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a4f755f9fe9202d378db186cfca57ce73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Когда окно перерисовывается  <br /></td></tr>
 <tr class="separator:a4f755f9fe9202d378db186cfca57ce73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1673560a991dda53f151df67aff47b78" id="r_a1673560a991dda53f151df67aff47b78"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1673560a991dda53f151df67aff47b78">OnMove</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a1673560a991dda53f151df67aff47b78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Когда двигается  <br /></td></tr>
 <tr class="separator:a1673560a991dda53f151df67aff47b78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ba657fea2fb5ec1e33f06e1505e4025" id="r_a0ba657fea2fb5ec1e33f06e1505e4025"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ba657fea2fb5ec1e33f06e1505e4025">OnClose</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *)</td></tr>
+<tr class="memdesc:a0ba657fea2fb5ec1e33f06e1505e4025"><td class="mdescLeft">&#160;</td><td class="mdescRight">Когда кликается кнопка закрытия  <br /></td></tr>
 <tr class="separator:a0ba657fea2fb5ec1e33f06e1505e4025"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6743a25ac4b08ef9bcbc0d76b37e50c" id="r_aa6743a25ac4b08ef9bcbc0d76b37e50c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6743a25ac4b08ef9bcbc0d76b37e50c">OnPopupMenu</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *, uint32_t)</td></tr>
+<tr class="memdesc:aa6743a25ac4b08ef9bcbc0d76b37e50c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Когда кликается пункт в popup.  <br /></td></tr>
+<tr class="separator:aa6743a25ac4b08ef9bcbc0d76b37e50c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classbq_user_data"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classbq_user_data')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../dc/dd2/classbq_user_data.html">bqUserData</a></td></tr>
 <tr class="memitem:aad7f7a6610a713ce009a5f52aa84d07d inherit pub_methods_classbq_user_data" id="r_aad7f7a6610a713ce009a5f52aa84d07d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/dd2/classbq_user_data.html#aad7f7a6610a713ce009a5f52aa84d07d">bqUserData</a> ()</td></tr>
 <tr class="separator:aad7f7a6610a713ce009a5f52aa84d07d inherit pub_methods_classbq_user_data"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -141,7 +157,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a99e5487255dbab78f5afec5a0af9879d inherit pub_methods_classbq_user_data"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить пользовательские данные.  <br /></td></tr>
 <tr class="separator:a99e5487255dbab78f5afec5a0af9879d inherit pub_methods_classbq_user_data"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Когда с окном что-то происходит, оно будет вызывать эти коллбэки </p>
+<p>При создании окна мы обязаны послать указатель на коллбэк </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a669d1074e2fd5918216c0f4817c908c7" name="a669d1074e2fd5918216c0f4817c908c7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a669d1074e2fd5918216c0f4817c908c7">&#9670;&#160;</a></span>bqWindowCallback()</h2>
 
@@ -233,6 +252,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Когда переключились к этому окну </p>
+
 </div>
 </div>
 <a id="a0ba657fea2fb5ec1e33f06e1505e4025" name="a0ba657fea2fb5ec1e33f06e1505e4025"></a>
@@ -257,6 +278,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Когда кликается кнопка закрытия </p>
 
 </div>
 </div>
@@ -283,6 +306,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Когда переключились к другому окну </p>
+
 </div>
 </div>
 <a id="a4f755f9fe9202d378db186cfca57ce73" name="a4f755f9fe9202d378db186cfca57ce73"></a>
@@ -307,6 +332,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Когда окно перерисовывается </p>
 
 </div>
 </div>
@@ -333,6 +360,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Развернули на весь монитор </p>
+
 </div>
 </div>
 <a id="a2788720f508f3b091758652e6dffeb5e" name="a2788720f508f3b091758652e6dffeb5e"></a>
@@ -357,6 +386,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Свернули окно </p>
 
 </div>
 </div>
@@ -383,6 +414,39 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Когда двигается </p>
+
+</div>
+</div>
+<a id="aa6743a25ac4b08ef9bcbc0d76b37e50c" name="aa6743a25ac4b08ef9bcbc0d76b37e50c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6743a25ac4b08ef9bcbc0d76b37e50c">&#9670;&#160;</a></span>OnPopupMenu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void bqWindowCallback::OnPopupMenu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Когда кликается пункт в popup. </p>
+
 </div>
 </div>
 <a id="a4fe293ed7c851f922044df15eee6ff7a" name="a4fe293ed7c851f922044df15eee6ff7a"></a>
@@ -407,6 +471,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Восстановили (из Maximized и Minimized в обычное) </p>
 
 </div>
 </div>
@@ -433,6 +499,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>После изменении размера </p>
+
 </div>
 </div>
 <a id="a2a5180143e1dfa6a95cb968e8b3d198c" name="a2a5180143e1dfa6a95cb968e8b3d198c"></a>
@@ -457,6 +525,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Пока изменяем размер </p>
 
 </div>
 </div>

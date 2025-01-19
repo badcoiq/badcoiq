@@ -163,9 +163,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a26b3d8a5bb08ee84b5169ccee0de5364" id="r_a26b3d8a5bb08ee84b5169ccee0de5364"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a26b3d8a5bb08ee84b5169ccee0de5364">GetCenter</a> (<a class="el" href="../../d0/d57/bq_basic_types_8h.html#a14c5777338f58dfeca4b462c638eab6a">bqPoint</a> &amp;)</td></tr>
 <tr class="memdesc:a26b3d8a5bb08ee84b5169ccee0de5364"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить центр относительно окна (<a class="el" href="../../d3/dfe/classbq_window.html" title="Системное окно">bqWindow</a>)  <br /></td></tr>
 <tr class="separator:a26b3d8a5bb08ee84b5169ccee0de5364"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b494539965a40e324658b5ff99e7899" id="r_a8b494539965a40e324658b5ff99e7899"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b494539965a40e324658b5ff99e7899">AddGUIWindow</a> (<a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> *)</td></tr>
-<tr class="memdesc:a8b494539965a40e324658b5ff99e7899"><td class="mdescLeft">&#160;</td><td class="mdescRight">Добавить GUI окно.  <br /></td></tr>
-<tr class="separator:a8b494539965a40e324658b5ff99e7899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7841b28045546efa1b44990d51666547" id="r_a7841b28045546efa1b44990d51666547"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7841b28045546efa1b44990d51666547">CreateNewGUIWindow</a> (const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;position, const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;size)</td></tr>
+<tr class="memdesc:a7841b28045546efa1b44990d51666547"><td class="mdescLeft">&#160;</td><td class="mdescRight">Добавить GUI окно.  <br /></td></tr>
+<tr class="separator:a7841b28045546efa1b44990d51666547"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa905fe1103f51bc571986720bd67d1b7" id="r_aa905fe1103f51bc571986720bd67d1b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa905fe1103f51bc571986720bd67d1b7">RebuildGUI</a> ()</td></tr>
 <tr class="memdesc:aa905fe1103f51bc571986720bd67d1b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обновить расположение всех окон и элементов внутри.  <br /></td></tr>
 <tr class="separator:aa905fe1103f51bc571986720bd67d1b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -228,26 +228,6 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8b494539965a40e324658b5ff99e7899" name="a8b494539965a40e324658b5ff99e7899"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b494539965a40e324658b5ff99e7899">&#9670;&#160;</a></span>AddGUIWindow()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void bqWindow::AddGUIWindow </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Добавить GUI окно. </p>
-<p>GUI окна рисуются в системные окна. При создании GUI окна, установка происходит автоматически. Рисование, обновление и перестройка GUI происходит не по общему списку GUI окон как это было ранее, а в соответствии с системными окнами. Далее должно быть проще реализовать рисование во множество системных окон. </p>
-
-</div>
-</div>
 <a id="a1a7253abb43e28c98b382eadd3403c49" name="a1a7253abb43e28c98b382eadd3403c49"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1a7253abb43e28c98b382eadd3403c49">&#9670;&#160;</a></span>BQ_PLACEMENT_ALLOCATOR()</h2>
 
@@ -262,6 +242,30 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7841b28045546efa1b44990d51666547" name="a7841b28045546efa1b44990d51666547"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7841b28045546efa1b44990d51666547">&#9670;&#160;</a></span>CreateNewGUIWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../db/dee/classbq_g_u_i_window.html">bqGUIWindow</a> * bqWindow::CreateNewGUIWindow </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>position</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="../../df/d9e/bq_forward_8h.html#a124de2c221b5ba4927c7bc1b6c12f184">bqVec2f</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Добавить GUI окно. </p>
+<p>GUI окна рисуются в системные окна. При создании GUI окна, установка происходит автоматически. Рисование, обновление и перестройка GUI происходит не по общему списку GUI окон как это было ранее, а в соответствии с системными окнами. Далее должно быть проще реализовать рисование во множество системных окон. </p>
 
 </div>
 </div>

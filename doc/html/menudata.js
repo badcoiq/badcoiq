@@ -38,7 +38,6 @@ var menudata={children:[
 {text:"Functions",url:"namespacemembers_func.html"},
 {text:"Variables",url:"namespacemembers_vars.html",children:[
 {text:"c",url:"namespacemembers_vars.html#index_c"}]},
-{text:"Typedefs",url:"namespacemembers_type.html"},
 {text:"Enumerations",url:"namespacemembers_enum.html"},
 {text:"Enumerator",url:"namespacemembers_eval.html",children:[
 {text:"f",url:"namespacemembers_eval.html#index_f"},

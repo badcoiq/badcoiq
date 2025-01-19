@@ -91,6 +91,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Класс с помощью которого можно узнать о состоянии клавиатуры и мышки  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="../../d2/da4/bq_input_8h_source.html">bqInput.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
@@ -234,15 +237,19 @@ Public Types</h2></td></tr>
 &#160;&#160;<a class="el" href="#a4d986283331757f1b3c3fa60eeb2a373a61f3c839e1a6c01bbbc266ee76866e5a">KEY_end__</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a4d986283331757f1b3c3fa60eeb2a373"><td class="mdescLeft">&#160;</td><td class="mdescRight">keyboard button code  <a href="#a4d986283331757f1b3c3fa60eeb2a373">More...</a><br /></td></tr>
 <tr class="separator:a4d986283331757f1b3c3fa60eeb2a373"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a08a52e5b9f2325d3ebe0ef4a1d5e9984" id="r_a08a52e5b9f2325d3ebe0ef4a1d5e9984"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../df/d09/structbq_input_data.html">bqInputData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08a52e5b9f2325d3ebe0ef4a1d5e9984">GetData</a> ()</td></tr>
+<tr class="memdesc:a08a52e5b9f2325d3ebe0ef4a1d5e9984"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить <a class="el" href="../../df/d09/structbq_input_data.html">bqInputData</a>.  <br /></td></tr>
 <tr class="separator:a08a52e5b9f2325d3ebe0ef4a1d5e9984"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1927a714208a04f0d1b61f5421233b43" id="r_a1927a714208a04f0d1b61f5421233b43"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../d0/d57/bq_basic_types_8h.html#af0de7f305ee48a2d72e0d0aa988a5f25">bqPointf</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1927a714208a04f0d1b61f5421233b43">GetMousePosition</a> ()</td></tr>
+<tr class="memdesc:a1927a714208a04f0d1b61f5421233b43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить позицию курсора  <br /></td></tr>
 <tr class="separator:a1927a714208a04f0d1b61f5421233b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb6c33dc36424645599139b5371f1436" id="r_afb6c33dc36424645599139b5371f1436"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb6c33dc36424645599139b5371f1436">SetMousePosition</a> (<a class="el" href="../../d3/dfe/classbq_window.html">bqWindow</a> *, int32_t x, int32_t y)</td></tr>
+<tr class="memdesc:afb6c33dc36424645599139b5371f1436"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить позицию курсора  <br /></td></tr>
 <tr class="separator:afb6c33dc36424645599139b5371f1436"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf4660f0563599c6cd16f9c81657a3c3" id="r_abf4660f0563599c6cd16f9c81657a3c3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abf4660f0563599c6cd16f9c81657a3c3">SetKeyHit</a> (uint32_t, bool)</td></tr>
 <tr class="separator:abf4660f0563599c6cd16f9c81657a3c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -363,7 +370,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a9b832eb3b154cadde9e3eb4759bf9728" id="r_a9b832eb3b154cadde9e3eb4759bf9728"><td class="memItemLeft" align="right" valign="top">static const uint64_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b832eb3b154cadde9e3eb4759bf9728">GetKeyToBin</a> ()</td></tr>
 <tr class="separator:a9b832eb3b154cadde9e3eb4759bf9728"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Класс с помощью которого можно узнать о состоянии клавиатуры и мышки </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a4d986283331757f1b3c3fa60eeb2a373" name="a4d986283331757f1b3c3fa60eeb2a373"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4d986283331757f1b3c3fa60eeb2a373">&#9670;&#160;</a></span>anonymous enum</h2>
 
@@ -375,6 +384,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>keyboard button code </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a4d986283331757f1b3c3fa60eeb2a373a2e7a0851f505546da23d33a8a63b0780" name="a4d986283331757f1b3c3fa60eeb2a373a2e7a0851f505546da23d33a8a63b0780"></a>KEY_NONE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a4d986283331757f1b3c3fa60eeb2a373aef3f99d6b948b2b9abc6998eca5c91e5" name="a4d986283331757f1b3c3fa60eeb2a373aef3f99d6b948b2b9abc6998eca5c91e5"></a>KEY_BACKSPACE&#160;</td><td class="fielddoc"></td></tr>
@@ -1263,6 +1274,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Получить <a class="el" href="../../df/d09/structbq_input_data.html">bqInputData</a>. </p>
+
 </div>
 </div>
 <a id="a9b832eb3b154cadde9e3eb4759bf9728" name="a9b832eb3b154cadde9e3eb4759bf9728"></a>
@@ -1312,6 +1325,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Получить позицию курсора </p>
 
 </div>
 </div>
@@ -2058,6 +2073,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Установить позицию курсора </p>
 
 </div>
 </div>
