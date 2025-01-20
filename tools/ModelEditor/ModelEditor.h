@@ -134,11 +134,14 @@ class ModelEditor
     bqGUIWindow* m_GUIWindow_mainMenuBar = 0;
     bqArray<bqGUIElement*> m_GUIElements;
 	void Shutdown();
-    void _rebuildGUI();
-    bqGUIButton* _createButton(const bqVec2f& position, const bqVec2f& size, uint32_t id);
+    void GUI_rebuild();
+    bqGUIButton* GUI_createButton(const bqVec2f& position, const bqVec2f& size, uint32_t id);
+    bqGUIPictureBox* GUI_createPictureBox(const bqVec2f& position, const bqVec2f& size, uint32_t id);
 
     bqShortcutManager* m_shortcutMgr = 0;
     void _processShortcuts();
+
+    bqVec4f m_mainMenuBarRect;
 
 public:
 	ModelEditor();

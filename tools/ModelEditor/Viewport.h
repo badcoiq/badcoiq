@@ -1,0 +1,99 @@
+﻿/*
+BSD 2-Clause License
+
+Copyright (c) 2024, badcoiq
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+#ifndef _VIEWPORT_H_
+#define _VIEWPORT_H_
+
+#include "badcoiq/containers/bqArray.h"
+
+/// Viewport в данном случае выступает менеджером к различным viewport
+/// 
+/// Viewport содержит ViewportLayout
+/// ViewportLayout содержит ViewportView
+/// ViewportLayout это макет/планировка
+///  он может содержать 1 или более ViewportView
+/// ViewportView это есть то во что рисуется сцена
+class ViewportView;
+class ViewportLayout;
+class Viewport
+{
+	bqVec4f m_rectangle;
+	bqArray<ViewportLayout*> m_layouts;
+public:
+	Viewport();
+	~Viewport();
+
+	void Rebuild();
+	void Update();
+	void Draw();
+
+};
+
+class ViewportView
+{
+public:
+	ViewportView();
+	~ViewportView();
+
+	enum
+	{
+		type_perspective,
+		type_right,
+		type_left,
+		type_top,
+		type_bottom,
+		type_front,
+		type_back,
+	};
+	uint32_t m_type = type_perspective;
+
+	void Rebuild();
+	void Update();
+	void Draw();
+};
+
+class ViewportLayout
+{
+	bqArray<ViewportView*> m_views;
+public:
+	ViewportLayout(uint32_t type);
+	~ViewportLayout();
+
+	enum
+	{
+		type_full,
+		type_4views
+	};
+	uint32_t m_type = 0;
+
+	void Rebuild();
+	void Update();
+	void Draw();
+};
+
+#endif

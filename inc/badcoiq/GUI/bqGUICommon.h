@@ -67,12 +67,34 @@ protected:
 	bqVec2f m_size;
 	bqVec4f m_buildRectOnCreation;
 
+	bqStringA* m_name = 0;
+	uint32_t m_id = 0;
 public:
 	bqGUICommon(const bqVec2f& position, const bqVec2f& size);
 	virtual ~bqGUICommon();
 
 	BQ_PLACEMENT_ALLOCATOR(bqGUICommon);
 	BQ_DELETED_METHODS(bqGUICommon);
+
+	/// \brief Установить ID.
+	void SetID(uint32_t id) { m_id = id; }
+
+	/// \brief Получить ID.
+	uint32_t GetID() { return m_id; }
+
+	/// \brief Установить имя элемента.
+	/// 
+	/// Для идентификации по имени.
+	/// У элемента может не быть имени. При указании имени
+	/// буджет выделена память. Если передать 0, то
+	/// память освободится.
+	/// При получении имени надо проверять, указывает ли указатель.
+	void SetName(const char*);
+	
+	/// \brief Получить имя элемента.
+	/// 
+	/// Смотри SetName
+	const char* GetName();
 
 	/// \brief Установить позицию. 
 	/// 

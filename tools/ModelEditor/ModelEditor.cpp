@@ -65,6 +65,11 @@ public:
 	}
 };
 
+class GUIPictureBox : public bqGUIPictureBox{public:
+	GUIPictureBox(const bqVec2f& position, const bqVec2f& size) :bqGUIPictureBox(position, size){}
+	virtual ~GUIPictureBox() {}
+};
+
 
 ModelEditor::ModelEditor()
 {
@@ -135,13 +140,20 @@ bool ModelEditor::Init()
 	m_GUIWindow_mainMenuBar->Activate();
 
 
-	auto button = _createButton(bqVec2f(), bqVec2f(32.f, 32.f), GUI_BUTTON_ID::ButtonID_MainMenu);
+	auto button = GUI_createButton(bqVec2f(), bqVec2f(32.f, 32.f), GUI_BUTTON_ID::ButtonID_MainMenu);
 	button->SetDrawBG(true);
 	button->SetTexture(m_GUITexture);
 	button->SetTCoords(0.f, 0.f, 31.f, 31.f);
 	m_GUIWindow_mainMenuBar->AddElement(button);
 
-	_rebuildGUI();
+	auto pictureBox = GUI_createPictureBox(bqVec2f(), bqVec2f(32.f, 32.f), 0);
+	pictureBox->SetDrawBG(true);
+	pictureBox->SetTexture(m_GUITexture);
+	pictureBox->SetTCoords(32.f, 0.f, 36.f, 31.f);
+	pictureBox->SetName();
+	m_GUIWindow_mainMenuBar->AddElement(pictureBox);
+
+	GUI_rebuild();
 
 	m_popupViewportOptions = bqFramework::CreatePopup();
 	m_popupViewportOptions->AddItem(L"Perspective", CommandID_ViewportViewPerspective, L"");
@@ -183,12 +195,16 @@ bool ModelEditor::Init()
 	return true;
 }
 
-bqGUIButton* ModelEditor::_createButton(const bqVec2f& p, const bqVec2f& s, uint32_t id)
+bqGUIButton* ModelEditor::GUI_createButton(const bqVec2f& p, const bqVec2f& s, uint32_t id)
 {
 	GUIButton* newButton = new GUIButton(p,s,id);
 	newButton->SetStyle(&m_GUIStyle);
 	m_GUIElements.push_back(newButton);
 	return newButton;
+}
+
+bqGUIPictureBox* ModelEditor::GUI_createPictureBox(const bqVec2f& position, const bqVec2f& size, uint32_t id)
+{
 }
 
 void ModelEditor::Run()
@@ -253,7 +269,7 @@ void ModelEditor::OnWindowCallback_onSize(bqWindow* w)
 {
 	if (m_gs)
 		m_gs->OnWindowSize();
-	_rebuildGUI();
+	GUI_rebuild();
 }
 
 void ModelEditor::OnWindowCallback_onPopupMenu(bqWindow* w, uint32_t id)
@@ -285,11 +301,16 @@ void ModelEditor::OnExit()
 	m_run = false;
 }
 
-void ModelEditor::_rebuildGUI()
+void ModelEditor::GUI_rebuild()
 {
 	if (m_GUIWindow_mainMenuBar)
 	{
-		m_GUIWindow_mainMenuBar->SetSize((float)m_mainWindow->GetCurrentSize()->x, 32.f);		
+		m_mainMenuBarRect.x = 0.f;
+		m_mainMenuBarRect.y = 0.f;
+		m_mainMenuBarRect.z = (float)m_mainWindow->GetCurrentSize()->x;
+		m_mainMenuBarRect.w = 32.f;
+
+		m_GUIWindow_mainMenuBar->SetSize(m_mainMenuBarRect.z, m_mainMenuBarRect.w);
 		m_GUIWindow_mainMenuBar->Rebuild();
 	}
 }
