@@ -166,7 +166,7 @@ public:
 #endif
 
 #ifdef BQ_WITH_GUI
-	virtual void BeginGUI() = 0;
+	virtual void BeginGUI(bool clear = true) = 0;
 	virtual void EndGUI() = 0;
 	virtual void DrawGUIRectangle(const bqVec4f& rect, const bqColor& color1, const bqColor& color2,
 		bqTexture* t, bqVec4f* UVs) = 0;

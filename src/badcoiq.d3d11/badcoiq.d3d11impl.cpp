@@ -1594,14 +1594,15 @@ void bqGSD3D11::_recalculateGUIMatrix()
 	m_shaderGUIRectangle->m_cbDataFrame.ProjMtx.m_data[3].Set(-1.f, 1.f, 0.5f, 1.0f);
 }
 
-void bqGSD3D11::BeginGUI()
+void bqGSD3D11::BeginGUI(bool clear)
 {
 	const float cc[4] = { 0.f,0.f,0.f,0.f };
 	SetRenderTarget(m_GUIRTT);
 	DisableDepth();
 	EnableBlend();
 	SetViewport(0, 0, (uint32_t)m_windowCurrentSize->x, (uint32_t)m_windowCurrentSize->y);
-	m_d3d11DevCon->ClearRenderTargetView(m_currentTargetView, cc);
+	if(clear)
+		m_d3d11DevCon->ClearRenderTargetView(m_currentTargetView, cc);
 	SetActiveShader(m_shaderGUIRectangle);
 	m_shaderGUIRectangle->SetOnFrame();
 	m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);

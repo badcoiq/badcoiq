@@ -1187,4 +1187,34 @@ void bqGUIWindow::ToTop()
 	}
 }
 
+bqGUIElement* bqGUIWindow::GetGUIElement(const char* n)
+{
+	if (n)
+	{
+		if (m_children.m_head)
+		{
+			auto curr = m_children.m_head;
+			auto last = curr->m_left;
+			while (true)
+			{
+				bqGUIElement* obj = dynamic_cast<bqGUIElement*>(curr->m_data);
+				if (obj)
+				{
+					const char* _name = obj->GetName();
+					if (_name)
+					{
+						if (strcmp(n, _name) == 0)
+							return obj;
+					}
+				}
+
+				if (curr == last)
+					break;
+				curr = curr->m_right;
+			}
+		}
+	}
+	return 0;
+}
+
 #endif

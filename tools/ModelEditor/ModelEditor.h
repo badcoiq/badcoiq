@@ -36,6 +36,7 @@ BQ_LINK_LIBRARY("badcoiq");
 
 #define APP_PRINT_ERROR bqLog::PrintError("%s %s %l\n", BQ_FILE, BQ_FUNCTION, BQ_LINE)
 
+
 class FrameworkCallback : public bqFrameworkCallback
 {
 public:
@@ -120,12 +121,14 @@ enum
 class GUIButton;
 class ModelEditor
 {
+    friend class Viewport;
+
 	FrameworkCallback m_frameworkCallback;
     MainWindowCallback m_mainWindowCallback;
     DrawTextCallback m_drawTextCallback;
 
 	bqGS* m_gs = 0;
-	float* m_deltaTime = 0;
+    float32_t* m_deltaTime = 0;
 
 	bool m_run = true;
 
@@ -142,6 +145,11 @@ class ModelEditor
     void _processShortcuts();
 
     bqVec4f m_mainMenuBarRect;
+    bqVec4f m_editPanelRect;
+    float32_t m_editPanelWidth = 150.f;
+    const float32_t m_editPanelWidthMin = 50.f;
+
+    Viewport* m_viewport = 0;
 
 public:
 	ModelEditor();

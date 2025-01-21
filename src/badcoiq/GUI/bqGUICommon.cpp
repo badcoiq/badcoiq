@@ -70,7 +70,11 @@ void bqGUICommon::SetSize(float x, float y)
 	m_baseRect = m_buildRectOnCreation;
 }
 
-bqGUICommon::~bqGUICommon() {}
+bqGUICommon::~bqGUICommon() 
+{
+	BQ_SAFEDESTROY(m_name);
+}
+
 void bqGUICommon::OnMouseEnter() {}
 void bqGUICommon::OnMouseLeave() {}
 void bqGUICommon::OnClickLMB() {}
@@ -233,6 +237,35 @@ void bqGUICommon::Update()
 		m_flags &= ~bqGUICommon::flag_clickedX1MB;
 	if (bqInput::IsX2MBRelease())
 		m_flags &= ~bqGUICommon::flag_clickedX2MB;
+}
+
+void bqGUICommon::SetName(const char* n)
+{
+	if (n)
+	{
+		if (strlen(n))
+		{
+			if (!m_name)
+				m_name = new bqStringA;
+			m_name->assign(n);
+		}
+	}
+	else
+	{
+		if (m_name)
+		{
+			BQ_SAFEDESTROY(m_name);
+		}
+	}
+}
+
+const char* bqGUICommon::GetName()
+{
+	if (m_name)
+	{
+		return m_name->c_str();
+	}
+	return 0;
 }
 
 #endif

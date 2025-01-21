@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "ModelEditor.h"
+#include "Viewport.h"
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/system/bqPopup.h"
 #include "badcoiq/framework/bqShortcutManager.h"
@@ -140,18 +141,20 @@ bool ModelEditor::Init()
 	m_GUIWindow_mainMenuBar->Activate();
 
 
+	auto pictureBox = GUI_createPictureBox(bqVec2f(), bqVec2f(800.f, 32.f), 0);
+	pictureBox->SetDrawBG(true);
+	pictureBox->SetTexture(m_GUITexture);
+	pictureBox->SetTCoords(32.f, 0.f, 36.f, 31.f);
+	pictureBox->SetName("menubar_bg");
+	m_GUIWindow_mainMenuBar->AddElement(pictureBox);
+
 	auto button = GUI_createButton(bqVec2f(), bqVec2f(32.f, 32.f), GUI_BUTTON_ID::ButtonID_MainMenu);
 	button->SetDrawBG(true);
 	button->SetTexture(m_GUITexture);
 	button->SetTCoords(0.f, 0.f, 31.f, 31.f);
 	m_GUIWindow_mainMenuBar->AddElement(button);
 
-	auto pictureBox = GUI_createPictureBox(bqVec2f(), bqVec2f(32.f, 32.f), 0);
-	pictureBox->SetDrawBG(true);
-	pictureBox->SetTexture(m_GUITexture);
-	pictureBox->SetTCoords(32.f, 0.f, 36.f, 31.f);
-	pictureBox->SetName();
-	m_GUIWindow_mainMenuBar->AddElement(pictureBox);
+	m_viewport = new Viewport;
 
 	GUI_rebuild();
 
@@ -197,14 +200,18 @@ bool ModelEditor::Init()
 
 bqGUIButton* ModelEditor::GUI_createButton(const bqVec2f& p, const bqVec2f& s, uint32_t id)
 {
-	GUIButton* newButton = new GUIButton(p,s,id);
-	newButton->SetStyle(&m_GUIStyle);
-	m_GUIElements.push_back(newButton);
-	return newButton;
+	GUIButton* e = new GUIButton(p,s,id);
+	e->SetStyle(&m_GUIStyle);
+	m_GUIElements.push_back(e);
+	return e;
 }
 
-bqGUIPictureBox* ModelEditor::GUI_createPictureBox(const bqVec2f& position, const bqVec2f& size, uint32_t id)
+bqGUIPictureBox* ModelEditor::GUI_createPictureBox(const bqVec2f& p, const bqVec2f& s, uint32_t id)
 {
+	GUIPictureBox* e = new GUIPictureBox(p, s);
+	e->SetStyle(&m_GUIStyle);
+	m_GUIElements.push_back(e);
+	return e;
 }
 
 void ModelEditor::Run()
@@ -215,9 +222,10 @@ void ModelEditor::Run()
 		m_mainWindow->UpdateGUI();
 
 		_processShortcuts();
-		
+		m_viewport->Update();
+		m_viewport->Draw();
 
-		m_gs->BeginGUI();
+		m_gs->BeginGUI(false);
 		m_mainWindow->DrawGUI(m_gs);
 
 		m_gs->SetScissorRect(bqVec4f(0.f, 0.f,
@@ -303,16 +311,34 @@ void ModelEditor::OnExit()
 
 void ModelEditor::GUI_rebuild()
 {
+	m_mainMenuBarRect.x = 0.f;
+	m_mainMenuBarRect.y = 0.f;
+	m_mainMenuBarRect.z = (float)m_mainWindow->GetCurrentSize()->x;
+	m_mainMenuBarRect.w = 32.f;
+
 	if (m_GUIWindow_mainMenuBar)
 	{
-		m_mainMenuBarRect.x = 0.f;
-		m_mainMenuBarRect.y = 0.f;
-		m_mainMenuBarRect.z = (float)m_mainWindow->GetCurrentSize()->x;
-		m_mainMenuBarRect.w = 32.f;
+		auto el = m_GUIWindow_mainMenuBar->GetGUIElement("menubar_bg");
+		if (el)
+		{
+			bqGUIPictureBox* pb = dynamic_cast<bqGUIPictureBox*>(el);
+			if (pb)
+			{
+				pb->SetSize(m_mainWindow->GetCurrentSize()->x, pb->GetSize().y);
+			}
+		}
 
 		m_GUIWindow_mainMenuBar->SetSize(m_mainMenuBarRect.z, m_mainMenuBarRect.w);
 		m_GUIWindow_mainMenuBar->Rebuild();
 	}
+
+	m_editPanelRect.x = 0.f;
+	m_editPanelRect.y = m_mainMenuBarRect.w;
+	m_editPanelRect.z = m_editPanelWidth;
+	m_editPanelRect.w = m_mainWindow->GetCurrentSize()->y;
+
+	if(m_viewport)
+		m_viewport->Rebuild();
 }
 
 void ModelEditor::_processShortcuts()

@@ -162,8 +162,6 @@ public:
 	}
 	virtual bool IsDrawBG() { return (m_flags & flag_drawBG); }
 
-	uint32_t m_id = 0;
-
 	/// \brief Вычислить m_baseRect и прочие ...Rect
 	/// Надо вызывать это после создания GUI и после того как размер окна изменится
 	virtual void Rebuild() = 0;

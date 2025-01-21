@@ -162,6 +162,9 @@ public:
 	/// \brief Установить окно поверх других окон.
 	void ToTop();
 
+	/// \brief Получить bqGUIElement по имени
+	bqGUIElement* GetGUIElement(const char*);
+
 	// Не надо. потому что наследуется bqHierarchy
 	// bqGUIElement* m_rootElement = 0;
 

@@ -178,7 +178,7 @@ public:
 	virtual void SetMainTargetSize(const bqPoint&) override;
 
 #ifdef BQ_WITH_GUI
-	virtual void BeginGUI() override;
+	virtual void BeginGUI(bool clear) override;
 	virtual void EndGUI() override;
 	virtual void DrawGUIRectangle(const bqVec4f& rect, const bqColor& color1, const bqColor& color2,
 		bqTexture* t, bqVec4f* UVs) override;
