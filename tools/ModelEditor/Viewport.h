@@ -42,8 +42,10 @@ class ViewportView;
 class ViewportLayout;
 class Viewport
 {
+	friend class ViewportLayout;
 	bqVec4f m_rectangle;
 	bqArray<ViewportLayout*> m_layouts;
+	ViewportLayout* m_activeLayout = 0;
 public:
 	Viewport();
 	~Viewport();
@@ -56,6 +58,8 @@ public:
 
 class ViewportView
 {
+	friend class ViewportLayout;
+	bqVec4f m_rectangle;
 public:
 	ViewportView();
 	~ViewportView();
@@ -79,9 +83,10 @@ public:
 
 class ViewportLayout
 {
+	Viewport* m_viewport = 0;
 	bqArray<ViewportView*> m_views;
 public:
-	ViewportLayout(uint32_t type);
+	ViewportLayout(Viewport* viewport, uint32_t type);
 	~ViewportLayout();
 
 	enum

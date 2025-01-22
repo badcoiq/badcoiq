@@ -122,6 +122,7 @@ class GUIButton;
 class ModelEditor
 {
     friend class Viewport;
+    friend class ViewportView;
 
 	FrameworkCallback m_frameworkCallback;
     MainWindowCallback m_mainWindowCallback;
