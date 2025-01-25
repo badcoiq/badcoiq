@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Viewport.h"
 
 #include "badcoiq/gs/bqGS.h"
+#include "badcoiq/scene/bqCamera.h"
+#include "badcoiq/input/bqInputEx.h"
 
 extern ModelEditor* g_app;
 
@@ -93,16 +95,17 @@ ViewportLayout::ViewportLayout(Viewport* viewport, uint32_t type)
 	default:
 	case ViewportLayout::type_full:
 	{
-		m_views.push_back(new ViewportView);
+		m_views.push_back(new ViewportView(this));
 	}break;
 	case ViewportLayout::type_4views:
 	{
-		m_views.push_back(new ViewportView);
-		m_views.push_back(new ViewportView);
-		m_views.push_back(new ViewportView);
-		m_views.push_back(new ViewportView);
+		m_views.push_back(new ViewportView(this));
+		m_views.push_back(new ViewportView(this));
+		m_views.push_back(new ViewportView(this));
+		m_views.push_back(new ViewportView(this));
 	}break;
 	}
+	m_activeView = m_views.m_data[0];
 	m_type = type;
 }
 
@@ -160,6 +163,11 @@ void ViewportLayout::Rebuild()
 		m_views.m_data[3]->m_rectangle.y =
 			m_views.m_data[1]->m_rectangle.w + border;
 
+		m_resizeRect.x = m_views.m_data[0]->m_rectangle.z - 3.f;
+		m_resizeRect.y = m_views.m_data[0]->m_rectangle.w - 3.f;
+		m_resizeRect.z = m_resizeRect.x + 6.f;
+		m_resizeRect.w = m_resizeRect.y + 6.f;
+
 	}break;
 	}
 
@@ -183,29 +191,149 @@ void ViewportLayout::Draw()
 	{
 		m_views.m_data[i]->Draw();
 	}
+	
+	g_app->m_gs->BeginGUI(false);
+	g_app->m_gs->SetScissorRect(m_resizeRect);
+	g_app->m_gs->DrawGUIRectangle(m_resizeRect, bq::ColorBlack, bq::ColorBlack, 0, 0);
+	g_app->m_gs->EndGUI();
+
 }
 
 
-ViewportView::ViewportView()
+ViewportView::ViewportView(ViewportLayout* l)
+	: m_layout(l)
 {
+	m_camera = new bqCamera;
+	m_camera->SetType(bqCamera::Type::Editor);
+	m_camera->EditorReset();
+	m_camera->m_editorCameraType = bqCamera::CameraEditorType::Perspective;
+	m_camera->m_position = bqVec3(0.f, 0.f, 0.f);
+	m_camera->m_positionPlatform.w = 20.f;
+	//m_camera->Rotate(0, 90, 0.f);
+	m_camera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
+	m_camera->Update(0.f);
+	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
+
+	bqTextureInfo ti;
+	m_rtt = g_app->m_gs->CreateRTT(bqPoint(2,2), ti);
 }
 
 ViewportView::~ViewportView()
 {
+	BQ_SAFEDESTROY(m_rtt);
+	BQ_SAFEDESTROY(m_camera);
 }
 
 void ViewportView::Rebuild()
 {
+	m_camera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
+	m_camera->Update(0.f);
+	BQ_SAFEDESTROY(m_rtt);
+	bqTextureInfo ti;
+	m_rtt = g_app->m_gs->CreateRTT(bqPoint(m_rectangle.z - m_rectangle.x, m_rectangle.w - m_rectangle.y), ti);
 }
 
 void ViewportView::Update()
 {
+	m_camera->Update(0.1);
+	m_camera->UpdateFrustum();
+
+	if (bqMath::PointInRect(bqInput::GetMousePosition(), m_rectangle))
+	{
+		if (bqInput::IsLMBHit())
+		{
+			SetActiveView();
+		}
+
+		if (bqInput::IsRMBHit())
+		{
+			SetActiveView();
+		}
+
+		if (bqInput::IsMMBHit())
+		{
+			SetActiveView();
+		}
+
+		if (bqInput::IsX1MBHit())
+		{
+			SetActiveView();
+		}
+
+		if (bqInput::IsX2MBHit())
+		{
+			SetActiveView();
+		}
+	}
+}
+
+void ViewportView::SetActiveView()
+{
+	m_layout->m_activeView = this;
 }
 
 void ViewportView::Draw()
 {
+	bool isActiveView = (m_layout->m_activeView == this);
+	bqFramework::SetMatrix(bqMatrixType::View, &m_camera->m_viewMatrix);
+	bqFramework::SetMatrix(bqMatrixType::Projection, &m_camera->m_projectionMatrix);
+	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
+
+	g_app->m_gs->SetRenderTarget(m_rtt);
+	g_app->m_gs->SetScissorRect(bqVec4f(0.f, 0.f,
+		(float)m_rtt->GetInfo().m_imageInfo.m_width,
+		(float)m_rtt->GetInfo().m_imageInfo.m_height));
+	g_app->m_gs->SetViewport(0.f, 0.f,
+		(float)m_rtt->GetInfo().m_imageInfo.m_width,
+		(float)m_rtt->GetInfo().m_imageInfo.m_height);
+
+	//g_app->m_gs->BeginDraw();
+	g_app->m_gs->ClearDepth();
+	_DrawScene(this);
+//	g_app->m_gs->EndDraw();
+
+
+	g_app->m_gs->SetRenderTargetDefault();
+	/*g_app->m_gs->SetViewport(0.f, 0.f,
+		(float)m_rectangle.z- m_rectangle.x,
+		(float)m_rectangle.w - m_rectangle.y);*/
 	g_app->m_gs->BeginGUI(false);
+	if (isActiveView)
+	{
+		auto rectangle_copy = m_rectangle;
+		rectangle_copy.x -= 1.f;
+		rectangle_copy.y -= 1.f;
+		rectangle_copy.z += 1.f;
+		rectangle_copy.w += 1.f;
+
+		g_app->m_gs->SetScissorRect(rectangle_copy);
+		g_app->m_gs->DrawGUIRectangle(rectangle_copy, bq::ColorRed, bq::ColorRed, 0, 0);
+	}
 	g_app->m_gs->SetScissorRect(m_rectangle);
-	g_app->m_gs->DrawGUIRectangle(m_rectangle, bq::ColorLightSalmon, bq::ColorLightSalmon, 0, 0);
+
+	bqColor bgcolor = 0xFFF4F4EE;
+
+	g_app->m_gs->DrawGUIRectangle(m_rectangle, bgcolor, bgcolor, 0, 0);
+	g_app->m_gs->DrawGUIRectangle(m_rectangle, bq::ColorWhite, bq::ColorWhite, m_rtt, 0);
 	g_app->m_gs->EndGUI();
+
+	
 }
+
+void ViewportView::_DrawScene(ViewportView* view)
+{
+	_DrawGrid(14.f, m_camera->m_position.y);
+}
+
+void ViewportView::_DrawGrid(int gridSize, float positionCameraY)
+{
+	g_app->m_gs->SetShader(bqShaderType::Line3D, 0);
+	bqColor gridColor = bq::ColorLightGrey;
+	if (positionCameraY < 0.f)	gridColor = bq::ColorBlack;
+
+	for (int i = 0, z = 7; i <= gridSize; ++i, --z) {
+		g_app->m_gs->DrawLine3D(bqVec3(((float)-gridSize) * 0.5f, 0.f, -z), bqVec3(((float)gridSize) * 0.5f, 0.f, -z), gridColor);
+		g_app->m_gs->DrawLine3D(bqVec3(-z, 0.f, ((float)-gridSize) * 0.5f), bqVec3(-z, 0.f, ((float)gridSize) * 0.5f), gridColor);
+	}
+}
+

@@ -59,9 +59,17 @@ public:
 class ViewportView
 {
 	friend class ViewportLayout;
+	friend class ModelEditor;
+
+	void _DrawScene(ViewportView* view);
+	void _DrawGrid(int gridSize, float positionCameraY);
+
 	bqVec4f m_rectangle;
+	ViewportLayout* m_layout = 0;
+	bqCamera* m_camera = 0;
+	bqTexture* m_rtt = 0;
 public:
-	ViewportView();
+	ViewportView(ViewportLayout*);
 	~ViewportView();
 
 	enum
@@ -79,12 +87,16 @@ public:
 	void Rebuild();
 	void Update();
 	void Draw();
+	void SetActiveView();
 };
 
 class ViewportLayout
 {
+	friend class ViewportView;		
 	Viewport* m_viewport = 0;
 	bqArray<ViewportView*> m_views;
+	ViewportView* m_activeView = 0;
+	bqVec4f m_resizeRect;
 public:
 	ViewportLayout(Viewport* viewport, uint32_t type);
 	~ViewportLayout();

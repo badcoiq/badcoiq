@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/system/bqPopup.h"
 #include "badcoiq/framework/bqShortcutManager.h"
+#include "badcoiq/scene/bqCamera.h"
 
 ModelEditor* g_app = 0;
 
@@ -123,7 +124,7 @@ bool ModelEditor::Init()
 		bqFramework::GetPath("../data/model_editor/gui.png").c_str(),
 		false, false);
 	
-	m_gs->SetClearColor(0.73f, 0.73f, 0.73f, 1.f);
+	m_gs->SetClearColor(0.89f, 0.89f, 0.89f, 1.f);
 
 	bqFramework::InitDefaultFonts(m_gs);
 	m_drawTextCallback.SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
@@ -221,6 +222,10 @@ void ModelEditor::Run()
 		bqFramework::Update();
 		m_mainWindow->UpdateGUI();
 
+		//m_gs->BeginDraw();
+		//m_gs->ClearAll();
+		//m_gs->EndDraw();
+
 		_processShortcuts();
 		m_viewport->Update();
 		m_viewport->Draw();
@@ -230,11 +235,12 @@ void ModelEditor::Run()
 
 		m_gs->SetScissorRect(bqVec4f(0.f, 0.f,
 			(float)m_mainWindow->GetCurrentSize()->x, (float)m_mainWindow->GetCurrentSize()->y));
-	//	m_gs->DrawGUIRectangle(bqVec4f(0.f, 0.f, 100.f, 20.f), bq::ColorRed, bq::ColorYellow, 0, 0);
-	//	m_gs->DrawGUIText(U"Hello!!!", 9, bqVec2f(10.f), &m_drawTextCallback);
+	////	m_gs->DrawGUIRectangle(bqVec4f(0.f, 0.f, 100.f, 20.f), bq::ColorRed, bq::ColorYellow, 0, 0);
+	////	m_gs->DrawGUIText(U"Hello!!!", 9, bqVec2f(10.f), &m_drawTextCallback);
 
 		m_gs->EndGUI();
 
+		m_gs->SetRenderTargetDefault();
 		m_gs->BeginDraw();
 		m_gs->ClearAll();
 		m_gs->EndDraw();
@@ -346,3 +352,4 @@ void ModelEditor::_processShortcuts()
 	if (m_shortcutMgr->IsShortcutActive(CommandID_MainMenuExit))OnExit();
 	//if (m_shortcutMgr->IsShortcutActive(CommandID_MainMenuExit))OnExit();
 }
+

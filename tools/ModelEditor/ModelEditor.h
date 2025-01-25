@@ -122,6 +122,7 @@ class GUIButton;
 class ModelEditor
 {
     friend class Viewport;
+    friend class ViewportLayout;
     friend class ViewportView;
 
 	FrameworkCallback m_frameworkCallback;
@@ -163,7 +164,7 @@ public:
 	void OnWindowCallback_onSize(bqWindow*);
     void OnWindowCallback_onPopupMenu(bqWindow* w, uint32_t id);
     void OnExit();
-    
+
     bqPopup* m_popupViewportOptions = 0;
     bqPopup* m_popupMainMenuOptions = 0;
     bqWindow* m_mainWindow = 0;

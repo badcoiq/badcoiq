@@ -78,8 +78,8 @@ bool ExampleBasicsRotations::Init()
 {
 	m_camera = new bqCamera();
 	m_camera->m_position = bqVec3(3.f, 10.f, 8.f);
-	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
 	m_camera->Rotate(0.f, -45.f, 0.f);
+	m_camera->m_aspect = (float)m_app->GetWindow()->GetCurrentSize()->x / (float)m_app->GetWindow()->GetCurrentSize()->y;
 	m_camera->SetType(bqCamera::Type::Perspective);
 	m_camera->Update(0.f);
 	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();

@@ -66,6 +66,7 @@ enum class bqCursorType : uint32_t;
 
 #ifdef BQ_WITH_SCENE
 class bqSceneObject;
+class bqCamera;
 #endif
 
 #ifdef BQ_WITH_POPUP
