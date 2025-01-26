@@ -27,7 +27,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
-#ifdef BQ_WITH_MESH
 #include "badcoiq/geometry/bqRay.h"
 #include "badcoiq/geometry/bqTriangle.h"
 
@@ -518,4 +517,3 @@ bool bqTriangle::TriangleIntersect(bqTriangle* t)
 //{
 //}
 
-#endif

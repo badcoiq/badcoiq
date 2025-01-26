@@ -30,8 +30,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_GPUMESH_H__
 #define __BQ_GPUMESH_H__
 
-#ifdef BQ_WITH_MESH
-
 #include "badcoiq/common/bqResourceCache.h"
 
 #include "badcoiq/geometry/bqMesh.h"
@@ -59,6 +57,5 @@ public:
 	virtual bqGPUMesh* Load(const char* path) override;
 };
 
-#endif
 #endif
 

@@ -30,8 +30,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_SKELETON_H__
 #define __BQ_SKELETON_H__
 
-#ifdef BQ_WITH_MESH
-
 #include "badcoiq/containers/bqArray.h"
 #include "badcoiq/math/bqMath.h"
 
@@ -278,6 +276,5 @@ public:
 };
 
 
-#endif
 #endif
 

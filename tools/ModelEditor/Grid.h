@@ -62,7 +62,7 @@ class ViewportView
 	friend class ModelEditor;
 
 	void _DrawScene(ViewportView* view);
-	void _DrawGrid(int gridSize);
+	void _DrawGrid(int gridSize, float positionCameraY);
 
 	bqVec4f m_rectangle;
 	ViewportLayout* m_layout = 0;

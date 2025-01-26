@@ -32,10 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <d3d11.h>
 
-#ifdef BQ_WITH_MESH
 #include "badcoiq/geometry/bqMesh.h"
-#endif
-
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/gs/bqShader.h"
 #include "badcoiq/math/bqMath.h"
@@ -44,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "shader/badcoiq.d3d11.shader.h"
 #include "shader/badcoiq.d3d11.shader.Line3D.h"
 #include "shader/badcoiq.d3d11.shader.Standart.h"
+#include "shader/badcoiq.d3d11.shader.lineModel.h"
 #include "shader/badcoiq.d3d11.shader.Sprite.h"
 #include "shader/badcoiq.d3d11.shader.EndDraw.h"
 #include "shader/badcoiq.d3d11.shader.GUIRectangle.h"
@@ -60,6 +58,7 @@ class bqGSD3D11 : public bqGS
 	friend class bqD3D11ShaderLine3D;
 	friend class bqD3D11ShaderStandart;
 	friend class bqD3D11ShaderStandartSkinned;
+	friend class bqD3D11ShaderLineModel;
 	friend class bqD3D11ShaderEndDraw;
 	friend class bqD3D11ShaderGUIRectangle;
 #ifdef BQ_WITH_SPRITE
@@ -71,6 +70,7 @@ class bqGSD3D11 : public bqGS
 	bqD3D11ShaderLine3D* m_shaderLine3D = 0;
 	bqD3D11ShaderStandart* m_shaderStandart = 0;
 	bqD3D11ShaderStandartSkinned* m_shaderStandartSk = 0;
+	bqD3D11ShaderLineModel* m_shaderLineModel = 0;
 	bqD3D11ShaderEndDraw* m_shaderEndDraw = 0;
 	bqD3D11ShaderGUIRectangle* m_shaderGUIRectangle = 0;
 #ifdef BQ_WITH_SPRITE
@@ -101,9 +101,8 @@ class bqGSD3D11 : public bqGS
 	// bool m_vsync = true; // можно же сделать по другому.
 	UINT m_vsync = 1;       // m_SwapChain->Present(m_vsync, 0);
 
-#ifdef BQ_WITH_MESH
+
 	bqGSD3D11Mesh* m_currMesh = 0;
-#endif
 
 	bqMaterial* m_currMaterial = 0;
 	bqGSD3D11Texture* m_whiteTexture = 0;
@@ -146,11 +145,9 @@ public:
 	virtual void DrawLine3D(const bqVec3& p1, const bqVec3& p2, const bqColor& c) override;
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) override;
 
-#ifdef BQ_WITH_MESH
+
 	virtual bqGPUMesh* CreateMesh(bqMesh* m) override;
 	virtual void SetMesh(bqGPUMesh* m) override;
-#endif
-
 	virtual void SetMaterial(bqMaterial* m) override;
 	virtual void Draw() override;
 	virtual void SetRasterizerState(bqGSRasterizerState) override;
@@ -209,6 +206,7 @@ public:
 
 	bool CreateVertexShader(ID3D10Blob* shaderBlob, ID3D11VertexShader** vs);
 	bool CreateVertexShaderInputLayout(ID3D10Blob* shaderBlob, ID3D11InputLayout**);
+	bool CreateVertexShaderInputLayoutLineModel(ID3D10Blob* shaderBlob, ID3D11InputLayout**);
 	bool CreatePixelShader(ID3D10Blob* shaderBlob, ID3D11PixelShader** ps);
 
 	bool CreateShaders(

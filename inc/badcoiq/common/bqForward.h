@@ -84,7 +84,6 @@ class bqShortcutManager;
 class bqGS;
 #endif
 
-#ifdef BQ_WITH_MESH
 class bqPolygonMeshPolygon;
 class bqMeshPolygonCreator;
 class bqPolygonMeshControlPoint;
@@ -100,7 +99,6 @@ class bqSkeletonAnimation;
 class bqMDL;
 class bqSkeletonAnimationObject;
 class bqMDLCollision;
-#endif
 
 #ifdef BQ_WITH_ARCHIVE
 struct bqCompressionInfo;

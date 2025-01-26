@@ -79,9 +79,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Поддержка сжатия и расжатия данных и прочих связанных вещей
 #define BQ_WITH_ARCHIVE
 
-/// Поддержка 3Д моделей
-#define BQ_WITH_MESH
-
 /// !!! ДОЛЖНЫ БЫТЬ WITH МАКРОСЫ БОЛЕЕ ГЛОБАЛЬНЫЕ
 ///     НАПРИМЕР
 ///			BQ_WITH_DESKTOP - всё что связано с desktop приложением

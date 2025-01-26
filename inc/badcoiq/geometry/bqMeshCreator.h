@@ -30,8 +30,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_MESHCREATOR_H__
 #define __BQ_MESHCREATOR_H__
 
-#ifdef BQ_WITH_MESH
-
 #include "badcoiq/geometry/bqPolygonMesh.h"
 
 /// Класс для ручного создания 3Д моделей
@@ -87,6 +85,5 @@ public:
 	bqPolygonMeshPolygon* DropPolygon();
 };
 
-#endif
 #endif
 

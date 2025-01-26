@@ -39,7 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/gs/bqMaterial.h"
 #include "badcoiq/gs/bqTexture.h"
 
-// Используется при рисовании
+/// Используется при рисовании
 enum class bqGSRasterizerState
 {
 	SolidCull,     // обычная растеризация + не рисовать заднюю сторону треугольника
@@ -68,15 +68,19 @@ public:
 	bqGS() {}
 	virtual ~bqGS() {}
 
-	// Инициализировать GPU вещи
-	// `parameters` опциональны, зависит от запускаемой библиотеки
+	/// Инициализировать GPU вещи
+	/// `parameters` опциональны, зависит от запускаемой библиотеки
 	virtual bool Init(bqWindow*, const char* parameters) = 0;
+
+	/// Завершить работу, освободить память
 	virtual void Shutdown() = 0;
 
 	/// Получить имя
 	virtual bqString GetName() = 0;
+
 	/// Получить остальную информацию в виде текста
 	virtual bqString GetTextInfo() = 0;
+
 	/// Получить ID
 	virtual bqUID GetUID() = 0;
 
@@ -85,14 +89,19 @@ public:
 
 	/// Вызвать перед рисованием
 	virtual void BeginDraw() = 0;
+
 	/// Очистить буфер с глубиной
 	virtual void ClearDepth() = 0;
+
 	/// Очистить фон (закрасить фон)
 	virtual void ClearColor() = 0;
+
 	/// ClearDepth и ClearColor
 	virtual void ClearAll() = 0;
+
 	/// Вызвать после завершения рисования
 	virtual void EndDraw() = 0;
+
 	/// Вызвать после EndDraw
 	virtual void SwapBuffers() = 0;
 
@@ -104,13 +113,11 @@ public:
 	/// Если bqShaderType::User то необходимо указать индекс шейдера
 	virtual void SetShader(bqShaderType, uint32_t userShaderIndex) = 0;
 
-#ifdef BQ_WITH_MESH
 	/// Создать GPU модель для рисования
 	virtual bqGPUMesh* CreateMesh(bqMesh* m) = 0;
 
 	/// Установить текущую модель
 	virtual void SetMesh(bqGPUMesh* m) = 0;
-#endif
 
 	/// Установить текущий материал
 	virtual void SetMaterial(bqMaterial* m) = 0;
@@ -118,9 +125,9 @@ public:
 	/// Установить как рисовать треугольники
 	virtual void SetRasterizerState(bqGSRasterizerState) = 0;
 
-	/// Нарисовать
+	/// Нарисовать mesh ранее установленный через SetMesh 
 	virtual void Draw() = 0;
-
+	
 #ifdef BQ_WITH_IMAGE
 	
 	/// Создать текстуру

@@ -88,18 +88,14 @@ public:
 	bqArray<bqTexture*> m_texturesForDestroy;
 #endif
 
-#ifdef BQ_WITH_MESH
 	std::vector<bqMeshLoader*> m_meshLoaders;
-#endif
 
 
 	bqStringA m_fileExistString;
 	bqStringA m_fileSizeString;
 
 	bqMat4* m_matrixPtrs[(uint32_t)bqMatrixType::_count];
-#ifdef BQ_WITH_MESH
 	bqMat4 m_matrixSkinned[255];
-#endif
 
 #ifdef BQ_WITH_ARCHIVE
 	// Архивы, сжатие

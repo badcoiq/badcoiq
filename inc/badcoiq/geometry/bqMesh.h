@@ -32,26 +32,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_MESH_H__
 /// \endcond
 
-#ifdef BQ_WITH_MESH
-
 #include "badcoiq/geometry/bqAABB.h"
 
-/// Тип вершины
+/// \brief Тип вершины
 enum class bqMeshVertexType : uint32_t
 {
 	Null, // 0
 	Triangle,
 	// TriangleSkinned, // пока лишнее. всё работает норм благодоря m_stride
+
+	Line,
 };
 
-/// Тип индекса
+/// \brief Тип индекса
 enum class bqMeshIndexType : uint32_t
 {
 	u16, /// uint16_t
 	u32  /// uint32_t
 };
 
-/// Дефолтная вершина
+/// \brief Дефолтная вершина
 struct bqVertexTriangle
 {
 	bqVec3f Position;
@@ -62,7 +62,7 @@ struct bqVertexTriangle
 	bqVec4f Color;
 };
 
-/// Дефолтная вершина + данные для скининга
+/// \brief Дефолтная вершина + данные для скининга
 struct bqVertexTriangleSkinned
 {
 	bqVertexTriangle BaseData;
@@ -70,7 +70,14 @@ struct bqVertexTriangleSkinned
 	bqVec4f Weights;
 };
 
-/// Информация о модели
+/// \brief Для модели рисуемая как линия
+struct bqVertexLine
+{
+	bqVec3f Position;
+	bqVec4f Color;
+};
+
+/// \brief Информация о модели
 struct bqMeshInfo
 {
 	bqMeshVertexType m_vertexType = bqMeshVertexType::Triangle;
@@ -82,7 +89,7 @@ struct bqMeshInfo
 	bqAabb m_aabb;
 };
 
-/// 3Д моделька
+/// \brief 3Д моделька
 class bqMesh
 {
 	uint8_t* m_vertices = nullptr;
@@ -120,6 +127,5 @@ public:
 	bqVertexTriangle* GetVertex(uint32_t index);
 };
 
-#endif
 #endif
 

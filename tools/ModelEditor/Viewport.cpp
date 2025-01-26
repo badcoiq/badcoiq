@@ -95,14 +95,14 @@ ViewportLayout::ViewportLayout(Viewport* viewport, uint32_t type)
 	default:
 	case ViewportLayout::type_full:
 	{
-		m_views.push_back(new ViewportView(this));
+		m_views.push_back(new ViewportView(this, ViewportView::type_perspective));
 	}break;
 	case ViewportLayout::type_4views:
 	{
-		m_views.push_back(new ViewportView(this));
-		m_views.push_back(new ViewportView(this));
-		m_views.push_back(new ViewportView(this));
-		m_views.push_back(new ViewportView(this));
+		m_views.push_back(new ViewportView(this, ViewportView::type_perspective));
+		m_views.push_back(new ViewportView(this, ViewportView::type_top));
+		m_views.push_back(new ViewportView(this, ViewportView::type_left));
+		m_views.push_back(new ViewportView(this, ViewportView::type_front));
 	}break;
 	}
 	m_activeView = m_views.m_data[0];
@@ -200,13 +200,17 @@ void ViewportLayout::Draw()
 }
 
 
-ViewportView::ViewportView(ViewportLayout* l)
+ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 	: m_layout(l)
 {
+
 	m_camera = new bqCamera;
 	m_camera->SetType(bqCamera::Type::Editor);
 	m_camera->EditorReset();
-	m_camera->m_editorCameraType = bqCamera::CameraEditorType::Perspective;
+	SetCameraType(type);
+
+	
+
 	m_camera->m_position = bqVec3(0.f, 0.f, 0.f);
 	m_camera->m_positionPlatform.w = 20.f;
 	//m_camera->Rotate(0, 90, 0.f);
@@ -315,6 +319,20 @@ void ViewportView::Draw()
 
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bgcolor, bgcolor, 0, 0);
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bq::ColorWhite, bq::ColorWhite, m_rtt, 0);
+
+	const char32_t* viewportTypeText = U"Perspective";
+	switch (m_type)
+	{
+	case type_back:viewportTypeText = U"Back"; break;
+	case type_bottom:viewportTypeText = U"Bottom"; break;
+	case type_front:viewportTypeText = U"Front"; break;
+	case type_left:viewportTypeText = U"Left"; break;
+	case type_right:viewportTypeText = U"Right"; break;
+	case type_top:viewportTypeText = U"Top"; break;
+	}
+
+	g_app->m_gs->DrawGUIText(viewportTypeText, bqStringLen(viewportTypeText), bqVec2f(m_rectangle.x, m_rectangle.y), &g_app->m_drawTextCallback);
+
 	g_app->m_gs->EndGUI();
 
 	
@@ -322,18 +340,102 @@ void ViewportView::Draw()
 
 void ViewportView::_DrawScene(ViewportView* view)
 {
-	_DrawGrid(14.f, m_camera->m_position.y);
+	_DrawGrid(14.f);
 }
 
-void ViewportView::_DrawGrid(int gridSize, float positionCameraY)
+void ViewportView::_DrawGrid(int gridSize)
 {
-	g_app->m_gs->SetShader(bqShaderType::Line3D, 0);
-	bqColor gridColor = bq::ColorLightGrey;
-	if (positionCameraY < 0.f)	gridColor = bq::ColorBlack;
+	static bqMat4 WVP;
+	WVP = m_camera->m_projectionMatrix * m_camera->m_viewMatrix * bqEmptyMatrix;
+	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
 
-	for (int i = 0, z = 7; i <= gridSize; ++i, --z) {
-		g_app->m_gs->DrawLine3D(bqVec3(((float)-gridSize) * 0.5f, 0.f, -z), bqVec3(((float)gridSize) * 0.5f, 0.f, -z), gridColor);
-		g_app->m_gs->DrawLine3D(bqVec3(-z, 0.f, ((float)-gridSize) * 0.5f), bqVec3(-z, 0.f, ((float)gridSize) * 0.5f), gridColor);
+	g_app->m_gs->SetShader(bqShaderType::LineModel, 0);
+	
+	bool isCameraLowerThanWorld = false;
+	if (m_camera->m_position.y < 0.f)
+		isCameraLowerThanWorld = true;
+
+	switch (m_type)
+	{
+	case type_perspective:
+	{
+		/*bqColor gridColor = bq::ColorLightGrey;
+		if (positionCameraY < 0.f)
+			gridColor = bq::ColorBlack;
+
+		for (int i = 0, z = 7; i <= gridSize; ++i, --z) 
+		{
+			g_app->m_gs->DrawLine3D(bqVec3(((float)-gridSize) * 0.5f, 0.f, -z), bqVec3(((float)gridSize) * 0.5f, 0.f, -z), gridColor);
+			g_app->m_gs->DrawLine3D(bqVec3(-z, 0.f, ((float)-gridSize) * 0.5f), bqVec3(-z, 0.f, ((float)gridSize) * 0.5f), gridColor);
+		}
+
+		if (positionCameraY > 0.f)
+		{
+			g_app->m_gs->DrawLine3D(bqVec3(((float)-gridSize) * 0.5f, 0.f, 0), bqVec3(((float)gridSize) * 0.5f, 0.f, 0), bq::ColorRed);
+			g_app->m_gs->DrawLine3D(bqVec3(0, 0.f, ((float)-gridSize) * 0.5f), bqVec3(0, 0.f, ((float)gridSize) * 0.5f), bq::ColorLime);
+		}*/
+		if (isCameraLowerThanWorld)
+			g_app->m_gs->SetMesh(g_app->m_gridModel_perspective2);
+		else
+			g_app->m_gs->SetMesh(g_app->m_gridModel_perspective1);
+	}break;
+	case type_left:
+	{
+		bool front = ((m_camera->m_rotationPlatform.y < PIPI) &&
+			(m_camera->m_rotationPlatform.y > PI));
+		//if (m_activeCamera->m_positionPlatform.w < 40.f)
+		front ? g_app->m_gs->SetMesh(g_app->m_gridModel_left1) : g_app->m_gs->SetMesh(g_app->m_gridModel_left2);
+	}break;
+	case type_right:
+	{
+		bool front = ((m_camera->m_rotationPlatform.y > 0.f) &&
+			(m_camera->m_rotationPlatform.y < PI));
+		front ? g_app->m_gs->SetMesh(g_app->m_gridModel_left1) : g_app->m_gs->SetMesh(g_app->m_gridModel_left2);
+	}break;
+	case type_bottom:
+	case type_top:
+		isCameraLowerThanWorld ? g_app->m_gs->SetMesh(g_app->m_gridModel_top2) : g_app->m_gs->SetMesh(g_app->m_gridModel_top1);
+		break;
+	case type_front: 
+		{
+		bool front = ((m_camera->m_rotationPlatform.y < PIHalf) &&
+			(m_camera->m_rotationPlatform.y > -PIPlusHalf));
+		front ? g_app->m_gs->SetMesh(g_app->m_gridModel_front1) : g_app->m_gs->SetMesh(g_app->m_gridModel_front2);
+	}break;
+	case type_back: 
+		{
+		bool front = ((m_camera->m_rotationPlatform.y > PIHalf) &&
+			(m_camera->m_rotationPlatform.y < PI + PIHalf));
+		front ? g_app->m_gs->SetMesh(g_app->m_gridModel_front1) : g_app->m_gs->SetMesh(g_app->m_gridModel_front2);
+	}break;
+	}
+
+	static bqMaterial material;
+	material.m_shaderType = bqShaderType::LineModel;
+	g_app->m_gs->SetMaterial(&material);
+	g_app->m_gs->EnableDepth();
+	g_app->m_gs->Draw();
+}
+
+void ViewportView::SetCameraType(uint32_t ct)
+{
+	m_type = ct;
+
+	m_camera->m_editorCameraType = bqCamera::CameraEditorType::Perspective;
+	switch (m_type)
+	{
+	case type_back:
+		m_camera->m_editorCameraType = bqCamera::CameraEditorType::Back;
+		break;
+	case type_bottom:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Bottom;
+		break;
+	case type_front:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Front;
+		break;
+	case type_left:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Left;
+		break;
+	case type_right:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Right;
+		break;
+	case type_top:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Top;
+		break;
 	}
 }
-

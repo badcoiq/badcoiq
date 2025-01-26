@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="ModelEditor.cpp" />
     <ClCompile Include="Viewport.cpp" />
   </ItemGroup>

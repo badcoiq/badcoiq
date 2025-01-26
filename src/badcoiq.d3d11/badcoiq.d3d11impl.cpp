@@ -320,6 +320,7 @@ void bqGSD3D11::Shutdown()
 #endif
 	BQSAFE_DESTROY2(m_shaderLine3D);
 	BQSAFE_DESTROY2(m_shaderStandart);
+	BQSAFE_DESTROY2(m_shaderLineModel);
 	BQSAFE_DESTROY2(m_shaderEndDraw);
 	BQSAFE_DESTROY2(m_shaderGUIRectangle);
 #ifdef BQ_WITH_SPRITE
@@ -575,6 +576,64 @@ bool bqGSD3D11::CreateVertexShaderInputLayout(ID3D10Blob* shaderBlob, ID3D11Inpu
 	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	vertexLayout[ind].InputSlot = 0;
 	vertexLayout[ind].AlignedByteOffset = 76;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	vertexLayoutSize = ind + 1;
+
+	HRESULT	hr = m_d3d11Device->CreateInputLayout(
+		vertexLayout,
+		vertexLayoutSize,
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		il);
+	if (FAILED(hr))
+	{
+		bqLog::PrintError("Can't create input layout. Error code [%u]\n", hr);
+		return false;
+	}
+	return true;
+}
+
+bool bqGSD3D11::CreateVertexShaderInputLayoutLineModel(ID3D10Blob* shaderBlob, ID3D11InputLayout** il)
+{
+	D3D11_INPUT_ELEMENT_DESC vertexLayout[4];
+	uint32_t vertexLayoutSize = 0;
+
+	int ind = 0;
+	ind = 0;
+	vertexLayout[ind].SemanticName = "POSITION";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 0;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "COLOR";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 12;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "BONES";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R8G8B8A8_UINT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 28;
+	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexLayout[ind].InstanceDataStepRate = 0;
+
+	ind++;
+	vertexLayout[ind].SemanticName = "WEIGHTS";
+	vertexLayout[ind].SemanticIndex = 0;
+	vertexLayout[ind].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	vertexLayout[ind].InputSlot = 0;
+	vertexLayout[ind].AlignedByteOffset = 32;
 	vertexLayout[ind].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	vertexLayout[ind].InstanceDataStepRate = 0;
 
@@ -870,6 +929,10 @@ bool bqGSD3D11::CreateShaders()
 	if (!m_shaderStandartSk->Init())
 		return false;
 
+	m_shaderLineModel = bqCreate<bqD3D11ShaderLineModel>(this);
+	if (!m_shaderLineModel->Init())
+		return false;
+
 	m_shaderEndDraw = bqCreate<bqD3D11ShaderEndDraw>(this);
 	if (!m_shaderEndDraw->Init())
 		return false;
@@ -925,6 +988,12 @@ void bqGSD3D11::SetShader(bqShaderType t, uint32_t userShaderIndex)
 		m_d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		break;
 #endif
+
+	case bqShaderType::LineModel:
+		SetActiveShader(m_shaderLineModel);
+		m_d3d11DevCon->IASetInputLayout(m_shaderLineModel->m_vLayout);
+		m_d3d11DevCon->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+		break;
 
 	case bqShaderType::User:
 		break;
@@ -1042,6 +1111,7 @@ void bqGSD3D11::Draw()
 	{
 	default:
 	case bqMeshVertexType::Triangle:
+	case bqMeshVertexType::Line:
 		m_d3d11DevCon->IASetIndexBuffer(m_currMesh->m_iBuffer, m_currMesh->m_indexType, 0);
 		m_d3d11DevCon->DrawIndexed(m_currMesh->m_meshInfo.m_iCount, 0, 0);
 		break;

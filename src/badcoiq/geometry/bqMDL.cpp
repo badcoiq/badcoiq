@@ -28,8 +28,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
-#ifdef BQ_WITH_MESH
-
 #include "badcoiq/geometry/bqMDL.h"
 #include "badcoiq/common/bqFileBuffer.h"
 #include "badcoiq/gs/bqGS.h"
@@ -882,4 +880,3 @@ bqMDLHitbox::~bqMDLHitbox()
 	BQ_SAFEDESTROY_A(m_iBuf);
 }
 
-#endif

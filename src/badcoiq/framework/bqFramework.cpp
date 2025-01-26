@@ -51,10 +51,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/common/bqImageLoader.h"
 #endif
 
-#ifdef BQ_WITH_MESH
 #include "badcoiq/geometry/bqPolygonMesh.h"
 #include "badcoiq/geometry/bqMeshLoader.h"
-#endif
 
 #ifdef BQ_WITH_SOUND
 #include "badcoiq/sound/bqSoundSystem.h"
@@ -122,9 +120,7 @@ extern "C"
 	bqImageLoader* BQ_CDECL bqImageLoaderDefault_create();
 #endif
 
-#ifdef BQ_WITH_MESH
 	bqMeshLoader* BQ_CDECL bqMeshLoaderDefault_create();
-#endif
 }
 
 
@@ -134,9 +130,7 @@ BQ_LINK_LIBRARY("badcoiq.d3d11");
 #ifdef BQ_WITH_IMAGE
 BQ_LINK_LIBRARY("badcoiq.imageloader");
 #endif
-#ifdef BQ_WITH_MESH
 BQ_LINK_LIBRARY("badcoiq.meshloader");
-#endif
 
 void bqInputUpdatePre();
 void bqInputUpdatePost();
@@ -207,9 +201,7 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		g_framework->m_imageLoaders.push_back(bqImageLoaderDefault_create());
 #endif
 
-#ifdef BQ_WITH_MESH
 		g_framework->m_meshLoaders.push_back(bqMeshLoaderDefault_create());
-#endif
 
 		bqLog::PrintInfo("App path : %s\n", g_framework->m_appPathA.c_str());
 	}
@@ -264,7 +256,6 @@ void bqFrameworkImpl::OnDestroy()
 	}
 #endif
 
-#ifdef BQ_WITH_MESH
 	if (g_framework->m_meshLoaders.size())
 	{
 		for (auto o : g_framework->m_meshLoaders)
@@ -273,7 +264,6 @@ void bqFrameworkImpl::OnDestroy()
 		}
 		g_framework->m_meshLoaders.clear();
 	}
-#endif
 
 #ifdef BQ_WITH_GUI
 	if (g_framework->m_defaultFonts.m_size)
@@ -461,12 +451,10 @@ void bqFramework::SetMatrix(bqMatrixType t, bqMat4* m)
 	g_framework->m_matrixPtrs[(uint32_t)t] = m;
 }
 
-#ifdef BQ_WITH_MESH
 bqMat4* bqFramework::GetMatrixSkinned()
 {
 	return &g_framework->m_matrixSkinned[0];
 }
-#endif
 
 uint8_t* bqFramework::CreateFileBuffer(const char* path, uint32_t* szOut, bool isText)
 {
@@ -617,7 +605,6 @@ uint64_t bqFramework::FileSize(const bqString& p)
 	return (uint64_t)std::filesystem::file_size(g_framework->m_fileSizeString.data());
 }
 
-#ifdef BQ_WITH_MESH
 bqPolygonMesh* bqFramework::CreatePolygonMesh()
 {
 	return bqCreate<bqPolygonMesh>();
@@ -711,7 +698,6 @@ void bqFramework::CreateMesh(const char* p, bqArray<bqMesh*>* a)
 	bqFramework_defaultMeshLoadCallback cb(a);
 	CreateMesh(p, &cb);
 }
-#endif
 
 bqString bqFramework::GetAppPath()
 {

@@ -38,8 +38,10 @@ enum class bqShaderType
 	// 3D objects
 	Standart,
 	StandartSkinned,
+	LineModel,
 
 	Line3D,
+
 
 #ifdef BQ_WITH_SPRITE
 	Sprite,

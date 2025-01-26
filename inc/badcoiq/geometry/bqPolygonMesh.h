@@ -32,8 +32,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __BQ_POLYGONMESH_H__
 /// \endcond
 
-#ifdef BQ_WITH_MESH
-
 #include "badcoiq/geometry/bqMesh.h"
 
 #include "badcoiq/containers/bqList.h"
@@ -138,7 +136,5 @@ public:
 
 	bqAabb m_aabb;
 };
-
-#endif
 #endif
 

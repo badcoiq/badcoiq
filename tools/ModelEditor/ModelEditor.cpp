@@ -155,6 +155,8 @@ bool ModelEditor::Init()
 	button->SetTCoords(0.f, 0.f, 31.f, 31.f);
 	m_GUIWindow_mainMenuBar->AddElement(button);
 
+	_initGrid();
+
 	m_viewport = new Viewport;
 
 	GUI_rebuild();
@@ -251,6 +253,14 @@ void ModelEditor::Run()
 void ModelEditor::Shutdown()
 {
 	BQ_SAFEDESTROY(m_shortcutMgr);
+	BQ_SAFEDESTROY(m_gridModel_perspective1);
+	BQ_SAFEDESTROY(m_gridModel_perspective2);
+	BQ_SAFEDESTROY(m_gridModel_top1);
+	BQ_SAFEDESTROY(m_gridModel_top2);
+	BQ_SAFEDESTROY(m_gridModel_front1);
+	BQ_SAFEDESTROY(m_gridModel_front2);
+	BQ_SAFEDESTROY(m_gridModel_left1);
+	BQ_SAFEDESTROY(m_gridModel_left2);
 
 	for (size_t i = 0; i < m_GUIElements.m_size; ++i)
 	{

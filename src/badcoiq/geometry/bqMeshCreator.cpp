@@ -27,7 +27,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.h"
-#ifdef BQ_WITH_MESH
 
 #include "badcoiq/geometry/bqMeshCreator.h"
 
@@ -142,4 +141,3 @@ void bqMeshPolygonCreator::Mul(const bqMat4& m)
 		}
 	}
 }
-#endif

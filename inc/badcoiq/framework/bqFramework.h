@@ -126,7 +126,6 @@ public:
 	/// Получить указатель на матрицу
 	static bqMat4* GetMatrix(bqMatrixType);
 
-#ifdef BQ_WITH_MESH
 	/// Получить указатель на первую из 255 матриц для скелета
 	static bqMat4* GetMatrixSkinned();
 
@@ -152,7 +151,6 @@ public:
 	/// Мешбуферы будут добавлены в указанный массив.
 	/// При вызове массив очищается
 	static void CreateMesh(const char*, bqArray<bqMesh*>*);
-#endif
 
 	/// Установить указатель на матрицу
 	static void SetMatrix(bqMatrixType, bqMat4*);

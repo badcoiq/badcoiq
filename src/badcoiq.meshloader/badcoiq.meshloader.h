@@ -31,8 +31,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "badcoiq.h"
 
-#ifdef BQ_WITH_MESH
-
 #include "badcoiq/containers/bqArray.h"
 #include "badcoiq/geometry/bqMeshLoader.h"
 
@@ -65,5 +63,4 @@ public:
 };
 
 
-#endif
 #endif

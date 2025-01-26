@@ -29,7 +29,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #ifndef __BQ_MDL_H__
 #define __BQ_MDL_H__
-#ifdef BQ_WITH_MESH
 
 #include "badcoiq/geometry/bqAABB.h"
 #include "badcoiq/geometry/bqMesh.h"
@@ -184,6 +183,5 @@ public:
 };
 
 
-#endif
 #endif
 

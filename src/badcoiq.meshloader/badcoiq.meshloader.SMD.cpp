@@ -27,7 +27,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "badcoiq.meshloader.h"
-#ifdef BQ_WITH_MESH
 
 #include "badcoiq/common/bqTextBufferReader.h"
 #include "badcoiq/geometry/bqMeshCreator.h"
@@ -385,4 +384,3 @@ void bqMeshLoaderImpl::LoadSMD(const char* path, bqMeshLoaderCallback* cb, uint8
 error:;
 	bqLog::PrintWarning(L"SMD: error %i\n", errcode);
 }
-#endif

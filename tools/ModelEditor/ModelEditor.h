@@ -152,7 +152,15 @@ class ModelEditor
     const float32_t m_editPanelWidthMin = 50.f;
 
     Viewport* m_viewport = 0;
-
+    bqGPUMesh* m_gridModel_perspective1 = 0;
+    bqGPUMesh* m_gridModel_perspective2 = 0;
+    bqGPUMesh* m_gridModel_top1 = 0;
+    bqGPUMesh* m_gridModel_top2 = 0;
+    bqGPUMesh* m_gridModel_front1 = 0;
+    bqGPUMesh* m_gridModel_front2 = 0;
+    bqGPUMesh* m_gridModel_left1 = 0;
+    bqGPUMesh* m_gridModel_left2 = 0;
+    void _initGrid();
 public:
 	ModelEditor();
 	~ModelEditor();
