@@ -84,6 +84,8 @@ class bqShortcutManager;
 class bqGS;
 #endif
 
+struct bqInputData;
+
 class bqPolygonMeshPolygon;
 class bqMeshPolygonCreator;
 class bqPolygonMeshControlPoint;

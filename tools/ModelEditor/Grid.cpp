@@ -190,11 +190,7 @@ void ModelEditor::_initGrid()
 		auto mesh = _get_mesh(linesNum);
 
 		_build(mesh, -251.f, linesNum, 1.f, colorBase, colorBase, bq::ColorLime, bq::ColorRed, 251, ViewportView::type_top);
-		m_gridModel_top1 = m_gs->CreateMesh(mesh);
-
-		colorBase = bqColor(150, 150, 150, 255);
-		_build(mesh, -251.f, linesNum, 1.f, colorBase, colorBase, colorBase, colorBase, 251, ViewportView::type_top);
-		m_gridModel_top2 = m_gs->CreateMesh(mesh);
+		m_gridModel_top = m_gs->CreateMesh(mesh);
 		bqDestroy(mesh);
 	}
 	{
@@ -202,11 +198,7 @@ void ModelEditor::_initGrid()
 		auto mesh = _get_mesh(linesNum);
 
 		_build(mesh, -251.f, linesNum, 1.f, colorBase, colorBase, bq::ColorBlue, bq::ColorRed, 251, ViewportView::type_front);
-		m_gridModel_front1 = m_gs->CreateMesh(mesh);
-
-		colorBase = bqColor(150, 150, 150, 255);
-		_build(mesh, -251.f, linesNum, 1.f, colorBase, colorBase, colorBase, colorBase, 251, ViewportView::type_front);
-		m_gridModel_front2 = m_gs->CreateMesh(mesh);
+		m_gridModel_front = m_gs->CreateMesh(mesh);
 		bqDestroy(mesh);
 	}
 	{
@@ -214,12 +206,7 @@ void ModelEditor::_initGrid()
 		auto mesh = _get_mesh(linesNum);
 
 		_build(mesh, -251.f, linesNum, 1.f, colorBase, colorBase, bq::ColorBlue, bq::ColorLime, 251, ViewportView::type_left);
-		m_gridModel_left1 = m_gs->CreateMesh(mesh);
-
-		colorBase = bqColor(150, 150, 150, 255);
-		_build(mesh, -251.f, linesNum, 1.f, colorBase, colorBase, colorBase, colorBase, 251, ViewportView::type_left);
-		m_gridModel_left2 = m_gs->CreateMesh(mesh);
-
+		m_gridModel_left = m_gs->CreateMesh(mesh);
 		bqDestroy(mesh);
 	}
 }

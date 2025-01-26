@@ -87,6 +87,7 @@ bool ModelEditor::Init()
 {
 	bqFramework::Start(&m_frameworkCallback);
 	m_deltaTime = bqFramework::GetDeltaTime();
+	m_inputData = bqInput::GetData();
 
 	m_mainWindowCallback.SetUserData(this);
 	m_mainWindow = bqFramework::CreateSystemWindow(&m_mainWindowCallback);
@@ -255,12 +256,9 @@ void ModelEditor::Shutdown()
 	BQ_SAFEDESTROY(m_shortcutMgr);
 	BQ_SAFEDESTROY(m_gridModel_perspective1);
 	BQ_SAFEDESTROY(m_gridModel_perspective2);
-	BQ_SAFEDESTROY(m_gridModel_top1);
-	BQ_SAFEDESTROY(m_gridModel_top2);
-	BQ_SAFEDESTROY(m_gridModel_front1);
-	BQ_SAFEDESTROY(m_gridModel_front2);
-	BQ_SAFEDESTROY(m_gridModel_left1);
-	BQ_SAFEDESTROY(m_gridModel_left2);
+	BQ_SAFEDESTROY(m_gridModel_top);
+	BQ_SAFEDESTROY(m_gridModel_front);
+	BQ_SAFEDESTROY(m_gridModel_left);
 
 	for (size_t i = 0; i < m_GUIElements.m_size; ++i)
 	{

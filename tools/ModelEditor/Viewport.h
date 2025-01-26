@@ -64,7 +64,10 @@ class ViewportView
 	void _DrawScene(ViewportView* view);
 	void _DrawGrid(int gridSize);
 
+	const char32_t* m_viewportTypeText = U" ";
+
 	bqVec4f m_rectangle;
+	bqVec4f m_viewportOptionsRectangle;
 	ViewportLayout* m_layout = 0;
 	bqCamera* m_camera = 0;
 	bqTexture* m_rtt = 0;
@@ -97,6 +100,7 @@ class ViewportLayout
 	Viewport* m_viewport = 0;
 	bqArray<ViewportView*> m_views;
 	ViewportView* m_activeView = 0;
+	ViewportView* m_mouseFocusView = 0;
 	bqVec4f m_resizeRect;
 public:
 	ViewportLayout(Viewport* viewport, uint32_t type);

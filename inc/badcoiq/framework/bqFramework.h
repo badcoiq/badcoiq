@@ -197,6 +197,10 @@ public:
 
 #ifdef BQ_WITH_POPUP
 	static bqPopup* CreatePopup();
+
+	/// \brief Показать bqPopup на позиции курсора. 
+	/// 
+	/// Обычный способ показа - через поле bqPopup
 	static void ShowPopupAtCursor(bqPopup*, bqWindow*);
 #endif
 	

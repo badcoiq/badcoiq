@@ -1377,4 +1377,5 @@ void bqFramework::ShowPopupAtCursor(bqPopup* p, bqWindow* w)
 {
 	p->Show(w, (uint32_t)g_framework->m_input.m_mousePosition.x, (uint32_t)g_framework->m_input.m_mousePosition.y);
 }
+
 #endif

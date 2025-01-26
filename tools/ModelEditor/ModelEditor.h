@@ -58,7 +58,7 @@ public:
 
 class DrawTextCallback : public bqGUIDrawTextCallback
 {
-    bqColor m_colorBlack;
+    bqColor m_color;
     bqGUIFont* m_defaultFont = 0;
 public:
     DrawTextCallback() {}
@@ -71,13 +71,16 @@ public:
 
     virtual bqColor* OnColor( char32_t)
     {
-        return &m_colorBlack;
+        return &m_color;
     }
 
     void SetFont(bqGUIFont* f)
     {
         m_defaultFont = f;
     }
+
+    const bqColor& GetColor() { return m_color; }
+    void SetColor(const bqColor& c) { m_color = c; }
 };
 
 enum
@@ -132,6 +135,8 @@ class ModelEditor
 	bqGS* m_gs = 0;
     float32_t* m_deltaTime = 0;
 
+    bqInputData* m_inputData = 0;
+
 	bool m_run = true;
 
     bqGUIStyle m_GUIStyle;
@@ -154,12 +159,9 @@ class ModelEditor
     Viewport* m_viewport = 0;
     bqGPUMesh* m_gridModel_perspective1 = 0;
     bqGPUMesh* m_gridModel_perspective2 = 0;
-    bqGPUMesh* m_gridModel_top1 = 0;
-    bqGPUMesh* m_gridModel_top2 = 0;
-    bqGPUMesh* m_gridModel_front1 = 0;
-    bqGPUMesh* m_gridModel_front2 = 0;
-    bqGPUMesh* m_gridModel_left1 = 0;
-    bqGPUMesh* m_gridModel_left2 = 0;
+    bqGPUMesh* m_gridModel_top = 0;
+    bqGPUMesh* m_gridModel_front = 0;
+    bqGPUMesh* m_gridModel_left = 0;
     void _initGrid();
 public:
 	ModelEditor();

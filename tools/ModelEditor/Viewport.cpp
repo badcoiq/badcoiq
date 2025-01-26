@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/scene/bqCamera.h"
 #include "badcoiq/input/bqInputEx.h"
+#include "badcoiq/system/bqPopup.h"
 
 extern ModelEditor* g_app;
 
@@ -66,10 +67,11 @@ void Viewport::Rebuild()
 
 void Viewport::Update()
 {
-	for (size_t i = 0; i < m_layouts.m_size; ++i)
+	/*for (size_t i = 0; i < m_layouts.m_size; ++i)
 	{
 		m_layouts.m_data[i]->Update();
-	}
+	}*/
+	m_activeLayout->Update();
 }
 
 
@@ -243,6 +245,24 @@ void ViewportView::Rebuild()
 	BQ_SAFEDESTROY(m_rtt);
 	bqTextureInfo ti;
 	m_rtt = g_app->m_gs->CreateRTT(bqPoint(m_rectangle.z - m_rectangle.x, m_rectangle.w - m_rectangle.y), ti);
+
+	m_viewportTypeText = U"Perspective";
+	switch (m_type)
+	{
+	case type_back:m_viewportTypeText = U"Back"; break;
+	case type_bottom:m_viewportTypeText = U"Bottom"; break;
+	case type_front:m_viewportTypeText = U"Front"; break;
+	case type_left:m_viewportTypeText = U"Left"; break;
+	case type_right:m_viewportTypeText = U"Right"; break;
+	case type_top:m_viewportTypeText = U"Top"; break;
+	}
+
+	auto textSize = g_app->m_drawTextCallback.GetTextSize(m_viewportTypeText);
+
+	m_viewportOptionsRectangle.x = m_rectangle.x;
+	m_viewportOptionsRectangle.y = m_rectangle.y;
+	m_viewportOptionsRectangle.z = m_rectangle.x + textSize.x;
+	m_viewportOptionsRectangle.w = m_rectangle.y + textSize.y;
 }
 
 void ViewportView::Update()
@@ -250,31 +270,87 @@ void ViewportView::Update()
 	m_camera->Update(0.1);
 	m_camera->UpdateFrustum();
 
-	if (bqMath::PointInRect(bqInput::GetMousePosition(), m_rectangle))
+	bqPointf& mousePosition = bqInput::GetMousePosition();
+
+	if (bqMath::PointInRect(mousePosition, m_viewportOptionsRectangle))
+	{
+		if (bqInput::IsRMBHit())
+		{
+			g_app->m_popupViewportOptions->Show(g_app->m_mainWindow, m_viewportOptionsRectangle.x, m_viewportOptionsRectangle.y);
+		}
+	}
+
+	if (bqMath::PointInRect(mousePosition, m_rectangle))
 	{
 		if (bqInput::IsLMBHit())
 		{
+			m_layout->m_mouseFocusView = this;
 			SetActiveView();
 		}
 
 		if (bqInput::IsRMBHit())
 		{
+			m_layout->m_mouseFocusView = this;
 			SetActiveView();
 		}
 
 		if (bqInput::IsMMBHit())
 		{
+			m_layout->m_mouseFocusView = this;
 			SetActiveView();
 		}
 
 		if (bqInput::IsX1MBHit())
 		{
+			m_layout->m_mouseFocusView = this;
 			SetActiveView();
 		}
 
 		if (bqInput::IsX2MBHit())
 		{
+			m_layout->m_mouseFocusView = this;
 			SetActiveView();
+		}
+
+		if (bqInput::IsLMBRelease())
+		{
+			m_layout->m_mouseFocusView = 0;
+		}
+
+		if (bqInput::IsRMBRelease())
+		{
+			m_layout->m_mouseFocusView = 0;
+		}
+
+		if (bqInput::IsMMBRelease())
+		{
+			m_layout->m_mouseFocusView = 0;
+		}
+
+		if (bqInput::IsX1MBRelease())
+		{
+			m_layout->m_mouseFocusView = 0;
+		}
+
+		if (bqInput::IsX2MBRelease())
+		{
+			m_layout->m_mouseFocusView = 0;
+		}
+	}
+
+
+	if (m_layout->m_mouseFocusView == this)
+	{
+		if (bqInput::IsRMBHold())
+		{
+			if (bqInput::IsCtrl())
+			{
+				m_camera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+			}
+			else
+			{
+				m_camera->EditorPanMove(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+			}
 		}
 	}
 }
@@ -300,7 +376,7 @@ void ViewportView::Draw()
 		(float)m_rtt->GetInfo().m_imageInfo.m_height);
 
 	//g_app->m_gs->BeginDraw();
-	g_app->m_gs->ClearDepth();
+	g_app->m_gs->ClearAll();
 	_DrawScene(this);
 //	g_app->m_gs->EndDraw();
 
@@ -328,18 +404,20 @@ void ViewportView::Draw()
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bgcolor, bgcolor, 0, 0);
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bq::ColorWhite, bq::ColorWhite, m_rtt, 0);
 
-	const char32_t* viewportTypeText = U"Perspective";
-	switch (m_type)
+	
+	
+	bqPointf& mousePosition = bqInput::GetMousePosition();
+	bqColor oldColor = g_app->m_drawTextCallback.GetColor();
+	if (bqMath::PointInRect(mousePosition, m_viewportOptionsRectangle))
 	{
-	case type_back:viewportTypeText = U"Back"; break;
-	case type_bottom:viewportTypeText = U"Bottom"; break;
-	case type_front:viewportTypeText = U"Front"; break;
-	case type_left:viewportTypeText = U"Left"; break;
-	case type_right:viewportTypeText = U"Right"; break;
-	case type_top:viewportTypeText = U"Top"; break;
+		g_app->m_drawTextCallback.SetColor(bq::ColorYellow);
 	}
-
-	g_app->m_gs->DrawGUIText(viewportTypeText, bqStringLen(viewportTypeText), bqVec2f(m_rectangle.x, m_rectangle.y), &g_app->m_drawTextCallback);
+	else
+	{
+		g_app->m_drawTextCallback.SetColor(bq::ColorBlack);
+	}
+	g_app->m_gs->DrawGUIText(m_viewportTypeText, bqStringLen(m_viewportTypeText), bqVec2f(m_rectangle.x, m_rectangle.y), &g_app->m_drawTextCallback);
+	g_app->m_drawTextCallback.SetColor(oldColor);
 
 	g_app->m_gs->EndGUI();
 
@@ -391,32 +469,18 @@ void ViewportView::_DrawGrid(int gridSize)
 			g_app->m_gs->SetMesh(g_app->m_gridModel_perspective1);
 	}break;
 	case type_left:
-	{
-		bool front = ((m_camera->m_rotationPlatform.y < PIPI) &&
-			(m_camera->m_rotationPlatform.y > PI));
-		front ? g_app->m_gs->SetMesh(g_app->m_gridModel_left1) : g_app->m_gs->SetMesh(g_app->m_gridModel_left2);
-	}break;
 	case type_right:
 	{
-		bool front = ((m_camera->m_rotationPlatform.y > 0.f) &&
-			(m_camera->m_rotationPlatform.y < PI));
-		front ? g_app->m_gs->SetMesh(g_app->m_gridModel_left1) : g_app->m_gs->SetMesh(g_app->m_gridModel_left2);
+		g_app->m_gs->SetMesh(g_app->m_gridModel_left);
 	}break;
 	case type_bottom:
 	case type_top:
-		isCameraLowerThanWorld ? g_app->m_gs->SetMesh(g_app->m_gridModel_top2) : g_app->m_gs->SetMesh(g_app->m_gridModel_top1);
+		g_app->m_gs->SetMesh(g_app->m_gridModel_top);
 		break;
-	case type_front: 
+	case type_back:
+	case type_front:
 		{
-		bool front = ((m_camera->m_rotationPlatform.y < PIHalf) &&
-			(m_camera->m_rotationPlatform.y > -PIPlusHalf));
-		front ? g_app->m_gs->SetMesh(g_app->m_gridModel_front1) : g_app->m_gs->SetMesh(g_app->m_gridModel_front2);
-	}break;
-	case type_back: 
-		{
-		bool front = ((m_camera->m_rotationPlatform.y > PIHalf) &&
-			(m_camera->m_rotationPlatform.y < PI + PIHalf));
-		front ? g_app->m_gs->SetMesh(g_app->m_gridModel_front1) : g_app->m_gs->SetMesh(g_app->m_gridModel_front2);
+		g_app->m_gs->SetMesh(g_app->m_gridModel_front);
 	}break;
 	}
 
