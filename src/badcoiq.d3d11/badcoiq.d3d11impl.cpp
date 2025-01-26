@@ -1104,7 +1104,7 @@ void bqGSD3D11::Draw()
 
 	m_activeShader->SetConstants(m_currMaterial);
 
-	uint32_t offset = 0u;
+	uint32_t offset = 0;
 	m_d3d11DevCon->IASetVertexBuffers(0, 1, &m_currMesh->m_vBuffer, &m_currMesh->m_meshInfo.m_stride, &offset);
 
 	switch (m_currMesh->m_meshInfo.m_vertexType)

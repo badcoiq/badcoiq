@@ -34,7 +34,7 @@ struct VSIn
 
 cbuffer cbVertex
 {
-	float4x4 WVP;
+	double4x4 WVP;
 };
 
 cbuffer cbPixel
@@ -57,7 +57,7 @@ VSOut VSMain(VSIn input)
 {
    VSOut output;
 	output.pos   = mul(WVP, float4(input.position.x, input.position.y, input.position.z, 1.f));
-	output.pos.z    -= 0.00015f;
+	//output.pos.z    -= 0.00015f;
 	output.color    = input.color;
 	return output;
 }

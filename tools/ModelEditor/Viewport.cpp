@@ -206,12 +206,20 @@ ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 
 	m_camera = new bqCamera;
 	m_camera->SetType(bqCamera::Type::Editor);
+	switch (type)
+	{
+	case type_perspective:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Perspective; break;
+	case type_back:m_camera->m_editorCameraType= bqCamera::CameraEditorType::Back; break;
+	case type_bottom:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Bottom; break;
+	case type_front:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Front; break;
+	case type_left:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Left; break;
+	case type_right:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Right; break;
+	case type_top:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Top; break;
+	}
 	m_camera->EditorReset();
 	SetCameraType(type);
 
-	
-
-	m_camera->m_position = bqVec3(0.f, 0.f, 0.f);
+		m_camera->m_position = bqVec3(0.f, 0.f, 0.f);
 	m_camera->m_positionPlatform.w = 20.f;
 	//m_camera->Rotate(0, 90, 0.f);
 	m_camera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
@@ -346,8 +354,10 @@ void ViewportView::_DrawScene(ViewportView* view)
 void ViewportView::_DrawGrid(int gridSize)
 {
 	static bqMat4 WVP;
-	WVP = m_camera->m_projectionMatrix * m_camera->m_viewMatrix * bqEmptyMatrix;
+	static bqMat4 W;
+	WVP = m_camera->m_projectionMatrix * m_camera->m_viewMatrix * W;
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
+	bqFramework::SetMatrix(bqMatrixType::World, &W);
 
 	g_app->m_gs->SetShader(bqShaderType::LineModel, 0);
 	
@@ -357,6 +367,7 @@ void ViewportView::_DrawGrid(int gridSize)
 
 	switch (m_type)
 	{
+	default:
 	case type_perspective:
 	{
 		/*bqColor gridColor = bq::ColorLightGrey;
@@ -383,7 +394,6 @@ void ViewportView::_DrawGrid(int gridSize)
 	{
 		bool front = ((m_camera->m_rotationPlatform.y < PIPI) &&
 			(m_camera->m_rotationPlatform.y > PI));
-		//if (m_activeCamera->m_positionPlatform.w < 40.f)
 		front ? g_app->m_gs->SetMesh(g_app->m_gridModel_left1) : g_app->m_gs->SetMesh(g_app->m_gridModel_left2);
 	}break;
 	case type_right:
