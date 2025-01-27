@@ -89,6 +89,11 @@ void Viewport::Draw()
 	}*/
 }
 
+void Viewport::SetActiveViewportViewType(uint32_t t)
+{
+	m_activeLayout->GetActiveView()->SetCameraType(t);
+}
+
 ViewportLayout::ViewportLayout(Viewport* viewport, uint32_t type)
 {
 	m_viewport = viewport;
@@ -98,16 +103,17 @@ ViewportLayout::ViewportLayout(Viewport* viewport, uint32_t type)
 	case ViewportLayout::type_full:
 	{
 		m_views.push_back(new ViewportView(this, ViewportView::type_perspective));
+		m_activeView = m_views.m_data[0];
 	}break;
 	case ViewportLayout::type_4views:
 	{
-		m_views.push_back(new ViewportView(this, ViewportView::type_perspective));
 		m_views.push_back(new ViewportView(this, ViewportView::type_top));
-		m_views.push_back(new ViewportView(this, ViewportView::type_left));
 		m_views.push_back(new ViewportView(this, ViewportView::type_front));
+		m_views.push_back(new ViewportView(this, ViewportView::type_left));
+		m_views.push_back(new ViewportView(this, ViewportView::type_perspective));
+		m_activeView = m_views.m_data[3];
 	}break;
 	}
-	m_activeView = m_views.m_data[0];
 	m_type = type;
 }
 
@@ -470,18 +476,16 @@ void ViewportView::_DrawGrid(int gridSize)
 	}break;
 	case type_left:
 	case type_right:
-	{
 		g_app->m_gs->SetMesh(g_app->m_gridModel_left);
-	}break;
+	break;
 	case type_bottom:
 	case type_top:
 		g_app->m_gs->SetMesh(g_app->m_gridModel_top);
 		break;
 	case type_back:
-	case type_front:
-		{
+	case type_front:		
 		g_app->m_gs->SetMesh(g_app->m_gridModel_front);
-	}break;
+	break;
 	}
 
 	static bqMaterial material;
@@ -512,4 +516,6 @@ void ViewportView::SetCameraType(uint32_t ct)
 	case type_top:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Top;
 		break;
 	}
+	m_camera->EditorReset();
+	Rebuild();
 }

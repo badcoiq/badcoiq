@@ -175,6 +175,8 @@ public:
     void OnWindowCallback_onPopupMenu(bqWindow* w, uint32_t id);
     void OnExit();
 
+    void SetActiveViewportViewType(uint32_t);
+
     bqPopup* m_popupViewportOptions = 0;
     bqPopup* m_popupMainMenuOptions = 0;
     bqWindow* m_mainWindow = 0;

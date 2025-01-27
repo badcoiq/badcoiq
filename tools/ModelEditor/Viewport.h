@@ -53,7 +53,7 @@ public:
 	void Rebuild();
 	void Update();
 	void Draw();
-
+	void SetActiveViewportViewType(uint32_t);
 };
 
 class ViewportView
@@ -116,6 +116,8 @@ public:
 	void Rebuild();
 	void Update();
 	void Draw();
+
+	ViewportView* GetActiveView() { return m_activeView; }
 };
 
 #endif

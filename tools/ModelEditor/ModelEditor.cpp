@@ -315,12 +315,59 @@ void ModelEditor::OnWindowCallback_onPopupMenu(bqWindow* w, uint32_t id)
 		break;
 	case CommandID_MainMenuSaveCopy:
 		break;
+
+	case CommandID_ViewportViewPerspective:
+		g_app->SetActiveViewportViewType(ViewportView::type_perspective);
+		break;
+	case CommandID_ViewportViewTop:
+		g_app->SetActiveViewportViewType(ViewportView::type_top);
+		break;
+	case CommandID_ViewportViewBottom:
+		g_app->SetActiveViewportViewType(ViewportView::type_bottom);
+		break;
+	case CommandID_ViewportViewLeft:
+		g_app->SetActiveViewportViewType(ViewportView::type_left);
+		break;
+	case CommandID_ViewportViewRight:
+		g_app->SetActiveViewportViewType(ViewportView::type_right);
+		break;
+	case CommandID_ViewportViewFront:
+		g_app->SetActiveViewportViewType(ViewportView::type_front);
+		break;
+	case CommandID_ViewportViewBack:
+		g_app->SetActiveViewportViewType(ViewportView::type_back);
+		break;
+	case CommandID_ViewportToggleFullView:
+		break;
+	case CommandID_ViewportToggleGrid:
+		break;
+	case CommandID_ViewportDrawMaterial:
+		break;
+	case CommandID_ViewportDrawMaterialWireframe:
+		break;
+	case CommandID_ViewportDrawWireframe:
+		break;
+	case CommandID_ViewportToggleDrawMaterial:
+		break;
+	case CommandID_ViewportToggleDrawWireframe:
+		break;
+	case CommandID_ViewportToggleDrawAABB:
+		break;
+	case CommandID_CameraReset:
+		break;
+	case CommandID_CameraMoveToSelection:
+		break;
 	}
 }
 
 void ModelEditor::OnExit()
 {
 	m_run = false;
+}
+
+void ModelEditor::SetActiveViewportViewType(uint32_t t)
+{
+	m_viewport->SetActiveViewportViewType(t);
 }
 
 void ModelEditor::GUI_rebuild()
