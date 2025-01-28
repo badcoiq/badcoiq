@@ -176,6 +176,7 @@ public:
     void OnExit();
 
     void SetActiveViewportViewType(uint32_t);
+    void ToggleFullView();
 
     bqPopup* m_popupViewportOptions = 0;
     bqPopup* m_popupMainMenuOptions = 0;

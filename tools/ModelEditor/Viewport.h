@@ -46,6 +46,15 @@ class Viewport
 	bqVec4f m_rectangle;
 	bqArray<ViewportLayout*> m_layouts;
 	ViewportLayout* m_activeLayout = 0;
+
+	ViewportLayout* m_fullViewLayout = 0;
+
+	// нужно будет следить за этой переменной.
+	// в будущем могут быть иные layout
+	// при изменении layout, будет нужно изменять
+	// эту переменную
+	ViewportLayout* m_beforeToggleFullViewLayout = 0;
+
 public:
 	Viewport();
 	~Viewport();
@@ -54,6 +63,7 @@ public:
 	void Update();
 	void Draw();
 	void SetActiveViewportViewType(uint32_t);
+	void ToggleFullView();
 };
 
 class ViewportView
@@ -92,6 +102,9 @@ public:
 	void Draw();
 	void SetActiveView();
 	void SetCameraType(uint32_t);
+	void ResetCamera();
+
+	void CopyDataFrom(ViewportView*);
 };
 
 class ViewportLayout

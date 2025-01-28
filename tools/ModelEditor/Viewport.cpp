@@ -41,6 +41,9 @@ Viewport::Viewport()
 	m_layouts.push_back(new ViewportLayout(this, ViewportLayout::type_full));
 	m_layouts.push_back(new ViewportLayout(this, ViewportLayout::type_4views));
 
+
+	m_fullViewLayout = m_layouts.m_data[0];
+	m_beforeToggleFullViewLayout = m_layouts.m_data[1];
 	m_activeLayout = m_layouts.m_data[1];
 }
 
@@ -92,6 +95,24 @@ void Viewport::Draw()
 void Viewport::SetActiveViewportViewType(uint32_t t)
 {
 	m_activeLayout->GetActiveView()->SetCameraType(t);
+}
+
+void Viewport::ToggleFullView()
+{
+	if (m_activeLayout == m_fullViewLayout)
+	{
+		auto old = m_activeLayout;
+		m_activeLayout = m_beforeToggleFullViewLayout;
+		m_activeLayout->GetActiveView()->CopyDataFrom(old->GetActiveView());
+		m_activeLayout->Rebuild();
+	}
+	else
+	{
+		m_beforeToggleFullViewLayout = m_activeLayout;
+		m_activeLayout = m_fullViewLayout;
+		m_activeLayout->GetActiveView()->CopyDataFrom(m_beforeToggleFullViewLayout->GetActiveView());
+		m_activeLayout->Rebuild();
+	}
 }
 
 ViewportLayout::ViewportLayout(Viewport* viewport, uint32_t type)
@@ -224,11 +245,12 @@ ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 	case type_right:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Right; break;
 	case type_top:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Top; break;
 	}
-	m_camera->EditorReset();
+	ResetCamera();
 	SetCameraType(type);
 
-		m_camera->m_position = bqVec3(0.f, 0.f, 0.f);
-	m_camera->m_positionPlatform.w = 20.f;
+	//m_camera->m_position = bqVec3(0.f, 0.f, 0.f);
+	//m_camera->m_positionPlatform.w = 20.f;
+
 	//m_camera->Rotate(0, 90, 0.f);
 	m_camera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
 	m_camera->Update(0.f);
@@ -495,6 +517,35 @@ void ViewportView::_DrawGrid(int gridSize)
 	g_app->m_gs->Draw();
 }
 
+void ViewportView::ResetCamera()
+{
+	m_camera->EditorReset();
+	m_camera->m_aspect = m_rectangle.x / m_rectangle.y;
+}
+
+void ViewportView::CopyDataFrom(ViewportView* other)
+{
+	m_camera->m_aspect = other->m_camera->m_aspect;
+	m_camera->m_direction = other->m_camera->m_direction;
+	m_camera->m_editorCameraType = other->m_camera->m_editorCameraType;
+	m_camera->m_far = other->m_camera->m_far;
+	m_camera->m_forceOrtho = other->m_camera->m_forceOrtho;
+	m_camera->m_fov = other->m_camera->m_fov;
+	m_camera->m_frustum = other->m_camera->m_frustum;
+	m_camera->m_lookAtTarget = other->m_camera->m_lookAtTarget;
+	m_camera->m_moveSpeed = other->m_camera->m_moveSpeed;
+	m_camera->m_near = other->m_camera->m_near;
+	m_camera->m_orthoHeight = other->m_camera->m_orthoHeight;
+	m_camera->m_orthoWidth = other->m_camera->m_orthoWidth;
+	m_camera->m_position = other->m_camera->m_position;
+	m_camera->m_positionPlatform = other->m_camera->m_positionPlatform;
+	m_camera->m_rotation = other->m_camera->m_rotation;
+	m_camera->m_rotationPlatform = other->m_camera->m_rotationPlatform;
+	m_camera->m_upVector = other->m_camera->m_upVector;
+
+	m_type = other->m_type;
+}
+
 void ViewportView::SetCameraType(uint32_t ct)
 {
 	m_type = ct;
@@ -516,6 +567,6 @@ void ViewportView::SetCameraType(uint32_t ct)
 	case type_top:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Top;
 		break;
 	}
-	m_camera->EditorReset();
+	ResetCamera();
 	Rebuild();
 }

@@ -155,7 +155,7 @@ public:
 	const bqMat4& GetMatrixViewProjection() { return m_viewProjectionMatrix; }
 
 	bqVec3 m_position;
-	bqVec3 m_lookAtTargett;
+	bqVec3 m_lookAtTarget;
 	bqVec3 m_upVector = bqVec3(0.0, 1.0, 0.0);
 
 	float m_moveSpeed = 10.f;

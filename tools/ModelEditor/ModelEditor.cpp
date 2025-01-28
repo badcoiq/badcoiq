@@ -120,6 +120,11 @@ bool ModelEditor::Init()
 	m_shortcutMgr->SetCommand(CommandID_MainMenuExit, L"Exit", bq::KeyboardMod_Alt, bqInput::KEY_F4);
 	m_shortcutMgr->SetCommand(CommandID_MainMenuSave, L"Save", bq::KeyboardMod_Ctrl, bqInput::KEY_S);
 	m_shortcutMgr->SetCommand(CommandID_MainMenuSaveAs, L"Save As...", bq::KeyboardMod_CtrlShift, bqInput::KEY_S);
+	m_shortcutMgr->SetCommand(CommandID_ViewportViewPerspective, L"Perspective", 0, bqInput::KEY_P);
+	m_shortcutMgr->SetCommand(CommandID_ViewportViewLeft, L"Left", 0, bqInput::KEY_L);
+	m_shortcutMgr->SetCommand(CommandID_ViewportViewTop, L"Top", 0, bqInput::KEY_T);
+	m_shortcutMgr->SetCommand(CommandID_ViewportViewFront, L"Front", 0, bqInput::KEY_F);
+	m_shortcutMgr->SetCommand(CommandID_ViewportToggleFullView, L"TFV", bq::KeyboardMod_Alt, bqInput::KEY_W);
 
 	m_GUITexture = bqFramework::CreateTexture(m_gs,
 		bqFramework::GetPath("../data/model_editor/gui.png").c_str(),
@@ -163,27 +168,27 @@ bool ModelEditor::Init()
 	GUI_rebuild();
 
 	m_popupViewportOptions = bqFramework::CreatePopup();
-	m_popupViewportOptions->AddItem(L"Perspective", CommandID_ViewportViewPerspective, L"");
-	m_popupViewportOptions->AddItem(L"Top", CommandID_ViewportViewTop, L"");
-	m_popupViewportOptions->AddItem(L"Bottom", CommandID_ViewportViewBottom, L"");
-	m_popupViewportOptions->AddItem(L"Left", CommandID_ViewportViewLeft, L"");
-	m_popupViewportOptions->AddItem(L"Right", CommandID_ViewportViewRight, L"");
-	m_popupViewportOptions->AddItem(L"Front", CommandID_ViewportViewFront, L"");
-	m_popupViewportOptions->AddItem(L"Back", CommandID_ViewportViewBack, L"");
+	m_popupViewportOptions->AddItem(L"Perspective", CommandID_ViewportViewPerspective, m_shortcutMgr->GetTextW(CommandID_ViewportViewPerspective));
+	m_popupViewportOptions->AddItem(L"Top", CommandID_ViewportViewTop, m_shortcutMgr->GetTextW(CommandID_ViewportViewTop));
+	m_popupViewportOptions->AddItem(L"Bottom", CommandID_ViewportViewBottom, m_shortcutMgr->GetTextW(CommandID_ViewportViewBottom));
+	m_popupViewportOptions->AddItem(L"Left", CommandID_ViewportViewLeft, m_shortcutMgr->GetTextW(CommandID_ViewportViewLeft));
+	m_popupViewportOptions->AddItem(L"Right", CommandID_ViewportViewRight, m_shortcutMgr->GetTextW(CommandID_ViewportViewRight));
+	m_popupViewportOptions->AddItem(L"Front", CommandID_ViewportViewFront, m_shortcutMgr->GetTextW(CommandID_ViewportViewFront));
+	m_popupViewportOptions->AddItem(L"Back", CommandID_ViewportViewBack, m_shortcutMgr->GetTextW(CommandID_ViewportViewBack));
 	m_popupViewportOptions->AddSeparator();
-	m_popupViewportOptions->AddItem(L"Toggle full view", CommandID_ViewportToggleFullView, L"");
-	m_popupViewportOptions->AddItem(L"Toggle grid", CommandID_ViewportToggleGrid, L"");
+	m_popupViewportOptions->AddItem(L"Toggle full view", CommandID_ViewportToggleFullView, m_shortcutMgr->GetTextW(CommandID_ViewportToggleFullView));
+	m_popupViewportOptions->AddItem(L"Toggle grid", CommandID_ViewportToggleGrid, m_shortcutMgr->GetTextW(CommandID_ViewportToggleGrid));
 	m_popupViewportOptions->AddSeparator();
-	m_popupViewportOptions->AddItem(L"Material", CommandID_ViewportDrawMaterial, L"");
-	m_popupViewportOptions->AddItem(L"Material+Wireframe", CommandID_ViewportDrawMaterialWireframe, L"");
-	m_popupViewportOptions->AddItem(L"Wireframe", CommandID_ViewportDrawWireframe, L"");
-	m_popupViewportOptions->AddItem(L"Toggle draw material", CommandID_ViewportToggleDrawMaterial, L"");
-	m_popupViewportOptions->AddItem(L"Toggle draw wireframe", CommandID_ViewportToggleDrawWireframe, L"");
+	m_popupViewportOptions->AddItem(L"Material", CommandID_ViewportDrawMaterial, m_shortcutMgr->GetTextW(CommandID_ViewportDrawMaterial));
+	m_popupViewportOptions->AddItem(L"Material+Wireframe", CommandID_ViewportDrawMaterialWireframe, m_shortcutMgr->GetTextW(CommandID_ViewportDrawMaterialWireframe));
+	m_popupViewportOptions->AddItem(L"Wireframe", CommandID_ViewportDrawWireframe, m_shortcutMgr->GetTextW(CommandID_ViewportDrawWireframe));
+	m_popupViewportOptions->AddItem(L"Toggle draw material", CommandID_ViewportToggleDrawMaterial, m_shortcutMgr->GetTextW(CommandID_ViewportToggleDrawMaterial));
+	m_popupViewportOptions->AddItem(L"Toggle draw wireframe", CommandID_ViewportToggleDrawWireframe, m_shortcutMgr->GetTextW(CommandID_ViewportToggleDrawWireframe));
 	m_popupViewportOptions->AddSeparator();
-	m_popupViewportOptions->AddItem(L"Toggle draw AABB", CommandID_ViewportToggleDrawAABB, L"");
+	m_popupViewportOptions->AddItem(L"Toggle draw AABB", CommandID_ViewportToggleDrawAABB, m_shortcutMgr->GetTextW(CommandID_ViewportToggleDrawAABB));
 	m_popupViewportOptions->AddSeparator();
-	m_popupViewportOptions->AddItem(L"Camera Reset", CommandID_CameraReset, L"");
-	m_popupViewportOptions->AddItem(L"Camera Move to selection", CommandID_CameraMoveToSelection, L"");
+	m_popupViewportOptions->AddItem(L"Camera Reset", CommandID_CameraReset, m_shortcutMgr->GetTextW(CommandID_CameraReset));
+	m_popupViewportOptions->AddItem(L"Camera Move to selection", CommandID_CameraMoveToSelection, m_shortcutMgr->GetTextW(CommandID_CameraMoveToSelection));
 
 	m_popupMainMenuOptions = bqFramework::CreatePopup();
 	m_popupMainMenuOptions->AddItem(L"New", CommandID_MainMenuNew, m_shortcutMgr->GetTextW(CommandID_MainMenuNew));
@@ -338,6 +343,7 @@ void ModelEditor::OnWindowCallback_onPopupMenu(bqWindow* w, uint32_t id)
 		g_app->SetActiveViewportViewType(ViewportView::type_back);
 		break;
 	case CommandID_ViewportToggleFullView:
+		g_app->ToggleFullView();
 		break;
 	case CommandID_ViewportToggleGrid:
 		break;
@@ -368,6 +374,11 @@ void ModelEditor::OnExit()
 void ModelEditor::SetActiveViewportViewType(uint32_t t)
 {
 	m_viewport->SetActiveViewportViewType(t);
+}
+
+void ModelEditor::ToggleFullView()
+{
+	m_viewport->ToggleFullView();
 }
 
 void ModelEditor::GUI_rebuild()
@@ -404,7 +415,25 @@ void ModelEditor::GUI_rebuild()
 
 void ModelEditor::_processShortcuts()
 {
-	if (m_shortcutMgr->IsShortcutActive(CommandID_MainMenuExit))OnExit();
+	if (m_shortcutMgr->IsShortcutActive(CommandID_MainMenuExit))
+		OnExit();
+	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportViewPerspective))
+		g_app->SetActiveViewportViewType(ViewportView::type_perspective);
+	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportViewBack))
+		g_app->SetActiveViewportViewType(ViewportView::type_back);
+	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportViewBottom))
+		g_app->SetActiveViewportViewType(ViewportView::type_bottom);
+	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportViewFront))
+		g_app->SetActiveViewportViewType(ViewportView::type_front);
+	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportViewLeft))
+		g_app->SetActiveViewportViewType(ViewportView::type_left);
+	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportViewRight))
+		g_app->SetActiveViewportViewType(ViewportView::type_right);
+	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportViewTop))
+		g_app->SetActiveViewportViewType(ViewportView::type_top);
+	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportToggleFullView))
+		g_app->ToggleFullView();
+
 	//if (m_shortcutMgr->IsShortcutActive(CommandID_MainMenuExit))OnExit();
 }
 
