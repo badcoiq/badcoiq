@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/system/bqPopup.h"
 #include "badcoiq/framework/bqShortcutManager.h"
 #include "badcoiq/scene/bqCamera.h"
+#include "badcoiq/geometry/bqMeshCreator.h"
 
 ModelEditor* g_app = 0;
 
@@ -132,7 +133,6 @@ bool ModelEditor::Init()
 		bqFramework::GetPath("../data/model_editor/gui.png").c_str(),
 		false, false);
 	
-	m_gs->SetClearColor(0.89f, 0.89f, 0.89f, 1.f);
 
 	bqFramework::InitDefaultFonts(m_gs);
 	m_drawTextCallback.SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
@@ -209,6 +209,19 @@ bool ModelEditor::Init()
 	m_mainWindow->ToFullscreenMode();
 	m_mainWindow->SetBorderless(false);
 
+	{
+		bqMat4 transform;
+		bqPolygonMesh pm;
+		pm.AddCube(1.f, transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh = pm.CreateMesh();
+		if (m_cubeViewMesh)
+		{
+			m_cubeViewGPUMesh = m_gs->CreateMesh(m_cubeViewMesh);
+			
+		}
+	}
+
 	return true;
 }
 
@@ -243,6 +256,7 @@ void ModelEditor::Run()
 		m_viewport->Update();
 		m_viewport->Draw();
 
+		m_gs->SetClearColor(0.89f, 0.89f, 0.89f, 1.f);
 		m_gs->BeginGUI(false);
 		m_mainWindow->DrawGUI(m_gs);
 

@@ -163,6 +163,10 @@ class ModelEditor
     bqGPUMesh* m_gridModel_front = 0;
     bqGPUMesh* m_gridModel_left = 0;
     void _initGrid();
+
+    bqMesh* m_cubeViewMesh = 0;
+    bqGPUMesh* m_cubeViewGPUMesh = 0;
+
 public:
 	ModelEditor();
 	~ModelEditor();

@@ -84,6 +84,8 @@ class ViewportView
 	ViewportLayout* m_layout = 0;
 	bqCamera* m_camera = 0;
 	bqTexture* m_rtt = 0;
+	
+	bqTexture* m_rttCubeView = 0;
 public:
 	ViewportView(ViewportLayout*, uint32_t type);
 	~ViewportView();

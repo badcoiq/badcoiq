@@ -268,11 +268,14 @@ ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 
 	bqTextureInfo ti;
 	m_rtt = g_app->m_gs->CreateRTT(bqPoint(2,2), ti);
+
+	m_rttCubeView = g_app->m_gs->CreateRTT(bqPoint(64, 64), ti);
 }
 
 ViewportView::~ViewportView()
 {
 	BQ_SAFEDESTROY(m_rtt);
+	BQ_SAFEDESTROY(m_rttCubeView);
 	BQ_SAFEDESTROY(m_camera);
 }
 
@@ -374,6 +377,9 @@ void ViewportView::Update()
 		{
 			m_layout->m_mouseFocusView = 0;
 		}
+
+		if(g_app->m_inputData->m_mouseWheelDelta)
+			m_camera->EditorZoom(g_app->m_inputData->m_mouseWheelDelta);
 	}
 
 
@@ -413,11 +419,29 @@ void ViewportView::Draw()
 		(float)m_rtt->GetInfo().m_imageInfo.m_width,
 		(float)m_rtt->GetInfo().m_imageInfo.m_height);
 
-	//g_app->m_gs->BeginDraw();
 	g_app->m_gs->ClearAll();
 	_DrawScene(this);
-//	g_app->m_gs->EndDraw();
 
+	// CUBE VIEW
+	g_app->m_gs->SetRenderTarget(m_rttCubeView);
+	g_app->m_gs->SetScissorRect(bqVec4f(0.f, 0.f,64,64));
+	g_app->m_gs->SetViewport(0.f, 0.f,64,64);
+	g_app->m_gs->SetClearColor(0.f,0.f,0.f,0.f);
+	g_app->m_gs->ClearAll();
+	{
+		static bqMat4 WVP;
+		static bqMat4 W;
+		WVP = m_camera->m_projectionMatrix * m_camera->m_viewMatrix * W;
+		bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
+		bqFramework::SetMatrix(bqMatrixType::World, &W);
+		g_app->m_gs->EnableDepth();
+		static bqMaterial material;
+		material.m_shaderType = bqShaderType::Standart;
+		g_app->m_gs->SetShader(material.m_shaderType, 0);
+		g_app->m_gs->SetMesh(g_app->m_cubeViewGPUMesh);
+		g_app->m_gs->SetMaterial(&material);
+		g_app->m_gs->Draw();
+	}
 
 	g_app->m_gs->SetRenderTargetDefault();
 	/*g_app->m_gs->SetViewport(0.f, 0.f,
@@ -439,8 +463,11 @@ void ViewportView::Draw()
 
 	bqColor bgcolor = 0xFFF4F4EE;
 
+	g_app->m_gs->EnableBlend();
+
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bgcolor, bgcolor, 0, 0);
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bq::ColorWhite, bq::ColorWhite, m_rtt, 0);
+	g_app->m_gs->DrawGUIRectangle(bqVec4f(m_rectangle.x, m_rectangle.y, m_rectangle.x+ 64, m_rectangle.y+64), bq::ColorWhite, bq::ColorWhite, m_rttCubeView, 0);
 
 	
 	
@@ -466,6 +493,8 @@ void ViewportView::_DrawScene(ViewportView* view)
 {
 	if(m_drawGrid)
 		_DrawGrid(14.f);
+
+	
 }
 
 void ViewportView::_DrawGrid(int gridSize)

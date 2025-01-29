@@ -75,7 +75,7 @@ bqGUIButton::~bqGUIButton() {}
 
 void bqGUIButton::Rebuild()
 {
-	printf("R");
+	//printf("R");
 	m_textDrawCallback->m_element = this;
 	bqGUIElement::Rebuild();
 	UpdateTextPosition();
