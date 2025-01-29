@@ -64,6 +64,8 @@ public:
 	void Draw();
 	void SetActiveViewportViewType(uint32_t);
 	void ToggleFullView();
+	void ToggleGrid();
+	void CameraReset();
 };
 
 class ViewportView
@@ -76,7 +78,8 @@ class ViewportView
 
 	const char32_t* m_viewportTypeText = U" ";
 
-	bqVec4f m_rectangle;
+	bool m_drawGrid = true;
+	bqVec4f m_rectangle = bqVec4f(0.f,0.f,1.f,1.f);
 	bqVec4f m_viewportOptionsRectangle;
 	ViewportLayout* m_layout = 0;
 	bqCamera* m_camera = 0;
@@ -105,6 +108,8 @@ public:
 	void ResetCamera();
 
 	void CopyDataFrom(ViewportView*);
+	void ToggleGrid();
+	void CameraReset();
 };
 
 class ViewportLayout

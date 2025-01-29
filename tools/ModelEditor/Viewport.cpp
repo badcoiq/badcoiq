@@ -115,6 +115,16 @@ void Viewport::ToggleFullView()
 	}
 }
 
+void Viewport::ToggleGrid()
+{
+	m_activeLayout->GetActiveView()->ToggleGrid();
+}
+
+void Viewport::CameraReset()
+{
+	m_activeLayout->GetActiveView()->CameraReset();
+}
+
 ViewportLayout::ViewportLayout(Viewport* viewport, uint32_t type)
 {
 	m_viewport = viewport;
@@ -454,7 +464,8 @@ void ViewportView::Draw()
 
 void ViewportView::_DrawScene(ViewportView* view)
 {
-	_DrawGrid(14.f);
+	if(m_drawGrid)
+		_DrawGrid(14.f);
 }
 
 void ViewportView::_DrawGrid(int gridSize)
@@ -544,6 +555,16 @@ void ViewportView::CopyDataFrom(ViewportView* other)
 	m_camera->m_upVector = other->m_camera->m_upVector;
 
 	m_type = other->m_type;
+}
+
+void ViewportView::ToggleGrid()
+{
+	m_drawGrid = m_drawGrid ? false : true;
+}
+
+void ViewportView::CameraReset()
+{
+	m_camera->EditorReset();
 }
 
 void ViewportView::SetCameraType(uint32_t ct)

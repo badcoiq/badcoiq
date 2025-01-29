@@ -125,6 +125,8 @@ bool ModelEditor::Init()
 	m_shortcutMgr->SetCommand(CommandID_ViewportViewTop, L"Top", 0, bqInput::KEY_T);
 	m_shortcutMgr->SetCommand(CommandID_ViewportViewFront, L"Front", 0, bqInput::KEY_F);
 	m_shortcutMgr->SetCommand(CommandID_ViewportToggleFullView, L"TFV", bq::KeyboardMod_Alt, bqInput::KEY_W);
+	m_shortcutMgr->SetCommand(CommandID_CameraMoveToSelection, L"Z", 0, bqInput::KEY_Z);
+	m_shortcutMgr->SetCommand(CommandID_ViewportToggleGrid, L"G", 0, bqInput::KEY_G);
 
 	m_GUITexture = bqFramework::CreateTexture(m_gs,
 		bqFramework::GetPath("../data/model_editor/gui.png").c_str(),
@@ -203,6 +205,9 @@ bool ModelEditor::Init()
 	m_popupMainMenuOptions->AddSeparator();
 	m_popupMainMenuOptions->AddItem(L"Exit", CommandID_MainMenuExit, m_shortcutMgr->GetTextW(CommandID_MainMenuExit));
 
+
+	m_mainWindow->ToFullscreenMode();
+	m_mainWindow->SetBorderless(false);
 
 	return true;
 }
@@ -346,6 +351,7 @@ void ModelEditor::OnWindowCallback_onPopupMenu(bqWindow* w, uint32_t id)
 		g_app->ToggleFullView();
 		break;
 	case CommandID_ViewportToggleGrid:
+		g_app->ToggleGrid();
 		break;
 	case CommandID_ViewportDrawMaterial:
 		break;
@@ -360,6 +366,7 @@ void ModelEditor::OnWindowCallback_onPopupMenu(bqWindow* w, uint32_t id)
 	case CommandID_ViewportToggleDrawAABB:
 		break;
 	case CommandID_CameraReset:
+		g_app->CameraReset();
 		break;
 	case CommandID_CameraMoveToSelection:
 		break;
@@ -379,6 +386,16 @@ void ModelEditor::SetActiveViewportViewType(uint32_t t)
 void ModelEditor::ToggleFullView()
 {
 	m_viewport->ToggleFullView();
+}
+
+void ModelEditor::ToggleGrid()
+{
+	m_viewport->ToggleGrid();
+}
+
+void ModelEditor::CameraReset()
+{
+	m_viewport->CameraReset();
 }
 
 void ModelEditor::GUI_rebuild()
@@ -433,6 +450,8 @@ void ModelEditor::_processShortcuts()
 		g_app->SetActiveViewportViewType(ViewportView::type_top);
 	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportToggleFullView))
 		g_app->ToggleFullView();
+	if (m_shortcutMgr->IsShortcutActive(CommandID_ViewportToggleGrid))
+		g_app->ToggleGrid();
 
 	//if (m_shortcutMgr->IsShortcutActive(CommandID_MainMenuExit))OnExit();
 }

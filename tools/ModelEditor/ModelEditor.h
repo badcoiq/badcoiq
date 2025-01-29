@@ -177,6 +177,8 @@ public:
 
     void SetActiveViewportViewType(uint32_t);
     void ToggleFullView();
+    void ToggleGrid();
+    void CameraReset();
 
     bqPopup* m_popupViewportOptions = 0;
     bqPopup* m_popupMainMenuOptions = 0;
