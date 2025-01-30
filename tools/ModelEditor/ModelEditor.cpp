@@ -28,11 +28,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ModelEditor.h"
 #include "Viewport.h"
+#include "CubeView.h"
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/system/bqPopup.h"
 #include "badcoiq/framework/bqShortcutManager.h"
 #include "badcoiq/scene/bqCamera.h"
-#include "badcoiq/geometry/bqMeshCreator.h"
 
 ModelEditor* g_app = 0;
 
@@ -209,18 +209,9 @@ bool ModelEditor::Init()
 	m_mainWindow->ToFullscreenMode();
 	m_mainWindow->SetBorderless(false);
 
-	{
-		bqMat4 transform;
-		bqPolygonMesh pm;
-		pm.AddCube(1.f, transform);
-		pm.GenerateNormals(false);
-		m_cubeViewMesh = pm.CreateMesh();
-		if (m_cubeViewMesh)
-		{
-			m_cubeViewGPUMesh = m_gs->CreateMesh(m_cubeViewMesh);
-			
-		}
-	}
+	m_cubeView = new CubeView;
+	if (!m_cubeView->Init())
+		BQ_SAFEDESTROY(m_cubeView);
 
 	return true;
 }
@@ -256,7 +247,6 @@ void ModelEditor::Run()
 		m_viewport->Update();
 		m_viewport->Draw();
 
-		m_gs->SetClearColor(0.89f, 0.89f, 0.89f, 1.f);
 		m_gs->BeginGUI(false);
 		m_mainWindow->DrawGUI(m_gs);
 
@@ -277,6 +267,7 @@ void ModelEditor::Run()
 
 void ModelEditor::Shutdown()
 {
+	BQ_SAFEDESTROY(m_cubeView);
 	BQ_SAFEDESTROY(m_shortcutMgr);
 	BQ_SAFEDESTROY(m_gridModel_perspective1);
 	BQ_SAFEDESTROY(m_gridModel_perspective2);

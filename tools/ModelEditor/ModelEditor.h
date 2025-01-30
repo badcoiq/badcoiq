@@ -124,6 +124,7 @@ enum
 class GUIButton;
 class ModelEditor
 {
+    friend class CubeView;
     friend class Viewport;
     friend class ViewportLayout;
     friend class ViewportView;
@@ -164,9 +165,7 @@ class ModelEditor
     bqGPUMesh* m_gridModel_left = 0;
     void _initGrid();
 
-    bqMesh* m_cubeViewMesh = 0;
-    bqGPUMesh* m_cubeViewGPUMesh = 0;
-
+    CubeView* m_cubeView = 0;
 public:
 	ModelEditor();
 	~ModelEditor();

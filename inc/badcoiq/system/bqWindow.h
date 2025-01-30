@@ -76,6 +76,10 @@ public:
 
 	/// Когда кликается пункт в popup
 	virtual void OnPopupMenu(bqWindow*, uint32_t /*id*/) {}
+
+	/// Надо вернуть true чтобы была обработка ввода
+	virtual bool OnInputMouse(bqWindow*) { return true; }
+	virtual bool OnInputKeyboard(bqWindow*) { return true; }
 };
 
 /// \brief Общие данные для системного окна

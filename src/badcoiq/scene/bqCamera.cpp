@@ -92,7 +92,7 @@ void bqCamera::_updatePerspective(float)
 
 void bqCamera::_updatePerspectiveLookAt(float)
 {
-	bqMath::LookAtRH(m_viewMatrix, m_position, m_lookAtTargett, m_upVector);
+	bqMath::LookAtRH(m_viewMatrix, m_position, m_lookAtTarget, m_upVector);
 	bqMath::PerspectiveRH(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
 }
 
@@ -104,7 +104,7 @@ void bqCamera::_updateOrtho(float)
 
 void bqCamera::_updateOrthoLookAt(float)
 {
-	bqMath::LookAtRH(m_viewMatrix, m_position, m_lookAtTargett, m_upVector);
+	bqMath::LookAtRH(m_viewMatrix, m_position, m_lookAtTarget, m_upVector);
 	bqMath::OrthoRH(m_projectionMatrix, m_orthoWidth, m_orthoHeight, m_near, m_far);
 }
 

@@ -934,3 +934,22 @@ void bqPolygonMesh::AddCylinder(
 		AddPolygon(&pc, true);
 	}
 }
+
+void bqPolygonMesh::AddQuad(const bqVec4f& p1, const bqVec4f& p2, const bqMat4& m)
+{
+	bqMeshPolygonCreator pc;
+	pc.SetPosition(bqVec3f((float)p1.x, (float)p2.y, (float)p2.z));
+	pc.SetUV(bqVec2f(0.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)p2.x, (float)p2.y, (float)p2.z));
+	pc.SetUV(bqVec2f(1.f, 0.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)p2.x, (float)p2.y, (float)p1.z));
+	pc.SetUV(bqVec2f(1.f, 1.f));
+	pc.AddVertex();
+	pc.SetPosition(bqVec3f((float)p1.x, (float)p2.y, (float)p1.z));
+	pc.SetUV(bqVec2f(0.f, 1.f));
+	pc.AddVertex();
+	pc.Mul(m);
+	AddPolygon(&pc, true);
+}

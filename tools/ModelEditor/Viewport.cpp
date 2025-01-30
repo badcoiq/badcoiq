@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ModelEditor.h"
 #include "Viewport.h"
+#include "CubeView.h"
 
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/scene/bqCamera.h"
@@ -122,7 +123,7 @@ void Viewport::ToggleGrid()
 
 void Viewport::CameraReset()
 {
-	m_activeLayout->GetActiveView()->CameraReset();
+	m_activeLayout->GetActiveView()->ResetCamera();
 }
 
 ViewportLayout::ViewportLayout(Viewport* viewport, uint32_t type)
@@ -242,6 +243,9 @@ void ViewportLayout::Draw()
 ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 	: m_layout(l)
 {
+	m_cubeViewCamera = new bqCamera;
+	m_cubeViewCamera->SetType(bqCamera::Type::Editor);
+	m_cubeViewCamera->m_forceOrtho = true;
 
 	m_camera = new bqCamera;
 	m_camera->SetType(bqCamera::Type::Editor);
@@ -255,6 +259,9 @@ ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 	case type_right:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Right; break;
 	case type_top:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Top; break;
 	}
+
+	m_cubeViewCamera->m_editorCameraType = m_camera->m_editorCameraType;
+
 	ResetCamera();
 	SetCameraType(type);
 
@@ -264,6 +271,7 @@ ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 	//m_camera->Rotate(0, 90, 0.f);
 	m_camera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
 	m_camera->Update(0.f);
+	m_cubeViewCamera->Update(0.f);
 	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
 
 	bqTextureInfo ti;
@@ -310,6 +318,7 @@ void ViewportView::Update()
 {
 	m_camera->Update(0.1);
 	m_camera->UpdateFrustum();
+	m_cubeViewCamera->Update(0.1);
 
 	bqPointf& mousePosition = bqInput::GetMousePosition();
 
@@ -390,6 +399,7 @@ void ViewportView::Update()
 			if (bqInput::IsCtrl())
 			{
 				m_camera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+				m_cubeViewCamera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
 			}
 			else
 			{
@@ -428,6 +438,7 @@ void ViewportView::Draw()
 	g_app->m_gs->SetViewport(0.f, 0.f,64,64);
 	g_app->m_gs->SetClearColor(0.f,0.f,0.f,0.f);
 	g_app->m_gs->ClearAll();
+	/*
 	{
 		static bqMat4 WVP;
 		static bqMat4 W;
@@ -441,7 +452,8 @@ void ViewportView::Draw()
 		g_app->m_gs->SetMesh(g_app->m_cubeViewGPUMesh);
 		g_app->m_gs->SetMaterial(&material);
 		g_app->m_gs->Draw();
-	}
+	}*/
+	g_app->m_cubeView->Draw(m_cubeViewCamera);
 
 	g_app->m_gs->SetRenderTargetDefault();
 	/*g_app->m_gs->SetViewport(0.f, 0.f,
@@ -461,10 +473,10 @@ void ViewportView::Draw()
 	}
 	g_app->m_gs->SetScissorRect(m_rectangle);
 
-	bqColor bgcolor = 0xFFF4F4EE;
+	bqColor bgcolor = 0xFFFFF4EE;
 
+	g_app->m_gs->DisableDepth();
 	g_app->m_gs->EnableBlend();
-
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bgcolor, bgcolor, 0, 0);
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bq::ColorWhite, bq::ColorWhite, m_rtt, 0);
 	g_app->m_gs->DrawGUIRectangle(bqVec4f(m_rectangle.x, m_rectangle.y, m_rectangle.x+ 64, m_rectangle.y+64), bq::ColorWhite, bq::ColorWhite, m_rttCubeView, 0);
@@ -560,7 +572,14 @@ void ViewportView::_DrawGrid(int gridSize)
 void ViewportView::ResetCamera()
 {
 	m_camera->EditorReset();
-	m_camera->m_aspect = m_rectangle.x / m_rectangle.y;
+	m_camera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
+
+	m_cubeViewCamera->EditorReset();
+	m_cubeViewCamera->m_positionPlatform.w = 1.75f;
+	m_cubeViewCamera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
+
+	m_camera->Update(0.f);
+	m_cubeViewCamera->Update(0.f);
 }
 
 void ViewportView::CopyDataFrom(ViewportView* other)
@@ -591,11 +610,6 @@ void ViewportView::ToggleGrid()
 	m_drawGrid = m_drawGrid ? false : true;
 }
 
-void ViewportView::CameraReset()
-{
-	m_camera->EditorReset();
-}
-
 void ViewportView::SetCameraType(uint32_t ct)
 {
 	m_type = ct;
@@ -617,6 +631,9 @@ void ViewportView::SetCameraType(uint32_t ct)
 	case type_top:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Top;
 		break;
 	}
+
+	m_cubeViewCamera->m_editorCameraType = m_camera->m_editorCameraType;
+
 	ResetCamera();
 	Rebuild();
 }
