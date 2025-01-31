@@ -100,7 +100,7 @@ void Viewport::SetActiveViewportViewType(uint32_t t)
 
 void Viewport::ToggleFullView()
 {
-	if (m_activeLayout == m_fullViewLayout)
+	/*if (m_activeLayout == m_fullViewLayout)
 	{
 		auto old = m_activeLayout;
 		m_activeLayout = m_beforeToggleFullViewLayout;
@@ -113,7 +113,8 @@ void Viewport::ToggleFullView()
 		m_activeLayout = m_fullViewLayout;
 		m_activeLayout->GetActiveView()->CopyDataFrom(m_beforeToggleFullViewLayout->GetActiveView());
 		m_activeLayout->Rebuild();
-	}
+	}*/
+	m_activeLayout->ToggleFullView();
 }
 
 void Viewport::ToggleGrid()
@@ -211,6 +212,15 @@ void ViewportLayout::Rebuild()
 	}break;
 	}
 
+	if (m_activeView->m_fullview)
+	{
+		m_activeView->m_rectangle = m_viewport->m_rectangle;
+		m_activeView->m_rectangle.x += border;
+		m_activeView->m_rectangle.y += border;
+		m_activeView->m_rectangle.z -= border;
+		m_activeView->m_rectangle.w -= border;
+	}
+
 	for (size_t i = 0; i < m_views.m_size; ++i)
 	{
 		m_views.m_data[i]->Rebuild();
@@ -219,23 +229,37 @@ void ViewportLayout::Rebuild()
 
 void ViewportLayout::Update()
 {
-	for (size_t i = 0; i < m_views.m_size; ++i)
+	if (m_activeView->m_fullview)
 	{
-		m_views.m_data[i]->Update();
+		m_activeView->Update();
+	}
+	else
+	{
+		for (size_t i = 0; i < m_views.m_size; ++i)
+		{
+			m_views.m_data[i]->Update();
+		}
 	}
 }
 
 void ViewportLayout::Draw()
 {
-	for (size_t i = 0; i < m_views.m_size; ++i)
+	if (m_activeView->m_fullview)
 	{
-		m_views.m_data[i]->Draw();
+		m_activeView->Draw();
 	}
-	
-	g_app->m_gs->BeginGUI(false);
-	g_app->m_gs->SetScissorRect(m_resizeRect);
-	g_app->m_gs->DrawGUIRectangle(m_resizeRect, bq::ColorBlack, bq::ColorBlack, 0, 0);
-	g_app->m_gs->EndGUI();
+	else
+	{
+		for (size_t i = 0; i < m_views.m_size; ++i)
+		{
+			m_views.m_data[i]->Draw();
+		}
+
+		g_app->m_gs->BeginGUI(false);
+		g_app->m_gs->SetScissorRect(m_resizeRect);
+		g_app->m_gs->DrawGUIRectangle(m_resizeRect, bq::ColorBlack, bq::ColorBlack, 0, 0);
+		g_app->m_gs->EndGUI();
+	}
 
 }
 
@@ -245,22 +269,29 @@ ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 {
 	m_cubeViewCamera = new bqCamera;
 	m_cubeViewCamera->SetType(bqCamera::Type::Editor);
-	m_cubeViewCamera->m_forceOrtho = true;
+	//m_cubeViewCamera->m_forceOrtho = true;
 
-	m_camera = new bqCamera;
-	m_camera->SetType(bqCamera::Type::Editor);
-	switch (type)
+	for (int i = 0; i < type__size; ++i)
 	{
-	case type_perspective:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Perspective; break;
-	case type_back:m_camera->m_editorCameraType= bqCamera::CameraEditorType::Back; break;
-	case type_bottom:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Bottom; break;
-	case type_front:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Front; break;
-	case type_left:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Left; break;
-	case type_right:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Right; break;
-	case type_top:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Top; break;
+		m_cameras[i] = new bqCamera;
+		m_cameras[i]->SetType(bqCamera::Type::Editor);
+		m_cameras[i]->m_editorCameraType = bqCamera::CameraEditorType::Perspective;
+	
+		switch (i)
+		{
+		default:
+		case type_perspective:m_cameras[i]->m_editorCameraType = bqCamera::CameraEditorType::Perspective; break;
+		case type_back:m_cameras[i]->m_editorCameraType= bqCamera::CameraEditorType::Back; break;
+		case type_bottom:m_cameras[i]->m_editorCameraType = bqCamera::CameraEditorType::Bottom; break;
+		case type_front:m_cameras[i]->m_editorCameraType = bqCamera::CameraEditorType::Front; break;
+		case type_left:m_cameras[i]->m_editorCameraType = bqCamera::CameraEditorType::Left; break;
+		case type_right:m_cameras[i]->m_editorCameraType = bqCamera::CameraEditorType::Right; break;
+		case type_top:m_cameras[i]->m_editorCameraType = bqCamera::CameraEditorType::Top; break;
+		}
 	}
+	m_activeCamera = m_cameras[type];
 
-	m_cubeViewCamera->m_editorCameraType = m_camera->m_editorCameraType;
+	m_cubeViewCamera->m_editorCameraType = m_activeCamera->m_editorCameraType;
 
 	ResetCamera();
 	SetCameraType(type);
@@ -269,28 +300,33 @@ ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 	//m_camera->m_positionPlatform.w = 20.f;
 
 	//m_camera->Rotate(0, 90, 0.f);
-	m_camera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
-	m_camera->Update(0.f);
+	m_activeCamera->Update(0.f);
 	m_cubeViewCamera->Update(0.f);
-	m_camera->m_viewProjectionMatrix = m_camera->GetMatrixProjection() * m_camera->GetMatrixView();
+	m_activeCamera->m_viewProjectionMatrix = m_activeCamera->GetMatrixProjection() * m_activeCamera->GetMatrixView();
 
 	bqTextureInfo ti;
 	m_rtt = g_app->m_gs->CreateRTT(bqPoint(2,2), ti);
 
-	m_rttCubeView = g_app->m_gs->CreateRTT(bqPoint(64, 64), ti);
+	m_rttCubeView = g_app->m_gs->CreateRTT(bqPoint(128, 128), ti);
 }
 
 ViewportView::~ViewportView()
 {
 	BQ_SAFEDESTROY(m_rtt);
 	BQ_SAFEDESTROY(m_rttCubeView);
-	BQ_SAFEDESTROY(m_camera);
+	for (int i = 0; i < type__size; ++i)
+	{
+		BQ_SAFEDESTROY(m_cameras[i]);
+	}
 }
 
 void ViewportView::Rebuild()
 {
-	m_camera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
-	m_camera->Update(0.f);
+	for (int i = 0; i < type__size; ++i)
+	{
+		m_cameras[i]->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
+		m_cameras[i]->Update(0.f);
+	}
 	BQ_SAFEDESTROY(m_rtt);
 	bqTextureInfo ti;
 	m_rtt = g_app->m_gs->CreateRTT(bqPoint(m_rectangle.z - m_rectangle.x, m_rectangle.w - m_rectangle.y), ti);
@@ -312,12 +348,26 @@ void ViewportView::Rebuild()
 	m_viewportOptionsRectangle.y = m_rectangle.y;
 	m_viewportOptionsRectangle.z = m_rectangle.x + textSize.x;
 	m_viewportOptionsRectangle.w = m_rectangle.y + textSize.y;
+
+	switch (m_type)
+	{
+	case type_back:
+	case type_bottom:
+	case type_front:
+	case type_left:
+	case type_right:
+	case type_top:
+	case type_perspective:
+		m_cubeViewCamera->m_fov = 0.3f;
+		m_cubeViewCamera->m_positionPlatform.w = 14.75f;
+		break;
+	}
 }
 
 void ViewportView::Update()
 {
-	m_camera->Update(0.1);
-	m_camera->UpdateFrustum();
+	m_activeCamera->Update(0.1);
+	m_activeCamera->UpdateFrustum();
 	m_cubeViewCamera->Update(0.1);
 
 	bqPointf& mousePosition = bqInput::GetMousePosition();
@@ -388,7 +438,7 @@ void ViewportView::Update()
 		}
 
 		if(g_app->m_inputData->m_mouseWheelDelta)
-			m_camera->EditorZoom(g_app->m_inputData->m_mouseWheelDelta);
+			m_activeCamera->EditorZoom(g_app->m_inputData->m_mouseWheelDelta);
 	}
 
 
@@ -398,12 +448,12 @@ void ViewportView::Update()
 		{
 			if (bqInput::IsCtrl())
 			{
-				m_camera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+				m_activeCamera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
 				m_cubeViewCamera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
 			}
 			else
 			{
-				m_camera->EditorPanMove(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+				m_activeCamera->EditorPanMove(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
 			}
 		}
 	}
@@ -417,9 +467,9 @@ void ViewportView::SetActiveView()
 void ViewportView::Draw()
 {
 	bool isActiveView = (m_layout->m_activeView == this);
-	bqFramework::SetMatrix(bqMatrixType::View, &m_camera->m_viewMatrix);
-	bqFramework::SetMatrix(bqMatrixType::Projection, &m_camera->m_projectionMatrix);
-	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_camera->m_viewProjectionMatrix);
+	bqFramework::SetMatrix(bqMatrixType::View, &m_activeCamera->m_viewMatrix);
+	bqFramework::SetMatrix(bqMatrixType::Projection, &m_activeCamera->m_projectionMatrix);
+	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_activeCamera->m_viewProjectionMatrix);
 
 	g_app->m_gs->SetRenderTarget(m_rtt);
 	g_app->m_gs->SetScissorRect(bqVec4f(0.f, 0.f,
@@ -434,25 +484,11 @@ void ViewportView::Draw()
 
 	// CUBE VIEW
 	g_app->m_gs->SetRenderTarget(m_rttCubeView);
-	g_app->m_gs->SetScissorRect(bqVec4f(0.f, 0.f,64,64));
-	g_app->m_gs->SetViewport(0.f, 0.f,64,64);
+	g_app->m_gs->SetScissorRect(bqVec4f(0.f, 0.f,128, 128));
+	g_app->m_gs->SetViewport(0.f, 0.f, 128, 128);
 	g_app->m_gs->SetClearColor(0.f,0.f,0.f,0.f);
 	g_app->m_gs->ClearAll();
-	/*
-	{
-		static bqMat4 WVP;
-		static bqMat4 W;
-		WVP = m_camera->m_projectionMatrix * m_camera->m_viewMatrix * W;
-		bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
-		bqFramework::SetMatrix(bqMatrixType::World, &W);
-		g_app->m_gs->EnableDepth();
-		static bqMaterial material;
-		material.m_shaderType = bqShaderType::Standart;
-		g_app->m_gs->SetShader(material.m_shaderType, 0);
-		g_app->m_gs->SetMesh(g_app->m_cubeViewGPUMesh);
-		g_app->m_gs->SetMaterial(&material);
-		g_app->m_gs->Draw();
-	}*/
+
 	g_app->m_cubeView->Draw(m_cubeViewCamera);
 
 	g_app->m_gs->SetRenderTargetDefault();
@@ -479,7 +515,7 @@ void ViewportView::Draw()
 	g_app->m_gs->EnableBlend();
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bgcolor, bgcolor, 0, 0);
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bq::ColorWhite, bq::ColorWhite, m_rtt, 0);
-	g_app->m_gs->DrawGUIRectangle(bqVec4f(m_rectangle.x, m_rectangle.y, m_rectangle.x+ 64, m_rectangle.y+64), bq::ColorWhite, bq::ColorWhite, m_rttCubeView, 0);
+	g_app->m_gs->DrawGUIRectangle(bqVec4f(m_rectangle.x, m_rectangle.y, m_rectangle.x+ 128, m_rectangle.y+ 128), bq::ColorWhite, bq::ColorWhite, m_rttCubeView, 0);
 
 	
 	
@@ -513,14 +549,14 @@ void ViewportView::_DrawGrid(int gridSize)
 {
 	static bqMat4 WVP;
 	static bqMat4 W;
-	WVP = m_camera->m_projectionMatrix * m_camera->m_viewMatrix * W;
+	WVP = m_activeCamera->m_projectionMatrix * m_activeCamera->m_viewMatrix * W;
 	bqFramework::SetMatrix(bqMatrixType::WorldViewProjection, &WVP);
 	bqFramework::SetMatrix(bqMatrixType::World, &W);
 
 	g_app->m_gs->SetShader(bqShaderType::LineModel, 0);
 	
 	bool isCameraLowerThanWorld = false;
-	if (m_camera->m_position.y < 0.f)
+	if (m_activeCamera->m_position.y < 0.f)
 		isCameraLowerThanWorld = true;
 
 	switch (m_type)
@@ -571,38 +607,44 @@ void ViewportView::_DrawGrid(int gridSize)
 
 void ViewportView::ResetCamera()
 {
-	m_camera->EditorReset();
-	m_camera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
+	m_activeCamera->EditorReset();
+	m_activeCamera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
 
+	// Надо временно установить m_editorCameraType
+	// для EditorReset()
+	switch (m_type)
+	{
+	case type_back:
+		m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Back;
+		break;
+	case type_bottom:
+		m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Bottom;
+		break;
+	case type_front:
+		m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Front;
+		break;
+	case type_left:
+		m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Left;
+		break;
+	case type_right:
+		m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Right;
+		break;
+	case type_top:
+		m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Top;
+		break;
+	case type_perspective:
+		m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Perspective;
+		break;
+	}	
 	m_cubeViewCamera->EditorReset();
-	m_cubeViewCamera->m_positionPlatform.w = 1.75f;
 	m_cubeViewCamera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
+	m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Perspective;
 
-	m_camera->Update(0.f);
+
+	m_activeCamera->Update(0.f);
 	m_cubeViewCamera->Update(0.f);
-}
 
-void ViewportView::CopyDataFrom(ViewportView* other)
-{
-	m_camera->m_aspect = other->m_camera->m_aspect;
-	m_camera->m_direction = other->m_camera->m_direction;
-	m_camera->m_editorCameraType = other->m_camera->m_editorCameraType;
-	m_camera->m_far = other->m_camera->m_far;
-	m_camera->m_forceOrtho = other->m_camera->m_forceOrtho;
-	m_camera->m_fov = other->m_camera->m_fov;
-	m_camera->m_frustum = other->m_camera->m_frustum;
-	m_camera->m_lookAtTarget = other->m_camera->m_lookAtTarget;
-	m_camera->m_moveSpeed = other->m_camera->m_moveSpeed;
-	m_camera->m_near = other->m_camera->m_near;
-	m_camera->m_orthoHeight = other->m_camera->m_orthoHeight;
-	m_camera->m_orthoWidth = other->m_camera->m_orthoWidth;
-	m_camera->m_position = other->m_camera->m_position;
-	m_camera->m_positionPlatform = other->m_camera->m_positionPlatform;
-	m_camera->m_rotation = other->m_camera->m_rotation;
-	m_camera->m_rotationPlatform = other->m_camera->m_rotationPlatform;
-	m_camera->m_upVector = other->m_camera->m_upVector;
-
-	m_type = other->m_type;
+	Rebuild();
 }
 
 void ViewportView::ToggleGrid()
@@ -614,26 +656,39 @@ void ViewportView::SetCameraType(uint32_t ct)
 {
 	m_type = ct;
 
-	m_camera->m_editorCameraType = bqCamera::CameraEditorType::Perspective;
 	switch (m_type)
 	{
 	case type_back:
-		m_camera->m_editorCameraType = bqCamera::CameraEditorType::Back;
+		m_activeCamera = m_cameras[type_back];
 		break;
-	case type_bottom:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Bottom;
+	case type_bottom:
+		m_activeCamera = m_cameras[type_bottom];
 		break;
-	case type_front:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Front;
+	case type_front:
+		m_activeCamera = m_cameras[type_front];
 		break;
-	case type_left:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Left;
+	case type_left:
+		m_activeCamera = m_cameras[type_left];
 		break;
-	case type_right:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Right;
+	case type_right:
+		m_activeCamera = m_cameras[type_right];
 		break;
-	case type_top:m_camera->m_editorCameraType = bqCamera::CameraEditorType::Top;
+	case type_top:
+		m_activeCamera = m_cameras[type_top];
+		break;
+	case type_perspective:
+		m_activeCamera = m_cameras[type_perspective];
 		break;
 	}
 
-	m_cubeViewCamera->m_editorCameraType = m_camera->m_editorCameraType;
 
+	m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Perspective;
+	m_cubeViewCamera->m_rotationPlatform = m_activeCamera->m_rotationPlatform;
 	ResetCamera();
+}
+
+void ViewportLayout::ToggleFullView()
+{
+	m_activeView->m_fullview = m_activeView->m_fullview ? false : true;
 	Rebuild();
 }

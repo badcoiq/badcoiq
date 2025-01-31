@@ -46,6 +46,8 @@ class CubeView
     };
     bqMesh* m_cubeViewMesh[meshID__size];
     bqGPUMesh* m_cubeViewGPUMesh[meshID__size];
+
+    bqTexture* m_texture[meshID__size];
 public:
     CubeView();
     ~CubeView();

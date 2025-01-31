@@ -340,7 +340,7 @@ void bqCamera::EditorReset()
 	switch (m_editorCameraType)
 	{
 	case CameraEditorType::Perspective:
-		m_rotationPlatform = bqVec3f(bqMath::DegToRad(-45.f), 0.f, 0.f);
+		m_rotationPlatform = bqVec3f(bqMath::DegToRad(-45.f), PIf, 0.f);
 		break;
 	case CameraEditorType::Bottom:
 		m_rotationPlatform = bqVec3f(bqMath::DegToRad(-180.f), 0.f, 0.f);
@@ -358,7 +358,7 @@ void bqCamera::EditorReset()
 		m_rotationPlatform = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(0.f), 0.f);
 		break;
 	case CameraEditorType::Top:
-		m_rotationPlatform = bqVec3f();
+		m_rotationPlatform = bqVec3f(0, PIf,0);
 		break;
 	}
 

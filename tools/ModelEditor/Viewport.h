@@ -70,27 +70,7 @@ public:
 
 class ViewportView
 {
-	friend class ViewportLayout;
-	friend class ModelEditor;
-
-	void _DrawScene(ViewportView* view);
-	void _DrawGrid(int gridSize);
-
-	const char32_t* m_viewportTypeText = U" ";
-
-	bool m_drawGrid = true;
-	bqVec4f m_rectangle = bqVec4f(0.f,0.f,1.f,1.f);
-	bqVec4f m_viewportOptionsRectangle;
-	ViewportLayout* m_layout = 0;
-	bqCamera* m_camera = 0;
-	bqCamera* m_cubeViewCamera = 0;
-	bqTexture* m_rtt = 0;
-	
-	bqTexture* m_rttCubeView = 0;
 public:
-	ViewportView(ViewportLayout*, uint32_t type);
-	~ViewportView();
-
 	enum
 	{
 		type_perspective,
@@ -100,7 +80,35 @@ public:
 		type_bottom,
 		type_front,
 		type_back,
+
+		type__size
 	};
+
+private:
+	friend class ViewportLayout;
+	friend class ModelEditor;
+
+	void _DrawScene(ViewportView* view);
+	void _DrawGrid(int gridSize);
+
+	const char32_t* m_viewportTypeText = U" ";
+
+	bool m_drawGrid = true;
+	bool m_fullview = false;
+	bqVec4f m_rectangle = bqVec4f(0.f,0.f,1.f,1.f);
+	bqVec4f m_viewportOptionsRectangle;
+	ViewportLayout* m_layout = 0;
+	
+	bqCamera* m_cameras[type__size];
+	bqCamera* m_cubeViewCamera = 0;
+	bqCamera* m_activeCamera = 0;
+	bqTexture* m_rtt = 0;
+	
+	bqTexture* m_rttCubeView = 0;
+public:
+	ViewportView(ViewportLayout*, uint32_t type);
+	~ViewportView();
+
 	uint32_t m_type = type_perspective;
 
 	void Rebuild();
@@ -110,7 +118,7 @@ public:
 	void SetCameraType(uint32_t);
 	void ResetCamera();
 
-	void CopyDataFrom(ViewportView*);
+	//void CopyDataFrom(ViewportView*);
 	void ToggleGrid();
 };
 
@@ -125,6 +133,8 @@ class ViewportLayout
 public:
 	ViewportLayout(Viewport* viewport, uint32_t type);
 	~ViewportLayout();
+	
+	void ToggleFullView();
 
 	enum
 	{
