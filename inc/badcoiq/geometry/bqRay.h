@@ -67,9 +67,30 @@ public:
 	/// Получить луч от экрана по 2D координатам
 	/// rc_sz - размер прямоугольнойобласти в пикселях. Это если например делаем редактор
 	///         со множеством вьюпортов
+	///			+ смотри код ниже
+	/// 
 	/// VPinv - ViewProjectionInvert
 	/// depthRange - у OpenGL и DirectX различная глубина. bqGS должен иметь метод
 	///              для получения depth range.
+	/// 
+	/// 
+	/// если рисуем в текстуру и потом рисуем её где-то на экране, и хотим 
+	/// "брать" лучём что-то из этой картинки, то, надо передать размер
+	/// области в которой надо создать луч, и отредактировать положение курсора
+	/// 
+	/// m_mousePosition.x - rc.x
+	/// m_mousePosition.y - rc.y
+	/// 
+	/// в будущем надо написать более удобную функцию
+	/// 
+	/// uint32_t CubeView::IsMouseRayIntersect(bqCamera* c, const bqVec4f& rc)
+	/// {
+	/// 	bqRay r;
+	/// 	r.CreateFrom2DCoords(
+	/// 		bqVec2f(g_app->m_inputData->m_mousePosition.x - rc.x,
+	/// 			g_app->m_inputData->m_mousePosition.y - rc.y),
+	/// 		bqVec2f(rc.z - rc.x, rc.w - rc.y),
+	/// 		c->m_viewProjectionInvertMatrix, g_app->m_gs->GetDepthRange());
 	void CreateFrom2DCoords(
 		const bqVec2f& coord,
 		const bqVec2f& rc_sz,

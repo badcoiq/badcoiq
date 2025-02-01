@@ -126,6 +126,7 @@ public:
 	void AddSphere(float32_t radius, uint32_t segments, const bqMat4& m);
 	void AddCylinder(float32_t radius, float32_t height, uint32_t segments, bool topSide, bool bottomSide, const bqMat4& m);
 	void AddQuad(const bqVec4f& p1, const bqVec4f& p2, const bqMat4& m);
+	
 
 	void GenerateUVPlanar(float32_t scale);
 

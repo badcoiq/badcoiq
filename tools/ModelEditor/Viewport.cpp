@@ -362,6 +362,11 @@ void ViewportView::Rebuild()
 		m_cubeViewCamera->m_positionPlatform.w = 14.75f;
 		break;
 	}
+
+	m_cubeViewRectangle.z = m_rectangle.z;
+	m_cubeViewRectangle.w = m_rectangle.w;
+	m_cubeViewRectangle.x = m_cubeViewRectangle.z - 128;
+	m_cubeViewRectangle.y = m_cubeViewRectangle.w - 128;
 }
 
 void ViewportView::Update()
@@ -439,6 +444,35 @@ void ViewportView::Update()
 
 		if(g_app->m_inputData->m_mouseWheelDelta)
 			m_activeCamera->EditorZoom(g_app->m_inputData->m_mouseWheelDelta);
+
+		if (bqMath::PointInRect(mousePosition, m_cubeViewRectangle))
+		{
+			auto meshID = g_app->m_cubeView->IsMouseRayIntersect(m_cubeViewCamera, m_cubeViewRectangle);
+			if (meshID != CubeView::meshID__size)
+			{
+				/*switch (meshID)
+				{
+				case CubeView::meshID_front:
+					printf("meshID_front\n");
+					break;
+				case CubeView::meshID_back:
+					printf("meshID_back\n");
+					break;
+				case CubeView::meshID_top:
+					printf("meshID_top\n");
+					break;
+				case CubeView::meshID_bottom:
+					printf("meshID_bottom\n");
+					break;
+				case CubeView::meshID_left:
+					printf("meshID_left\n");
+					break;
+				case CubeView::meshID_right:
+					printf("meshID_right\n");
+					break;
+				}*/
+			}
+		}
 	}
 
 
@@ -515,7 +549,7 @@ void ViewportView::Draw()
 	g_app->m_gs->EnableBlend();
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bgcolor, bgcolor, 0, 0);
 	g_app->m_gs->DrawGUIRectangle(m_rectangle, bq::ColorWhite, bq::ColorWhite, m_rtt, 0);
-	g_app->m_gs->DrawGUIRectangle(bqVec4f(m_rectangle.x, m_rectangle.y, m_rectangle.x+ 128, m_rectangle.y+ 128), bq::ColorWhite, bq::ColorWhite, m_rttCubeView, 0);
+	g_app->m_gs->DrawGUIRectangle(m_cubeViewRectangle, bq::ColorWhite, bq::ColorWhite, m_rttCubeView, 0);
 
 	
 	
@@ -608,7 +642,7 @@ void ViewportView::_DrawGrid(int gridSize)
 void ViewportView::ResetCamera()
 {
 	m_activeCamera->EditorReset();
-	m_activeCamera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
+	m_activeCamera->m_aspect = (m_rectangle.z - m_rectangle.x) / (m_rectangle.w - m_rectangle.y);
 
 	// Надо временно установить m_editorCameraType
 	// для EditorReset()
@@ -637,7 +671,7 @@ void ViewportView::ResetCamera()
 		break;
 	}	
 	m_cubeViewCamera->EditorReset();
-	m_cubeViewCamera->m_aspect = (float)g_app->m_mainWindow->GetCurrentSize()->x / (float)g_app->m_mainWindow->GetCurrentSize()->y;
+	m_cubeViewCamera->m_aspect = m_activeCamera->m_aspect;
 	m_cubeViewCamera->m_editorCameraType = bqCamera::CameraEditorType::Perspective;
 
 

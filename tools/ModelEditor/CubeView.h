@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CubeView
 {
+public:
     enum
     {
         meshID_front,
@@ -39,21 +40,30 @@ class CubeView
         meshID_bottom,
         meshID_left,
         meshID_right,
-        meshID_FLT,
+        meshID_TB,
       //  meshID_,
 
         meshID__size
     };
+
+
+private:
     bqMesh* m_cubeViewMesh[meshID__size];
     bqGPUMesh* m_cubeViewGPUMesh[meshID__size];
 
     bqTexture* m_texture[meshID__size];
+    bqTexture* m_texture_i[meshID__size];
+
+    uint32_t _IsMouseRayIntersect(const bqRay&, uint32_t meshID, bqReal& T);
+    uint32_t m_hoverMesh = meshID__size;
 public:
     CubeView();
     ~CubeView();
 
     bool Init();
     void Draw(bqCamera*);
+
+    uint32_t IsMouseRayIntersect(bqCamera*, const bqVec4f&);
 };
 
 #endif

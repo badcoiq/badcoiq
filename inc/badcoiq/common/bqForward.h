@@ -57,6 +57,8 @@ using bqMat2 = bqMatrix2_t<float32_t>;
 using bqMat3 = bqMatrix3_t<bqReal>;
 using bqMat4  = bqMatrix4_t<bqReal>;
 
+class bqRay;
+
 
 class bqMaterial;
 class bqColor;

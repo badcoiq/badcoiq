@@ -97,6 +97,7 @@ private:
 	bool m_fullview = false;
 	bqVec4f m_rectangle = bqVec4f(0.f,0.f,1.f,1.f);
 	bqVec4f m_viewportOptionsRectangle;
+	bqVec4f m_cubeViewRectangle = bqVec4f(0.f, 0.f, 1.f, 1.f);
 	ViewportLayout* m_layout = 0;
 	
 	bqCamera* m_cameras[type__size];
