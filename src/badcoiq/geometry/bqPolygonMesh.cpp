@@ -953,3 +953,34 @@ void bqPolygonMesh::AddQuad(const bqVec4f& p1, const bqVec4f& p2, const bqMat4& 
 	pc.Mul(m);
 	AddPolygon(&pc, true);
 }
+
+void bqPolygonMesh::ApplyMatrix(const bqMat4& m)
+{
+	auto cp = m_polygons.m_head;
+	auto lp = cp->m_left;
+	while (true)
+	{
+		auto cv = cp->m_data->m_vertices.m_head;
+		auto lv = cv->m_left;
+		while (true)
+		{
+			bqVec4 point;
+			point.x = cv->m_data->m_data.BaseData.Position.x;
+			point.y = cv->m_data->m_data.BaseData.Position.y;
+			point.z = cv->m_data->m_data.BaseData.Position.z;
+			point.w = 1.f;
+			bqMath::Mul(m, bqVec4(point), point);
+
+			cv->m_data->m_data.BaseData.Position.x = point.x;
+			cv->m_data->m_data.BaseData.Position.y = point.y;
+			cv->m_data->m_data.BaseData.Position.z = point.z;
+
+			if (cv == lv)
+				break;
+			cv = cv->m_right;
+		}
+		if (cp == lp)
+			break;
+		cp = cp->m_right;
+	}
+}

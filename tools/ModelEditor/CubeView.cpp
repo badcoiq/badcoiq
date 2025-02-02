@@ -98,6 +98,45 @@ bool CubeView::Init()
 
 	m_texture[meshID_TB] = textureBG;
 	m_texture_i[meshID_TB] = textureBGi;
+	m_texture[meshID_TL] = textureBG;
+	m_texture_i[meshID_TL] = textureBGi;
+	m_texture[meshID_TF] = textureBG;
+	m_texture_i[meshID_TF] = textureBGi;
+	m_texture[meshID_TR] = textureBG;
+	m_texture_i[meshID_TR] = textureBGi;
+	m_texture[meshID_BckR] = textureBG;
+	m_texture_i[meshID_BckR] = textureBGi;
+	m_texture[meshID_BckL] = textureBG;
+	m_texture_i[meshID_BckL] = textureBGi;
+	m_texture[meshID_FL] = textureBG;
+	m_texture_i[meshID_FL] = textureBGi;
+	m_texture[meshID_FR] = textureBG;
+	m_texture_i[meshID_FR] = textureBGi;
+	m_texture[meshID_BR] = textureBG;
+	m_texture_i[meshID_BR] = textureBGi;
+	m_texture[meshID_BB] = textureBG;
+	m_texture_i[meshID_BB] = textureBGi;
+	m_texture[meshID_BL] = textureBG;
+	m_texture_i[meshID_BL] = textureBGi;
+	m_texture[meshID_BF] = textureBG;
+	m_texture_i[meshID_BF] = textureBGi;
+	m_texture[meshID_TRB] = textureBG;
+	m_texture_i[meshID_TRB] = textureBGi;
+	m_texture[meshID_TLB] = textureBG;
+	m_texture_i[meshID_TLB] = textureBGi;
+	m_texture[meshID_TLF] = textureBG;
+	m_texture_i[meshID_TLF] = textureBGi;
+	m_texture[meshID_TRF] = textureBG;
+	m_texture_i[meshID_TRF] = textureBGi;
+	m_texture[meshID_BRF] = textureBG;
+	m_texture_i[meshID_BRF] = textureBGi;
+	m_texture[meshID_BRB] = textureBG;
+	m_texture_i[meshID_BRB] = textureBGi;
+	m_texture[meshID_BLB] = textureBG;
+	m_texture_i[meshID_BLB] = textureBGi;
+	m_texture[meshID_BLF] = textureBG;
+	m_texture_i[meshID_BLF] = textureBGi;
+
 
 	m_texture_i[meshID_top] = bqFramework::CreateTexture(g_app->m_gs,
 		bqFramework::GetPath("../data/model_editor/cube_view_topi.png").c_str(),
@@ -118,7 +157,7 @@ bool CubeView::Init()
 		bqFramework::GetPath("../data/model_editor/cube_view_backi.png").c_str(),
 		false, false);
 
-	float32_t Size1 = 0.8f;
+	float32_t Size1 = 0.7f;
 	float32_t Size2 = 1.f - Size1;
 
 	{
@@ -227,9 +266,184 @@ bool CubeView::Init()
 
 		pm.GenerateNormals(false);
 
+
 		m_cubeViewMesh[CubeView::meshID_TB] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_TB])
 			m_cubeViewGPUMesh[CubeView::meshID_TB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TB]);
+
+		transform.SetTranslation(bqVec4(0.f, 0, 0., 0.));
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_TL] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_TL])
+			m_cubeViewGPUMesh[CubeView::meshID_TL] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TL]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_TF] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_TF])
+			m_cubeViewGPUMesh[CubeView::meshID_TF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TF]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_TR] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_TR])
+			m_cubeViewGPUMesh[CubeView::meshID_TR] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TR]);
+
+		transform.SetRotation(bqQuaternion(PIHalf, 0, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BckR] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BckR])
+			m_cubeViewGPUMesh[CubeView::meshID_BckR] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BckR]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BckL] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BckL])
+			m_cubeViewGPUMesh[CubeView::meshID_BckL] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BckL]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_FL] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_FL])
+			m_cubeViewGPUMesh[CubeView::meshID_FL] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_FL]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_FR] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_FR])
+			m_cubeViewGPUMesh[CubeView::meshID_FR] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_FR]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		transform.SetRotation(bqQuaternion(PIHalf, 0, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BR] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BR])
+			m_cubeViewGPUMesh[CubeView::meshID_BR] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BR]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BB] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BB])
+			m_cubeViewGPUMesh[CubeView::meshID_BB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BB]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BL] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BL])
+			m_cubeViewGPUMesh[CubeView::meshID_BL] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BL]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BF] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BF])
+			m_cubeViewGPUMesh[CubeView::meshID_BF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BF]);
+	}
+
+	{
+		bqMat4 transform;
+		//transform.SetTranslation(bqVec4(0.f, 1, 0., 0.));
+		bqPolygonMesh pm;
+		bqMeshPolygonCreator pc;
+		pc.SetPosition(bqVec3f(-1.f, 1.f, -1.f));
+		pc.AddVertex();
+		pc.SetPosition(bqVec3f(-1.f, 1.f, -1 + Size2));
+		pc.AddVertex();
+		pc.SetPosition(bqVec3f(-1.f + Size2, 1.f, -1 + Size2));
+		pc.AddVertex();
+		pc.SetPosition(bqVec3f(-1.f + Size2, 1.f, -1.f));
+		pc.AddVertex();
+		pc.Mul(transform);
+		pm.AddPolygon(&pc, false);
+
+		pc.SetPosition(bqVec3f(-1.f, 1.f - Size2, -1.f));
+		pc.AddVertex();
+		pc.SetPosition(bqVec3f(-1.f, 1.f - Size2, -1 + Size2));
+		pc.AddVertex();
+		pc.SetPosition(bqVec3f(-1.f, 1.f, -1 + Size2));
+		pc.AddVertex();
+		pc.SetPosition(bqVec3f(-1.f, 1.f, -1.f));
+		pc.AddVertex();
+		pc.Mul(transform);
+		pm.AddPolygon(&pc, false);
+
+		pc.SetPosition(bqVec3f(-1.f, 1.f - Size2, -1.f));
+		pc.AddVertex();
+		pc.SetPosition(bqVec3f(-1.f, 1.f, -1));
+		pc.AddVertex();
+		pc.SetPosition(bqVec3f(-1.f + Size2, 1.f, -1));
+		pc.AddVertex();
+		pc.SetPosition(bqVec3f(-1.f + Size2, 1.f - Size2, -1.f));
+		pc.AddVertex();
+		pc.Mul(transform);
+		pm.AddPolygon(&pc, false);
+
+		pm.GenerateNormals(false);
+
+		m_cubeViewMesh[CubeView::meshID_TRB] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_TRB])
+			m_cubeViewGPUMesh[CubeView::meshID_TRB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TRB]);
+	
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_TLB] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_TLB])
+			m_cubeViewGPUMesh[CubeView::meshID_TLB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TLB]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_TLF] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_TLF])
+			m_cubeViewGPUMesh[CubeView::meshID_TLF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TLF]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_TRF] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_TRF])
+			m_cubeViewGPUMesh[CubeView::meshID_TRF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TRF]);
+
+		transform.SetRotation(bqQuaternion(-PIHalf, 0, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BRF] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BRF])
+			m_cubeViewGPUMesh[CubeView::meshID_BRF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BRF]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BRB] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BRB])
+			m_cubeViewGPUMesh[CubeView::meshID_BRB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BRB]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BLB] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BLB])
+			m_cubeViewGPUMesh[CubeView::meshID_BLB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BLB]);
+
+		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		pm.ApplyMatrix(transform);
+		pm.GenerateNormals(false);
+		m_cubeViewMesh[CubeView::meshID_BLF] = pm.CreateMesh();
+		if (m_cubeViewMesh[CubeView::meshID_BLF])
+			m_cubeViewGPUMesh[CubeView::meshID_BLF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BLF]);
 	}
 
 	return true;
@@ -297,12 +511,6 @@ uint32_t CubeView::IsMouseRayIntersect(bqCamera* c, const bqVec4f& rc)
 		}
 	}
 
-	/*if (result == meshID__size) result = _IsMouseRayIntersect(r, meshID_bottom, T);
-	if (result == meshID__size) result = _IsMouseRayIntersect(r, meshID_left, T);
-	if (result == meshID__size) result = _IsMouseRayIntersect(r, meshID_right, T);
-	if (result == meshID__size) result = _IsMouseRayIntersect(r, meshID_front, T);
-	if (result == meshID__size) result = _IsMouseRayIntersect(r, meshID_back, T);*/
-
 	m_hoverMesh = result;
 
 	return result;
@@ -310,8 +518,6 @@ uint32_t CubeView::IsMouseRayIntersect(bqCamera* c, const bqVec4f& rc)
 
 uint32_t CubeView::_IsMouseRayIntersect(const bqRay& r, uint32_t meshID, bqReal& T)
 {
-	T = 999999;
-
 	bqTriangle tr;
 	{
 		uint32_t triNum = m_cubeViewMesh[meshID]->GetInfo().m_iCount / 3;
@@ -330,13 +536,6 @@ uint32_t CubeView::_IsMouseRayIntersect(const bqRay& r, uint32_t meshID, bqReal&
 				return meshID;
 		
 			ind += 3;
-			/*tr.v1 = verts[0].Position;
-			tr.v2 = verts[2].Position;
-			tr.v3 = verts[3].Position;
-			tr.Update();
-			T = U = V = W = 0;
-			if (tr.RayIntersect_MT(r, true, T, U, V, W, true))
-				return meshID;*/
 		}
 	}
 	return meshID__size;

@@ -307,7 +307,7 @@ ViewportView::ViewportView(ViewportLayout* l, uint32_t type)
 	bqTextureInfo ti;
 	m_rtt = g_app->m_gs->CreateRTT(bqPoint(2,2), ti);
 
-	m_rttCubeView = g_app->m_gs->CreateRTT(bqPoint(128, 128), ti);
+	m_rttCubeView = g_app->m_gs->CreateRTT(bqPoint(m_cubeViewSize, m_cubeViewSize), ti);
 }
 
 ViewportView::~ViewportView()
@@ -365,8 +365,8 @@ void ViewportView::Rebuild()
 
 	m_cubeViewRectangle.z = m_rectangle.z;
 	m_cubeViewRectangle.w = m_rectangle.w;
-	m_cubeViewRectangle.x = m_cubeViewRectangle.z - 128;
-	m_cubeViewRectangle.y = m_cubeViewRectangle.w - 128;
+	m_cubeViewRectangle.x = m_cubeViewRectangle.z - m_cubeViewSize;
+	m_cubeViewRectangle.y = m_cubeViewRectangle.w - m_cubeViewSize;
 }
 
 void ViewportView::Update()
@@ -470,6 +470,68 @@ void ViewportView::Update()
 				case CubeView::meshID_right:
 					printf("meshID_right\n");
 					break;
+
+				case CubeView::meshID_TB:
+					printf("meshID_TB\n");
+					break;
+				case CubeView::meshID_TL:
+					printf("meshID_TL\n");
+					break;
+				case CubeView::meshID_TF:
+					printf("meshID_TF\n");
+					break;
+				case CubeView::meshID_TR:
+					printf("meshID_TR\n");
+					break;
+				case CubeView::meshID_BckR:
+					printf("meshID_BckR\n");
+					break;
+				case CubeView::meshID_BckL:
+					printf("meshID_BckL\n");
+					break;
+				case CubeView::meshID_FL:
+					printf("meshID_FL\n");
+					break;
+				case CubeView::meshID_FR:
+					printf("meshID_FR\n");
+					break;
+				case CubeView::meshID_BR:
+					printf("meshID_BR\n");
+					break;
+				case CubeView::meshID_BB:
+					printf("meshID_BB\n");
+					break;
+				case CubeView::meshID_BL:
+					printf("meshID_BL\n");
+					break;
+				case CubeView::meshID_BF:
+					printf("meshID_BF\n");
+					break;
+
+				case CubeView::meshID_TRB:
+					printf("meshID_TRB\n");
+					break;
+				case CubeView::meshID_TLB:
+					printf("meshID_TLB\n");
+					break;
+				case CubeView::meshID_TLF:
+					printf("meshID_TLF\n");
+					break;
+				case CubeView::meshID_TRF:
+					printf("meshID_TRF\n");
+					break;
+				case CubeView::meshID_BRF:
+					printf("meshID_BRF\n");
+					break;
+				case CubeView::meshID_BRB:
+					printf("meshID_BRB\n");
+					break;
+				case CubeView::meshID_BLB:
+					printf("meshID_BLB\n");
+					break;
+				case CubeView::meshID_BLF:
+					printf("meshID_BLF\n");
+					break;
 				}*/
 			}
 		}
@@ -518,12 +580,19 @@ void ViewportView::Draw()
 
 	// CUBE VIEW
 	g_app->m_gs->SetRenderTarget(m_rttCubeView);
-	g_app->m_gs->SetScissorRect(bqVec4f(0.f, 0.f,128, 128));
-	g_app->m_gs->SetViewport(0.f, 0.f, 128, 128);
+	g_app->m_gs->SetScissorRect(bqVec4f(0.f, 0.f, m_cubeViewSize, m_cubeViewSize));
+	g_app->m_gs->SetViewport(0.f, 0.f, m_cubeViewSize, m_cubeViewSize);
 	g_app->m_gs->SetClearColor(0.f,0.f,0.f,0.f);
 	g_app->m_gs->ClearAll();
 
 	g_app->m_cubeView->Draw(m_cubeViewCamera);
+	g_app->m_gs->DisableDepth();
+	g_app->m_gs->SetShader(bqShaderType::Line3D, 0);
+	bqFramework::SetMatrix(bqMatrixType::ViewProjection, &m_cubeViewCamera->m_viewProjectionMatrix);
+	g_app->m_gs->DrawLine3D(bqVec3(0, 0.f, 0), bqVec3(1, 0.f, 0), bq::ColorRed);
+	g_app->m_gs->DrawLine3D(bqVec3(0, 0.f, 0), bqVec3(0, 1, 0), bq::ColorBlue);
+	g_app->m_gs->DrawLine3D(bqVec3(0, 0.f, 0), bqVec3(0, 0, 1), bq::ColorLime);
+
 
 	g_app->m_gs->SetRenderTargetDefault();
 	/*g_app->m_gs->SetViewport(0.f, 0.f,
