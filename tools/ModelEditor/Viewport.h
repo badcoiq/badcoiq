@@ -107,6 +107,11 @@ private:
 	bqTexture* m_rtt = 0;
 	
 	bqTexture* m_rttCubeView = 0;
+
+	bqVec3f m_cubeViewRotationTarget;
+	bool m_cubeViewNowRotating = false;
+	float32_t m_cubeViewRotatingLerpTime = 0.f;
+	float32_t m_cubeViewRotatingLerpTimeLimit = 0.5f;
 public:
 	ViewportView(ViewportLayout*, uint32_t type);
 	~ViewportView();
@@ -119,6 +124,8 @@ public:
 	void SetActiveView();
 	void SetCameraType(uint32_t);
 	void ResetCamera();
+	
+	void CubeViewOnClick(uint32_t meshID);
 
 	//void CopyDataFrom(ViewportView*);
 	void ToggleGrid();

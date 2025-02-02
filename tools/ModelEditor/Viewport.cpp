@@ -154,6 +154,12 @@ ViewportLayout::~ViewportLayout()
 {
 }
 
+void ViewportLayout::ToggleFullView()
+{
+	m_activeView->m_fullview = m_activeView->m_fullview ? false : true;
+	Rebuild();
+}
+
 void ViewportLayout::Rebuild()
 {
 	float border = 1.f;
@@ -375,6 +381,7 @@ void ViewportView::Update()
 	m_activeCamera->UpdateFrustum();
 	m_cubeViewCamera->Update(0.1);
 
+
 	bqPointf& mousePosition = bqInput::GetMousePosition();
 
 	if (bqMath::PointInRect(mousePosition, m_viewportOptionsRectangle))
@@ -447,6 +454,7 @@ void ViewportView::Update()
 
 		if (bqMath::PointInRect(mousePosition, m_cubeViewRectangle))
 		{
+			g_app->m_cubeView->Update(this);
 			auto meshID = g_app->m_cubeView->IsMouseRayIntersect(m_cubeViewCamera, m_cubeViewRectangle);
 			if (meshID != CubeView::meshID__size)
 			{
@@ -540,7 +548,7 @@ void ViewportView::Update()
 
 	if (m_layout->m_mouseFocusView == this)
 	{
-		if (bqInput::IsRMBHold())
+		if (bqInput::IsRMBHold() && !m_cubeViewNowRotating)
 		{
 			if (bqInput::IsCtrl())
 			{
@@ -552,6 +560,73 @@ void ViewportView::Update()
 				m_activeCamera->EditorPanMove(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
 			}
 		}
+	}
+
+	if (m_cubeViewNowRotating)
+	{
+		bqVec3f lerpResult;
+		
+		//if (m_activeCamera->m_rotationPlatform.y < PIf)
+		//{
+			bqMath::Lerp1(m_activeCamera->m_rotationPlatform, m_cubeViewRotationTarget, m_cubeViewRotatingLerpTime, lerpResult);
+		//}
+		//else
+		//{
+		//	if (m_cubeViewRotationTarget.y > PIf)
+		//	{
+		//		bqMath::Lerp1(m_activeCamera->m_rotationPlatform, m_cubeViewRotationTarget, m_cubeViewRotatingLerpTime, lerpResult);
+		//	}
+		//	else
+		//	{
+		//		// не хочу мучиться со slerp
+		//		// вращение камеры основывается на значении углов
+		//		// лучше добавить проверки
+		//		// зато всё работает.
+
+		//		float32_t _y = PIPIf - m_activeCamera->m_rotationPlatform.y;
+		//		float32_t _y_result = bqMath::Lerp2(_y, m_cubeViewRotationTarget.y, m_cubeViewRotatingLerpTime);
+		//		float32_t _x = m_activeCamera->m_rotationPlatform.x;
+		//		float32_t _x_result = bqMath::Lerp2(_x, m_cubeViewRotationTarget.x, m_cubeViewRotatingLerpTime);
+
+		//		lerpResult = m_activeCamera->m_rotationPlatform;
+		//		lerpResult.y += _y - _y_result;
+		//		lerpResult.x = _x_result;
+
+		//		if (lerpResult.y > PIPIf)
+		//			lerpResult.y = 0.f;
+		//		if (lerpResult.x > PIPIf)
+		//			lerpResult.x = 0.f;
+		//	}
+		//}
+
+
+		
+
+		printf("Y:%f T:%f\n", m_activeCamera->m_rotationPlatform.y, m_cubeViewRotationTarget.y);
+
+		m_cubeViewRotatingLerpTime += *g_app->m_deltaTime;
+		if (m_cubeViewRotatingLerpTime > m_cubeViewRotatingLerpTimeLimit)
+		{
+			m_cubeViewRotatingLerpTime = 0.f;
+			m_cubeViewNowRotating = false;
+
+			if (lerpResult.y > PIPIf)
+			{
+				lerpResult.y -= PIPIf;
+				if (lerpResult.y > PIPIf)
+					lerpResult.y = 0.f;
+			}
+			if (lerpResult.y < 0)
+				lerpResult.y = lerpResult.y + PIPIf;
+
+			printf("\n");
+		}
+
+		m_activeCamera->m_rotationPlatform = lerpResult;
+		m_cubeViewCamera->m_rotationPlatform = lerpResult;
+	}
+	else
+	{
 	}
 }
 
@@ -790,8 +865,146 @@ void ViewportView::SetCameraType(uint32_t ct)
 	ResetCamera();
 }
 
-void ViewportLayout::ToggleFullView()
+
+
+void ViewportView::CubeViewOnClick(uint32_t meshID)
 {
-	m_activeView->m_fullview = m_activeView->m_fullview ? false : true;
-	Rebuild();
+	//if (!m_cubeViewNowRotating)
+	{
+		m_cubeViewNowRotating = true;
+		m_cubeViewRotatingLerpTime = 0.f;
+
+		switch (meshID)
+		{
+		case CubeView::meshID_front:
+			if (m_activeCamera->m_rotationPlatform.y > PIf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), PIPIf, 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(0.f), 0.f);
+			break;
+		case CubeView::meshID_back:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(180.f), 0.f);
+			break;
+		case CubeView::meshID_top:
+			m_cubeViewRotationTarget = bqVec3f(0, PIf, 0);
+			break;
+		case CubeView::meshID_bottom:
+			if (m_activeCamera->m_rotationPlatform.y > PIf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-180.f), PIPIf, 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-180.f), 0.f, 0.f);
+			break;
+		case CubeView::meshID_left:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(270.f), 0.f);
+			break;
+		case CubeView::meshID_right:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(90.f), 0.f);
+			break;
+
+		case CubeView::meshID_TB:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), PIf, 0.f);
+			break;
+		case CubeView::meshID_TL:
+			if (m_activeCamera->m_rotationPlatform.y > PIHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(270.f), 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(-90.f), 0.f);
+			break;
+		case CubeView::meshID_TF:
+			if (m_activeCamera->m_rotationPlatform.y > PIf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), PIPIf, 0);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), 0, 0);
+			break;
+		case CubeView::meshID_TR:
+			if (m_activeCamera->m_rotationPlatform.y > PIf + PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), PIPIf + PIfHalf, 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(90.f), 0.f);
+			break;
+		case CubeView::meshID_BckR:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(-45.f) + PIf, 0.f);
+			break;
+		case CubeView::meshID_BckL:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(45.f) + PIf, 0.f);
+			break;
+		case CubeView::meshID_FL:
+			if (m_activeCamera->m_rotationPlatform.y < PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(-45.f), 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(-45.f) + PIPIf, 0.f);
+			break;
+		case CubeView::meshID_FR:
+			if (m_activeCamera->m_rotationPlatform.y > PIf + PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(-45.f) + PIHalf + PIPIf, 0.f);
+			else if (m_activeCamera->m_rotationPlatform.y > PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(-45.f) + PIHalf, 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-90.f), bqMath::DegToRad(-45.f) + PIHalf, 0.f);
+			break;
+		case CubeView::meshID_BR:
+			if (m_activeCamera->m_rotationPlatform.y > PIf + PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), PIPIf + PIfHalf, 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(90.f), 0.f);
+			break;
+		case CubeView::meshID_BB:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), PIf, 0.f);
+			break;
+		case CubeView::meshID_BL:
+			if (m_activeCamera->m_rotationPlatform.y > PIHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(270.f), 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(-90.f), 0.f);
+			break;
+		case CubeView::meshID_BF:
+			if (m_activeCamera->m_rotationPlatform.y > PIf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), PIPIf, 0);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), 0, 0);
+			break;
+
+		case CubeView::meshID_TRB:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(-45.f) + PIf, 0.f);
+			break;
+		case CubeView::meshID_TLB:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(45.f) + PIf, 0.f);
+			break;
+		case CubeView::meshID_TLF:
+			if (m_activeCamera->m_rotationPlatform.y < PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(-45.f), 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(-45.f) + PIPIf, 0.f);
+			break;
+		case CubeView::meshID_TRF:
+			if (m_activeCamera->m_rotationPlatform.y > PIf + PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(-45.f) + PIHalf + PIPIf, 0.f);
+			else if (m_activeCamera->m_rotationPlatform.y > PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(-45.f) + PIHalf, 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f), bqMath::DegToRad(-45.f) + PIHalf, 0.f);
+			break;
+		case CubeView::meshID_BRF:
+			if (m_activeCamera->m_rotationPlatform.y > PIf + PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(-45.f) + PIHalf + PIPIf, 0.f);
+			else if (m_activeCamera->m_rotationPlatform.y > PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(-45.f) + PIHalf, 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(-45.f) + PIHalf, 0.f);
+			break;
+		case CubeView::meshID_BRB:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(-45.f) + PIf, 0.f);
+			break;
+		case CubeView::meshID_BLB:
+			m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(45.f) + PIf, 0.f);
+			break;
+		case CubeView::meshID_BLF:
+			if (m_activeCamera->m_rotationPlatform.y < PIfHalf)
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(-45.f), 0.f);
+			else
+				m_cubeViewRotationTarget = bqVec3f(bqMath::DegToRad(-45.f - 90.f), bqMath::DegToRad(-45.f) + PIPIf, 0.f);
+			break;
+		}
+		//m_cubeViewCamera->m_rotationPlatform = m_activeCamera->m_rotationPlatform;
+	}
 }

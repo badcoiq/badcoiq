@@ -45,6 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 const float32_t PIf = static_cast<float32_t>(3.14159265358979323846);
 const float32_t PIfHalf = static_cast<float32_t>(3.14159265358979323846 * 0.5);
 const float32_t PIfPI = 6.2831853f;
+const float32_t PIPIf = 6.2831853f;
 const float64_t PI = 3.14159265358979323846;
 const float64_t PIHalf = 3.14159265358979323846 * 0.5;
 const float64_t PIPI = 6.283185307179586476925286766559;

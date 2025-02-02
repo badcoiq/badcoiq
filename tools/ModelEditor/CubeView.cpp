@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ModelEditor.h"
 #include "CubeView.h"
+#include "Viewport.h"
 #include "badcoiq/geometry/bqMeshCreator.h"
 #include "badcoiq/geometry/bqTriangle.h"
 #include "badcoiq/gs/bqGS.h"
@@ -178,6 +179,11 @@ bool CubeView::Init()
 		transform.SetTranslation(bqVec4(0.f, -1, 0., 0.));
 		bqPolygonMesh pm;
 		pm.AddQuad(bqVec4f(-Size1, 0.f, -Size1, 0.f), bqVec4f(Size1, 0.f, Size1, 0.f), transform);
+		
+		transform.Identity();
+		transform.SetRotation(bqQuaternion(0, PIf, 0));
+		pm.ApplyMatrix(transform);
+
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_bottom] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_bottom])
@@ -464,6 +470,7 @@ void CubeView::Draw(bqCamera* camera)
 	g_app->m_gs->SetShader(material.m_shaderType, 0);
 	g_app->m_gs->SetMaterial(&material);
 
+
 	for (size_t i = 0; i < meshID__size; ++i)
 	{
 		if (m_cubeViewGPUMesh[i])
@@ -539,4 +546,44 @@ uint32_t CubeView::_IsMouseRayIntersect(const bqRay& r, uint32_t meshID, bqReal&
 		}
 	}
 	return meshID__size;
+}
+
+void CubeView::Update(ViewportView* view)
+{
+	if (m_isClickedLMB)
+	{
+		if (bqInput::IsLMBRelease())
+		{
+			m_isClickedLMB = false;
+		
+			if (m_hoverMesh != meshID__size)
+			{
+				if (m_hoverMesh == m_LMBHitMesh)
+				{
+					view->CubeViewOnClick(m_LMBHitMesh);
+				}
+			}
+		
+			m_LMBHitMesh = meshID__size;
+		}
+		else
+		{
+
+		}
+
+	}
+	else
+	{
+		m_LMBHitMesh = meshID__size;
+
+		if (m_hoverMesh != meshID__size)
+		{
+			if (bqInput::IsLMBHit())
+			{
+				m_LMBHitMesh = m_hoverMesh;
+
+				m_isClickedLMB = true;
+			}
+		}
+	}
 }

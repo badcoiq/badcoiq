@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _CUBEVIEW_H_
 #define _CUBEVIEW_H_
 
+class ViewportView;
 class CubeView
 {
 public:
@@ -74,12 +75,19 @@ private:
 
     uint32_t _IsMouseRayIntersect(const bqRay&, uint32_t meshID, bqReal& T);
     uint32_t m_hoverMesh = meshID__size;
+    uint32_t m_LMBHitMesh = meshID__size;
+    
+    bool m_isClickedLMB = false;
+
+
 public:
     CubeView();
     ~CubeView();
 
     bool Init();
     void Draw(bqCamera*);
+
+    void Update(ViewportView*);
 
     uint32_t IsMouseRayIntersect(bqCamera*, const bqVec4f&);
 };
