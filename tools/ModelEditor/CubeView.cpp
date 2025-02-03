@@ -556,19 +556,29 @@ void CubeView::Update(ViewportView* view)
 		{
 			m_isClickedLMB = false;
 		
-			if (m_hoverMesh != meshID__size)
+			if (!m_isMouseMove)
 			{
-				if (m_hoverMesh == m_LMBHitMesh)
+				if (m_hoverMesh != meshID__size)
 				{
-					view->CubeViewOnClick(m_LMBHitMesh);
+					if (m_hoverMesh == m_LMBHitMesh)
+					{
+						view->CubeViewOnClick(m_LMBHitMesh);
+					}
 				}
+				m_LMBHitMesh = meshID__size;
 			}
-		
-			m_LMBHitMesh = meshID__size;
+
+			m_isMouseMove = false;
 		}
 		else
 		{
+			auto d = bqInput::GetData();
+			if (d->m_mouseMoveDelta.x || d->m_mouseMoveDelta.y)
+			{
 
+				m_isMouseMove = true;
+				view->CubeViewOnMouseMove();
+			}
 		}
 
 	}

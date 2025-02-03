@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class ViewportView;
 class CubeView
 {
+    friend class ViewportView;
 public:
     enum
     {
@@ -78,6 +79,7 @@ private:
     uint32_t m_LMBHitMesh = meshID__size;
     
     bool m_isClickedLMB = false;
+    bool m_isMouseMove = false;
 
 
 public:

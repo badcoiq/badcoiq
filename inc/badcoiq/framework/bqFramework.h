@@ -247,6 +247,8 @@ public:
 	/// Unicode в UTF-8.
 	static const bqStringA& GetUTF8String(const bqString&);
 	static const bqStringW& GetUTF16String(const bqString&);
+
+	static void ClipCursor(bqVec4f*);
 };
 
 #endif

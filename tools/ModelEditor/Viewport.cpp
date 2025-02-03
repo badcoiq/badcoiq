@@ -381,6 +381,10 @@ void ViewportView::Update()
 	m_activeCamera->UpdateFrustum();
 	m_cubeViewCamera->Update(0.1);
 
+	if (g_app->m_cubeView->m_isMouseMove && (m_layout->m_mouseFocusView == this))
+	{
+		g_app->m_cubeView->Update(this);
+	}
 
 	bqPointf& mousePosition = bqInput::GetMousePosition();
 
@@ -452,9 +456,11 @@ void ViewportView::Update()
 		if(g_app->m_inputData->m_mouseWheelDelta)
 			m_activeCamera->EditorZoom(g_app->m_inputData->m_mouseWheelDelta);
 
-		if (bqMath::PointInRect(mousePosition, m_cubeViewRectangle))
+		if (bqMath::PointInRect(mousePosition, m_cubeViewRectangle)
+			&& !g_app->m_cubeView->m_isMouseMove)
 		{
 			g_app->m_cubeView->Update(this);
+			
 			auto meshID = g_app->m_cubeView->IsMouseRayIntersect(m_cubeViewCamera, m_cubeViewRectangle);
 			if (meshID != CubeView::meshID__size)
 			{
@@ -565,44 +571,9 @@ void ViewportView::Update()
 	if (m_cubeViewNowRotating)
 	{
 		bqVec3f lerpResult;
-		
-		//if (m_activeCamera->m_rotationPlatform.y < PIf)
-		//{
-			bqMath::Lerp1(m_activeCamera->m_rotationPlatform, m_cubeViewRotationTarget, m_cubeViewRotatingLerpTime, lerpResult);
-		//}
-		//else
-		//{
-		//	if (m_cubeViewRotationTarget.y > PIf)
-		//	{
-		//		bqMath::Lerp1(m_activeCamera->m_rotationPlatform, m_cubeViewRotationTarget, m_cubeViewRotatingLerpTime, lerpResult);
-		//	}
-		//	else
-		//	{
-		//		// не хочу мучиться со slerp
-		//		// вращение камеры основывается на значении углов
-		//		// лучше добавить проверки
-		//		// зато всё работает.
+		bqMath::Lerp1(m_activeCamera->m_rotationPlatform, m_cubeViewRotationTarget, m_cubeViewRotatingLerpTime, lerpResult);
 
-		//		float32_t _y = PIPIf - m_activeCamera->m_rotationPlatform.y;
-		//		float32_t _y_result = bqMath::Lerp2(_y, m_cubeViewRotationTarget.y, m_cubeViewRotatingLerpTime);
-		//		float32_t _x = m_activeCamera->m_rotationPlatform.x;
-		//		float32_t _x_result = bqMath::Lerp2(_x, m_cubeViewRotationTarget.x, m_cubeViewRotatingLerpTime);
-
-		//		lerpResult = m_activeCamera->m_rotationPlatform;
-		//		lerpResult.y += _y - _y_result;
-		//		lerpResult.x = _x_result;
-
-		//		if (lerpResult.y > PIPIf)
-		//			lerpResult.y = 0.f;
-		//		if (lerpResult.x > PIPIf)
-		//			lerpResult.x = 0.f;
-		//	}
-		//}
-
-
-		
-
-		printf("Y:%f T:%f\n", m_activeCamera->m_rotationPlatform.y, m_cubeViewRotationTarget.y);
+		//printf("Y:%f T:%f\n", m_activeCamera->m_rotationPlatform.y, m_cubeViewRotationTarget.y);
 
 		m_cubeViewRotatingLerpTime += *g_app->m_deltaTime;
 		if (m_cubeViewRotatingLerpTime > m_cubeViewRotatingLerpTimeLimit)
@@ -619,7 +590,7 @@ void ViewportView::Update()
 			if (lerpResult.y < 0)
 				lerpResult.y = lerpResult.y + PIPIf;
 
-			printf("\n");
+			//printf("\n");
 		}
 
 		m_activeCamera->m_rotationPlatform = lerpResult;
@@ -1007,4 +978,10 @@ void ViewportView::CubeViewOnClick(uint32_t meshID)
 		}
 		//m_cubeViewCamera->m_rotationPlatform = m_activeCamera->m_rotationPlatform;
 	}
+}
+
+void ViewportView::CubeViewOnMouseMove()
+{
+	m_activeCamera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+	m_cubeViewCamera->m_rotationPlatform = m_activeCamera->m_rotationPlatform;
 }

@@ -1378,4 +1378,23 @@ void bqFramework::ShowPopupAtCursor(bqPopup* p, bqWindow* w)
 	p->Show(w, (uint32_t)g_framework->m_input.m_mousePosition.x, (uint32_t)g_framework->m_input.m_mousePosition.y);
 }
 
+void bqFramework::ClipCursor(bqVec4f* r)
+{
+#ifdef BQ_PLATFORM_WINDOWS
+	if (r)
+	{
+		RECT rct;
+		rct.left = r->x;
+		rct.top = r->y;
+		rct.right = r->z;
+		rct.bottom = r->w;
+		::ClipCursor(&rct);
+	}
+	else
+	{
+		::ClipCursor(0);
+	}
+#endif
+}
+
 #endif

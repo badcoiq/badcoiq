@@ -86,6 +86,7 @@ public:
 
 private:
 	friend class ViewportLayout;
+	friend class CubeView;
 	friend class ModelEditor;
 
 	void _DrawScene(ViewportView* view);
@@ -126,6 +127,7 @@ public:
 	void ResetCamera();
 	
 	void CubeViewOnClick(uint32_t meshID);
+	void CubeViewOnMouseMove();
 
 	//void CopyDataFrom(ViewportView*);
 	void ToggleGrid();
