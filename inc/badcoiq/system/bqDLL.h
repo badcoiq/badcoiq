@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2025, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,26 +30,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_DLL_H__
 #define __BQ_DLL_H__
 
-// надо завести свои имена для хэндла и указателя на функцию
+/// надо завести свои имена для хэндла и указателя на функцию
 typedef void* bqDLLHandle;   // HMODULE в Windows
 typedef void* bqDLLFunction;
 
-// Подобно bqMemory, это класс со статическими методами.
+/// \brief Подобно bqMemory, это класс со статическими методами.
 class bqDLL
 {
 public:
 
-	// Загрузить динамическую библиотеку
-	// Вернётся указатель если загрузилось.
-	// При завершении работы надо вызвать free и передать bqDLLHandle
-	static bqDLLHandle load(const char* libraryName);
+	/// Загрузить динамическую библиотеку
+	/// Вернётся указатель если загрузилось.
+	/// При завершении работы надо вызвать free и передать bqDLLHandle
+	static bqDLLHandle Load(const char* libraryName);
 
-	// Выгрузить библиотеку
-	static void free(bqDLLHandle library);
+	/// Выгрузить библиотеку
+	static void Free(bqDLLHandle library);
 
-	// Получить функцию из библиотеки
-	// Вернёт NULL если была какая-то ошибка.
-	static bqDLLFunction get_proc(bqDLLHandle library, const char* functionName);
+	/// Получить функцию из библиотеки
+	/// Вернёт NULL если была какая-то ошибка.
+	static bqDLLFunction GetProc(bqDLLHandle library, const char* functionName);
 };
 
 #endif

@@ -30,6 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _MODELEDITOR_H_
 #define _MODELEDITOR_H_
 
+#include "model_editor/model_editor.h"
+
+
 BQ_LINK_LIBRARY("badcoiq");
 #include "badcoiq/system/bqWindow.h"
 #include "badcoiq/GUI/bqGUI.h"
@@ -166,6 +169,8 @@ class ModelEditor
     void _initGrid();
 
     CubeView* m_cubeView = 0;
+
+    void _initPlugins();
 public:
 	ModelEditor();
 	~ModelEditor();

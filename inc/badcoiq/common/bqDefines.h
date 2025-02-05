@@ -74,10 +74,21 @@ using bqReal = float64_t;
 #endif
 
 #ifdef BQ_PLATFORM_WINDOWS
+#ifdef _MSC_VER
 /// Для использования Си (функций из.c файлов) внутри C++
 #define BQ_CDECL _cdecl
+#ifdef BQ_EXPORT
+#define BQ_API _declspec(dllexport)
 #else
-#error Только для Windows
+#define BQ_API _declspec(dllimport)
+#endif
+#else
+#define BQ_CDECL
+#define BQ_API
+#endif
+#else
+#define BQ_CDECL
+#define BQ_API
 #endif
 
 #ifdef _DEBUG

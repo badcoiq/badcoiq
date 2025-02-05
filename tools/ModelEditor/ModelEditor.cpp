@@ -31,8 +31,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CubeView.h"
 #include "badcoiq/gs/bqGS.h"
 #include "badcoiq/system/bqPopup.h"
+#include "badcoiq/system/bqDLL.h"
 #include "badcoiq/framework/bqShortcutManager.h"
 #include "badcoiq/scene/bqCamera.h"
+
+#include <filesystem>
 
 ModelEditor* g_app = 0;
 
@@ -166,6 +169,8 @@ bool ModelEditor::Init()
 	_initGrid();
 
 	m_viewport = new Viewport;
+
+	_initPlugins();
 
 	GUI_rebuild();
 
@@ -461,3 +466,71 @@ void ModelEditor::_processShortcuts()
 	//if (m_shortcutMgr->IsShortcutActive(CommandID_MainMenuExit))OnExit();
 }
 
+void ModelEditor::_initPlugins()
+{
+	for (auto& entry : std::filesystem::directory_iterator(L"plugins/"))
+	{
+		auto path = entry.path();
+		if (!path.has_extension())
+			continue;
+
+		auto ex = path.extension();
+		if (ex != ".dll")
+			continue;
+
+		auto lib_str = path.generic_string();
+
+		auto module = bqDLL::Load(lib_str.c_str());
+		if (!module)
+			continue;
+
+		bqLog::PrintInfo("Load plugin: %s...\n", lib_str.data());
+
+		bqMECreatePlugin_t CreatePlugin = (bqMECreatePlugin_t)bqDLL::GetProc(module, "MECreatePlugin");
+		if (!CreatePlugin)
+		{
+			bqLog::PrintWarning("FAIL (function %s not found)\n", "MECreatePlugin");
+			continue;
+		}
+
+		auto newPlugin = CreatePlugin();
+
+		bool isDebug = false;
+#ifdef BQ_DEBUG
+		isDebug = true;
+#endif
+		if (newPlugin->IsDebug() && isDebug != true)
+		{
+			newPlugin->~bqMEPlugin();
+			bqMemory::free(newPlugin);
+			bqLog::PrintWarning("FAIL (debug version)\n");
+			continue;
+		}
+
+		if (newPlugin->CheckVersion() != BQ_ME_SDK_VERSION)
+		{
+			newPlugin->~bqMEPlugin();
+			bqMemory::free(newPlugin);
+			bqLog::PrintWarning("FAIL (bad version)\n");
+			continue;
+		}
+		/*newPlugin->Init(m_sdk);
+		bqLog::PrintInfo(L"DONE (%s)\n", newPlugin->GetName());
+
+		plugin_info pi;
+		pi.m_plugin = newPlugin;
+		pi.m_path = path.filename().generic_string();
+		m_plugins.push_back(pi);*/
+	}
+
+	/*m_pluginForApp = (miApplicationPlugin*)miMalloc(sizeof(miApplicationPlugin));
+	new(m_pluginForApp)miApplicationPlugin();
+
+	plugin_info pi;
+	pi.m_plugin = m_pluginForApp;
+	pi.m_path = "appplugin";
+	m_plugins.push_back(pi);
+
+	m_plugins.shrink_to_fit();*/
+
+}
