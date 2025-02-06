@@ -30,13 +30,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_MODEL_EDITOR_H__
 #define __BQ_MODEL_EDITOR_H__
 
+#define BQ_ME_SDK_VERSION 1
+
 class bqMEPlugin;
 class bqME;
+class bqMEExporter;
+class bqMEImporter;
 
 typedef BQ_API bqMEPlugin* (BQ_CDECL* bqMECreatePlugin_t)();
 
-#define BQ_ME_SDK_VERSION 1
-
+/// \brief bqMEPlugin описывает плагин как модуль DLL в целом
+/// Один модуль может содержать множество штук - импортёры, экспортёры и т.д.
 class bqMEPlugin
 {
 public:
@@ -56,15 +60,32 @@ public:
 #endif
 	}
 
+	/// \brief что-то там инициализирует
+	///
+	/// Методы типа GetExporter должны вернуть указатель на
+	/// экземпляр класса созданный внутри плагина. Память
+	/// должна быть выделена и освобождена внутри плагина.
 	virtual void Init(bqME* sdk) = 0;
 
-	// return BQ_ME_SDK_VERSION
+	/// \brief Получить количество импортёров
+	virtual uint32_t GetNumOfImporters() = 0;
+	
+	/// \brief Получить количество экспортёров
+	virtual uint32_t GetNumOfExporters() = 0;
+
+	/// \brief Получить экземпляр для экспорта сцены
+	virtual bqMEExporter* GetExporter(uint32_t) = 0;
+
+	/// \brief Получить экземпляр для импорта сцены
+	virtual bqMEImporter* GetImporter(uint32_t) = 0;
+
+	/// \brief return BQ_ME_SDK_VERSION
 	virtual int CheckVersion() 
 	{
 		return BQ_ME_SDK_VERSION;
 	}
 
-	virtual void OnCreateObject(unsigned int objectId) {}
+//	virtual void OnCreateObject(unsigned int objectId) {}
 	/*virtual void OnCursorMove(bqMESelectionFrust*, bool isCursorInGUI) {}
 	virtual void OnLMBDown(bqMESelectionFrust*, bool isCursorInGUI) {}
 	virtual void OnLMBUp(bqMESelectionFrust*, bool isCursorInGUI) {}
@@ -72,8 +93,8 @@ public:
 	virtual void OnUpdate(bqMESelectionFrust*, bool isCursorInGUI) {}*/
 
 	//virtual void OnImportExport(const wchar_t* fileName, unsigned int id) {}
-	virtual void OnImport(uint32_t importerID) {}
-	virtual void OnExport(uint32_t importerID) {}
+//	virtual void OnImport(uint32_t importerID) {}
+//	virtual void OnExport(uint32_t importerID) {}
 
 	// when hold shift and first click on gizmo
 	// will be called on each selected object
