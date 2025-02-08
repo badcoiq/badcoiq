@@ -193,6 +193,8 @@ public:
 	/// Например, путь ../data/img/1.png
 	/// Если файла нет то вернётся
 	/// data/img/1.png
+	/// 
+	/// bqFramework::GetPath("../data/model_editor/gui.png").c_str()
 	static bqStringA GetPath(const bqString& v);
 
 #ifdef BQ_WITH_POPUP

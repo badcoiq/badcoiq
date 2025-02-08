@@ -39,6 +39,11 @@ BQ_LINK_LIBRARY("badcoiq");
 
 #define APP_PRINT_ERROR bqLog::PrintError("%s %s %l\n", BQ_FILE, BQ_FUNCTION, BQ_LINE)
 
+struct PluginInfo
+{
+    bqMEDestroyPlugin_t m_destroyFunction = 0;
+    bqMEPlugin* m_plugin = 0;
+};
 
 class FrameworkCallback : public bqFrameworkCallback
 {
@@ -171,6 +176,8 @@ class ModelEditor
     CubeView* m_cubeView = 0;
 
     void _initPlugins();
+    bqArray<PluginInfo> m_plugins;
+
 public:
 	ModelEditor();
 	~ModelEditor();

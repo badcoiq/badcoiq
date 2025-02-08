@@ -38,6 +38,7 @@ class bqMEExporter;
 class bqMEImporter;
 
 typedef BQ_API bqMEPlugin* (BQ_CDECL* bqMECreatePlugin_t)();
+typedef BQ_API void (BQ_CDECL* bqMEDestroyPlugin_t)(bqMEPlugin*);
 
 /// \brief bqMEPlugin описывает плагин как модуль DLL в целом
 /// Один модуль может содержать множество штук - импортёры, экспортёры и т.д.
@@ -104,6 +105,28 @@ public:
 	//virtual bqMESceneObject* OnDuplicate(bqMESceneObject* object, bool isMirror, bqMEAxis axis) { return 0; }
 
 	//virtual void OnReadObject(FILE*, u32 typeForPlugin) {}
+};
+
+/// \brief Базовый класс для импорта
+///
+/// Чтобы создать импортёр, нужно создать производный класс.
+class bqMEImporter
+{
+public:
+	bqMEImporter() {}
+	virtual ~bqMEImporter() {}
+
+	/// \brief Получить количество расширений файлов
+	virtual uint32_t ExtCount() = 0;
+	
+	/// \brief Получить расширение файла
+	virtual const char* Ext(uint32_t) = 0;
+	
+	/// \brief Получить версию
+	virtual uint32_t Version() = 0;
+
+	/// \brief Открыть окно выбора файла, и приступить к импорту
+	virtual void DoImport(const char*) = 0;
 };
 
 #endif

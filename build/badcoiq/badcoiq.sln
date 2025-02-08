@@ -41,6 +41,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opus", "..\opus\opus.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opusfile", "..\opusfile\opusfile.vcxproj", "{C52FE991-1221-2114-0500-000000000000}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModelEditor.BasePlugin", "..\..\tools\ModelEditor.BasePlugin\ModelEditor.BasePlugin.vcxproj", "{A1327555-4E80-35C7-9A4E-C19F23869E3B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -193,6 +195,14 @@ Global
 		{C52FE991-1221-2114-0500-000000000000}.Release|x64.Build.0 = Release|x64
 		{C52FE991-1221-2114-0500-000000000000}.Release|x86.ActiveCfg = Release|Win32
 		{C52FE991-1221-2114-0500-000000000000}.Release|x86.Build.0 = Release|Win32
+		{A1327555-4E80-35C7-9A4E-C19F23869E3B}.Debug|x64.ActiveCfg = Debug|x64
+		{A1327555-4E80-35C7-9A4E-C19F23869E3B}.Debug|x64.Build.0 = Debug|x64
+		{A1327555-4E80-35C7-9A4E-C19F23869E3B}.Debug|x86.ActiveCfg = Debug|Win32
+		{A1327555-4E80-35C7-9A4E-C19F23869E3B}.Debug|x86.Build.0 = Debug|Win32
+		{A1327555-4E80-35C7-9A4E-C19F23869E3B}.Release|x64.ActiveCfg = Release|x64
+		{A1327555-4E80-35C7-9A4E-C19F23869E3B}.Release|x64.Build.0 = Release|x64
+		{A1327555-4E80-35C7-9A4E-C19F23869E3B}.Release|x86.ActiveCfg = Release|Win32
+		{A1327555-4E80-35C7-9A4E-C19F23869E3B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -200,6 +210,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DE8DED7D-4F12-4766-BCDC-D9C42FFA1FD4} = {C553BD37-9BC7-4237-9B2A-A50A5EB4ADB0}
 		{DE8DED7D-4F32-4766-BADC-D9C42FFA1FD4} = {C553BD37-9BC7-4237-9B2A-A50A5EB4ADB0}
+		{A1327555-4E80-35C7-9A4E-C19F23869E3B} = {C553BD37-9BC7-4237-9B2A-A50A5EB4ADB0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8E513EBC-B4DA-48C8-92EF-3124877EE907}

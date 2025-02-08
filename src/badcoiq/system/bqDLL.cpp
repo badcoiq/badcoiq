@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Windows.h>
 #endif
 
-bqDLLHandle bqDLL::load(const char* libraryName)
+bqDLLHandle bqDLL::Load(const char* libraryName)
 {
 	BQ_ASSERT_ST(libraryName);
 #ifdef BQ_PLATFORM_WINDOWS
@@ -43,7 +43,7 @@ bqDLLHandle bqDLL::load(const char* libraryName)
 #endif
 }
 
-void bqDLL::free(bqDLLHandle library)
+void bqDLL::Free(bqDLLHandle library)
 {
 	BQ_ASSERT_ST(library);
 #ifdef BQ_PLATFORM_WINDOWS
@@ -53,7 +53,7 @@ void bqDLL::free(bqDLLHandle library)
 #endif
 }
 
-bqDLLFunction bqDLL::get_proc(bqDLLHandle library, const char* functionName)
+bqDLLFunction bqDLL::GetProc(bqDLLHandle library, const char* functionName)
 {
 	BQ_ASSERT_ST(library);
 	BQ_ASSERT_ST(functionName);

@@ -468,6 +468,8 @@ void ModelEditor::_processShortcuts()
 
 void ModelEditor::_initPlugins()
 {
+	std::filesystem::create_directory(bqFramework::GetPath("plugins/").c_str());
+
 	for (auto& entry : std::filesystem::directory_iterator(L"plugins/"))
 	{
 		auto path = entry.path();
@@ -493,6 +495,15 @@ void ModelEditor::_initPlugins()
 			continue;
 		}
 
+		bqMEDestroyPlugin_t DestroyPlugin = (bqMEDestroyPlugin_t)bqDLL::GetProc(module, "MEDestroyPlugin");
+		if (!DestroyPlugin)
+		{
+			bqLog::PrintWarning("FAIL (function %s not found)\n", "MEDestroyPlugin");
+			continue;
+		}
+
+
+
 		auto newPlugin = CreatePlugin();
 
 		bool isDebug = false;
@@ -501,16 +512,14 @@ void ModelEditor::_initPlugins()
 #endif
 		if (newPlugin->IsDebug() && isDebug != true)
 		{
-			newPlugin->~bqMEPlugin();
-			bqMemory::free(newPlugin);
+			DestroyPlugin(newPlugin);
 			bqLog::PrintWarning("FAIL (debug version)\n");
 			continue;
 		}
 
 		if (newPlugin->CheckVersion() != BQ_ME_SDK_VERSION)
 		{
-			newPlugin->~bqMEPlugin();
-			bqMemory::free(newPlugin);
+			DestroyPlugin(newPlugin);
 			bqLog::PrintWarning("FAIL (bad version)\n");
 			continue;
 		}
@@ -521,6 +530,11 @@ void ModelEditor::_initPlugins()
 		pi.m_plugin = newPlugin;
 		pi.m_path = path.filename().generic_string();
 		m_plugins.push_back(pi);*/
+
+		PluginInfo pi;
+		pi.m_destroyFunction = DestroyPlugin;
+		pi.m_plugin = newPlugin;
+		m_plugins.push_back(pi);
 	}
 
 	/*m_pluginForApp = (miApplicationPlugin*)miMalloc(sizeof(miApplicationPlugin));
