@@ -171,11 +171,13 @@ bool ModelEditor::Init()
 	m_GUIWindow_editPanel->SetDrawBG(true);
 	m_GUIWindow_editPanel->Activate();
 	m_GUIWindow_editPanel->m_windowFlags |= bqGUIWindowBase::windowFlag_disableToTop;
+	m_GUIWindow_editPanel->m_windowFlags |= m_GUIWindow_addObject->windowFlag_withShadow;
 
 	m_GUIWindow_addObject = m_mainWindow->CreateNewGUIWindow(bqVec2f(0.f, 0.f),
 		bqVec2f(300.f, 300.f));
 	m_GUIWindow_addObject->SetDrawBG(true);
 	m_GUIWindow_addObject->m_windowFlags |= m_GUIWindow_addObject->windowFlag_withTitleBar;
+	m_GUIWindow_addObject->m_windowFlags |= m_GUIWindow_addObject->windowFlag_withShadow;
 	m_GUIWindow_addObject->m_windowFlags |= m_GUIWindow_addObject->windowFlag_canMove;
 	m_GUIWindow_addObject->GetTitleText().assign(U"Add object");
 	m_GUIWindow_addObject->Activate();

@@ -178,7 +178,7 @@ public:
 	virtual void BeginGUI(bool clear) override;
 	virtual void EndGUI() override;
 	virtual void DrawGUIRectangle(const bqVec4f& rect, const bqColor& color1, const bqColor& color2,
-		bqTexture* t, bqVec4f* UVs) override;
+		bqTexture* t, bqVec4f* UVs, uint32_t shadow = 0) override;
 	virtual void DrawGUIText(const char32_t* text, uint32_t textSz, const bqVec2f& position,
 		bqGUIDrawTextCallback*) override;
 #ifdef BQ_WITH_SPRITE

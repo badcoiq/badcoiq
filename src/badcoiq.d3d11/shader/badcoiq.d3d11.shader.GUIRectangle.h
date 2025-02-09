@@ -55,6 +55,7 @@ public:
 		bqColor Color1;
 		bqColor Color2;
 		bqVec4f UVs;
+		bqVec4_t<int> datai;
 	}m_cbDataElement;
 
 	virtual void SetConstants(bqMaterial* material) override;

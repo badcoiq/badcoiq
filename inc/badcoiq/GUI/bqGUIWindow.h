@@ -98,6 +98,9 @@ public:
 		/// не понимаю названия windowFlag_canToTop
 		/// надо изменить 
 		windowFlag_disableToTop = 0x40, // надо реализовать 
+		
+		windowFlag_withShadow = 0x80,
+
 		//windowFlag_disableScrollbar = 0x80,
 	};
 	uint32_t m_windowFlags = 0;

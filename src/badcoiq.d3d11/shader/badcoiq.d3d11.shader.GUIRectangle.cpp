@@ -59,6 +59,7 @@ bool bqD3D11ShaderGUIRectangle::Init() {
 		"	float4 Color1;\n"
 		"	float4 Color2;\n"
 		"	float4 UVs;\n"
+		"	vector<int,4> datai;\n"
 		"};\n"
 		"struct VSOut{\n"
 		"   float4 pos : SV_POSITION;\n"
@@ -78,6 +79,26 @@ bool bqD3D11ShaderGUIRectangle::Init() {
 		"PSOut PSMain(VSOut input){\n"
 		"   PSOut output;\n"
 		"   output.color = saturate(tex2d_1.Sample(tex2D_sampler_1, input.uv) * input.color);\n"
+		"	if(datai.x > 0){\n"
+		"	float sz1=0.05f;\n"
+		"	float sz2=0.95f;\n"
+		"		if((input.uv.x < sz1) && (input.uv.y < sz1))\n"
+		"			output.color.a *= min(input.uv.x, input.uv.y) * 10.f;\n"
+		"		else if((input.uv.x < sz1) && (input.uv.y > sz2))\n"
+		"			output.color.a *= min(input.uv.x, (1.f-input.uv.y)) * 10.f;\n"
+		"		else if((input.uv.x > sz2) && (input.uv.y < sz1))\n"
+		"			output.color.a *= min((1.f-input.uv.x), input.uv.y) * 10.f;\n"
+		"		else if((input.uv.x > sz2) && (input.uv.y > sz2))\n"
+		"			output.color.a *= min((1.f-input.uv.x), (1.f-input.uv.y)) * 10.f;\n"
+		"		else if(input.uv.x < sz1)\n"
+		"			output.color.a *= input.uv.x * 10.f;\n"
+		"		else if(input.uv.y < sz1)\n"
+		"			output.color.a *= input.uv.y * 10.f;\n"
+		"		else if(input.uv.x > sz2)\n"
+		"			output.color.a *= (1.f-input.uv.x) * 10.f;\n"
+		"		else if(input.uv.y > sz2)\n"
+		"			output.color.a *= (1.f-input.uv.y) * 10.f;\n"
+		"	}\n"
 		"   return output;\n"
 		"}\n"
 		"[maxvertexcount(4)]\n"
@@ -149,6 +170,9 @@ void bqD3D11ShaderGUIRectangle::SetOnElement(bqGSD3D11Texture* texture)
 {
 	m_gs->m_d3d11DevCon->PSSetShaderResources(0, 1, &texture->m_textureResView);
 	m_gs->m_d3d11DevCon->PSSetSamplers(0, 1, &texture->m_samplerState);
+	
+	//m_cbDataElement.datai.Set(0);
+	//m_cbDataElement.datai.x = 1;
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	D3D11_BUFFER_DESC d;
@@ -156,6 +180,7 @@ void bqD3D11ShaderGUIRectangle::SetOnElement(bqGSD3D11Texture* texture)
 	m_cbElement->GetDesc(&d);
 	memcpy(mappedResource.pData, &m_cbDataElement, d.ByteWidth);
 	m_gs->m_d3d11DevCon->Unmap(m_cbElement, 0);
+	m_gs->m_d3d11DevCon->PSSetConstantBuffers(0, 1, &m_cbElement);
 	m_gs->m_d3d11DevCon->GSSetConstantBuffers(1, 1, &m_cbElement);
 }
 #endif

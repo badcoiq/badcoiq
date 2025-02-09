@@ -176,7 +176,7 @@ public:
 	virtual void BeginGUI(bool clear = true) = 0;
 	virtual void EndGUI() = 0;
 	virtual void DrawGUIRectangle(const bqVec4f& rect, const bqColor& color1, const bqColor& color2,
-		bqTexture* t, bqVec4f* UVs) = 0;
+		bqTexture* t, bqVec4f* UVs, uint32_t shadow = 0) = 0;
 	virtual void DrawGUIText(const char32_t* text, uint32_t textSz, const bqVec2f& position,
 		bqGUIDrawTextCallback*) = 0;
 #ifdef BQ_WITH_SPRITE

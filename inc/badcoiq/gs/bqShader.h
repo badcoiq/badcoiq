@@ -47,8 +47,6 @@ enum class bqShaderType
 	Sprite,
 #endif
 
-	Blur2D,
-
 	User,
 };
 

@@ -989,16 +989,20 @@ void bqGUIWindow::Update()
 
 void bqGUIWindow::Draw(bqGS* gs, float dt)
 {
-	// Проба добавить тень
-	float32_t shadowClipRectSize = 3.f;
-	auto shadowClipRect = m_clipRect;
-	shadowClipRect.x -= shadowClipRectSize;
-	shadowClipRect.y -= shadowClipRectSize;
-	shadowClipRect.z += shadowClipRectSize;
-	shadowClipRect.w += shadowClipRectSize;
-	gs->SetScissorRect(shadowClipRect);
-	gs->SetShader(bqShaderType::Blur2D, 0);
-	gs->DrawGUIRectangle(m_baseRect, bq::ColorBlack, bq::ColorBlack, 0, 0);
+	if (m_windowFlags & windowFlag_withShadow)
+	{
+		// Проба добавить тень
+		float32_t shadowClipRectSize = 10.f;
+		float32_t shadowClipRectSizeHalf = shadowClipRectSize * 0.5f;
+		auto shadowClipRect = m_clipRect;
+		shadowClipRect.x -= shadowClipRectSize- shadowClipRectSizeHalf;
+		shadowClipRect.y -= shadowClipRectSize- shadowClipRectSizeHalf;
+		shadowClipRect.z += shadowClipRectSize;
+		shadowClipRect.w += shadowClipRectSize;
+		auto shadowBaseRect = shadowClipRect;
+		gs->SetScissorRect(shadowClipRect);
+		gs->DrawGUIRectangle(shadowBaseRect, bq::ColorBlack, bq::ColorBlack, 0, 0, 1);
+	}
 
 	gs->SetScissorRect(m_clipRect);
 

@@ -994,7 +994,6 @@ void bqGSD3D11::SetShader(bqShaderType t, uint32_t userShaderIndex)
 		m_d3d11DevCon->IASetInputLayout(m_shaderLineModel->m_vLayout);
 		m_d3d11DevCon->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 		break;
-
 	case bqShaderType::User:
 		break;
 	default:
@@ -1689,7 +1688,7 @@ void bqGSD3D11::DrawGUIRectangle(
 	const bqColor& color1,
 	const bqColor& color2,
 	bqTexture* t,
-	bqVec4f* UVs)
+	bqVec4f* UVs, uint32_t shadow)
 {
 	m_shaderGUIRectangle->m_cbDataElement.Color1 = color1;
 	m_shaderGUIRectangle->m_cbDataElement.Color2 = color2;
@@ -1700,6 +1699,7 @@ void bqGSD3D11::DrawGUIRectangle(
 	m_shaderGUIRectangle->m_cbDataElement.UVs.y = 0.f;
 	m_shaderGUIRectangle->m_cbDataElement.UVs.z = 1.f;
 	m_shaderGUIRectangle->m_cbDataElement.UVs.w = 1.f;
+	m_shaderGUIRectangle->m_cbDataElement.datai.x = shadow;
 
 	if (UVs)
 		m_shaderGUIRectangle->m_cbDataElement.UVs = *UVs;
