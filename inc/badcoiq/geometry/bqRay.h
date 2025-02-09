@@ -46,7 +46,7 @@ public:
 	/// Так-же полезно иметь дополнительные данные
 	bqVec3 m_direction;
 	bqVec3 m_invDir;
-	bqReal m_segmentLen;
+	bqReal m_segmentLen = 0.0;
 
 	/// Вычислить m_segmentLen.
 	/// Расстояние от m_origin до m_end

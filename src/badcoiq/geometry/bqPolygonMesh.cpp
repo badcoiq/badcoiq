@@ -182,6 +182,8 @@ void bqPolygonMesh::GenerateNormals(bool smooth)
 
 			}
 
+			// ??? НАДО ПРОВЕРИТЬ
+			// ??? почему нужен цикл for (auto p : m_polygons)
 			for (auto p : m_polygons)
 			{
 				for (auto& o : map)

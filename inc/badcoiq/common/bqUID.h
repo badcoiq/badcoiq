@@ -39,14 +39,13 @@ struct bqUID
 	uint32_t d1;
 	uint16_t d2;
 	uint16_t d3;
-	uint16_t d4;
-	uint8_t  d5[6];
+	uint8_t  d4[8];
 };
 
 /// Создать bqUID
-#define bqDEFINE_UID(name, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10) \
+#define bqDEFINE_UID(name, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11) \
         const bqUID name \
-                = { d1, d2, d3, d4, d5,  d6,  d7,  d8,  d9,  d10 }
+                = { d1, d2, d3, d4, d5,  d6,  d7,  d8,  d9,  d10, d11 }
 
 
 #endif

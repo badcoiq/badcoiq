@@ -1566,27 +1566,27 @@ int bqCRT::isupper(char32_t c)
 		return 1;
 	return 0;
 }
-char bqCRT::tolower(char c)
+char bqCRT::tolower(char )
 {
 	return 0;
 }
-wchar_t bqCRT::tolower(wchar_t c)
+wchar_t bqCRT::tolower(wchar_t )
 {
 	return 0;
 }
-char32_t bqCRT::tolower(char32_t c)
+char32_t bqCRT::tolower(char32_t )
 {
 	return 0;
 }
-char bqCRT::toupper(char c)
+char bqCRT::toupper(char )
 {
 	return 0;
 }
-wchar_t bqCRT::toupper(wchar_t c)
+wchar_t bqCRT::toupper(wchar_t )
 {
 	return 0;
 }
-char32_t bqCRT::toupper(char32_t c)
+char32_t bqCRT::toupper(char32_t)
 {
 	return 0;
 }

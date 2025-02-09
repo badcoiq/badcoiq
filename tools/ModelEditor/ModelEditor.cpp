@@ -149,7 +149,7 @@ bool ModelEditor::Init()
 	m_GUIWindow_mainMenuBar = m_mainWindow->CreateNewGUIWindow(bqVec2f(0.f, 0.f),
 		bqVec2f(800.f, 32.f));
 	m_GUIWindow_mainMenuBar->SetDrawBG(true);
-	//m_GUIWindow_mainMenuBar->m_windowFlags |= bqGUIWindowBase::windowFlag_withTitleBar;
+	m_GUIWindow_mainMenuBar->m_windowFlags |= bqGUIWindowBase::windowFlag_disableToTop;
 	m_GUIWindow_mainMenuBar->Activate();
 
 
@@ -166,9 +166,25 @@ bool ModelEditor::Init()
 	button->SetTCoords(0.f, 0.f, 31.f, 31.f);
 	m_GUIWindow_mainMenuBar->AddElement(button);
 
+	m_GUIWindow_editPanel = m_mainWindow->CreateNewGUIWindow(bqVec2f(0.f, 0.f),
+		bqVec2f(10.f, 10.f));
+	m_GUIWindow_editPanel->SetDrawBG(true);
+	m_GUIWindow_editPanel->Activate();
+	m_GUIWindow_editPanel->m_windowFlags |= bqGUIWindowBase::windowFlag_disableToTop;
+
+	m_GUIWindow_addObject = m_mainWindow->CreateNewGUIWindow(bqVec2f(0.f, 0.f),
+		bqVec2f(300.f, 300.f));
+	m_GUIWindow_addObject->SetDrawBG(true);
+	m_GUIWindow_addObject->m_windowFlags |= m_GUIWindow_addObject->windowFlag_withTitleBar;
+	m_GUIWindow_addObject->m_windowFlags |= m_GUIWindow_addObject->windowFlag_canMove;
+	m_GUIWindow_addObject->GetTitleText().assign(U"Add object");
+	m_GUIWindow_addObject->Activate();
+
 	_initGrid();
 
 	m_viewport = new Viewport;
+
+	m_sdk = new bqME;
 
 	_initPlugins();
 
@@ -253,6 +269,8 @@ void ModelEditor::Run()
 		m_viewport->Draw();
 
 		m_gs->BeginGUI(false);
+		//m_gs->DrawGUIRectangle(m_editPanelRect, bq::ColorRed, bq::ColorYellow, 0, 0);
+		
 		m_mainWindow->DrawGUI(m_gs);
 
 		m_gs->SetScissorRect(bqVec4f(0.f, 0.f,
@@ -272,6 +290,8 @@ void ModelEditor::Run()
 
 void ModelEditor::Shutdown()
 {
+	BQ_SAFEDESTROY(m_popupViewportOptions);
+	BQ_SAFEDESTROY(m_popupMainMenuOptions);
 	BQ_SAFEDESTROY(m_cubeView);
 	BQ_SAFEDESTROY(m_shortcutMgr);
 	BQ_SAFEDESTROY(m_gridModel_perspective1);
@@ -428,13 +448,21 @@ void ModelEditor::GUI_rebuild()
 		}
 
 		m_GUIWindow_mainMenuBar->SetSize(m_mainMenuBarRect.z, m_mainMenuBarRect.w);
-		m_GUIWindow_mainMenuBar->Rebuild();
+	//	m_GUIWindow_mainMenuBar->Rebuild();
 	}
 
 	m_editPanelRect.x = 0.f;
 	m_editPanelRect.y = m_mainMenuBarRect.w;
 	m_editPanelRect.z = m_editPanelWidth;
 	m_editPanelRect.w = m_mainWindow->GetCurrentSize()->y;
+	if (m_GUIWindow_editPanel)
+	{
+		m_GUIWindow_editPanel->SetPosition(0.f, m_editPanelRect.y);
+		m_GUIWindow_editPanel->SetSize(m_editPanelRect.z, m_editPanelRect.w);
+		m_GUIWindow_editPanel->Rebuild();
+	}
+
+	m_mainWindow->RebuildGUI();
 
 	if(m_viewport)
 		m_viewport->Rebuild();
@@ -504,7 +532,12 @@ void ModelEditor::_initPlugins()
 
 
 
-		auto newPlugin = CreatePlugin();
+		auto newPlugin = CreatePlugin(m_sdk);
+		if (!newPlugin)
+		{
+			bqLog::PrintWarning("FAIL (newPlugin is nullptr)\n");
+			continue;
+		}
 
 		bool isDebug = false;
 #ifdef BQ_DEBUG

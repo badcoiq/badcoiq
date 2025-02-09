@@ -468,7 +468,7 @@ bool bqMDL::Load(const char* fn, const char* textureDir, bqGS* gs, bool free_bqM
 						{
 							for (size_t bi = 0; bi < boneNum; ++bi)
 							{
-								bqJoint* joint = &joints.m_data[bi];
+								//bqJoint* joint = &joints.m_data[bi];
 
 								// чанк с анимациями такой
 								/*

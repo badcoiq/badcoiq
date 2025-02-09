@@ -30,14 +30,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BQ_MODEL_EDITOR_H__
 #define __BQ_MODEL_EDITOR_H__
 
+#include "badcoiq/common/bqUID.h"
+
 #define BQ_ME_SDK_VERSION 1
+
+// {A293684A-E9EB-4427-9623-DFB0F472E06A}
+bqDEFINE_UID(MEUID_BASE_PLUGIN,
+	0xa293684a, 0xe9eb, 0x4427, 0x96, 0x23, 0xdf, 0xb0, 0xf4, 0x72, 0xe0, 0x6a);
 
 class bqMEPlugin;
 class bqME;
 class bqMEExporter;
 class bqMEImporter;
 
-typedef BQ_API bqMEPlugin* (BQ_CDECL* bqMECreatePlugin_t)();
+typedef BQ_API bqMEPlugin* (BQ_CDECL* bqMECreatePlugin_t)(bqME* sdk);
 typedef BQ_API void (BQ_CDECL* bqMEDestroyPlugin_t)(bqMEPlugin*);
 
 /// \brief bqMEPlugin описывает плагин как модуль DLL в целом
@@ -48,11 +54,7 @@ public:
 	bqMEPlugin() {}
 	virtual ~bqMEPlugin() {}
 
-	virtual const wchar_t* GetName() { return L"Plugin name"; }
-	virtual const wchar_t* GetDescription() { return L"Plugin description"; }
-	virtual const wchar_t* GetAuthor() { return L"Plugin author"; }
-
-	// debug plugins must works only in debug app
+	/// debug plugins must works only in debug app
 	virtual bool IsDebug() {
 #ifdef BQ_DEBUG
 		return true;
@@ -61,12 +63,21 @@ public:
 #endif
 	}
 
-	/// \brief что-то там инициализирует
+	/// \brief return BQ_ME_SDK_VERSION
+	virtual int CheckVersion()
+	{
+		return BQ_ME_SDK_VERSION;
+	}
+
+	virtual const wchar_t* GetName() { return L"Plugin name"; }
+	virtual const wchar_t* GetDescription() { return L"Plugin description"; }
+	virtual const wchar_t* GetAuthor() { return L"Plugin author"; }
+
+	/// \brief Все плагины должны иметь уникальный UID.
 	///
-	/// Методы типа GetExporter должны вернуть указатель на
-	/// экземпляр класса созданный внутри плагина. Память
-	/// должна быть выделена и освобождена внутри плагина.
-	virtual void Init(bqME* sdk) = 0;
+	/// bqUID соответствует GUID от Microsoft.
+	/// Все занятые bqUID будут находиться вверху документа.
+	virtual const bqUID& GetUID() = 0;
 
 	/// \brief Получить количество импортёров
 	virtual uint32_t GetNumOfImporters() = 0;
@@ -80,11 +91,7 @@ public:
 	/// \brief Получить экземпляр для импорта сцены
 	virtual bqMEImporter* GetImporter(uint32_t) = 0;
 
-	/// \brief return BQ_ME_SDK_VERSION
-	virtual int CheckVersion() 
-	{
-		return BQ_ME_SDK_VERSION;
-	}
+	
 
 //	virtual void OnCreateObject(unsigned int objectId) {}
 	/*virtual void OnCursorMove(bqMESelectionFrust*, bool isCursorInGUI) {}
@@ -127,6 +134,14 @@ public:
 
 	/// \brief Открыть окно выбора файла, и приступить к импорту
 	virtual void DoImport(const char*) = 0;
+};
+
+/// \brief Главный интерфейс для работы с ModelEditor
+class bqME
+{
+public:
+	bqME() {}
+	~bqME() {}
 };
 
 #endif

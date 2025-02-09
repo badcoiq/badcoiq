@@ -189,7 +189,7 @@ bool bqAabb::RayTest(const bqRay& r, const bqVec3& aabbOrigin) const
 	return true;
 }
 
-bool bqAabb::SphereIntersect(const bqVec3& p, float32_t r) const
+bool bqAabb::SphereIntersect(const bqVec3& p, float32_t) const
 {
 	bqReal dmin = 0.0;
 

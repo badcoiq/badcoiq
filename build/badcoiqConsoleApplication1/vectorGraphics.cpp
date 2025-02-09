@@ -4621,12 +4621,12 @@ public:
     MyGUIDrawTextCallback() {}
     virtual ~MyGUIDrawTextCallback() {}
 
-    virtual bqGUIFont* OnFont(uint32_t, char32_t)
+    virtual bqGUIFont* OnFont(char32_t)
     {
         return m_defaultFont;
     }
 
-    virtual bqColor* OnColor(uint32_t, char32_t)
+    virtual bqColor* OnColor(char32_t)
     {
         return &m_colorBlack;
     }
@@ -4642,7 +4642,7 @@ class MyButton : public bqGUIButton
 public:
     MyButton(bqGUIWindow* w, const bqVec2f& position, const bqVec2f& size)
         :
-        bqGUIButton(w, position, size)
+        bqGUIButton(position, size)
     {
     }
 
@@ -5096,13 +5096,13 @@ int main()
     bqFramework::Start(&fcb);
 
     bqWindowCallbackCB wcb;
-    auto window = bqFramework::SummonWindow(&wcb);
+    auto window = bqFramework::CreateSystemWindow(&wcb);
     if (window && bqFramework::GetGSNum())
     {
         window->SetPositionAndSize(10, 10, 800, 600);
         window->SetVisible(true);
 
-        bqGS* gs = bqFramework::SummonGS(bqFramework::GetGSUID(0));
+        bqGS* gs = bqFramework::CreateGS(bqFramework::GetGSUID(0));
         if (gs)
         {
             wcb.SetUserData(gs);
@@ -5137,7 +5137,7 @@ int main()
                 MyGUIDrawTextCallback tdcb;
                 tdcb.SetFont(bqFramework::GetDefaultFont(bqGUIDefaultFont::Text));
 
-                auto guiWindow = bqFramework::SummonGUIWindow(window, bqVec2f(100.f, 100.f), bqVec2f(300.f));
+                auto guiWindow = window->CreateNewGUIWindow(bqVec2f(100.f, 100.f), bqVec2f(300.f));
                 guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_withTitleBar;
                 guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canMove;
                 guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canResize;
@@ -5188,7 +5188,7 @@ int main()
               /*  TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(guiWindow, bqVec2f(), bqVec2f(10.f, 40.f));
                 testScrollbar->m_alignment = bqGUIElement::Alignment::Left;*/
                 sld->m_alignment = bqGUIElement::Alignment::Center;
-                bqFramework::RebuildGUI();
+                window->RebuildGUI();
 #endif
                 bqImage screenImg;
                 screenImg.Create(800, 600);
@@ -5252,7 +5252,7 @@ int main()
              //   memcpy(screenImg.m_data, bitmap.mData, screenImg.m_dataSize);
               //  screenImg.SaveToFile(bqImage::SaveFileFormat::ddsRGBA8, "testVG.dds");
 
-                bqTexture* texture = gs->SummonTexture(&screenImg);
+                bqTexture* texture = gs->CreateTexture(&screenImg);
 
                 {
                
@@ -5261,7 +5261,7 @@ int main()
                     {
                         bqFramework::Update();
 #ifdef BQ_WITH_GUI
-                        bqFramework::UpdateGUI();
+                        window->UpdateGUI();
 #endif
 
                         if (bqInput::IsKeyHit(bqInput::KEY_1))
@@ -5306,7 +5306,7 @@ int main()
                         gs->DrawGUIRectangle(bqVec4f(0.f, 0.f, 800.f, 600.f), bq::ColorWhite,
                             bq::ColorWhite, texture, 0);
                         //gs->DrawGUIText(U"Hello!!!", 9, bqVec2f(10.f), &tdcb);
-                        bqFramework::DrawGUI(gs);
+                        window->DrawGUI(gs);
                         gs->EndGUI();
 #endif
 

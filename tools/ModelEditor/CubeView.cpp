@@ -175,7 +175,7 @@ bool CubeView::Init()
 
 	{
 		bqMat4 transform;
-		transform.SetRotation(bqQuaternion(PI, 0, 0));
+		transform.SetRotation(bqQuaternion(PIf, 0, 0));
 		transform.SetTranslation(bqVec4(0.f, -1, 0., 0.));
 		bqPolygonMesh pm;
 		pm.AddQuad(bqVec4f(-Size1, 0.f, -Size1, 0.f), bqVec4f(Size1, 0.f, Size1, 0.f), transform);
@@ -192,8 +192,8 @@ bool CubeView::Init()
 
 	{
 		bqMat4 transform;
-		transform.SetRotation(bqQuaternion(0, 0, -PIHalf));
-		transform = transform * bqMat4(bqQuaternion(0, -PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, 0, -PIfHalf));
+		transform = transform * bqMat4(bqQuaternion(0, -PIfHalf, 0));
 		transform.SetTranslation(bqVec4(-1, 0, 0., 0.));
 		bqPolygonMesh pm;
 		pm.AddQuad(bqVec4f(-Size1, 0.f, -Size1, 0.f), bqVec4f(Size1, 0.f, Size1, 0.f), transform);
@@ -205,8 +205,8 @@ bool CubeView::Init()
 
 	{
 		bqMat4 transform;
-		transform.SetRotation(bqQuaternion(0, 0, PIHalf));
-		transform = transform * bqMat4(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, 0, PIfHalf));
+		transform = transform * bqMat4(bqQuaternion(0, PIfHalf, 0));
 		transform.SetTranslation(bqVec4(1, 0, 0., 0.));
 		bqPolygonMesh pm;
 		pm.AddQuad(bqVec4f(-Size1, 0.f, -Size1, 0.f), bqVec4f(Size1, 0.f, Size1, 0.f), transform);
@@ -218,7 +218,7 @@ bool CubeView::Init()
 
 	{
 		bqMat4 transform;
-		transform.SetRotation(bqQuaternion(PIHalf, 0, 0));
+		transform.SetRotation(bqQuaternion(PIfHalf, 0, 0));
 		transform.SetTranslation(bqVec4(0, 0, -1., 0.));
 		bqPolygonMesh pm;
 		pm.AddQuad(bqVec4f(-Size1, 0.f, -Size1, 0.f), bqVec4f(Size1, 0.f, Size1, 0.f), transform);
@@ -230,8 +230,8 @@ bool CubeView::Init()
 
 	{
 		bqMat4 transform;
-		transform.SetRotation(bqQuaternion(-PIHalf, 0, 0));
-		transform = transform * bqMat4(bqQuaternion(0, PI, 0));
+		transform.SetRotation(bqQuaternion(-PIfHalf, 0, 0));
+		transform = transform * bqMat4(bqQuaternion(0, PIf, 0));
 		transform.SetTranslation(bqVec4(0, 0, 1., 0.));
 		bqPolygonMesh pm;
 		pm.AddQuad(bqVec4f(-Size1, 0.f, -Size1, 0.f), bqVec4f(Size1, 0.f, Size1, 0.f), transform);
@@ -258,7 +258,7 @@ bool CubeView::Init()
 		pm.AddPolygon(&pc, false);
 
 		transform.SetTranslation(bqVec4(0.f, 2- Size2, -1., 0.));
-		transform.SetRotation(bqQuaternion(PIHalf, 0, 0));
+		transform.SetRotation(bqQuaternion(PIfHalf, 0, 0));
 		pc.SetPosition(bqVec3f(-Size1, 0.f, -1.f));
 		pc.AddVertex();
 		pc.SetPosition(bqVec3f(-Size1, 0.f, -1 + Size2));
@@ -278,79 +278,79 @@ bool CubeView::Init()
 			m_cubeViewGPUMesh[CubeView::meshID_TB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TB]);
 
 		transform.SetTranslation(bqVec4(0.f, 0, 0., 0.));
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_TL] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_TL])
 			m_cubeViewGPUMesh[CubeView::meshID_TL] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TL]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_TF] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_TF])
 			m_cubeViewGPUMesh[CubeView::meshID_TF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TF]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_TR] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_TR])
 			m_cubeViewGPUMesh[CubeView::meshID_TR] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TR]);
 
-		transform.SetRotation(bqQuaternion(PIHalf, 0, 0));
+		transform.SetRotation(bqQuaternion(PIfHalf, 0, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BckR] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_BckR])
 			m_cubeViewGPUMesh[CubeView::meshID_BckR] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BckR]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BckL] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_BckL])
 			m_cubeViewGPUMesh[CubeView::meshID_BckL] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BckL]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_FL] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_FL])
 			m_cubeViewGPUMesh[CubeView::meshID_FL] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_FL]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_FR] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_FR])
 			m_cubeViewGPUMesh[CubeView::meshID_FR] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_FR]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
-		transform.SetRotation(bqQuaternion(PIHalf, 0, 0));
+		transform.SetRotation(bqQuaternion(PIfHalf, 0, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BR] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_BR])
 			m_cubeViewGPUMesh[CubeView::meshID_BR] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BR]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BB] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_BB])
 			m_cubeViewGPUMesh[CubeView::meshID_BB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BB]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BL] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_BL])
 			m_cubeViewGPUMesh[CubeView::meshID_BL] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BL]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BF] = pm.CreateMesh();
@@ -402,49 +402,49 @@ bool CubeView::Init()
 		if (m_cubeViewMesh[CubeView::meshID_TRB])
 			m_cubeViewGPUMesh[CubeView::meshID_TRB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TRB]);
 	
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_TLB] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_TLB])
 			m_cubeViewGPUMesh[CubeView::meshID_TLB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TLB]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_TLF] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_TLF])
 			m_cubeViewGPUMesh[CubeView::meshID_TLF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TLF]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_TRF] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_TRF])
 			m_cubeViewGPUMesh[CubeView::meshID_TRF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_TRF]);
 
-		transform.SetRotation(bqQuaternion(-PIHalf, 0, 0));
+		transform.SetRotation(bqQuaternion(-PIfHalf, 0, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BRF] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_BRF])
 			m_cubeViewGPUMesh[CubeView::meshID_BRF] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BRF]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BRB] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_BRB])
 			m_cubeViewGPUMesh[CubeView::meshID_BRB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BRB]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BLB] = pm.CreateMesh();
 		if (m_cubeViewMesh[CubeView::meshID_BLB])
 			m_cubeViewGPUMesh[CubeView::meshID_BLB] = g_app->m_gs->CreateMesh(m_cubeViewMesh[CubeView::meshID_BLB]);
 
-		transform.SetRotation(bqQuaternion(0, PIHalf, 0));
+		transform.SetRotation(bqQuaternion(0, PIfHalf, 0));
 		pm.ApplyMatrix(transform);
 		pm.GenerateNormals(false);
 		m_cubeViewMesh[CubeView::meshID_BLF] = pm.CreateMesh();

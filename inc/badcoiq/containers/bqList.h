@@ -35,7 +35,7 @@ struct bqListNode
 {
 	bqListNode() {}
 	~bqListNode() {}
-	_type m_data;
+	_type m_data = 0;
 	bqListNode* m_left = 0;
 	bqListNode* m_right = 0;
 };

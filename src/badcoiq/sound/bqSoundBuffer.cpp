@@ -190,7 +190,7 @@ void bqSoundBuffer::Create(float time,
 	m_bufferData.m_data = (uint8_t*)bqMemory::malloc(m_bufferData.m_dataSize);
 }
 
-void bqSoundBuffer::MakeMono(uint32_t how)
+void bqSoundBuffer::MakeMono(uint32_t /*how*/)
 {
 	if (m_bufferInfo.m_channels > 1)
 	{
@@ -377,7 +377,7 @@ void bqSoundBuffer::Make8bits()
 			bqSoundSample_24bit* _24bit = (bqSoundSample_24bit*)src_block;
 			bqSoundSample_32bit* _32bit = (bqSoundSample_32bit*)src_block;
 			bqSoundSample_32bitFloat* _32bitFloat = (bqSoundSample_32bitFloat*)src_block;
-			bqSoundSample_64bitFloat* _64bitFloat = (bqSoundSample_64bitFloat*)src_block;
+		//	bqSoundSample_64bitFloat* _64bitFloat = (bqSoundSample_64bitFloat*)src_block;
 
 			for (uint32_t o = 0; o < m_bufferInfo.m_channels; ++o)
 			{
@@ -454,7 +454,7 @@ void bqSoundBuffer::Make16bits()
 			bqSoundSample_24bit* _24bit = (bqSoundSample_24bit*)src_block;
 			bqSoundSample_32bit* _32bit = (bqSoundSample_32bit*)src_block;
 			bqSoundSample_32bitFloat* _32bitFloat = (bqSoundSample_32bitFloat*)src_block;
-			bqSoundSample_64bitFloat* _64bitFloat = (bqSoundSample_64bitFloat*)src_block;
+		//	bqSoundSample_64bitFloat* _64bitFloat = (bqSoundSample_64bitFloat*)src_block;
 
 			for (uint32_t o = 0; o < m_bufferInfo.m_channels; ++o)
 			{
@@ -531,7 +531,7 @@ void bqSoundBuffer::Make32bitsFloat()
 			bqSoundSample_24bit* _24bit = (bqSoundSample_24bit*)src_block;
 			bqSoundSample_32bit* _32bit = (bqSoundSample_32bit*)src_block;
 			bqSoundSample_32bitFloat* _32bitFloat = (bqSoundSample_32bitFloat*)src_block;
-			bqSoundSample_64bitFloat* _64bitFloat = (bqSoundSample_64bitFloat*)src_block;
+		//	bqSoundSample_64bitFloat* _64bitFloat = (bqSoundSample_64bitFloat*)src_block;
 
 			for (uint32_t o = 0; o < m_bufferInfo.m_channels; ++o)
 			{

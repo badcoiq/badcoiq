@@ -4,5 +4,7 @@
 #include "badcoiq.h"
 #include "model_editor/model_editor.h"
 
+#include "MEBasePlugin.h"
+
 
 #endif

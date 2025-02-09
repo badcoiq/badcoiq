@@ -192,7 +192,7 @@ void bqMesh::GenerateNormals(bool smooth)
 		bqStringA str;
 		std::string stdstr;
 
-		bqVertexTriangle* verts = (bqVertexTriangle*)GetVBuffer();
+	//	bqVertexTriangle* verts = (bqVertexTriangle*)GetVBuffer();
 		auto numTri = GetInfo().m_iCount / 3;
 		for (uint32_t i = 0, it = 0; i < numTri; ++i)
 		{

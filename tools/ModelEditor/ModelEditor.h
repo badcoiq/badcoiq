@@ -119,6 +119,8 @@ enum
     CommandID_ViewportToggleDrawAABB,
     CommandID_CameraReset,
     CommandID_CameraMoveToSelection,
+    
+    CommandID_AddMenu,
     /*CommandID_,
     CommandID_,
     CommandID_,
@@ -130,6 +132,7 @@ enum
 };
 
 class GUIButton;
+class bqME;
 class ModelEditor
 {
     friend class CubeView;
@@ -151,6 +154,8 @@ class ModelEditor
     bqGUIStyle m_GUIStyle;
     bqTexture* m_GUITexture = 0;
     bqGUIWindow* m_GUIWindow_mainMenuBar = 0;
+    bqGUIWindow* m_GUIWindow_editPanel = 0;
+    bqGUIWindow* m_GUIWindow_addObject = 0;
     bqArray<bqGUIElement*> m_GUIElements;
 	void Shutdown();
     void GUI_rebuild();
@@ -162,7 +167,7 @@ class ModelEditor
 
     bqVec4f m_mainMenuBarRect;
     bqVec4f m_editPanelRect;
-    float32_t m_editPanelWidth = 150.f;
+    float32_t m_editPanelWidth = 250.f;
     const float32_t m_editPanelWidthMin = 50.f;
 
     Viewport* m_viewport = 0;
@@ -177,6 +182,7 @@ class ModelEditor
 
     void _initPlugins();
     bqArray<PluginInfo> m_plugins;
+    bqME* m_sdk = 0;
 
 public:
 	ModelEditor();

@@ -72,9 +72,9 @@ void bqSoundEffectDelayImpl::_createSteps()
 	auto soundSystem = bqFramework::GetSoundSystem();
 	auto soundDeviceInfo = soundSystem->GetDeviceInfo();
 
-	auto blockSize = soundDeviceInfo.m_bufferSize
+	/*auto blockSize = soundDeviceInfo.m_bufferSize
 		/ (soundDeviceInfo.m_bitsPerSample / 8)
-		/ soundDeviceInfo.m_channels;
+		/ soundDeviceInfo.m_channels;*/
 
 	for (uint32_t i = 0; i < m_delayStepsNum; ++i)
 	{

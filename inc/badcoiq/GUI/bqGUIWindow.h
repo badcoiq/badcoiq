@@ -86,6 +86,7 @@ public:
 
 		/// можно изменять размер
 		windowFlag_canResize = 0x10,
+
 		/// 
 		//windowFlag_canDock = 0x20, // на будущее
 
@@ -116,7 +117,8 @@ class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 	
 	enum
 	{
-		flagInternal_activated = 0x1
+		flagInternal_activated = 0x1,
+		flagInternal_isMove = 0x2,
 	};
 	uint32_t m_flagsInternal = 0;
 
@@ -170,15 +172,15 @@ public:
 
 	
 
-//	// нужно знать, где находится курсор
-//	enum
-//	{
-//		CursorInfo_out,         // за пределами окна
-//		CursorInfo_titlebar,    // в titlebar
-//		CursorInfo_client,       // в клиентской области
-//		CursorInfo_closeButton,   // на кнопке закрытия
-//		CursorInfo_collapseButton, // на кнопке сворачивания
-//		
+	// нужно знать, где находится курсор
+	enum
+	{
+		CursorInfo_out,         // за пределами окна
+		CursorInfo_titlebar,    // в titlebar
+		CursorInfo_client,       // в клиентской области
+		CursorInfo_closeButton,   // на кнопке закрытия
+		CursorInfo_collapseButton, // на кнопке сворачивания
+		
 //		CursorInfo_resizeRB,       // далее на границах и в  углах
 //		CursorInfo_resizeB,
 //		CursorInfo_resizeLB,
@@ -187,9 +189,9 @@ public:
 //		CursorInfo_resizeT,
 //		CursorInfo_resizeRT,
 //		CursorInfo_resizeR,
-//	};
-//	uint32_t m_windowCursorInfo = 0;
-//
+	};
+	uint32_t m_windowCursorInfo = 0;
+
 //private:
 //
 //	bqString m_title;

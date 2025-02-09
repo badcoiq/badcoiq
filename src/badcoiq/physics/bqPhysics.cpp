@@ -169,7 +169,7 @@ void bqPhysics::Update(float dt)
 	// обрабатываем эти контакты. По сути это будет шагом номер 3.
 	for (size_t i = 0; i < m_bodiesAfterOptimization.m_size; ++i)
 	{
-		auto body = m_bodiesAfterOptimization.m_data[i];
+		//auto body = m_bodiesAfterOptimization.m_data[i];
 	}
 
 	if (m_debugDraw)
