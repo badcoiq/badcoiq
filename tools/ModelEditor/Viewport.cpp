@@ -381,189 +381,192 @@ void ViewportView::Update()
 	m_activeCamera->UpdateFrustum();
 	m_cubeViewCamera->Update(0.1);
 
-	if (g_app->m_cubeView->m_isMouseMove && (m_layout->m_mouseFocusView == this))
+	if (!g_app->m_cursorInGUIWindow)
 	{
-		g_app->m_cubeView->Update(this);
-	}
-
-	bqPointf& mousePosition = bqInput::GetMousePosition();
-
-	if (bqMath::PointInRect(mousePosition, m_viewportOptionsRectangle))
-	{
-		if (bqInput::IsRMBHit())
-		{
-			g_app->m_popupViewportOptions->Show(g_app->m_mainWindow, m_viewportOptionsRectangle.x, m_viewportOptionsRectangle.y);
-		}
-	}
-
-	if (bqMath::PointInRect(mousePosition, m_rectangle))
-	{
-		if (bqInput::IsLMBHit())
-		{
-			m_layout->m_mouseFocusView = this;
-			SetActiveView();
-		}
-
-		if (bqInput::IsRMBHit())
-		{
-			m_layout->m_mouseFocusView = this;
-			SetActiveView();
-		}
-
-		if (bqInput::IsMMBHit())
-		{
-			m_layout->m_mouseFocusView = this;
-			SetActiveView();
-		}
-
-		if (bqInput::IsX1MBHit())
-		{
-			m_layout->m_mouseFocusView = this;
-			SetActiveView();
-		}
-
-		if (bqInput::IsX2MBHit())
-		{
-			m_layout->m_mouseFocusView = this;
-			SetActiveView();
-		}
-
-		if (bqInput::IsLMBRelease())
-		{
-			m_layout->m_mouseFocusView = 0;
-		}
-
-		if (bqInput::IsRMBRelease())
-		{
-			m_layout->m_mouseFocusView = 0;
-		}
-
-		if (bqInput::IsMMBRelease())
-		{
-			m_layout->m_mouseFocusView = 0;
-		}
-
-		if (bqInput::IsX1MBRelease())
-		{
-			m_layout->m_mouseFocusView = 0;
-		}
-
-		if (bqInput::IsX2MBRelease())
-		{
-			m_layout->m_mouseFocusView = 0;
-		}
-
-		if(g_app->m_inputData->m_mouseWheelDelta)
-			m_activeCamera->EditorZoom(g_app->m_inputData->m_mouseWheelDelta);
-
-		if (bqMath::PointInRect(mousePosition, m_cubeViewRectangle)
-			&& !g_app->m_cubeView->m_isMouseMove)
+		if (g_app->m_cubeView->m_isMouseMove && (m_layout->m_mouseFocusView == this))
 		{
 			g_app->m_cubeView->Update(this);
-			
-			auto meshID = g_app->m_cubeView->IsMouseRayIntersect(m_cubeViewCamera, m_cubeViewRectangle);
-			if (meshID != CubeView::meshID__size)
+		}
+
+		bqPointf& mousePosition = bqInput::GetMousePosition();
+
+		if (bqMath::PointInRect(mousePosition, m_viewportOptionsRectangle))
+		{
+			if (bqInput::IsRMBHit())
 			{
-				/*switch (meshID)
-				{
-				case CubeView::meshID_front:
-					printf("meshID_front\n");
-					break;
-				case CubeView::meshID_back:
-					printf("meshID_back\n");
-					break;
-				case CubeView::meshID_top:
-					printf("meshID_top\n");
-					break;
-				case CubeView::meshID_bottom:
-					printf("meshID_bottom\n");
-					break;
-				case CubeView::meshID_left:
-					printf("meshID_left\n");
-					break;
-				case CubeView::meshID_right:
-					printf("meshID_right\n");
-					break;
-
-				case CubeView::meshID_TB:
-					printf("meshID_TB\n");
-					break;
-				case CubeView::meshID_TL:
-					printf("meshID_TL\n");
-					break;
-				case CubeView::meshID_TF:
-					printf("meshID_TF\n");
-					break;
-				case CubeView::meshID_TR:
-					printf("meshID_TR\n");
-					break;
-				case CubeView::meshID_BckR:
-					printf("meshID_BckR\n");
-					break;
-				case CubeView::meshID_BckL:
-					printf("meshID_BckL\n");
-					break;
-				case CubeView::meshID_FL:
-					printf("meshID_FL\n");
-					break;
-				case CubeView::meshID_FR:
-					printf("meshID_FR\n");
-					break;
-				case CubeView::meshID_BR:
-					printf("meshID_BR\n");
-					break;
-				case CubeView::meshID_BB:
-					printf("meshID_BB\n");
-					break;
-				case CubeView::meshID_BL:
-					printf("meshID_BL\n");
-					break;
-				case CubeView::meshID_BF:
-					printf("meshID_BF\n");
-					break;
-
-				case CubeView::meshID_TRB:
-					printf("meshID_TRB\n");
-					break;
-				case CubeView::meshID_TLB:
-					printf("meshID_TLB\n");
-					break;
-				case CubeView::meshID_TLF:
-					printf("meshID_TLF\n");
-					break;
-				case CubeView::meshID_TRF:
-					printf("meshID_TRF\n");
-					break;
-				case CubeView::meshID_BRF:
-					printf("meshID_BRF\n");
-					break;
-				case CubeView::meshID_BRB:
-					printf("meshID_BRB\n");
-					break;
-				case CubeView::meshID_BLB:
-					printf("meshID_BLB\n");
-					break;
-				case CubeView::meshID_BLF:
-					printf("meshID_BLF\n");
-					break;
-				}*/
+				g_app->m_popupViewportOptions->Show(g_app->m_mainWindow, m_viewportOptionsRectangle.x, m_viewportOptionsRectangle.y);
 			}
 		}
-	}
 
-
-	if (m_layout->m_mouseFocusView == this)
-	{
-		if (bqInput::IsRMBHold() && !m_cubeViewNowRotating)
+		if (bqMath::PointInRect(mousePosition, m_rectangle))
 		{
-			if (bqInput::IsCtrl())
+			if (bqInput::IsLMBHit())
 			{
-				m_activeCamera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
-				m_cubeViewCamera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+				m_layout->m_mouseFocusView = this;
+				SetActiveView();
 			}
-			else
+
+			if (bqInput::IsRMBHit())
 			{
-				m_activeCamera->EditorPanMove(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+				m_layout->m_mouseFocusView = this;
+				SetActiveView();
+			}
+
+			if (bqInput::IsMMBHit())
+			{
+				m_layout->m_mouseFocusView = this;
+				SetActiveView();
+			}
+
+			if (bqInput::IsX1MBHit())
+			{
+				m_layout->m_mouseFocusView = this;
+				SetActiveView();
+			}
+
+			if (bqInput::IsX2MBHit())
+			{
+				m_layout->m_mouseFocusView = this;
+				SetActiveView();
+			}
+
+			if (bqInput::IsLMBRelease())
+			{
+				m_layout->m_mouseFocusView = 0;
+			}
+
+			if (bqInput::IsRMBRelease())
+			{
+				m_layout->m_mouseFocusView = 0;
+			}
+
+			if (bqInput::IsMMBRelease())
+			{
+				m_layout->m_mouseFocusView = 0;
+			}
+
+			if (bqInput::IsX1MBRelease())
+			{
+				m_layout->m_mouseFocusView = 0;
+			}
+
+			if (bqInput::IsX2MBRelease())
+			{
+				m_layout->m_mouseFocusView = 0;
+			}
+
+			if (g_app->m_inputData->m_mouseWheelDelta)
+				m_activeCamera->EditorZoom(g_app->m_inputData->m_mouseWheelDelta);
+
+			if (bqMath::PointInRect(mousePosition, m_cubeViewRectangle)
+				&& !g_app->m_cubeView->m_isMouseMove)
+			{
+				g_app->m_cubeView->Update(this);
+
+				auto meshID = g_app->m_cubeView->IsMouseRayIntersect(m_cubeViewCamera, m_cubeViewRectangle);
+				if (meshID != CubeView::meshID__size)
+				{
+					/*switch (meshID)
+					{
+					case CubeView::meshID_front:
+						printf("meshID_front\n");
+						break;
+					case CubeView::meshID_back:
+						printf("meshID_back\n");
+						break;
+					case CubeView::meshID_top:
+						printf("meshID_top\n");
+						break;
+					case CubeView::meshID_bottom:
+						printf("meshID_bottom\n");
+						break;
+					case CubeView::meshID_left:
+						printf("meshID_left\n");
+						break;
+					case CubeView::meshID_right:
+						printf("meshID_right\n");
+						break;
+
+					case CubeView::meshID_TB:
+						printf("meshID_TB\n");
+						break;
+					case CubeView::meshID_TL:
+						printf("meshID_TL\n");
+						break;
+					case CubeView::meshID_TF:
+						printf("meshID_TF\n");
+						break;
+					case CubeView::meshID_TR:
+						printf("meshID_TR\n");
+						break;
+					case CubeView::meshID_BckR:
+						printf("meshID_BckR\n");
+						break;
+					case CubeView::meshID_BckL:
+						printf("meshID_BckL\n");
+						break;
+					case CubeView::meshID_FL:
+						printf("meshID_FL\n");
+						break;
+					case CubeView::meshID_FR:
+						printf("meshID_FR\n");
+						break;
+					case CubeView::meshID_BR:
+						printf("meshID_BR\n");
+						break;
+					case CubeView::meshID_BB:
+						printf("meshID_BB\n");
+						break;
+					case CubeView::meshID_BL:
+						printf("meshID_BL\n");
+						break;
+					case CubeView::meshID_BF:
+						printf("meshID_BF\n");
+						break;
+
+					case CubeView::meshID_TRB:
+						printf("meshID_TRB\n");
+						break;
+					case CubeView::meshID_TLB:
+						printf("meshID_TLB\n");
+						break;
+					case CubeView::meshID_TLF:
+						printf("meshID_TLF\n");
+						break;
+					case CubeView::meshID_TRF:
+						printf("meshID_TRF\n");
+						break;
+					case CubeView::meshID_BRF:
+						printf("meshID_BRF\n");
+						break;
+					case CubeView::meshID_BRB:
+						printf("meshID_BRB\n");
+						break;
+					case CubeView::meshID_BLB:
+						printf("meshID_BLB\n");
+						break;
+					case CubeView::meshID_BLF:
+						printf("meshID_BLF\n");
+						break;
+					}*/
+				}
+			}
+		}
+
+
+		if (m_layout->m_mouseFocusView == this)
+		{
+			if (bqInput::IsRMBHold() && !m_cubeViewNowRotating)
+			{
+				if (bqInput::IsCtrl())
+				{
+					m_activeCamera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+					m_cubeViewCamera->EditorRotate(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+				}
+				else
+				{
+					m_activeCamera->EditorPanMove(&g_app->m_inputData->m_mouseMoveDelta, *g_app->m_deltaTime);
+				}
 			}
 		}
 	}

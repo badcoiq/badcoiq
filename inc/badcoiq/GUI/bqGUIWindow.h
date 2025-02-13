@@ -60,6 +60,8 @@ protected:
 	bqWindow* m_systemWindow = 0;
 	bqString m_title;
 	bqVec4f m_titlebarRect;
+	bqVec4f m_closeButtonRect;
+	bqVec4f m_collapseButtonRect;
 public:
 	bqGUIWindowBase() {}
 	virtual ~bqGUIWindowBase() {}
@@ -122,6 +124,7 @@ class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 	{
 		flagInternal_activated = 0x1,
 		flagInternal_isMove = 0x2,
+		flagInternal_closeBtn = 0x4,
 	};
 	uint32_t m_flagsInternal = 0;
 
@@ -199,8 +202,6 @@ public:
 //
 //	bqString m_title;
 //	bqVec4f m_titlebarRect;
-//	bqVec4f m_closeButtonRect;
-//	bqVec4f m_collapseButtonRect;
 //
 //	enum
 //	{
@@ -246,10 +247,11 @@ public:
 //	void _resizeB();
 //
 //	bqWindow* m_systemWindow = 0;
-//	
-//	// пока лишь используется как отступ для иконок на titlebar
-//	// и для определения попал ли курсор на рамку, которой нет.
-//	float m_borderSize = 3.f;
+	
+	// пока лишь используется как отступ для иконок на titlebar
+	// и для определения попал ли курсор на рамку, которой нет.
+	float m_borderSize = 3.f;
+ 
 //	// можно добавить прямоугольные области для рамки. почему бы и нет?
 //	// так будет проще определять куда вошёл курсор
 //	// + возможно можно будет использовать картинки для рисования рамки
@@ -295,9 +297,9 @@ public:
 //	void Deactivate();
 //	void Expand();
 //	void Collapse();
-//
-//	bqGUIFont* m_icons = 0;
-//
+
+	bqGUIFont* m_icons = 0;
+
 //	void SetCallback(bqGUIWindowCallback* cb) { m_windowCallback = cb; }
 //
 //private:

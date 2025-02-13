@@ -180,6 +180,8 @@ class ModelEditor
 
     CubeView* m_cubeView = 0;
 
+    bool m_cursorInGUIWindow = false;
+
     void _initPlugins();
     bqArray<PluginInfo> m_plugins;
     bqME* m_sdk = 0;

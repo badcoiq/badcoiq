@@ -456,7 +456,7 @@ bqGUIWindow* bqWindow::CreateNewGUIWindow(const bqVec2f& position, const bqVec2f
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     int wmId = LOWORD(wParam);
-    bqWindow* pW = reinterpret_cast<bqWindow*>(GetWindowLongPtr(hWnd, GWL_USERDATA));
+    bqWindow* pW = reinterpret_cast<bqWindow*>(GetWindowLongPtr(hWnd, -21));
 
     switch (message)
     {

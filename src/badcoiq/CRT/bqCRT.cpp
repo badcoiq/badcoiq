@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/CRT/bqCRT.h"
 
 #include "stdarg.h"
+#include <locale.h>
 
 char __CRT_itoa_buffer[0x50];
 char __CRT_dtoa_buffer[0x50];

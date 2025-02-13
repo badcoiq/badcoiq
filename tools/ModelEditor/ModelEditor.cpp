@@ -179,6 +179,7 @@ bool ModelEditor::Init()
 	m_GUIWindow_addObject->m_windowFlags |= m_GUIWindow_addObject->windowFlag_withTitleBar;
 	m_GUIWindow_addObject->m_windowFlags |= m_GUIWindow_addObject->windowFlag_withShadow;
 	m_GUIWindow_addObject->m_windowFlags |= m_GUIWindow_addObject->windowFlag_canMove;
+	m_GUIWindow_addObject->m_windowFlags |= m_GUIWindow_addObject->windowFlag_withCloseButton;
 	m_GUIWindow_addObject->GetTitleText().assign(U"Add object");
 	m_GUIWindow_addObject->Activate();
 
@@ -265,6 +266,8 @@ void ModelEditor::Run()
 		//m_gs->BeginDraw();
 		//m_gs->ClearAll();
 		//m_gs->EndDraw();
+
+		m_cursorInGUIWindow = bqFramework::GetGUIState().m_windowUnderCursor;
 
 		_processShortcuts();
 		m_viewport->Update();
