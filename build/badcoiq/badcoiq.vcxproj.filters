@@ -249,5 +249,8 @@
     <ClCompile Include="..\..\src\badcoiq\framework\bqShortcutManager.cpp">
       <Filter>Source Files\framework</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIToolbar.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

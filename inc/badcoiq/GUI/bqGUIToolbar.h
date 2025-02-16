@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2025, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,42 +27,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_GUI_H__
-#define __BQ_GUI_H__
-
+#ifndef __BQ_TOOLBAR_H__
+/// \cond
+#define __BQ_TOOLBAR_H__
+/// \endcond
 #ifdef BQ_WITH_GUI
 
-
-#include "badcoiq/GUI/bqGUIFont.h"
-#include "badcoiq/GUI/bqGUIText.h"
-#include "badcoiq/GUI/bqGUIStyle.h"
-#include "badcoiq/GUI/bqGUICommon.h"
-#include "badcoiq/GUI/bqGUIElement.h"
-#include "badcoiq/GUI/bqGUIRootElement.h"
-#include "badcoiq/GUI/bqGUIPopup.h"
-#include "badcoiq/GUI/bqGUIWindow.h"
-
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
-struct bqGUIState
+/// \brief
+class bqGUIToolbar : public bqGUIElement
 {
-	bqGUIWindow* m_windowUnderCursor = 0;
-	bqGUIWindow* m_activeWindow = 0;
-	bqGUITextEditor* m_activeTextEditor = 0;
-	uint32_t m_scrollBlock = 0;
-	bqGUIPopup* m_activePopup = 0;
+public:
+	bqGUIToolbar(const bqVec2f& position, const bqVec2f& size);
+	virtual ~bqGUIToolbar();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIToolbar);
+	BQ_DELETED_METHODS(bqGUIToolbar);
+
+	virtual void Rebuild() final;
+	virtual void Update() final;
+	virtual void Draw(bqGS* gs, float dt) final;
+
+	//void SetTexture(bqTexture* t);
+	//void SetUV(const bqVec4f&);
+	//void SetTCoords(float left, float top, float right, float bottom);
 };
-
-#include "badcoiq/GUI/bqGUIStaticText.h"
-
-#include "badcoiq/GUI/bqGUIButton.h"
-#include "badcoiq/GUI/bqGUICheckRadioBox.h"
-#include "badcoiq/GUI/bqGUITextEditor.h"
-#include "badcoiq/GUI/bqGUIListBox.h"
-#include "badcoiq/GUI/bqGUISlider.h"
-#include "badcoiq/GUI/bqGUIPictureBox.h"
-#include "badcoiq/GUI/bqGUIScrollbar.h"
-#include "badcoiq/GUI/bqGUIToolbar.h"
 
 #endif
 #endif
