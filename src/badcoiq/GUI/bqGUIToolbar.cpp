@@ -68,5 +68,35 @@ void bqGUIToolbar::Draw(bqGS* gs, float)
 		0);
 }
 
+void bqGUIToolbar::AddButton(uint32_t id, uint32_t iconID)
+{
+}
+
+void bqGUIToolbar::AddSeparator()
+{
+}
+
+void bqGUIToolbar::AddGUIElement(bqGUIElement* e)
+{
+BQ_ASSERT(e);
+m_elements.push_back(e);
+}
+
+void bqGUIToolbar::RemoveAll()
+{
+if(m_elements.size())
+{
+for(size_t i = 0; i < m_elements.m_size; ++i)
+{
+auto n = m_elements.m_data[i];
+if(n.m_own)
+{
+BQ_SAFEDELETE(n.m_element);
+}
+}
+m_elements.clear();
+}
+}
+
 
 #endif
