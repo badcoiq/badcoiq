@@ -33,11 +33,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \endcond
 #ifdef BQ_WITH_GUI
 
-/// \brief
+/// \brief Полоска с кнопками
 class bqGUIToolbar : public bqGUIElement
 {
+struct node
+{
+bqGUIElement* m_element = 0;
+bool m_ownElement = false;
+};
+bqArray<node> m_nodes;
 public:
-	bqGUIToolbar(const bqVec2f& position, const bqVec2f& size);
+	bqGUIToolbar(const bqVec2f& position, const bqVec2f& size, float32_t btnSz);
 	virtual ~bqGUIToolbar();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIToolbar);
 	BQ_DELETED_METHODS(bqGUIToolbar);
@@ -46,9 +52,9 @@ public:
 	virtual void Update() final;
 	virtual void Draw(bqGS* gs, float dt) final;
 
-	//void SetTexture(bqTexture* t);
-	//void SetUV(const bqVec4f&);
-	//void SetTCoords(float left, float top, float right, float bottom);
+virtual void OnButton() = 0;
+
+	void AddButton(uint32_t id, uint32_t iconID);
 };
 
 #endif
