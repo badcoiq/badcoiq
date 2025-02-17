@@ -40,7 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Он даёт возможность установить и получить user data.
 /// Иногда бывает необходимым подобный функционал. Достаточно просто наследовать этот класс.
 /// 
-/// В \link badcoiq/common/bqMemory.h \endlink находится класс который можно наследовать.
 ///
 
 #pragma once
