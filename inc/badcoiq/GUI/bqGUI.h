@@ -42,8 +42,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/GUI/bqGUIPopup.h"
 #include "badcoiq/GUI/bqGUIWindow.h"
 
-// Надо знать текущее состояние GUI
-// Тут состояние об окнах. Окна хранят своё состояние сами.
+/// \brief Состояние GUI
+/// Надо знать такие вещи как, например, какое окно находится под курсором, активен ли popup (он не реализован), активен ли ввод текста и т.д.
 struct bqGUIState
 {
 	bqGUIWindow* m_windowUnderCursor = 0;
