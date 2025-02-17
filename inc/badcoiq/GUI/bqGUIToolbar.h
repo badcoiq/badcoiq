@@ -48,13 +48,18 @@ public:
 	BQ_PLACEMENT_ALLOCATOR(bqGUIToolbar);
 	BQ_DELETED_METHODS(bqGUIToolbar);
 
-	virtual void Rebuild() final;
-	virtual void Update() final;
-	virtual void Draw(bqGS* gs, float dt) final;
+	virtual void Rebuild() override;
+	virtual void Update() override;
+	virtual void Draw(bqGS* gs, float dt) override;
 
-virtual void OnButton() = 0;
+virtual void OnButton(uint32_t id, bqGUIButton*) = 0;
 
+
+float32_t m_elementsDistance = 3.f;
 	void AddButton(uint32_t id, uint32_t iconID);
+void AddSeparator();
+void AddGUIElement(bqGUIElement*);
+void RemoveAll();
 };
 
 #endif
