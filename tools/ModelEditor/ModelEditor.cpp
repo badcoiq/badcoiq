@@ -39,6 +39,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ModelEditor* g_app = 0;
 
+class MEGUIToolbar : public bqGUIToolbar
+{
+public:
+	MEGUIToolbar(const bqVec2f& p, const bqVec2f& s, float32_t b) : bqGUIToolbar::bqGUIToolbar(p,s,b){}
+	virtual ~MEGUIToolbar() {}
+	BQ_PLACEMENT_ALLOCATOR(MEGUIToolbar);
+
+	virtual void OnButton(uint32_t id, bqGUIButton* button) override
+	{
+		printf("BUTTON %u\n", id);
+	}
+};
+
 int main(int argc, char* argv[])
 {
 	ModelEditor app;
@@ -160,11 +173,21 @@ bool ModelEditor::Init()
 	pictureBox->SetName("menubar_bg");
 	m_GUIWindow_mainMenuBar->AddElement(pictureBox);
 
-	auto button = GUI_createButton(bqVec2f(), bqVec2f(32.f, 32.f), GUI_BUTTON_ID::ButtonID_MainMenu);
+	/*auto button = GUI_createButton(bqVec2f(), bqVec2f(32.f, 32.f), GUI_BUTTON_ID::ButtonID_MainMenu);
 	button->SetDrawBG(true);
 	button->SetTexture(m_GUITexture);
 	button->SetTCoords(0.f, 0.f, 31.f, 31.f);
-	m_GUIWindow_mainMenuBar->AddElement(button);
+	m_GUIWindow_mainMenuBar->AddElement(button);*/
+	auto toolbar = new MEGUIToolbar(bqVec2f(0, 0), bqVec2f(800,32), 32.f);
+	toolbar->SetName("toolbar");
+	toolbar->SetDrawBG(false);
+	toolbar->AddButton(1, 1);
+	toolbar->AddButton(2, 2);
+	toolbar->AddButton(3, 3);
+	toolbar->AddButton(4, 4);
+	toolbar->AddButton(5, 5);
+	toolbar->AddButton(6, 6);
+	m_GUIWindow_mainMenuBar->AddElement(toolbar);
 
 	m_GUIWindow_editPanel = m_mainWindow->CreateNewGUIWindow(bqVec2f(0.f, 0.f),
 		bqVec2f(10.f, 10.f));
@@ -449,6 +472,15 @@ void ModelEditor::GUI_rebuild()
 			if (pb)
 			{
 				pb->SetSize(m_mainWindow->GetCurrentSize()->x, pb->GetSize().y);
+			}
+		}
+		el = m_GUIWindow_mainMenuBar->GetGUIElement("toolbar");
+		if (el)
+		{
+			MEGUIToolbar* tb = dynamic_cast<MEGUIToolbar*>(el);
+			if (tb)
+			{
+				//tb->SetSize(m_mainWindow->GetCurrentSize()->x, tb->GetSize().y);
 			}
 		}
 

@@ -47,10 +47,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 struct bqGUIState
 {
 	bqGUIWindow* m_windowUnderCursor = 0;
+	uint32_t m_numWindowsUnderCursor = 0;
+
+	// это копия позиции курсора из bqInputData
+	// это значение нужно использовать в GUI
+	// так как надо будет временно изменять значение
+	// чтобы всё работало как надо.
+	bqPointf m_mousePosition;
+
+
 	bqGUIWindow* m_activeWindow = 0;
 	bqGUITextEditor* m_activeTextEditor = 0;
 	uint32_t m_scrollBlock = 0;
 	bqGUIPopup* m_activePopup = 0;
+	bqGUICommon* m_clickedElement = 0;
 };
 
 #include "badcoiq/GUI/bqGUIStaticText.h"

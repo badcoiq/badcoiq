@@ -154,7 +154,7 @@ void bqGUICommon::UpdateScroll()
 // Работа с мышкой
 void bqGUICommon::Update()
 {
-	if (bqMath::PointInRect(g_framework->m_input.m_mousePosition, m_activeRect))
+	if (bqMath::PointInRect(g_framework->m_GUIState.m_mousePosition, m_activeRect))
 	{
 		if ((m_flags & bqGUICommon::flag_cursorInRect) == 0)
 			OnMouseEnter();
@@ -169,74 +169,126 @@ void bqGUICommon::Update()
 		m_flags &= ~bqGUICommon::flag_cursorInRect;
 	}
 
-	if (IsEnabled() && IsCursorInRect())
+	if (IsEnabled())
 	{
-		if (bqInput::IsLMBHit())
+		if (IsCursorInRect())
 		{
-			m_flags |= bqGUICommon::flag_clickedLMB;
-			OnClickLMB();
+			if (bqInput::IsLMBHit())
+			{
+				m_flags |= bqGUICommon::flag_clickedLMB;
+				g_framework->m_GUIState.m_clickedElement = this;
+				OnClickLMB();
+			}
+			else if (bqInput::IsLMBRelease())
+			{
+				if (IsClickedLMB())
+					OnReleaseLMB();
+			}
+
+			if (bqInput::IsRMBHit())
+			{
+				m_flags |= bqGUICommon::flag_clickedRMB;
+				g_framework->m_GUIState.m_clickedElement = this;
+				OnClickRMB();
+			}
+			else if (bqInput::IsRMBRelease())
+			{
+				if (IsClickedRMB())
+					OnReleaseRMB();
+			}
+
+			if (bqInput::IsMMBHit())
+			{
+				m_flags |= bqGUICommon::flag_clickedMMB;
+				g_framework->m_GUIState.m_clickedElement = this;
+				OnClickMMB();
+			}
+			else if (bqInput::IsMMBRelease())
+			{
+				if (IsClickedMMB())
+					OnReleaseMMB();
+			}
+
+			if (bqInput::IsX1MBHit())
+			{
+				m_flags |= bqGUICommon::flag_clickedX1MB;
+				g_framework->m_GUIState.m_clickedElement = this;
+				OnClickX1MB();
+			}
+			else if (bqInput::IsX1MBRelease())
+			{
+				if (IsClickedX1MB())
+					OnReleaseX1MB();
+			}
+
+			if (bqInput::IsX2MBHit())
+			{
+				m_flags |= bqGUICommon::flag_clickedX2MB;
+				g_framework->m_GUIState.m_clickedElement = this;
+				OnClickX2MB();
+			}
+			else if (bqInput::IsX2MBRelease())
+			{
+				if (IsClickedX2MB())
+					OnReleaseX2MB();
+			}
 		}
-		else if (bqInput::IsLMBRelease())
+		else 
 		{
-			if (IsClickedLMB())
-				OnReleaseLMB();
+			if (bqInput::IsLMBRelease())
+			{
+				if (IsClickedLMB())
+					OnReleaseLMB();
+			}
+			if (bqInput::IsRMBRelease())
+			{
+				if (IsClickedRMB())
+					OnReleaseRMB();
+			}
+			if (bqInput::IsMMBRelease())
+			{
+				if (IsClickedMMB())
+					OnReleaseMMB();
+			}
+			if (bqInput::IsX1MBRelease())
+			{
+				if (IsClickedX1MB())
+					OnReleaseX1MB();
+			}
+			if (bqInput::IsX2MBRelease())
+			{
+				if (IsClickedX2MB())
+					OnReleaseX2MB();
+			}
 		}
 
-		if (bqInput::IsRMBHit())
-		{
-			m_flags |= bqGUICommon::flag_clickedRMB;
-			OnClickRMB();
-		}
-		else if (bqInput::IsRMBRelease())
-		{
-			if (IsClickedRMB())
-				OnReleaseRMB();
-		}
-
-		if (bqInput::IsMMBHit())
-		{
-			m_flags |= bqGUICommon::flag_clickedMMB;
-			OnClickMMB();
-		}
-		else if (bqInput::IsMMBRelease())
-		{
-			if (IsClickedMMB())
-				OnReleaseMMB();
-		}
-
-		if (bqInput::IsX1MBHit())
-		{
-			m_flags |= bqGUICommon::flag_clickedX1MB;
-			OnClickX1MB();
-		}
-		else if (bqInput::IsX1MBRelease())
-		{
-			if (IsClickedX1MB())
-				OnReleaseX1MB();
-		}
-
-		if (bqInput::IsX2MBHit())
-		{
-			m_flags |= bqGUICommon::flag_clickedX2MB;
-			OnClickX2MB();
-		}
-		else if (bqInput::IsX2MBRelease())
-		{
-			if (IsClickedX2MB())
-				OnReleaseX2MB();
-		}
 	}
 
 	if (bqInput::IsLMBRelease())
+	{
+		g_framework->m_GUIState.m_clickedElement = 0;
 		m_flags &= ~bqGUICommon::flag_clickedLMB;
+	}
 	if (bqInput::IsRMBRelease())
+	{
+		g_framework->m_GUIState.m_clickedElement = 0;
 		m_flags &= ~bqGUICommon::flag_clickedRMB;
+	}
 	if (bqInput::IsMMBRelease())
+	{
+		g_framework->m_GUIState.m_clickedElement = 0;
 		m_flags &= ~bqGUICommon::flag_clickedMMB;
+	}
 	if (bqInput::IsX1MBRelease())
+	{
+		g_framework->m_GUIState.m_clickedElement = 0;
 		m_flags &= ~bqGUICommon::flag_clickedX1MB;
+	}
 	if (bqInput::IsX2MBRelease())
+	{
+		g_framework->m_GUIState.m_clickedElement = 0;
 		m_flags &= ~bqGUICommon::flag_clickedX2MB;
+	}
 }
 
 void bqGUICommon::SetName(const char* n)

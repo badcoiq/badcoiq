@@ -38,38 +38,102 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
-bqGUIToolbar::bqGUIToolbar(const bqVec2f& position, const bqVec2f& size)
+class bqGUIToolbarButton : public bqGUIButton
+{
+	bqGUIToolbar* m_toolbar = 0;
+public:
+	bqGUIToolbarButton(const bqVec2f& position, const bqVec2f& size, bqGUIToolbar* tb):
+	bqGUIButton::bqGUIButton(position, size)
+	{
+		m_toolbar = tb;
+	}
+	virtual ~bqGUIToolbarButton() {}
+
+	virtual void OnReleaseLMB() override 
+	{
+		if (m_flags & flag_cursorInRect)
+		{
+			if (m_toolbar)
+				m_toolbar->OnButton(m_id, this);
+
+			m_flags &= ~flag_cursorInRect;
+			//printf("m_flags\n");
+		}
+	}
+};
+
+bqGUIToolbar::bqGUIToolbar(const bqVec2f& position, const bqVec2f& size, float32_t btnSz)
 	:
 	bqGUIElement::bqGUIElement(position, size)
 {
+	m_buttonSize = btnSz;
 }
 
 bqGUIToolbar::~bqGUIToolbar()
 {
+	RemoveAllElements();
 }
 
 void bqGUIToolbar::Rebuild()
 {
 	bqGUIElement::Rebuild();
+
+	for (size_t i = 0; i < m_nodes.m_size; ++i)
+	{
+		auto n = m_nodes.m_data[i];
+		n.m_element->Rebuild();
+	}
 }
 
 void bqGUIToolbar::Update()
 {
 	bqGUIElement::Update();
+
+	for (size_t i = 0; i < m_nodes.m_size; ++i)
+	{
+		auto n = m_nodes.m_data[i];
+		n.m_element->Update();
+	}
 }
 
-void bqGUIToolbar::Draw(bqGS* gs, float)
+void bqGUIToolbar::Draw(bqGS* gs, float dt)
 {
 	gs->SetScissorRect(m_clipRect);
-	gs->DrawGUIRectangle(m_buildRect, 
-		m_style->m_pictureBoxBGColor,
-		m_style->m_pictureBoxBGColor,
-		0,
-		0);
+	if (m_flags & flag_drawBG)
+	{
+		gs->DrawGUIRectangle(m_buildRect,
+			m_style->m_pictureBoxBGColor,
+			m_style->m_pictureBoxBGColor,
+			0,
+			0);
+	}
+
+	for (size_t i = 0; i < m_nodes.m_size; ++i)
+	{
+		auto n = m_nodes.m_data[i];
+		n.m_element->Draw(gs, dt);
+	}
 }
 
 void bqGUIToolbar::AddButton(uint32_t id, uint32_t iconID)
 {
+	bqVec2f pos;
+	bqVec2f sz;
+
+	pos.x = m_indent.x + m_addPosition;
+	pos.y = m_indent.y;
+	
+	sz.x = m_buttonSize;
+	sz.y = m_buttonSize;
+
+	m_addPosition += m_buttonSize + m_elementsDistance;
+
+	bqGUIToolbarButton* newButton = new bqGUIToolbarButton(pos, sz, this);
+	newButton->SetID(id);
+	node n;
+	n.m_element = newButton;
+	n.m_ownElement = true;
+	m_nodes.push_back(n);
 }
 
 void bqGUIToolbar::AddSeparator()
@@ -78,24 +142,27 @@ void bqGUIToolbar::AddSeparator()
 
 void bqGUIToolbar::AddGUIElement(bqGUIElement* e)
 {
-BQ_ASSERT(e);
-m_elements.push_back(e);
+	BQ_ASSERT(e);
+	node n;
+	n.m_element = e;
+	n.m_ownElement = false;
+	m_nodes.push_back(n);
 }
 
-void bqGUIToolbar::RemoveAll()
+void bqGUIToolbar::RemoveAllElements()
 {
-if(m_elements.size())
-{
-for(size_t i = 0; i < m_elements.m_size; ++i)
-{
-auto n = m_elements.m_data[i];
-if(n.m_own)
-{
-BQ_SAFEDELETE(n.m_element);
-}
-}
-m_elements.clear();
-}
+	if(m_nodes.size())
+	{
+		for(size_t i = 0; i < m_nodes.m_size; ++i)
+		{
+			auto n = m_nodes.m_data[i];
+			if(n.m_ownElement)
+			{
+				BQ_SAFEDESTROY(n.m_element);
+			}
+		}
+		m_nodes.clear();
+	}
 }
 
 

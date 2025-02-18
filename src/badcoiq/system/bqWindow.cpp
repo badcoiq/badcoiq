@@ -380,7 +380,7 @@ void bqWindow::RebuildGUI()
     {
         auto last = m_GUIWindows.m_head;
         auto curr = last->m_left;
-        while (1)
+            while (1)
         {
             curr->m_data->Rebuild();
 
@@ -400,17 +400,46 @@ void bqWindow::UpdateGUI()
     	// сброс значения здеь, оно будет установлено в каком нибудь Update если курсор попадает в его область
         g_framework->m_GUIState.m_windowUnderCursor = 0;
 
+        static uint32_t numWindowsUnderCursor_old = 0;
+        numWindowsUnderCursor_old = g_framework->m_GUIState.m_numWindowsUnderCursor;
+        g_framework->m_GUIState.m_numWindowsUnderCursor = 0;
+
+        g_framework->m_GUIState.m_mousePosition = g_framework->m_input.m_mousePosition;
+
+        //printf("%u\n", numWindowsUnderCursor_old);
+
     	auto last = m_GUIWindows.m_head;
     	auto curr = last->m_left;
     	while (1)
     	{
     		if (curr->m_data->IsVisible() 
-    			&& 
-    			!g_framework->m_GUIState.m_windowUnderCursor // запрет обрабатывать ввод другим окнам
+
+    			//&& 
+    			//!g_framework->m_GUIState.m_windowUnderCursor // запрет обрабатывать ввод другим окнам
+                // этот запрет надо прописать в другом месте.
+                // если нажать на кнопку (и зажать её) в одном GUI окне, потом переместить курсор
+                // в другое, и отжать кнопку, то она останется в зажатом положении
+                //  ...
+                // решение ниже. просто убираю позицию курсора вдаль
+
     			)
     		{
-    			curr->m_data->Update();
+                if (!g_framework->m_GUIState.m_windowUnderCursor)
+                {
+    			    curr->m_data->Update();
+                }
+                else
+                {
+                    g_framework->m_GUIState.m_mousePosition.x = FLT_MAX;
+                    g_framework->m_GUIState.m_mousePosition.y = FLT_MAX;
+                    curr->m_data->Update();
+                }
     		}
+
+           /* if (bqInput::IsLMBRelease())
+            {
+                printf("R\n");
+            }*/
 
     		if (curr == last)
     			break;

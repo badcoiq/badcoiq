@@ -36,12 +36,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \brief Полоска с кнопками
 class bqGUIToolbar : public bqGUIElement
 {
-struct node
-{
-bqGUIElement* m_element = 0;
-bool m_ownElement = false;
-};
-bqArray<node> m_nodes;
+	struct node
+	{
+		bqGUIElement* m_element = 0;
+		bool m_ownElement = false;
+	};
+	bqArray<node> m_nodes;
+	float32_t m_buttonSize = 0.f;
+	float32_t m_addPosition = 0.f;
 public:
 	bqGUIToolbar(const bqVec2f& position, const bqVec2f& size, float32_t btnSz);
 	virtual ~bqGUIToolbar();
@@ -52,14 +54,16 @@ public:
 	virtual void Update() override;
 	virtual void Draw(bqGS* gs, float dt) override;
 
-virtual void OnButton(uint32_t id, bqGUIButton*) = 0;
+	virtual void OnButton(uint32_t id, bqGUIButton*) = 0;
 
 
-float32_t m_elementsDistance = 3.f;
+	float32_t m_elementsDistance = 3.f;
+	bqVec2f m_indent = bqVec2f(3.f, 3.f);
+
 	void AddButton(uint32_t id, uint32_t iconID);
-void AddSeparator();
-void AddGUIElement(bqGUIElement*);
-void RemoveAll();
+	void AddSeparator();
+	void AddGUIElement(bqGUIElement*);
+	void RemoveAllElements();
 };
 
 #endif

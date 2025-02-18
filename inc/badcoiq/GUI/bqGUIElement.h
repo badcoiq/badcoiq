@@ -34,7 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_GUI
 
-// Базовый класс для всех GUI элементов
+/// \brief Базовый класс для всех GUI элементов
 class bqGUIElement : public bqGUICommon, public bqHierarchy
 {
 	friend class bqGUIWindowBase;
