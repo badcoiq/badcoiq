@@ -32,11 +32,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class bqVectorGraphicsTarget
 {
 	bqImage* m_img = 0;
+	uint8_t* m_masks = 0;
+	uint32_t m_numPixels = 0;
+	uint32_t m_width = 0;
+	uint32_t m_height = 0;
 public:
 	bqVectorGraphicsTarget();
 	~bqVectorGraphicsTarget();
 
-	bool Init();
+	bool Init(bqImage*);
 
 };
 

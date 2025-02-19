@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2025, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -57,30 +57,30 @@ public:
 	void DrawLine(const bqVec2i& p1, const bqVec2i& p2, const bqColor&, float thickness);
 };
 
-class VertexData
-{
-public:
-	bqVec2f mPosition;
-//	int mClipFlags;
-//	int mLine;
-};
+//class VertexData
+//{
+//public:
+//	bqVec2f mPosition;
+////	int mClipFlags;
+////	int mLine;
+//};
 
 class bqVectorGraphicsShape
 {
-	uint32_t m_vBufSz = 0;
-	VertexData* m_vBuffer = 0;
+	uint32_t m_eSz = 0;
+	bqVec4f* m_edges = 0;
 public:
 	bqVectorGraphicsShape();
 	~bqVectorGraphicsShape();
 
-	VertexData* GetBuffer()
+	bqVec4f* GetBuffer()
 	{
-		return m_vBuffer;
+		return m_edges;
 	}
 
 	uint32_t GetBufSz() const
 	{
-		return m_vBufSz;
+		return m_eSz;
 	}
 
 };

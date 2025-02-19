@@ -40,11 +40,20 @@ bqVectorGraphicsTarget::bqVectorGraphicsTarget()
 
 bqVectorGraphicsTarget::~bqVectorGraphicsTarget()
 {
+	BQ_SAFEDESTROY_A(m_masks);
 }
 
-bool bqVectorGraphicsTarget::Init()
+bool bqVectorGraphicsTarget::Init(bqImage* i)
 {
+	BQ_ASSERT_ST(i);
+	BQ_ASSERT_ST(i->m_info.m_width);
+	BQ_ASSERT_ST(i->m_info.m_height);
+	m_img = i;
+	m_width = i->m_info.m_width;
+	m_height = i->m_info.m_height;
+	m_numPixels = m_width * m_height;
+	m_masks = new uint8_t[m_numPixels];
+	memset(m_masks, 0, m_numPixels * sizeof(uint8_t));
 
-
-	return false;
+	return true;
 }

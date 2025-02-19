@@ -73,7 +73,7 @@ bqVectorGraphicsTarget* bqVectorGraphics::CreateTarget(bqImage* img)
 			if (img->m_info.m_height > 0)
 			{
 				bqVectorGraphicsTarget* t = new bqVectorGraphicsTarget;
-				if (!t->Init())
+				if (!t->Init(img))
 				{
 					delete t;
 					t = 0;
@@ -95,6 +95,14 @@ void bqVectorGraphics::Draw()
 {
 	if (m_target && m_shape)
 	{
+		auto edges = m_shape->GetBuffer();
+		auto edgeNum = m_shape->GetBufSz();
+		for (uint32_t i = 0; i < edgeNum; ++i)
+		{
+			auto & edge = edges[i];
+			
+			m_target->
+		}
 	}
 }
 
@@ -115,18 +123,14 @@ void bqVectorGraphics::DrawLine(
 
 bqVectorGraphicsShape::bqVectorGraphicsShape()
 {
-	m_vBufSz = 3;
-	m_vBuffer = new VertexData[m_vBufSz];
+	m_eSz = 1;
+	m_edges = new bqVec4f[1];
 	
-	m_vBuffer[0].mPosition.Set(0.f, 0.f);
-	m_vBuffer[1].mPosition.Set(0.f, 10.f);
-	m_vBuffer[2].mPosition.Set(10.f, 10.f);
-
-
+	m_edges[0].Set(0.f, 0.f, 0.5f, 0.f);
 }
 
 bqVectorGraphicsShape::~bqVectorGraphicsShape()
 {
-	if (m_vBuffer)
-		delete m_vBuffer;
+	if (m_edges)
+		delete m_edges;
 }
