@@ -34,14 +34,14 @@ class bqVectorGraphicsTarget
 	bqImage* m_img = 0;
 	uint8_t* m_masks = 0;
 	uint32_t m_numPixels = 0;
-	uint32_t m_width = 0;
-	uint32_t m_height = 0;
 public:
-	bqVectorGraphicsTarget();
+	bqVectorGraphicsTarget(uint32_t w, uint32_t h);
 	~bqVectorGraphicsTarget();
 
-	bool Init(bqImage*);
+	bqImage* GetImage() { return m_img; }
 
+	void Clear(const bqColor&);
+	void Draw(bqVectorGraphicsShape*);
 };
 
 #endif

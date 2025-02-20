@@ -63,26 +63,10 @@ void bqVectorGraphics::SetShape(bqVectorGraphicsShape* s)
 	m_shape = s;
 }
 
-bqVectorGraphicsTarget* bqVectorGraphics::CreateTarget(bqImage* img)
+bqVectorGraphicsTarget* bqVectorGraphics::CreateTarget(uint32_t w, uint32_t h)
 {
-	BQ_ASSERT_ST(img);
-	if (img)
-	{
-		if (img->m_info.m_width > 0)
-		{
-			if (img->m_info.m_height > 0)
-			{
-				bqVectorGraphicsTarget* t = new bqVectorGraphicsTarget;
-				if (!t->Init(img))
-				{
-					delete t;
-					t = 0;
-				}
-				return t;
-			}
-		}
-	}
-	return 0;
+	bqVectorGraphicsTarget* t = new bqVectorGraphicsTarget(w,h);
+	return t;
 }
 
 void bqVectorGraphics::SetTarget(bqVectorGraphicsTarget* t)
@@ -101,7 +85,7 @@ void bqVectorGraphics::Draw()
 		{
 			auto & edge = edges[i];
 			
-			m_target->
+			//m_target->
 		}
 	}
 }

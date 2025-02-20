@@ -33,27 +33,44 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bqVectorGraphicsTarget.h"
 
-bqVectorGraphicsTarget::bqVectorGraphicsTarget()
+bqVectorGraphicsTarget::bqVectorGraphicsTarget(uint32_t w, uint32_t h)
 {
-	
+	if (!w) w = 1;
+	if (!h) h = 1;
+
+	m_img = new bqImage;
+	m_img->Create(w, h);
+	m_numPixels = w * h;
+	m_masks = new uint8_t[m_numPixels];
+	memset(m_masks, 0, m_numPixels * sizeof(uint8_t));
 }
 
 bqVectorGraphicsTarget::~bqVectorGraphicsTarget()
 {
 	BQ_SAFEDESTROY_A(m_masks);
+	BQ_SAFEDESTROY(m_img);
 }
 
-bool bqVectorGraphicsTarget::Init(bqImage* i)
-{
-	BQ_ASSERT_ST(i);
-	BQ_ASSERT_ST(i->m_info.m_width);
-	BQ_ASSERT_ST(i->m_info.m_height);
-	m_img = i;
-	m_width = i->m_info.m_width;
-	m_height = i->m_info.m_height;
-	m_numPixels = m_width * m_height;
-	m_masks = new uint8_t[m_numPixels];
-	memset(m_masks, 0, m_numPixels * sizeof(uint8_t));
+//bool bqVectorGraphicsTarget::Init(bqImage* i)
+//{
+//	BQ_ASSERT_ST(i);
+//	BQ_ASSERT_ST(i->m_info.m_width);
+//	BQ_ASSERT_ST(i->m_info.m_height);
+//	m_img = i;
+//	m_width = i->m_info.m_width;
+//	m_height = i->m_info.m_height;
+//	m_numPixels = m_width * m_height;
+//	m_masks = new uint8_t[m_numPixels];
+//	memset(m_masks, 0, m_numPixels * sizeof(uint8_t));
+//
+//	return true;
+//}
 
-	return true;
+void bqVectorGraphicsTarget::Clear(const bqColor& c)
+{
+	m_img->Fill(bqImageFillType::Solid, c, c);
+}
+
+void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
+{
 }

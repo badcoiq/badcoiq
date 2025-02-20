@@ -50,7 +50,7 @@ public:
 	void SetColor(const bqColor&);
 	void SetShape(bqVectorGraphicsShape*);
 
-	bqVectorGraphicsTarget* CreateTarget(bqImage*);
+	bqVectorGraphicsTarget* CreateTarget(uint32_t w, uint32_t h);
 	void SetTarget(bqVectorGraphicsTarget*);
 
 	void Draw();
