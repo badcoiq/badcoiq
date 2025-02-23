@@ -299,6 +299,7 @@ public:
 #include "examples/meshgen/ex_mshgn_box.h"
 #include "examples/scene/camera/ex_sc_camera_fly.h"
 #include "examples/scene/camera/ex_sc_camera_editor.h"
+#include "examples/VG/ex_VG_01.h"
 
 #ifdef BQ_WITH_SOUND
 #include "examples/sound/ex_snd_3d.h"

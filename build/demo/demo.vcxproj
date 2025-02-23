@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\src\demo\demo.cpp" />
     <ClCompile Include="..\..\src\demo\DemoApp.cpp" />
     <ClCompile Include="..\..\src\demo\examples\all_examples.cpp" />
+    <ClCompile Include="..\..\src\demo\examples\VG\ex_VG_01.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

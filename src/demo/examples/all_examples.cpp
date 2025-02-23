@@ -45,6 +45,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "games/mario/ex_g_mario.cpp"
 
 #include "GUI/ex_GUI_systemMenu.cpp"
+//#include "VG/ex_VG_01.cpp"
+
 
 #include "meshgen/ex_mshgn_box.cpp"
 

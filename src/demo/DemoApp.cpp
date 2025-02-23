@@ -303,6 +303,7 @@ bool DemoApp::Init()
 	AddExample(new ExampleMshGnBox(this), U"Box", "Generators/Mesh", U"Всё о создании коробки");
 	
 	AddExample(new ExampleSceneCameraFly(this), U"Летающая камера", "Scene/camera", U"Камера перемещается туда куда смотрит. Просто при перемещении крутим вектр (умножаем на матрицу вращения), получается нужный вектр. Используй WASDQE, пробел и мышь.");
+	AddExample(new Example_ex_VG_01_H_(this), U"01", "Vector", U"01");
 	
 	AddExample(new ExampleGameMario(this), U"Mario", "Games/", U"Тот самый Марио");
 	

@@ -6,6 +6,9 @@
     <ClCompile Include="..\..\src\demo\examples\all_examples.cpp">
       <Filter>examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\demo\examples\VG\ex_VG_01.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="examples">

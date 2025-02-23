@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2023, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -26,22 +26,28 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #pragma once
-#ifndef _BQVGTARGET_H_
-#define _BQVGTARGET_H_
+#ifndef _ex_VG_01_H_
+#define _ex_VG_01_H_
 
-class bqVectorGraphicsTarget
+class DemoExample;
+class DemoApp;
+class Example_ex_VG_01_H_ : public DemoExample
 {
-	bqImage* m_img = 0;
-	uint8_t* m_masks = 0;
-	uint32_t m_numPixels = 0;
+	bqCamera* m_camera = 0;
+	
+	bqVectorGraphics* m_vg = 0;
+	bqVectorGraphicsTarget* m_target = 0;
+	bqTexture* m_texture = 0;
+	bqVec4f m_rect = bqVec4f(0.f, 0.f, 300.f, 300.f);
+    void _onCamera();
 public:
-	bqVectorGraphicsTarget(uint32_t w, uint32_t h);
-	~bqVectorGraphicsTarget();
+	Example_ex_VG_01_H_(DemoApp*);
+	virtual ~Example_ex_VG_01_H_();
+	BQ_PLACEMENT_ALLOCATOR(Example_ex_VG_01_H_);
 
-	bqImage* GetImage() { return m_img; }
-
-	void Clear(const bqColor&);
-	void Draw(bqVectorGraphicsShape*);
+	virtual bool Init() override;
+	virtual void Shutdown() override;
+	virtual void OnDraw() override;
 };
 
 #endif

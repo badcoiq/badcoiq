@@ -25,65 +25,33 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #pragma once
-#ifndef __BQ_VECTORGRAPHICS_H__
-#define __BQ_VECTORGRAPHICS_H__
+#ifndef _BQVGTARGET_H_
+#define _BQVGTARGET_H_
 
-#include "badcoiq/common/bqForward.h"
-#include "badcoiq/common/bqColor.h"
-
-// куда рисовать
-class bqVectorGraphicsTarget;
-
-class bqVectorGraphics
+class bqVectorGraphicsTarget
 {
-	bqVectorGraphicsTarget* m_target = 0;
-	bqVectorGraphicsShape* m_shape = 0;
-	bqColor m_color;
-	bqMat2 m_transformation;
-public:
-	bqVectorGraphics();
-	~bqVectorGraphics();
-
-	//void SetTransformation(const bqMat2&);
-	//void SetColor(const bqColor&);
-	//void SetShape(bqVectorGraphicsShape*);
-
-	bqVectorGraphicsTarget* CreateTarget(uint32_t w, uint32_t h);
-	//void SetTarget(bqVectorGraphicsTarget*);
-	//void Draw();
-	//void DrawLine(const bqVec2i& p1, const bqVec2i& p2, const bqColor&, float thickness);
-};
-
-//class VertexData
-//{
-//public:
-//	bqVec2f mPosition;
-////	int mClipFlags;
-////	int mLine;
-//};
-
-class bqVectorGraphicsShape
-{
-	uint32_t m_eSz = 0;
-	bqVec4f* m_edges = 0;
-public:
-	bqVectorGraphicsShape();
-	~bqVectorGraphicsShape();
-
-	bqVec4f* GetBuffer()
+	bqImage* m_img = 0;
+	enum
 	{
-		return m_edges;
-	}
+		//mask_start = 0x1,
+		//mask_stop = 0x2,
+		mask_hor = 0x1,
+		mask_left = 0x2,
+		mask_right = 0x4,
+	};
+	uint8_t* m_masks = 0;
+	uint32_t m_numPixels = 0;
+	uint32_t* m_starts = 0;
+	uint32_t m_targetWidth = 0;
+public:
+	bqVectorGraphicsTarget(uint32_t w, uint32_t h);
+	~bqVectorGraphicsTarget();
 
-	uint32_t GetBufSz() const
-	{
-		return m_eSz;
-	}
+	bqImage* GetImage() { return m_img; }
 
+	void Clear(const bqColor&);
+	void Draw(bqVectorGraphicsShape*);
 };
-
 
 #endif
-

@@ -156,7 +156,9 @@ class bqPhysicsDebugDraw;
 class bqPopupData;
 class bqStream;
 
+class bqVectorGraphics;
 class bqVectorGraphicsShape;
+class bqVectorGraphicsTarget;
 
 #endif
 
