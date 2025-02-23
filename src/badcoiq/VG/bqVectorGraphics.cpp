@@ -131,9 +131,9 @@ bqVectorGraphicsShape::bqVectorGraphicsShape()
 	P3.x = x2;
 	P3.y = y2;
 
-	printf("%f %f\n", P1.x, P1.y);
-	printf("%f %f\n", P2.x, P2.y);
-	printf("%f %f\n", P3.x, P3.y);
+//	printf("%f %f\n", P1.x, P1.y);
+//	printf("%f %f\n", P2.x, P2.y);
+//	printf("%f %f\n", P3.x, P3.y);
 
 	bqVec2f scale(40.f);
 
