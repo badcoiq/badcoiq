@@ -64,6 +64,7 @@ public:
 ////	int mLine;
 //};
 
+/// \brief Набор рёбер
 class bqVectorGraphicsShape
 {
 	uint32_t m_eSz = 0;
@@ -71,6 +72,19 @@ class bqVectorGraphicsShape
 public:
 	bqVectorGraphicsShape();
 	~bqVectorGraphicsShape();
+
+	/// \brief Освободить память
+	void Clear();
+
+	/// \brief Выделить память для n количества рёбер
+	///
+	/// Вернётся указатель m_edges.
+	/// Ребро состоит из двух точек
+	/// arr[0] = p1 p2
+	/// arr[1] = p2 p3
+	/// arr[2] = p3 p1
+	/// в данном примере получится треугольник
+	bqVec4f* Create(uint32_t n);
 
 	bqVec4f* GetBuffer()
 	{

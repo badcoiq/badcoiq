@@ -107,54 +107,76 @@ bqVectorGraphicsTarget* bqVectorGraphics::CreateTarget(uint32_t w, uint32_t h)
 
 bqVectorGraphicsShape::bqVectorGraphicsShape()
 {
-	m_eSz = 4;
-	m_edges = new bqVec4f[m_eSz];
-	
-	bqVec2f P1(-1.f, 0.f);
-	bqVec2f P2(0.f, -1);
-	bqVec2f P3(1.f, 0.f);
-
-	float angle = 90.f;
-	float sn = sin(bqMath::DegToRad(angle));
-	float cs = cos(bqMath::DegToRad(angle));
-	float32_t x0 = P1.x * cs - P1.y * sn;
-	float32_t y0 = P1.x * sn + P1.y * cs;
-	float32_t x1 = P2.x * cs - P2.y * sn;
-	float32_t y1 = P2.x * sn + P2.y * cs;
-	float32_t x2 = P3.x * cs - P3.y * sn;
-	float32_t y2 = P3.x * sn + P3.y * cs;
-
-	P1.x = x0;
-	P1.y = y0;
-	P2.x = x1;
-	P2.y = y1;
-	P3.x = x2;
-	P3.y = y2;
-
-//	printf("%f %f\n", P1.x, P1.y);
-//	printf("%f %f\n", P2.x, P2.y);
-//	printf("%f %f\n", P3.x, P3.y);
-
-	bqVec2f scale(40.f);
-
-	P1 *= scale;
-	P2 *= scale;
-	P3 *= scale;
-	
-	bqVec2f position(50.f, 50.f);
-
-	P1 += position;
-	P2 += position;
-	P3 += position;
-
-	m_eSz = 3;
-	m_edges[0].Set(P1.x, P1.y, P2.x, P2.y);
-	m_edges[1].Set(P2.x, P2.y, P3.x, P3.y);
-	m_edges[2].Set(P3.x, P3.y, P1.x, P1.y);
+//	m_eSz = 4;
+//	m_edges = new bqVec4f[m_eSz];
+//	
+//	bqVec2f P1(-1.f, 0.f);
+//	bqVec2f P2(0.f, -1);
+//	bqVec2f P3(1.f, 0.f);
+//
+//	float angle = 90.f;
+//	float sn = sin(bqMath::DegToRad(angle));
+//	float cs = cos(bqMath::DegToRad(angle));
+//	float32_t x0 = P1.x * cs - P1.y * sn;
+//	float32_t y0 = P1.x * sn + P1.y * cs;
+//	float32_t x1 = P2.x * cs - P2.y * sn;
+//	float32_t y1 = P2.x * sn + P2.y * cs;
+//	float32_t x2 = P3.x * cs - P3.y * sn;
+//	float32_t y2 = P3.x * sn + P3.y * cs;
+//
+//	P1.x = x0;
+//	P1.y = y0;
+//	P2.x = x1;
+//	P2.y = y1;
+//	P3.x = x2;
+//	P3.y = y2;
+//
+////	printf("%f %f\n", P1.x, P1.y);
+////	printf("%f %f\n", P2.x, P2.y);
+////	printf("%f %f\n", P3.x, P3.y);
+//
+//	bqVec2f scale(40.f);
+//
+//	P1 *= scale;
+//	P2 *= scale;
+//	P3 *= scale;
+//	
+//	bqVec2f position(50.f, 50.f);
+//
+//	P1 += position;
+//	P2 += position;
+//	P3 += position;
+//
+//	m_eSz = 3;
+//	m_edges[0].Set(P1.x, P1.y, P2.x, P2.y);
+//	m_edges[1].Set(P2.x, P2.y, P3.x, P3.y);
+//	m_edges[2].Set(P3.x, P3.y, P1.x, P1.y);
 }
 
 bqVectorGraphicsShape::~bqVectorGraphicsShape()
 {
-	if (m_edges)
-		delete m_edges;
+	Clear();
 }
+
+void bqVectorGraphicsShape::Clear()
+{
+	if (m_edges)
+	{
+		delete[] m_edges;
+		m_edges = 0;
+	}
+	m_eSz = 0;
+}
+
+bqVec4f* bqVectorGraphicsShape::Create(uint32_t n)
+{
+	Clear();
+	BQ_ASSERT_ST(n);
+	if (!n)
+		return 0;
+
+	m_eSz = n;
+	m_edges = new bqVec4f[m_eSz];
+	return m_edges;
+}
+

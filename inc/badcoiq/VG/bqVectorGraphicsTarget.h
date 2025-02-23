@@ -34,8 +34,6 @@ class bqVectorGraphicsTarget
 	bqImage* m_img = 0;
 	enum
 	{
-		//mask_start = 0x1,
-		//mask_stop = 0x2,
 		mask_hor = 0x1,
 		mask_left = 0x2,
 		mask_right = 0x4,
@@ -44,6 +42,8 @@ class bqVectorGraphicsTarget
 	uint32_t m_numPixels = 0;
 	uint32_t* m_starts = 0;
 	uint32_t m_targetWidth = 0;
+
+	bqColor m_color;
 public:
 	bqVectorGraphicsTarget(uint32_t w, uint32_t h);
 	~bqVectorGraphicsTarget();
@@ -51,7 +51,9 @@ public:
 	bqImage* GetImage() { return m_img; }
 
 	void Clear(const bqColor&);
+	void SetColor(const bqColor&);
 	void Draw(bqVectorGraphicsShape*);
+	void DrawLine(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t thinkness);
 };
 
 #endif

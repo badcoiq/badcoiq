@@ -112,7 +112,6 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 				if (startIndex == 300)
 				{
 					break; // exit from loops
-					i = edgeNum;
 				}
 			}
 			else if (edge.w > edge.y)
@@ -123,7 +122,6 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 				if (startIndex == 300)
 				{
 					break; // exit from loops
-					i = edgeNum;
 				}
 			}
 
@@ -192,4 +190,19 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 
 		}
 	}
+}
+
+void bqVectorGraphicsTarget::SetColor(const bqColor& c)
+{
+	m_color = c;
+}
+
+void bqVectorGraphicsTarget::DrawLine(
+	uint32_t x1, 
+	uint32_t y1, 
+	uint32_t x2, 
+	uint32_t y2, 
+	uint32_t thinkness)
+{
+
 }
