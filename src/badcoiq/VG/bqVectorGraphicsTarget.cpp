@@ -52,21 +52,6 @@ bqVectorGraphicsTarget::~bqVectorGraphicsTarget()
 	BQ_SAFEDESTROY(m_img);
 }
 
-//bool bqVectorGraphicsTarget::Init(bqImage* i)
-//{
-//	BQ_ASSERT_ST(i);
-//	BQ_ASSERT_ST(i->m_info.m_width);
-//	BQ_ASSERT_ST(i->m_info.m_height);
-//	m_img = i;
-//	m_width = i->m_info.m_width;
-//	m_height = i->m_info.m_height;
-//	m_numPixels = m_width * m_height;
-//	m_masks = new uint8_t[m_numPixels];
-//	memset(m_masks, 0, m_numPixels * sizeof(uint8_t));
-//
-//	return true;
-//}
-
 void bqVectorGraphicsTarget::Clear(const bqColor& c)
 {
 	m_img->Fill(bqImageFillType::Solid, c, c);
@@ -102,100 +87,52 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 	auto edgeNum = sh->GetBufSz();
 	for (uint32_t i = 0; i < edgeNum; ++i)
 	{
-		printf("EDGE %u\n", i);
-
+	//	printf("EDGE %u\n", i);
 		auto & edge = edges[i];
 
-		float32_t xLn = fabs(edge.x - edge.z)+1;
-		float32_t yLn = fabs(edge.y - edge.w)+1;
-		
-		
-		float32_t t = 0.f;
-		float32_t tt = 0.f;
-		int32_t ss = 0;
-		if (xLn > yLn)
-		{
-			ss = ceilf(xLn)+1;
-			t = 1.f / (xLn);
-		}
-		else
-		{
-			ss = ceilf(yLn)+1;
-			t = 1.f / (yLn);
-		}
+		int x0 = floorf(edge.x);
+		int y0 = floorf(edge.y);
+		int x1 = floorf(edge.z);
+		int y1 = floorf(edge.w);
 
-		int32_t iX, iY, iXo, iYo;
-		iX = iY = 0;
-		iXo = iYo = -1;
+		int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+		int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+		int err = dx + dy, e2; /* error value e_xy */
 
-		for (int32_t fi = 0; fi < ss; ++fi)
+		while (1) 
 		{
-			float32_t x = bqMath::Lerp2(edge.x, edge.z, tt);
-			float32_t y = bqMath::Lerp2(edge.y, edge.w, tt);
-			iX = floorf(x);
-			iY = floorf(y);
-			printf("iX:%i iY:%i x:%f y:%f tt:%f t:%f\n", iX, iY, x, y, tt, t);
+			//printf("(%d, %d)\n", x0, y0); /* plot the point */
+			auto index = x0 + (y0 * m_img->m_info.m_width);
 
-			if ((iX != iXo) || (iY != iYo))
+			if (edge.w < edge.y)
 			{
-				auto index = iX + (iY * m_img->m_info.m_width);
-				/*rgba* data = (rgba*)m_img->m_data;
-				data[index].rgba[0] = 0;
-				data[index].rgba[1] = 0;
-				data[index].rgba[2] = 0;`
-				data[index].rgba[3] = 255;*/
-
-				if (edge.w < edge.y)
+				m_masks[index] |= mask_right;
+				m_starts[startIndex] = index;
+				++startIndex;
+				if (startIndex == 300)
 				{
-					//if ((m_masks[index] & mask_start) == 0)
-					{
-						m_masks[index] |= mask_right;
-						m_starts[startIndex] = index;
-						++startIndex;
-						if (startIndex == 300)
-						{
-							fi = ss; // exit from loops
-							i = edgeNum;
-						}
-					}
-					//else
-					//{
-					////	m_masks[index] |= mask_stop;
-					//}
+					break; // exit from loops
+					i = edgeNum;
 				}
-				else if (edge.w > edge.y)
-				{
-					//if ((m_masks[index] & mask_start) == 0)
-					//m_masks[index] |= mask_stop;
-					m_masks[index] |= mask_left;
-				}
-				else
-				{
-					m_masks[index] |= mask_hor;
-					//m_masks[index] |= mask_start;
-					//m_masks[index] |= mask_stop;
-					m_starts[startIndex] = index;
-					++startIndex;
-					if (startIndex == 300)
-					{
-						fi = ss; // exit from loops
-						i = edgeNum;
-					}
-				}
-
 			}
-			else
+			else if (edge.w > edge.y)
 			{
-	//			printf("Else\n");
+				m_masks[index] |= mask_left;
+				m_starts[startIndex] = index;
+				++startIndex;
+				if (startIndex == 300)
+				{
+					break; // exit from loops
+					i = edgeNum;
+				}
 			}
 
-			iXo = iX;
-			iYo = iY;
-			
-			tt += t;
-			if (tt > 0.9999f)
-				tt = 1.f;
+			if (x0 == x1 && y0 == y1) break;
+			e2 = 2 * err;
+			if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
+			if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
 		}
+
 	}
 
 	if (startIndex)
@@ -218,7 +155,7 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 			{
 				if (m_masks[index] & mask_right)
 				{
-					printf("s[%u]", i);
+	//				printf("s[%u]", i);
 					uint32_t liSz = 0;
 					if (index == 0)
 					{
@@ -227,14 +164,14 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 					else
 					{
 						auto in = index % m_targetWidth;
-				//		printf("%u\n", in);
+	//					printf("%u\n", in);
 						liSz = m_targetWidth - in;
 					}
 
 					for (uint32_t li = 0; li < liSz; ++li)
 					{
 						uint32_t ii = index + li;
-						printf(".");
+	//					printf(".");
 
 
 						rgba* data = (rgba*)m_img->m_data;
@@ -245,7 +182,7 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 					
 						if (m_masks[ii] & mask_left)
 						{
-							printf("S\n");
+	//						printf("S\n");
 							break;
 						}
 					}

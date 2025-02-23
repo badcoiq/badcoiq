@@ -110,19 +110,30 @@ bqVectorGraphicsShape::bqVectorGraphicsShape()
 	m_eSz = 4;
 	m_edges = new bqVec4f[m_eSz];
 	
-	bqVec2f P1(2.f, -1.f);
-	bqVec2f P2(1.f, 3.1f);
-	bqVec2f P3(-1.f, 0.f);
+	bqVec2f P1(-1.f, 0.f);
+	bqVec2f P2(0.f, -1);
+	bqVec2f P3(1.f, 0.f);
 
-	float angle = 5.f;
+	float angle = 90.f;
 	float sn = sin(bqMath::DegToRad(angle));
 	float cs = cos(bqMath::DegToRad(angle));
-	//P1.x *= sn;
-	//P1.y *= cs;
-	//P2.x *= sn;
-	//P2.y *= cs;
-	//P3.x *= sn;
-	//P3.y *= cs;
+	float32_t x0 = P1.x * cs - P1.y * sn;
+	float32_t y0 = P1.x * sn + P1.y * cs;
+	float32_t x1 = P2.x * cs - P2.y * sn;
+	float32_t y1 = P2.x * sn + P2.y * cs;
+	float32_t x2 = P3.x * cs - P3.y * sn;
+	float32_t y2 = P3.x * sn + P3.y * cs;
+
+	P1.x = x0;
+	P1.y = y0;
+	P2.x = x1;
+	P2.y = y1;
+	P3.x = x2;
+	P3.y = y2;
+
+	printf("%f %f\n", P1.x, P1.y);
+	printf("%f %f\n", P2.x, P2.y);
+	printf("%f %f\n", P3.x, P3.y);
 
 	bqVec2f scale(40.f);
 
