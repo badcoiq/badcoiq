@@ -93,13 +93,15 @@ bool Example_ex_VG_01_H_::Init()
 	m_target = m_vg->CreateTarget(500, 500);
 	m_target->Clear(bq::ColorGold);
 	bqVectorGraphicsShape line;
-	auto edges = line.Create(3);
-	if (edges)
+	bqVec2f quad[4] = 
 	{
-		edges[0].Set(10.f, 10.f, 20.f, 10.f);
-		edges[1].Set(20.f, 10.f, 20.f, 20.f);
-		edges[2].Set(20.f, 20.f, 10.f, 10.f);
-	}
+		bqVec2f(10.f, 10.f),
+		bqVec2f(10.f, 9.f),
+
+		bqVec2f(100.f, 99.f),
+		bqVec2f(100.f, 100.f),
+	};
+	line.Create(quad, 4);
 	m_target->Draw(&line);
 	m_texture = m_gs->CreateTexture(m_target->GetImage());
 	

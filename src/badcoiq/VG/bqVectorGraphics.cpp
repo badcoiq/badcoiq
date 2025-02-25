@@ -180,3 +180,33 @@ bqVec4f* bqVectorGraphicsShape::Create(uint32_t n)
 	return m_edges;
 }
 
+void bqVectorGraphicsShape::Create(bqVec2f* arr, uint32_t sz)
+{
+	if(m_eSz != sz)
+		Clear();
+	if (sz > 2)
+	{
+		m_eSz = sz;
+		m_edges = new bqVec4f[m_eSz];
+
+		bqVec4f* currEdge = m_edges;
+		uint32_t ai = 0;
+		for (uint32_t i = 0; i < m_eSz; ++i)
+		{
+			uint32_t ai_next = ai + 1;
+			if (ai_next == sz)
+				ai_next = 0;
+
+			bqVec2f* p1 = &arr[ai];
+			bqVec2f* p2 = &arr[ai_next];
+
+			currEdge->x = p1->x;
+			currEdge->y = p1->y;
+			currEdge->z = p2->x;
+			currEdge->w = p2->y;
+
+			++currEdge;
+			++ai;
+		}
+	}
+}
