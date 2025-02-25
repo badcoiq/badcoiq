@@ -34,12 +34,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/string/bqString.h"
 #include "badcoiq/containers/bqArray.h"
 
-// Имя библиотеки_алгоритм, или просто имя если в ней один алгоритм
-//     megalib_deflate,
-//     megalib_lz77,
-//     megalib_lzma,
-// Имеется:
-//     -   fastlz (LZ77)
+/// \brief Тип сжатия
+///
+/// Имя библиотеки_алгоритм, или просто имя если в ней один алгоритм
+///     megalib_deflate,
+///     megalib_lz77,
+///     megalib_lzma,
+/// Имеется:
+///     -   fastlz (LZ77)
 enum class bqCompressorType : uint32_t
 {
     // m_level:
@@ -48,7 +50,7 @@ enum class bqCompressorType : uint32_t
     fastlz
 };
 
-// Информация для сжатия и расжатия
+/// \brief Информация для сжатия и расжатия
 struct bqCompressionInfo
 {
     bqCompressorType m_compressorType = bqCompressorType::fastlz;
@@ -73,14 +75,16 @@ struct bqCompressionInfo
     uint32_t m_level = 2;
 };
 
-// Структура с описанием файла архива.
-// Путь к файлу и специфичные данные
+/// \brief Структура с описанием файла архива.
+///
+/// Путь к файлу и специфичные данные
 struct bqArchiveZipFile
 {
     bqStringA m_fileName;
     void* m_implementation = 0;
 };
 
+/// \brief Набор методов для работы с архивом, сжатием данных и т д.
 class bqArchiveSystem
 {
 public:
