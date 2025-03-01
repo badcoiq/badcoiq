@@ -102,7 +102,13 @@ bool Example_ex_VG_01_H_::Init()
 		bqVec2f(100.f, 100.f),
 	};
 	line.Create(quad, 4);
-	m_target->Draw(&line);
+	//m_target->Draw(&line);
+	uint32_t th = 3;
+	for (int i = 0; i < 500; i += 20)
+	{
+		m_target->DrawLine(20, i,400,120, th);
+	}
+
 	m_texture = m_gs->CreateTexture(m_target->GetImage());
 	
 	m_rect = bqVec4f(0.f, 0.f, 500.f, 500.f);

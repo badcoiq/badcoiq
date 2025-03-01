@@ -137,6 +137,8 @@ public:
 #ifdef BQ_WITH_PHYSICS
 	bqPhysics* m_physics = 0;
 #endif
+
+	bqVectorGraphicsShape* m_vgshape_line = 0;
 };
 
 

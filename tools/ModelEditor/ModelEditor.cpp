@@ -333,6 +333,10 @@ void ModelEditor::Shutdown()
 		delete m_GUIElements.m_data[i];
 	}
 	m_GUIElements.clear();
+
+//	BQ_SAFEDESTROY(m_gs);
+	BQ_SAFEDESTROY(m_mainWindow);
+	bqFramework::Stop();
 }
 
 void MainWindowCallback::OnClose(bqWindow* w)

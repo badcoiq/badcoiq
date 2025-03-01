@@ -121,6 +121,9 @@ public:
 	static float32_t Tan(float32_t);
 	static float64_t Tan(float64_t);
 
+	static void PerpendicularVector1(const bqVec2f& v1, const bqVec2f& v2, bqVec2f& r);
+	static void PerpendicularVector2(const bqVec2f& v1, const bqVec2f& v2, bqVec2f& r);
+
 	static void Cross(const bqVec3& v1, const bqVec3& v2, bqVec3& r);
 	static void Cross(const bqVec3f& v1, const bqVec3f& v2, bqVec3f& r);
 	static void Cross(const bqVec4& v1, const bqVec4& v2, bqVec4& r);

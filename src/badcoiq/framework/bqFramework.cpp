@@ -87,6 +87,8 @@ static uint8_t g_defaultIconsPNG[] = {
 #include "badcoiq/physics/bqPhysicsSystem.h"
 #endif
 
+#include "badcoiq/VG/bqVectorGraphics.h"
+#include "badcoiq/VG/bqVectorGraphicsTarget.h"
 
 //
 //  Lowercases string
@@ -204,6 +206,9 @@ void bqFramework::Start(bqFrameworkCallback* cb)
 		g_framework->m_meshLoaders.push_back(bqMeshLoaderDefault_create());
 
 		bqLog::PrintInfo("App path : %s\n", g_framework->m_appPathA.c_str());
+
+		g_framework->m_vgshape_line = new bqVectorGraphicsShape;
+		g_framework->m_vgshape_line->Create(4);
 	}
 }
 
@@ -221,6 +226,8 @@ void bqFramework::Stop()
 
 void bqFrameworkImpl::OnDestroy()
 {
+	BQ_SAFEDESTROY(m_vgshape_line);
+
 #ifdef BQ_WITH_SOUND
 	if (m_soundSystem)
 	{

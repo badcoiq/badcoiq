@@ -32,6 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/VG/bqVectorGraphics.h"
 #include "badcoiq/VG/bqVectorGraphicsTarget.h"
 
+#include "../framework/bqFrameworkImpl.h"
+extern bqFrameworkImpl* g_framework;
+
 bqVectorGraphicsTarget::bqVectorGraphicsTarget(uint32_t w, uint32_t h)
 {
 	if (!w) w = 1;
@@ -41,7 +44,8 @@ bqVectorGraphicsTarget::bqVectorGraphicsTarget(uint32_t w, uint32_t h)
 	m_img->Create(w, h);
 	m_numPixels = w * h;
 	m_masks = new uint8_t[m_numPixels];
-	m_starts = new uint32_t[300];
+	m_startsSz = 1000;
+	m_starts = new uint32_t[m_startsSz];
 	memset(m_masks, 0, m_numPixels * sizeof(uint8_t));
 }
 
@@ -52,18 +56,23 @@ bqVectorGraphicsTarget::~bqVectorGraphicsTarget()
 	BQ_SAFEDESTROY(m_img);
 }
 
-void bqVectorGraphicsTarget::Clear(const bqColor& c)
+void bqVectorGraphicsTarget::_onClear()
 {
-	m_img->Fill(bqImageFillType::Solid, c, c);
 	for (uint32_t i = 0; i < m_numPixels; ++i)
 	{
 		m_masks[i] = 0;
 	}
 
-	for (uint32_t i = 0; i < 300; ++i)
+	for (uint32_t i = 0; i < m_startsSz; ++i)
 	{
 		m_starts[i] = 0;
 	}
+}
+
+void bqVectorGraphicsTarget::Clear(const bqColor& c)
+{
+	_onClear();
+	m_img->Fill(bqImageFillType::Solid, c, c);
 }
 
 template <typename T>
@@ -104,24 +113,38 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 			//printf("(%d, %d)\n", x0, y0); /* plot the point */
 			auto index = x0 + (y0 * m_img->m_info.m_width);
 
-			if (edge.w < edge.y)
+			//if(x0 < m_img->m_info.m_width)
+			if (index < m_numPixels)
 			{
-				m_masks[index] |= mask_right;
-				m_starts[startIndex] = index;
-				++startIndex;
-				if (startIndex == 300)
+
+				if (edge.w < edge.y)
 				{
-					break; // exit from loops
+					m_masks[index] |= mask_right;
+					m_starts[startIndex] = index;
+					++startIndex;
+					if (startIndex == m_startsSz)
+					{
+						break; // exit from loops
+					}
 				}
-			}
-			else if (edge.w > edge.y)
-			{
-				m_masks[index] |= mask_left;
-				m_starts[startIndex] = index;
-				++startIndex;
-				if (startIndex == 300)
+				else if (edge.w > edge.y)
 				{
-					break; // exit from loops
+					m_masks[index] |= mask_left;
+					m_starts[startIndex] = index;
+					++startIndex;
+					if (startIndex == m_startsSz)
+					{
+						break; // exit from loops
+					}
+				}
+				else
+				{
+					m_masks[index] |= mask_hor;
+					++startIndex;
+					if (startIndex == m_startsSz)
+					{
+						break; // exit from loops
+					}
 				}
 			}
 
@@ -148,12 +171,34 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 				data[index].rgba[1] = 0;
 				data[index].rgba[2] = 0;
 				data[index].rgba[3] = 255;
+
+				uint32_t liSz = 0;
+				if (index == 0)
+				{
+					liSz = m_targetWidth;
+				}
+				else
+				{
+					auto in = index % m_targetWidth;
+					liSz = m_targetWidth - in;
+				}
+
+				for (uint32_t li = 0; li < liSz; ++li)
+				{
+					uint32_t ii = index + li;
+					rgba* data = (rgba*)m_img->m_data;
+					data[ii].rgba[0] = 0;
+					data[ii].rgba[1] = 0;
+					data[ii].rgba[2] = 0;
+					data[ii].rgba[3] = 255;
+					if (m_masks[ii] & mask_left)
+						break;
+				}
 			}
 			else
 			{
-				if (m_masks[index] & mask_right)
+				if (m_masks[index] & mask_right )
 				{
-	//				printf("s[%u]", i);
 					uint32_t liSz = 0;
 					if (index == 0)
 					{
@@ -162,15 +207,12 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 					else
 					{
 						auto in = index % m_targetWidth;
-	//					printf("%u\n", in);
 						liSz = m_targetWidth - in;
 					}
 
 					for (uint32_t li = 0; li < liSz; ++li)
 					{
 						uint32_t ii = index + li;
-	//					printf(".");
-
 
 						rgba* data = (rgba*)m_img->m_data;
 						data[ii].rgba[0] = 0;
@@ -180,7 +222,6 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 					
 						if (m_masks[ii] & mask_left)
 						{
-	//						printf("S\n");
 							break;
 						}
 					}
@@ -204,5 +245,51 @@ void bqVectorGraphicsTarget::DrawLine(
 	uint32_t y2, 
 	uint32_t thinkness)
 {
+	float32_t thinkness_f = thinkness;
 
+	if (!thinkness_f)
+	{
+		thinkness_f = 0.5f;
+	}
+
+	if (thinkness_f >= 1.f)
+		thinkness_f *= 0.5f;
+
+	_onClear();
+	bqVec4f* buffer = g_framework->m_vgshape_line->GetBuffer();
+
+	bqVec2f p1;
+	bqVec2f p2;
+
+	bqMath::PerpendicularVector1(bqVec2f(x1, y1), bqVec2f(x2, y2), p2);
+	bqMath::PerpendicularVector2(bqVec2f(x1, y1), bqVec2f(x2, y2), p1);
+	p1.Normalize();
+	p2.Normalize();
+
+	float32_t p1x = p1.x * thinkness_f;
+	float32_t p1y = p1.y * thinkness_f;
+	float32_t p2x = p2.x * thinkness_f;
+	float32_t p2y = p2.y * thinkness_f;
+
+	buffer[0].x = (float32_t)x1 - p1x;
+	buffer[0].y = (float32_t)y1 - p1y;
+	buffer[0].z = (float32_t)x2 - p1x;
+	buffer[0].w = (float32_t)y2 - p1y;
+
+	buffer[1].x = (float32_t)x2 - p1x;
+	buffer[1].y = (float32_t)y2 - p1y;
+	buffer[1].z = (float32_t)x2 - p2x;
+	buffer[1].w = (float32_t)y2 - p2y;
+
+	buffer[2].x = (float32_t)x2 - p2x;
+	buffer[2].y = (float32_t)y2 - p2y;
+	buffer[2].z = (float32_t)x1 - p2x;
+	buffer[2].w = (float32_t)y1 - p2y;
+
+	buffer[3].x = (float32_t)x1 - p2x;
+	buffer[3].y = (float32_t)y1 - p2y;
+	buffer[3].z = (float32_t)x1 - p1x;
+	buffer[3].w = (float32_t)y1 - p1y;
+
+	Draw(g_framework->m_vgshape_line);
 }
