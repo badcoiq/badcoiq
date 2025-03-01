@@ -104,8 +104,36 @@ bool Example_ex_VG_01_H_::Init()
 	line.Create(quad, 4);
 	//m_target->Draw(&line);
 	uint32_t th = 3;
-	for (int i = 0; i < 500; i += 20)
+	bqColor ca[] = 
 	{
+		bq::ColorAqua,
+		bq::ColorRed,
+		bq::ColorLime,
+		bq::ColorBlue,
+		bq::ColorCornflowerBlue,
+		bq::ColorBlanchedAlmond,
+		bq::ColorAquamarine,
+		bq::ColorWheat,
+		bq::ColorRosyBrown,
+		bq::ColorTan,
+		bq::ColorYellow,
+		bq::ColorAzure,
+		bq::ColorIndianRed,
+		bq::ColorOldLace,
+		bq::ColorPaleGoldenRod,
+		bq::ColorSaddleBrown,
+		bq::ColorDarkBlue,
+		bq::ColorFireBrick,
+		bq::ColorGainsboro,
+		bq::ColorHoneyDew,
+		bq::ColorNavajoWhite,
+	};
+	for (int i = 0, i2 = 0; i < 500; i += 20, ++i2)
+	{
+		if (i2 > 20)
+			i2 = 0;
+
+		m_target->SetColor(ca[i2]);
 		m_target->DrawLine(20, i,400,120, th);
 	}
 

@@ -45,6 +45,7 @@ class bqVectorGraphicsTarget
 	uint32_t m_targetWidth = 0;
 
 	bqColor m_color;
+	uint8_t m_color8[4] = { 0,0,0,255 };
 	void _onClear();
 public:
 	bqVectorGraphicsTarget(uint32_t w, uint32_t h);

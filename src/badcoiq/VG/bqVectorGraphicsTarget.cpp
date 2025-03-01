@@ -167,10 +167,10 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 			if ((m_masks[index] & mask_hor))
 			{
 				rgba* data = (rgba*)m_img->m_data;
-				data[index].rgba[0] = 255;
-				data[index].rgba[1] = 0;
-				data[index].rgba[2] = 0;
-				data[index].rgba[3] = 255;
+				data[index].rgba[0] = m_color8[0];
+				data[index].rgba[1] = m_color8[1];
+				data[index].rgba[2] = m_color8[2];
+				data[index].rgba[3] = m_color8[3];
 
 				uint32_t liSz = 0;
 				if (index == 0)
@@ -187,10 +187,10 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 				{
 					uint32_t ii = index + li;
 					rgba* data = (rgba*)m_img->m_data;
-					data[ii].rgba[0] = 0;
-					data[ii].rgba[1] = 0;
-					data[ii].rgba[2] = 0;
-					data[ii].rgba[3] = 255;
+					data[ii].rgba[0] = m_color8[0];
+					data[ii].rgba[1] = m_color8[1];
+					data[ii].rgba[2] = m_color8[2];
+					data[ii].rgba[3] = m_color8[3];
 					if (m_masks[ii] & mask_left)
 						break;
 				}
@@ -215,10 +215,10 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 						uint32_t ii = index + li;
 
 						rgba* data = (rgba*)m_img->m_data;
-						data[ii].rgba[0] = 0;
-						data[ii].rgba[1] = 0;
-						data[ii].rgba[2] = 0;
-						data[ii].rgba[3] = 255;
+						data[ii].rgba[0] = m_color8[0];
+						data[ii].rgba[1] = m_color8[1];
+						data[ii].rgba[2] = m_color8[2];
+						data[ii].rgba[3] = m_color8[3];
 					
 						if (m_masks[ii] & mask_left)
 						{
@@ -228,14 +228,19 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 
 				}
 			}
-
 		}
+
+
 	}
 }
 
 void bqVectorGraphicsTarget::SetColor(const bqColor& c)
 {
 	m_color = c;
+	m_color8[0] = c.GetAsByteRed();
+	m_color8[1] = c.GetAsByteGreen();
+	m_color8[2] = c.GetAsByteBlue();
+	m_color8[3] = c.GetAsByteAlpha();
 }
 
 void bqVectorGraphicsTarget::DrawLine(
