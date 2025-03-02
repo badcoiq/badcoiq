@@ -35,6 +35,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "badcoiq/math/bqMath.h"
 #include "badcoiq/gs/bqTexture.h"
 
+#include "badcoiq/common/bqFile.h"
+
 bqGUIFont::bqGUIFont()
 {
 	// добавляю символ, просто нолик, вызываю AddGlyph
@@ -43,7 +45,7 @@ bqGUIFont::bqGUIFont()
 	AddGlyph(g);
 
 	// теперь можно дать указатели на весь m_glyphMap
-	for (uint32_t i = 0; i < 0x32000; ++i)
+	for (uint32_t i = 0; i < BQ_FONT_GLYPH_MAP_SIZE; ++i)
 	{
 		m_glyphMap[i] = m_glyphs.m_data[0];
 	}
@@ -122,6 +124,141 @@ void bqGUIFont::AddGlyph(char32_t ch, const bqVec2f& leftTop, const bqPoint& cha
 	textureSize.y = texture->GetInfo().m_imageInfo.m_height;
 
 	AddGlyph(ch, leftTop, charSz, textureIndex, textureSize);
+}
+
+bqFont::bqFont()
+{
+	_freeAll();
+}
+bqFont::~bqFont()
+{
+}
+
+bool bqFont::CreateFromFile(const char* fontFile)
+{
+	bqFile file;
+	if (file.Open(bqFile::_open::Open, fontFile))
+	{
+		uint8_t b4[4] = { 0, 0, 0, 0 };
+		file.ReadByte(&b4[0]);
+		file.ReadByte(&b4[1]);
+		file.ReadByte(&b4[2]);
+		file.ReadByte(&b4[3]);
+
+		const uint32_t tag_dsig = BQ_MAKEFOURCC('D', 'S', 'I', 'G');
+		const uint32_t tag_fftm = BQ_MAKEFOURCC('F', 'F', 'T', 'M');
+		const uint32_t tag_gdef = BQ_MAKEFOURCC('G', 'D', 'E', 'F');
+		const uint32_t tag_gpos = BQ_MAKEFOURCC('G', 'P', 'O', 'S');
+		const uint32_t tag_gsub = BQ_MAKEFOURCC('G', 'S', 'U', 'B');
+		const uint32_t tag_os2 = BQ_MAKEFOURCC('O', 'S', '/', '2');
+		const uint32_t tag_cmap = BQ_MAKEFOURCC('c', 'm', 'a', 'p');
+		const uint32_t tag_gasp = BQ_MAKEFOURCC('g', 'a', 's', 'p');
+		const uint32_t tag_glyf = BQ_MAKEFOURCC('g', 'l', 'y', 'f');
+		const uint32_t tag_head = BQ_MAKEFOURCC('h', 'e', 'a', 'd');
+		const uint32_t tag_hmtx = BQ_MAKEFOURCC('h', 'm', 't', 'x');
+		const uint32_t tag_loca = BQ_MAKEFOURCC('l', 'o', 'c', 'a');
+		const uint32_t tag_maxp = BQ_MAKEFOURCC('m', 'a', 'x', 'p');
+		const uint32_t tag_name = BQ_MAKEFOURCC('n', 'a', 'm', 'e');
+		const uint32_t tag_post = BQ_MAKEFOURCC('p', 'o', 's', 't');
+		const uint32_t tag_prep = BQ_MAKEFOURCC('p', 'r', 'e', 'p');
+		uint32_t sfntVersion = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
+		if (sfntVersion == 0x00010000)
+		{
+			file.ReadByte(&b4[0]);
+			file.ReadByte(&b4[1]);
+			uint32_t numTables = BQ_MAKEFOURCC(b4[1], b4[0], 0,0);
+			// skip searchRange entrySelector rangeShift
+			for (int i = 0; i < 6; ++i)
+			{
+				file.ReadByte(&b4[0]);
+			}
+			// tableRecords
+			for (int i = 0; i < numTables; ++i)
+			{
+				file.ReadByte(&b4[3]);
+				file.ReadByte(&b4[2]);
+				file.ReadByte(&b4[1]);
+				file.ReadByte(&b4[0]);
+				uint32_t tableTag = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
+
+				file.ReadByte(&b4[0]);
+				file.ReadByte(&b4[1]);
+				file.ReadByte(&b4[2]);
+				file.ReadByte(&b4[3]);
+				uint32_t checksum = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
+
+				file.ReadByte(&b4[0]);
+				file.ReadByte(&b4[1]);
+				file.ReadByte(&b4[2]);
+				file.ReadByte(&b4[3]);
+				uint32_t offset = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
+
+				file.ReadByte(&b4[0]);
+				file.ReadByte(&b4[1]);
+				file.ReadByte(&b4[2]);
+				file.ReadByte(&b4[3]);
+				uint32_t length = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
+
+				switch (tableTag)
+				{
+				case tag_dsig: break;
+				case tag_fftm: break;
+				case tag_gdef: break;
+				case tag_gpos: break;
+				case tag_gsub: break;
+				case tag_os2: break;
+				case tag_cmap: break;
+				case tag_gasp: break;
+				case tag_glyf: break;
+				case tag_head: break;
+				case tag_hmtx: break;
+				case tag_loca: break;
+				case tag_maxp: break;
+				case tag_name: break;
+				case tag_post: break;
+				case tag_prep: break;
+				/*default:
+					return false;*/
+				}
+
+				printf("a");
+			}
+		}
+	}
+
+	return false;
+}
+
+void bqFont::_addGlyph(const bqGUIFontGlyph& g)
+{
+	bqGUIFontGlyph* newG = bqCreate<bqGUIFontGlyph>();
+	*newG = g;
+	m_glyphs.push_back(newG);
+	m_glyphMap[g.m_symbol] = newG;
+}
+
+void bqFont::_freeAll()
+{
+	for (size_t i = 0; i < m_glyphs.m_size; ++i)
+	{
+		delete m_glyphs.m_data[i];
+	}
+	m_glyphs.clear();
+
+	for (size_t i = 0; i < m_images.m_size; ++i)
+	{
+		delete m_images.m_data[i];
+	}
+	m_images.clear();
+
+	bqGUIFontGlyph g;
+	g.m_symbol = 0;
+	_addGlyph(g);
+
+	for (uint32_t i = 0; i < BQ_FONT_GLYPH_MAP_SIZE; ++i)
+	{
+		m_glyphMap[i] = m_glyphs.m_data[0];
+	}
 }
 
 #endif

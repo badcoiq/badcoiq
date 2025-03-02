@@ -141,6 +141,9 @@ bool Example_ex_VG_01_H_::Init()
 	
 	m_rect = bqVec4f(0.f, 0.f, 500.f, 500.f);
 
+	bqFont f;
+	f.CreateFromFile(bqFramework::GetPath("../data/fonts/montserrat/Montserrat-Regular.ttf").c_str());
+
 	return true;
 }
 
@@ -161,6 +164,9 @@ void Example_ex_VG_01_H_::OnDraw()
 	}
 
 	m_gs->BeginGUI();
+	{
+		m_gs->DrawGUIRectangle(m_rect, bq::ColorWhite, bq::ColorWhite, m_texture, 0);
+	}
 	m_gs->EndGUI();
 
 	m_gs->BeginDraw();
@@ -168,9 +174,7 @@ void Example_ex_VG_01_H_::OnDraw()
 	m_gs->SetClearColor(1.f, 0, 0, 0.f);
 
 	if (m_texture)
-	{
-		m_gs->DrawGUIRectangle(m_rect, bq::ColorWhite, bq::ColorWhite, m_texture, 0);
-	}
+
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();
 }

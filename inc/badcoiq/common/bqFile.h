@@ -79,6 +79,12 @@ public:
 		return fread_s(buffer, size, 1, size, m_file);
 	}
 
+	size_t ReadByte(uint8_t* byte)
+	{
+		BQ_ASSERT_ST(m_file);
+		return fread_s(&byte[0], 1, 1, 1, m_file);
+	}
+
 	size_t Write(void* buffer, size_t size)
 	{
 		BQ_ASSERT_ST(m_file);
