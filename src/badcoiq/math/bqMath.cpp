@@ -451,6 +451,14 @@ void bqMath::Cross(const bqVec3f& v1, const bqVec4f& v2, bqVec3f& r)
 	r.z = (v1.x * v2.y) - (v1.y * v2.x);
 }
 
+float32_t bqMath::Distance(const bqVec2f& v1, const bqVec2f& v2)
+{
+	float xx = v2.x - v1.x;
+	float yy = v2.y - v1.y;
+
+	return sqrtf((xx * xx) + (yy * yy));
+}
+
 bqReal bqMath::Distance(const bqVec3& v1, const bqVec3& v2)
 {
 	bqReal xx = v2.x - v1.x;

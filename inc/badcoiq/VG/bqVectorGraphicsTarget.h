@@ -37,8 +37,10 @@ class bqVectorGraphicsTarget
 		mask_hor = 0x1,
 		mask_left = 0x2,
 		mask_right = 0x4,
+		mask_aa = 0x8,
 	};
 	uint8_t* m_masks = 0;
+	float32_t* m_aa = 0;
 	uint32_t m_numPixels = 0;
 	uint32_t* m_starts = 0;
 	uint32_t m_startsSz = 0;
@@ -46,6 +48,7 @@ class bqVectorGraphicsTarget
 
 	bqColor m_color;
 	uint8_t m_color8[4] = { 0,0,0,255 };
+
 	void _onClear();
 public:
 	bqVectorGraphicsTarget(uint32_t w, uint32_t h);

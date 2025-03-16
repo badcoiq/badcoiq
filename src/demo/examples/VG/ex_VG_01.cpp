@@ -91,7 +91,7 @@ bool Example_ex_VG_01_H_::Init()
 
 	m_vg = new bqVectorGraphics;
 	m_target = m_vg->CreateTarget(500, 500);
-	m_target->Clear(bq::ColorGold);
+	m_target->Clear(bq::ColorWhite);
 	bqVectorGraphicsShape line;
 	bqVec2f quad[4] = 
 	{
@@ -103,10 +103,10 @@ bool Example_ex_VG_01_H_::Init()
 	};
 	line.Create(quad, 4);
 	//m_target->Draw(&line);
-	uint32_t th = 3;
+	uint32_t th = 13;
 	bqColor ca[] = 
 	{
-		bq::ColorAqua,
+		bq::ColorBlack,
 		bq::ColorRed,
 		bq::ColorLime,
 		bq::ColorBlue,
@@ -128,18 +128,31 @@ bool Example_ex_VG_01_H_::Init()
 		bq::ColorHoneyDew,
 		bq::ColorNavajoWhite,
 	};
-	for (int i = 0, i2 = 0; i < 500; i += 20, ++i2)
+	for (int i = 0, i2 = 0; i < 100; i += 20, ++i2)
 	{
 		if (i2 > 20)
 			i2 = 0;
 
 		m_target->SetColor(ca[i2]);
-		m_target->DrawLine(20, i,400,120, th);
+	//	m_target->DrawLine(20, i,180,80, th);
 	}
+	m_target->DrawLine(20, 20, 180, 220, 13);
+	/*m_target->DrawLine(20, 40, 180, 240, 12);
+	m_target->DrawLine(20, 60, 180, 260, 11);
+	m_target->DrawLine(20, 80, 180, 280, 10);
+	m_target->DrawLine(20, 100, 180, 300, 9);
+	m_target->DrawLine(20, 120, 180, 320, 8);
+	m_target->DrawLine(20, 140, 180, 340, 7);
+	m_target->DrawLine(20, 160, 180, 360, 6);
+	m_target->DrawLine(20, 180, 180, 380, 5);
+	m_target->DrawLine(20, 200, 180, 400, 4);
+	m_target->DrawLine(20, 220, 180, 420, 3);
+	m_target->DrawLine(20, 240, 180, 440, 2);
+	m_target->DrawLine(20, 260, 180, 460, 1);*/
 
 	m_texture = m_gs->CreateTexture(m_target->GetImage());
 	
-	m_rect = bqVec4f(0.f, 0.f, 500.f, 500.f);
+	m_rect = bqVec4f(0.f, 0.f, 500, 500);
 
 	bqFont f;
 	f.CreateFromFile(bqFramework::GetPath("../data/fonts/montserrat/Montserrat-Regular.ttf").c_str());
@@ -163,6 +176,50 @@ void Example_ex_VG_01_H_::OnDraw()
 		return;
 	}
 
+	bool redraw = false;
+	static float32_t lineX = 1.f;
+	static float32_t lineY = 1.f;
+	if (bqInput::IsKeyHit(bqInput::KEY_UP))
+	{
+		lineY++;
+		redraw = true;
+	}
+	else if (bqInput::IsKeyHit(bqInput::KEY_DOWN))
+	{
+		lineY--;
+		redraw = true;
+	}
+	if (bqInput::IsKeyHit(bqInput::KEY_LEFT))
+	{
+		lineX--;
+		redraw = true;
+	}
+	else if (bqInput::IsKeyHit(bqInput::KEY_RIGHT))
+	{
+		lineX++;
+		redraw = true;
+	}
+	if (redraw)
+	{
+		m_target->Clear(bq::ColorWhite);
+		//m_target->DrawLine(20, 20, 180+ lineX, 220 + lineY, 13);
+		//m_target->DrawLine(20, 40, 180 + lineX, 240 + lineY, 12);
+		m_target->DrawLine(20, 60, 180 + lineX, 260 + lineY, 11);
+		//m_target->DrawLine(20, 80, 180 + lineX, 280 + lineY, 10);
+		//m_target->DrawLine(20, 100, 180 + lineX, 300 + lineY, 9);
+		m_target->DrawLine(20, 120, 180 + lineX, 320 + lineY, 8);
+		//m_target->DrawLine(20, 140, 180 + lineX, 340 + lineY, 7);
+		//m_target->DrawLine(20, 160, 180 + lineX, 360 + lineY, 6);
+		m_target->DrawLine(20, 180, 180 + lineX, 380 + lineY, 5);
+		m_target->DrawLine(20, 200, 180 + lineX, 400 + lineY, 4);
+		m_target->DrawLine(20, 220, 180 + lineX, 420 + lineY, 3);
+		m_target->DrawLine(20, 240, 180 + lineX, 440 + lineY, 2);
+		m_target->DrawLine(20, 260, 180 + lineX, 460 + lineY, 1);
+		//m_texture->
+		BQ_SAFEDESTROY(m_texture);
+		m_texture = m_gs->CreateTexture(m_target->GetImage());
+	}
+
 	m_gs->BeginGUI();
 	{
 		m_gs->DrawGUIRectangle(m_rect, bq::ColorWhite, bq::ColorWhite, m_texture, 0);
@@ -173,7 +230,7 @@ void Example_ex_VG_01_H_::OnDraw()
 	m_gs->ClearAll();
 	m_gs->SetClearColor(1.f, 0, 0, 0.f);
 
-	if (m_texture)
+//	if (m_texture)
 
 	m_gs->EndDraw();
 	m_gs->SwapBuffers();

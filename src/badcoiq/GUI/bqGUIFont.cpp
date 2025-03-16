@@ -221,7 +221,7 @@ bool bqFont::CreateFromFile(const char* fontFile)
 					return false;*/
 				}
 
-				printf("a");
+				//printf("a");
 			}
 		}
 	}

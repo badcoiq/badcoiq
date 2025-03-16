@@ -134,6 +134,7 @@ public:
 	static bqReal Distance(const bqVec3& v1, const bqVec3& v2);
 	static bqReal Distance(const bqVec4& v1, const bqVec4& v2);
 	static bqReal Distance(const bqVec3& v1, const bqVec4& v2);
+	static float32_t Distance(const bqVec2f& v1, const bqVec2f& v2);
 	static float32_t Distance(const bqVec3f& v1, const bqVec3f& v2);
 	static float32_t Distance(const bqVec4f& v1, const bqVec4f& v2);
 	static float32_t Distance(const bqVec3f& v1, const bqVec4f& v2);

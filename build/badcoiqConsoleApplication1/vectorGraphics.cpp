@@ -5142,7 +5142,7 @@ int main()
                 guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canMove;
                 guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_canResize;
            //     guiWindow->m_windowFlags |= bqGUIWindow::windowFlag_disableScrollbar;
-                MyButton* btn = new MyButton(guiWindow, bqVec2f(0.f, 0.f), bqVec2f(50.f, 420.f));
+               /* MyButton* btn = new MyButton(guiWindow, bqVec2f(0.f, 0.f), bqVec2f(50.f, 420.f));
                 MyCheckBox* chckbx = new MyCheckBox(guiWindow, bqVec2f(60.f, 0.f), bqVec2f(100.f, 20.f));
                 chckbx->SetText(U"Use thing");
                 MyRadiobutton* rdbtn1 = new MyRadiobutton(guiWindow, bqVec2f(60.f, 20.f), bqVec2f(100.f, 20.f));
@@ -5162,8 +5162,8 @@ int main()
                 rdbtn6->SetText(U"Radio6 g2");
                 rdbtn1->m_isChecked = true;
                 rdbtn5->m_isChecked = true;
-                MyTextEditor* txtedtr = new MyTextEditor(guiWindow, bqVec2f(60.f, 140.f), bqVec2f(150.f, 200.f));
-                MyListBox* lstbx = new MyListBox(guiWindow, bqVec2f(180.f, 20.f), bqVec2f(60.f, 70.f));
+                MyTextEditor* txtedtr = new MyTextEditor(guiWindow, bqVec2f(60.f, 140.f), bqVec2f(150.f, 200.f));*/
+                /*MyListBox* lstbx = new MyListBox(guiWindow, bqVec2f(180.f, 20.f), bqVec2f(60.f, 70.f));
                 lstbx->AddItem(U"Item1", 0, 0);
                 lstbx->AddItem(U"Item12", 0, 0);
                 lstbx->AddItem(U"Item13", 0, 0);
@@ -5184,10 +5184,10 @@ int main()
                 lstbx->AddItem(U"Item1p", 0, 0);
                 lstbx->AddItem(U"Item1k", 0, 0);
                 MySlider* sld = new MySlider(guiWindow, bqVec2f(180.f, 100.f), bqVec2f(90.f, 30.f));
-                sld->m_morePrecise = true;
+                sld->m_morePrecise = true;*/
               /*  TestGUIScrollbar* testScrollbar = new TestGUIScrollbar(guiWindow, bqVec2f(), bqVec2f(10.f, 40.f));
                 testScrollbar->m_alignment = bqGUIElement::Alignment::Left;*/
-                sld->m_alignment = bqGUIElement::Alignment::Center;
+               // sld->m_alignment = bqGUIElement::Alignment::Center;
                 window->RebuildGUI();
 #endif
                 bqImage screenImg;

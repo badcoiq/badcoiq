@@ -123,6 +123,13 @@ public:
 		m_data[2] *= len;
 	}
 
+	void Blend(const bqColor& other, float32_t alpha)
+	{
+		m_data[0] = (1.f - alpha) * this->m_data[0] + (alpha * other.m_data[0]);
+		m_data[1] = (1.f - alpha) * this->m_data[1] + (alpha * other.m_data[1]);
+		m_data[2] = (1.f - alpha) * this->m_data[2] + (alpha * other.m_data[2]);
+	}
+
 	// 0xff112233
 	uint32_t getAsInteger()
 	{
