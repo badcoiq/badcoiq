@@ -92,25 +92,35 @@ void bqSwap(T& o1, T& o2)
 	o1 = t;
 }
 
-float32_t point_to_line_distance(float32_t x0, float32_t y0,
-	float32_t x1, float32_t y1, float32_t x2, float32_t y2) {
-	// Compute vector AB
-	float32_t AB_x = x2 - x1;
-	float32_t AB_y = y2 - y1;
+float32_t point_to_line_distance(bqPoint p,
+	float32_t x1, float32_t y1, float32_t x2, float32_t y2) 
+{
+	// Calculate the direction vector of the line (b - a)
+	float directionX = x2 - x1;
+	float directionY = y2 - y1;
 
-	// Compute vector AP
-	float32_t AP_x = x0 - x1;
-	float32_t AP_y = y0 - y1;
+	// Calculate the numerator of the perpendicular distance formula
+	float numerator = fabs((directionY * p.x) - (directionX * p.y) + (x2 * y1) - (y2 * x1));
 
-	// Compute the cross product of AB and AP
-	float32_t cross_product = AB_x * AP_y - AB_y * AP_x;
+	// Calculate the denominator of the perpendicular distance formula
+	float denominator = sqrt((directionX * directionX) + (directionY * directionY));
 
-	// Compute the magnitude of vector AB
-	float32_t magnitude_AB = sqrt(AB_x * AB_y + AB_y * AB_y);
+	// Calculate the perpendicular distance
+	float distance = numerator / denominator;
 
-	// Compute the distance
-	float32_t distance = fabs(cross_product) / magnitude_AB;
 	return distance;
+}
+
+void 
+intensify_pixel(int x, int y, float32_t r, rgba* data, bqColor* color)
+{
+	float32_t alpha = (1 - (r * r)) * 255;
+	//color->m_data[3] = alpha;
+	//draw_pixel(color, x, y);
+	data->rgba[0] = color->GetAsByteRed();
+	data->rgba[1] = color->GetAsByteGreen();
+	data->rgba[2] = color->GetAsByteBlue();
+	data->rgba[3] = color->GetAsByteAlpha();
 }
 
 void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
@@ -123,35 +133,131 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 	auto edgeNum = sh->GetBufSz();
 	for (uint32_t i = 0; i < edgeNum; ++i)
 	{
-	//	printf("EDGE %u\n", i);
+		printf("\nEDGE %u\n", i);
 		auto & edge = edges[i];
 
-		int x0 = floorf(edge.x);
-		int y0 = floorf(edge.y);
-		int x1 = floorf(edge.z);
-		int y1 = floorf(edge.w);
+		bqVec2f edgeDir(edge.x - edge.z, edge.y - edge.w);
+		edgeDir.Normalize();
 
-		int dx = abs(x0 - x1), sx = x0 < x1 ? 1 : -1;
-		int dy = -abs(y0 - y1), sy = y0 < y1 ? 1 : -1;
-		int err = dx + dy, e2; /* error value e_xy */
+		int x0 = (edge.x);
+		int y0 = (edge.y);
+		int x1 = (edge.z);
+		int y1 = (edge.w);
+
+		int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+		int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+		int err = dx - dy, e2; /* error value e_xy */
 
 		while (1) 
 		{
-			/*float32_t pld = point_to_line_distance(
-				(float32_t)x0, (float32_t)y0,
-				edge.x, edge.y,
-				edge.z, edge.w
-			);
+			float32_t pld = point_to_line_distance(
+				bqPoint((x0), (y0)),
+				(edge.z), (edge.w),
+					(edge.x), (edge.y)
+			)
+				//*0.95f
+				;
 			if (isnan(pld))pld = 0.f;
+			pld = fabs(pld);
 
-			float32_t pldMax = 0.f;*/
-		//	printf("(%d, %d) : %f\n", x0, y0, pld); /* plot the point */
+			float32_t pldMax = 0.f;
+			/*{
+				float ddd = point_to_line_distance(bqPoint(1,2.6),
+					0,-0.1, 10, 0);
+				printf("DDD %f\n", ddd);
+			}*/
+			//printf("(%d, %d) : [%f %f : %f %f] : %f\n", 
+			//	x0, y0,
+			//	edge.x,edge.y,edge.z,edge.z,
+			//	pld); /* plot the point */
+
+
 			auto index = x0 + (y0 * m_img->m_info.m_width);
 
 			//if(x0 < m_img->m_info.m_width)
 			if (index < m_numPixels)
 			{
-				//m_aa[index] = pld;
+				if (pld > 1.f)
+					pld = 1.f;
+				bqVec2f pDir((float32_t)x0 - edge.z,
+						(float32_t)y0 - edge.w);
+				pDir.Normalize();
+				bqVec2f pvec;
+				if (edge.w < edge.y)
+				{
+					bqMath::PerpendicularVector2(edgeDir, pDir, pvec);
+
+					float32_t ddd = pvec.Dot(pDir);
+					printf("Dot %f len(%f)\n", ddd, pld);
+					if (ddd < 0.f)
+					{
+
+						m_masks[index] |= mask_aa;
+					//	if (edge.w < edge.y)
+							m_aa[index] = 1.f - pld;
+					//	else
+					//		m_aa[index] = pld;
+					}
+					else
+					{
+						m_masks[index] |= mask_aa;
+						//	if (edge.w < edge.y)
+						m_aa[index] = pld;
+						m_aa[index] = 1.f - pld;
+
+						//	printf("d2 %f\n", ddd);
+							//m_aa[index] = pld;
+					}
+				}
+				//if (edge.w < edge.y)
+				//{
+				//	bqVec2f pDir((float32_t)x0 - edge.z,
+				//		(float32_t)y0 - edge.w);
+				//	pDir.Normalize();
+				//	//float32_t ddd = edgeDir.Dot(pDir);
+				//	//printf("d1 %f\n", ddd);
+
+				//	bqVec2f pvec;
+				//	bqMath::PerpendicularVector2(edgeDir, pDir, pvec);
+				//	float32_t ddd = pvec.Dot(pDir);
+				////	printf("d1 %f\n", ddd);
+				//	if (ddd < 0.f)
+				//	{
+				//		m_aa[index] = 1.f - pld;
+				//	}
+				//	else
+				//	{
+				//		m_aa[index] = pld;
+				//	}
+				//}
+				//else
+				//{
+				//	bqVec2f pDir((float32_t)x0 - edge.z,
+				//		(float32_t)y0 - edge.w);
+				//	pDir.Normalize();
+				//	//float32_t ddd = edgeDir.Dot(pDir);
+				//	//printf("d2 %f\n", ddd);
+
+				//	bqVec2f pvec;
+				//	bqMath::PerpendicularVector1(edgeDir, pDir, pvec);
+				//	float32_t ddd = pvec.Dot(pDir);
+				//	printf("d2 %f len(%f)\n", ddd, pld);
+
+				//	if (ddd < 0.f)
+				//	{
+				//		m_aa[index] = pld;
+				//	}
+				//	else
+				//	{
+				//		m_aa[index] = 1.f - pld;
+				//	}
+				////	m_aa[index] = pld;
+				//}
+
+
+				if (m_aa[index] < 0.f)m_aa[index] = 0.f;
+
+			//	m_aa[index] *= 0.75f;
 
 				if (edge.w < edge.y)
 				{
@@ -200,15 +306,89 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 
 			if (x0 == x1 && y0 == y1) break;
 			e2 = 2 * err;
-			if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
-			if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
+			if (e2 > -dy) { err -= dy; x0 += sx; } /* e_xy+e_x > 0 */
+			if (e2 < dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
+		}
+	}
+	for (uint32_t i = 0; i < edgeNum; ++i)
+	{
+		//	printf("EDGE %u\n", i);
+		auto& edge = edges[i];
+		
+		/*int x0 = floorf(edge.x);
+		int y0 = floorf(edge.y);
+		int x1 = floorf(edge.z);
+		int y1 = floorf(edge.w);
+
+		if (x1 < x0 && y1 < y0)
+		{
+			int tx1 = x0;
+			int ty1 = y0;
+
+			x0 = x1;
+			y0 = y1;
+
+			x1 = tx1;
+			y1 = ty1;
 		}
 
+		int x = x0;
+		int y = y0;
+		int dx = x1 - x0;
+		int dy = y1 - y0;
+		float32_t d = 2 * dy - dx;
+		float32_t D = 0;
+		float32_t line_length = sqrt(dx * dx + dy * dy);
+		float32_t sn = dx / line_length;
+		float32_t cs = dy / line_length;
+		bqColor color = m_color;
+		while (x <= x1)
+		{
+			auto index = x + (y * m_img->m_info.m_width);
+			rgba* data = (rgba*)m_img->m_data;
+
+			intensify_pixel(x, y - 1, D + cs, &data[index], &color);
+			intensify_pixel(x, y, D, &data[index], &color);
+			intensify_pixel(x, y + 1, D - cs, &data[index], &color);
+			x++;
+
+			if (d <= 0) {
+				D += sn;
+				d = d + 2 * dy;
+			}
+			else {
+				D = D + sn - cs;
+				d = d + 2 * (dy - dx);
+				y++;
+			}
+		}*/
 	}
 
+	//startIndex = 0;
 	if (startIndex)
 	{
 	//	printf("startIndex %i\n", startIndex);
+		for (uint32_t i = 0; i < startIndex; ++i)
+		{
+			auto index = m_starts[i];
+			if (m_masks[index] & mask_aa)
+			{
+				if (m_aa[index] < 0.85f)
+				{
+					m_masks[index] |= mask_aa_done;
+					rgba* data = (rgba*)m_img->m_data;
+					bqColor oldColor;
+					oldColor.SetAsByteRed(data[index].rgba[0]);
+					oldColor.SetAsByteGreen(data[index].rgba[1]);
+					oldColor.SetAsByteBlue(data[index].rgba[2]);
+					oldColor.Blend(m_color, m_aa[index]);
+
+					data[index].rgba[0] = oldColor.GetAsByteRed();
+					data[index].rgba[1] = oldColor.GetAsByteGreen();
+					data[index].rgba[2] = oldColor.GetAsByteBlue();
+				}
+			}
+		}
 
 		for (uint32_t i = 0; i < startIndex; ++i)
 		{
@@ -217,26 +397,12 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 			if ((m_masks[index] & mask_hor))
 			{
 				rgba* data = (rgba*)m_img->m_data;
-				bqColor oldColor;
-				oldColor.SetAsByteRed(data[index].rgba[0]);
-				oldColor.SetAsByteGreen(data[index].rgba[1]);
-				oldColor.SetAsByteBlue(data[index].rgba[2]);
-				data[index].rgba[0] = m_color8[0];
-				data[index].rgba[1] = m_color8[1];
-				data[index].rgba[2] = m_color8[2];
-				data[index].rgba[3] = m_color8[3];
-
-				m_masks[index] |= mask_aa;
-				/*data[index].rgba[0] = 255;
-				data[index].rgba[1] = 0;
-				data[index].rgba[2] = 0;*/
-				/*if (m_masks[index] & mask_aa)
+				if ((m_masks[index] & mask_aa_done) == 0)
 				{
-					oldColor.Blend(m_color, m_aa[index]);
-					data[index].rgba[0] = 255;
-					data[index].rgba[1] = 0;
-					data[index].rgba[2] = 0;
-				}*/
+					data[index].rgba[0] = m_color.GetAsByteRed();
+					data[index].rgba[1] = m_color.GetAsByteGreen();
+					data[index].rgba[2] = m_color.GetAsByteBlue();
+				}
 
 				uint32_t liSz = 0;
 				if (index == 0)
@@ -253,26 +419,12 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 				{
 					uint32_t ii = index + li;
 					rgba* data2 = (rgba*)m_img->m_data;
-					oldColor.SetAsByteRed(data[ii].rgba[0]);
-					oldColor.SetAsByteGreen(data[ii].rgba[1]);
-					oldColor.SetAsByteBlue(data[ii].rgba[2]);
-					data2[ii].rgba[0] = m_color8[0];
-					data2[ii].rgba[1] = m_color8[1];
-					data2[ii].rgba[2] = m_color8[2];
-					data2[ii].rgba[3] = m_color8[3];
-					
-					m_masks[ii] |= mask_aa;
-					/*data2[ii].rgba[0] = 255;
-					data2[ii].rgba[1] = 0;
-					data2[ii].rgba[2] = 0;*/
-
-					/*if (m_masks[ii] & mask_aa)
+					if ((m_masks[ii] & mask_aa_done) == 0)
 					{
-						oldColor.Blend(m_color, m_aa[ii]);
-						data[ii].rgba[0] = 255;
-						data[ii].rgba[1] = 1;
-						data[ii].rgba[2] = 1;
-					}*/
+						data2[ii].rgba[0] = m_color.GetAsByteRed();
+						data2[ii].rgba[1] = m_color.GetAsByteGreen();
+						data2[ii].rgba[2] = m_color.GetAsByteBlue();
+					}
 
 					if (m_masks[ii] & mask_left)
 						break;
@@ -297,41 +449,16 @@ void bqVectorGraphicsTarget::Draw(bqVectorGraphicsShape* sh)
 					{
 						uint32_t ii = index + li;
 
-						rgba* data = (rgba*)m_img->m_data;
-
-						bqColor oldColor;
-						oldColor.SetAsByteRed(data[ii].rgba[0]);
-						oldColor.SetAsByteGreen(data[ii].rgba[1]);
-						oldColor.SetAsByteBlue(data[ii].rgba[2]);
-						data[ii].rgba[0] = m_color8[0];
-						data[ii].rgba[1] = m_color8[1];
-						data[ii].rgba[2] = m_color8[2];
-						data[ii].rgba[3] = m_color8[3];
-						
-						if (li == 0)
+						rgba* data2 = (rgba*)m_img->m_data;
+						if ((m_masks[ii] & mask_aa_done) == 0)
 						{
-							m_masks[ii] |= mask_aa;
-							/*data[ii].rgba[0] = 255;
-							data[ii].rgba[1] = 0;
-							data[ii].rgba[2] = 0;*/
+							data2[ii].rgba[0] = m_color.GetAsByteRed();
+							data2[ii].rgba[1] = m_color.GetAsByteGreen();
+							data2[ii].rgba[2] = m_color.GetAsByteBlue();
 						}
-
-						/*if (m_masks[ii] & mask_aa)
-						{
-							oldColor.Blend(m_color, m_aa[ii]);
-							data[ii].rgba[0] = 255;
-							data[ii].rgba[1] = 1;
-							data[ii].rgba[2] = 1;
-						}*/
 
 						if (m_masks[ii] & mask_left)
-						{
-							m_masks[ii] |= mask_aa;
-							/*data[ii].rgba[0] = 255;
-							data[ii].rgba[1] = 0;
-							data[ii].rgba[2] = 0;*/
 							break;
-						}
 					}
 
 				}
@@ -365,10 +492,10 @@ void bqVectorGraphicsTarget::DrawLine(
 
 	if (thinkness == 1)
 	{
-		int x0 = floorf(_x1);
-		int y0 = floorf(_y1);
-		int x1 = floorf(_x2);
-		int y1 = floorf(_y2);
+		int x0 = (_x1);
+		int y0 = (_y1);
+		int x1 = (_x2);
+		int y1 = (_y2);
 
 		int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
 		int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;

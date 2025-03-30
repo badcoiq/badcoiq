@@ -38,6 +38,7 @@ class bqVectorGraphicsTarget
 		mask_left = 0x2,
 		mask_right = 0x4,
 		mask_aa = 0x8,
+		mask_aa_done = 0x10,
 	};
 	uint8_t* m_masks = 0;
 	float32_t* m_aa = 0;

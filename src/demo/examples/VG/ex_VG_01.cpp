@@ -90,7 +90,7 @@ bool Example_ex_VG_01_H_::Init()
 	m_gs->DisableBackFaceCulling();
 
 	m_vg = new bqVectorGraphics;
-	m_target = m_vg->CreateTarget(500, 500);
+	m_target = m_vg->CreateTarget(100, 100);
 	m_target->Clear(bq::ColorWhite);
 	bqVectorGraphicsShape line;
 	bqVec2f quad[4] = 
@@ -136,7 +136,7 @@ bool Example_ex_VG_01_H_::Init()
 		m_target->SetColor(ca[i2]);
 	//	m_target->DrawLine(20, i,180,80, th);
 	}
-	m_target->DrawLine(20, 20, 180, 220, 13);
+	m_target->DrawLine(10, 10, 40, 39, 4);
 	/*m_target->DrawLine(20, 40, 180, 240, 12);
 	m_target->DrawLine(20, 60, 180, 260, 11);
 	m_target->DrawLine(20, 80, 180, 280, 10);
@@ -179,6 +179,18 @@ void Example_ex_VG_01_H_::OnDraw()
 	bool redraw = false;
 	static float32_t lineX = 1.f;
 	static float32_t lineY = 1.f;
+	static int th = 1;
+	if (bqInput::IsKeyHit(bqInput::KEY_1))
+	{
+		if(th)
+			th--;
+		redraw = true;
+	}
+	else if (bqInput::IsKeyHit(bqInput::KEY_2))
+	{
+		th++;
+		redraw = true;
+	}
 	if (bqInput::IsKeyHit(bqInput::KEY_UP))
 	{
 		lineY++;
@@ -202,20 +214,22 @@ void Example_ex_VG_01_H_::OnDraw()
 	if (redraw)
 	{
 		m_target->Clear(bq::ColorWhite);
-		//m_target->DrawLine(20, 20, 180+ lineX, 220 + lineY, 13);
-		//m_target->DrawLine(20, 40, 180 + lineX, 240 + lineY, 12);
-		m_target->DrawLine(20, 60, 180 + lineX, 260 + lineY, 11);
-		//m_target->DrawLine(20, 80, 180 + lineX, 280 + lineY, 10);
-		//m_target->DrawLine(20, 100, 180 + lineX, 300 + lineY, 9);
-		m_target->DrawLine(20, 120, 180 + lineX, 320 + lineY, 8);
-		//m_target->DrawLine(20, 140, 180 + lineX, 340 + lineY, 7);
-		//m_target->DrawLine(20, 160, 180 + lineX, 360 + lineY, 6);
-		m_target->DrawLine(20, 180, 180 + lineX, 380 + lineY, 5);
-		m_target->DrawLine(20, 200, 180 + lineX, 400 + lineY, 4);
-		m_target->DrawLine(20, 220, 180 + lineX, 420 + lineY, 3);
-		m_target->DrawLine(20, 240, 180 + lineX, 440 + lineY, 2);
-		m_target->DrawLine(20, 260, 180 + lineX, 460 + lineY, 1);
-		//m_texture->
+	//	//m_target->DrawLine(20, 20, 180+ lineX, 220 + lineY, 13);
+	//	//m_target->DrawLine(20, 40, 180 + lineX, 240 + lineY, 12);
+	//	m_target->DrawLine(20, 60, 180 + lineX, 260 + lineY, 11);
+	//	//m_target->DrawLine(20, 80, 180 + lineX, 280 + lineY, 10);
+	//	//m_target->DrawLine(20, 100, 180 + lineX, 300 + lineY, 9);
+	//	m_target->DrawLine(20, 120, 180 + lineX, 320 + lineY, 8);
+	//	//m_target->DrawLine(20, 140, 180 + lineX, 340 + lineY, 7);
+	//	//m_target->DrawLine(20, 160, 180 + lineX, 360 + lineY, 6);
+	//	m_target->DrawLine(20, 180, 180 + lineX, 380 + lineY, 5);
+	//	m_target->DrawLine(20, 200, 180 + lineX, 400 + lineY, 4);
+	//	m_target->DrawLine(20, 220, 180 + lineX, 420 + lineY, 3);
+	//	m_target->DrawLine(20, 240, 180 + lineX, 440 + lineY, 2);
+	//	m_target->DrawLine(20, 260, 180 + lineX, 460 + lineY, 1);
+	//	//m_texture->
+		m_target->DrawLine(50, 50, 35 + lineX, 35 + lineY, th);
+
 		BQ_SAFEDESTROY(m_texture);
 		m_texture = m_gs->CreateTexture(m_target->GetImage());
 	}

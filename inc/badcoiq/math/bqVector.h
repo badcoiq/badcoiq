@@ -117,6 +117,7 @@ public:
 	}
 
 	T Dot()const { return (x * x) + (y * y); }
+	T Dot(const bqVec2_t<T>& v)const { return (x * v.x) + (y * v.y); }
 	T Length() const { return std::sqrt((x * x) + (y * y)); }
 
 	T x = static_cast<T>(0);
