@@ -164,7 +164,28 @@ bool ModelEditor::Init()
 	m_GUIWindow_mainMenuBar->SetDrawBG(true);
 	m_GUIWindow_mainMenuBar->m_windowFlags |= bqGUIWindowBase::windowFlag_disableToTop;
 	m_GUIWindow_mainMenuBar->Activate();
+	m_GUIWindow_mainMenuBar->UseMenu(true, true/*, m_menuFont*/);
+	m_GUIWindow_mainMenuBar->BeginMenu(U"File");
+	{
+		m_mainMenuWindow->BeginSubMenu(U"New", 0);
+		{
+			m_mainMenuWindow->AddMenuItem(U"Project", 0, U"Ctrl+Shift+N");
+			m_mainMenuWindow->AddMenuItem(U"Repository", 0);
+			m_mainMenuWindow->AddMenuItem(U"File", 0, U"Ctrl+N");
+			m_mainMenuWindow->AddMenuItem(U"Project from", 0);
+			m_mainMenuWindow->EndSubMenu();
+		}
 
+		m_mainMenuWindow->BeginSubMenu(U"Open", WindowMainMenu::MenuItemID_Open, false);
+		{
+			m_mainMenuWindow->AddMenuItem(U"Project/Solution", 0, U"Ctrl+Shift+O");
+			m_mainMenuWindow->AddMenuItem(U"Folder", 0, U"Ctrl+Shift+Alt+O");
+			m_mainMenuWindow->AddMenuItem(U"Web site", 0, U"Shift+Alt+O");
+			m_mainMenuWindow->AddMenuItem(0, 0);
+			m_mainMenuWindow->AddMenuItem(U"File", 0, U"Ctrl+O");
+			m_mainMenuWindow->EndSubMenu();
+		}
+	}
 
 	auto pictureBox = GUI_createPictureBox(bqVec2f(), bqVec2f(800.f, 32.f), 0);
 	pictureBox->SetDrawBG(true);
@@ -187,7 +208,7 @@ bool ModelEditor::Init()
 	toolbar->AddButton(4, 4);
 	toolbar->AddButton(5, 5);
 	toolbar->AddButton(6, 6);
-	m_GUIWindow_mainMenuBar->AddElement(toolbar);
+	//m_GUIWindow_mainMenuBar->AddElement(toolbar);
 
 	m_GUIWindow_editPanel = m_mainWindow->CreateNewGUIWindow(bqVec2f(0.f, 0.f),
 		bqVec2f(10.f, 10.f));

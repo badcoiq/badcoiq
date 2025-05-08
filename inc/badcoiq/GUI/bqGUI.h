@@ -59,7 +59,7 @@ struct bqGUIState
 	bqGUIWindow* m_activeWindow = 0;
 	bqGUITextEditor* m_activeTextEditor = 0;
 	uint32_t m_scrollBlock = 0;
-	bqGUIPopup* m_activePopup = 0;
+	//bqGUIPopup* m_activePopup = 0;
 	bqGUICommon* m_clickedElement = 0;
 };
 
@@ -73,6 +73,7 @@ struct bqGUIState
 #include "badcoiq/GUI/bqGUIPictureBox.h"
 #include "badcoiq/GUI/bqGUIScrollbar.h"
 #include "badcoiq/GUI/bqGUIToolbar.h"
+#include "badcoiq/GUI/bqGUIMenu.h"
 
 #endif
 #endif

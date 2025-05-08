@@ -123,7 +123,6 @@ public:
 	T x = static_cast<T>(0);
 	T y = static_cast<T>(0);
 	T* Data() { return &x; }
-
 };
 
 template<typename T>

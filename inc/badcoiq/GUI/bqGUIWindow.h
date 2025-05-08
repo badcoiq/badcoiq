@@ -125,6 +125,7 @@ class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 		flagInternal_activated = 0x1,
 		flagInternal_isMove = 0x2,
 		flagInternal_closeBtn = 0x4,
+		flagInternal_sysWndForPopup = 0x8,
 	};
 	uint32_t m_flagsInternal = 0;
 
@@ -141,6 +142,32 @@ class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 	void _draw_element(bqListNode<bqHierarchy*>*);
 	void _update_element(bqListNode<bqHierarchy*>*);
 	void _rebuild_element(bqListNode<bqHierarchy*>*);
+
+	struct _menuPopupItemInfo
+	{
+		bqString title;
+		uint32_t id = 0;
+		bqString shortcut_text;
+		bool enabled = true;
+		Icons* icon = 0;
+		uint32_t icon_index = 0;
+
+		bqGUIPopup* popup = 0;
+	};
+	struct _menuTreeNode
+	{
+		_menuTreeNode* children = 0;
+		_menuTreeNode* siblings = 0;
+		_menuTreeNode* parent = 0;
+
+		_menuPopupItemInfo itemInfo;
+	};
+	struct _menuTree
+	{
+		_menuTreeNode* m_root = 0;
+	}
+	std::vector<_menuTreeNode*> m_menuNodes; // for easy delete
+	bqGUIMenu* m_menu = 0;
 public:
 	bqGUIWindow(/*bqWindow* systemWindow, */const bqVec2f& position, const bqVec2f& size);
 	BQ_PLACEMENT_ALLOCATOR(bqGUIWindow);
@@ -176,7 +203,21 @@ public:
 	// Не надо. потому что наследуется bqHierarchy
 	// bqGUIElement* m_rootElement = 0;
 
-	
+	void UseMenu(bool useornot, bool useSystemWindowForPopup/*, Font**/);
+	void RebuildMenu();
+	void DeleteMenu();
+	void BeginMenu(const char32_t* title, uint32_t id = 0);
+	// for separator use 0 for title
+	// for Enabled/Disabled use OnIsMenuItemEnabled
+	void AddMenuItem(const char32_t* title, uint32_t id, const char32_t* shortcut_text = 0);
+	void BeginSubMenu(const char32_t* title, uint32_t id, bool enabled = true);
+	void EndSubMenu();
+	void EndMenu();
+	virtual void OnMenuCommand(int id);
+	// return true for enable, false for disable
+	virtual bool OnIsMenuItemEnabled(int id, bool prev);  // like New Open Save
+	virtual bool OnIsMenuEnabled(int id, bool prev);     // like File Edit View
+	virtual bool OnIsMenuChecked(int id, bool prev);
 
 	// нужно знать, где находится курсор
 	enum

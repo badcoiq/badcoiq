@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2025, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,24 +27,61 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #pragma once
-#ifndef __BQ_GUIPopup_H__
-#define __BQ_GUIPopup_H__
-
+#ifndef __BQ_GUIMENU_H__
+/// \cond
+#define __BQ_GUIMENU_H__
+/// \endcond
 #ifdef BQ_WITH_GUI
 
-// например для раскрывающегося списка
-//class bqGUIPopup// : public bqGUIElement
-//{
-//	
-//public:
-//	bqGUIPopup(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
-//	virtual ~bqGUIPopup();
-//	BQ_PLACEMENT_ALLOCATOR(bqGUIPopup);
-//
-//	virtual void Rebuild() final;
-//	virtual void Update() final;
-//	virtual void Draw(bqGS* gs, float dt) final;
-//};
+class bqGUIPopup;
+
+struct bqGUIMenuItemInfo
+{
+	const char32_t* text = 0;
+	uint32_t id = 0;
+	bqGUIPopup* popup = 0;
+};
+
+struct bqGUIMenuItem
+{
+	bqGUIMenuItemInfo info;
+	size_t textLen = 0;
+	uint32_t width = 0;
+	bqRect rect;
+	uint32_t isEnabled = 0;
+	void* userData = 0;
+};
+
+class bqGUIMenu
+{
+public:
+	bqGUIMenu() {}
+	~bqGUIMenu() {}
+
+
+	bqGUIMenuItem* items;
+	uint32_t itemsSize = 0;
+
+	bqGUIDrawTextCallback* textProcessor = 0;
+
+	uint32_t height = 0;
+	uint32_t currentHeight = 0;
+
+	/*indent from left side. for logo for expamle*/
+	uint32_t indent = 0;
+
+	uint32_t textIndent = 0;
+
+	bqPoint textOffset;
+
+	bqGUIMenuItem* activeItem = 0;
+	bqGUIMenuItem* hoverItem = 0;
+
+	bqGUIStyle* userStyle = 0;
+
+	int(*onIsItemEnabled)(bqGUIMenuItem*) = 0;
+};
+
 
 #endif
 #endif

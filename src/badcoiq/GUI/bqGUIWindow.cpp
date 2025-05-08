@@ -150,6 +150,7 @@ bqGUIWindow::bqGUIWindow(
 
 bqGUIWindow::~bqGUIWindow()
 {
+	DeleteMenu();
 }
 
 void bqGUIWindowBase::AddElement(bqGUIElement* el)
@@ -883,17 +884,12 @@ void bqGUIWindow::Update()
 	}
 
 
-	if(g_framework->m_GUIState.m_activePopup)
-	{
-		return;
-	}
+	//if(g_framework->m_GUIState.m_activePopup)
+	//{
+	//	return;
+	//}
 
-//	if(m_windowFlagsInternal & windowFlagInternal_isExpand)
-//	{	
-//		_bqGUIWindow_UpdateElement(m_rootElement);
-//	}
 
-	
 
 	if (m_children.m_head)
 	{
@@ -1262,5 +1258,82 @@ bqGUIElement* bqGUIWindow::GetGUIElement(const char* n)
 	}
 	return 0;
 }
+
+void bqGUIWindow::UseMenu(bool useornot, bool useSystemWindowForPopup)
+{
+	if (useSystemWindowForPopup)
+		m_flagsInternal |= flagInternal_sysWndForPopup;
+	else 
+		m_flagsInternal &= ~flagInternal_sysWndForPopup;
+
+	/*if (m_menu)
+		m_menu->font = ((FontImpl*)f)->m_font;*/
+
+	if (useornot)
+	{
+		RebuildMenu();
+	}
+	else
+	{
+		DeleteMenu();
+	}
+}
+
+void bqGUIWindow::RebuildMenu()
+{
+	if (m_menu)
+		DeleteMenu();
+
+	m_menu = new bqGUIMenu;
+}
+
+void bqGUIWindow::DeleteMenu()
+{
+	if (m_menu)
+	{
+		delete m_menu;
+		m_menu = 0;
+	}
+}
+
+void bqGUIWindow::BeginMenu(const char32_t* title, uint32_t id)
+{
+}
+
+void bqGUIWindow::AddMenuItem(const char32_t* title, uint32_t id, const char32_t* shortcut_text)
+{
+}
+
+void bqGUIWindow::BeginSubMenu(const char32_t* title, uint32_t id, bool enabled)
+{
+}
+
+void bqGUIWindow::EndSubMenu()
+{
+}
+
+void bqGUIWindow::EndMenu()
+{
+}
+
+void bqGUIWindow::OnMenuCommand(int id)
+{
+}
+
+bool bqGUIWindow::OnIsMenuItemEnabled(int id, bool prev)
+{
+	return false;
+}
+
+bool bqGUIWindow::OnIsMenuEnabled(int id, bool prev)
+{
+	return false;
+}
+
+bool bqGUIWindow::OnIsMenuChecked(int id, bool prev)
+{
+	return false;
+}
+
 
 #endif
