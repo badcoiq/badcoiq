@@ -173,7 +173,7 @@ bool bqFont::CreateFromFile(const char* fontFile)
 				file.ReadByte(&b4[0]);
 			}
 			// tableRecords
-			for (int i = 0; i < numTables; ++i)
+			for (uint32_t i = 0; i < numTables; ++i)
 			{
 				file.ReadByte(&b4[3]);
 				file.ReadByte(&b4[2]);
@@ -185,19 +185,19 @@ bool bqFont::CreateFromFile(const char* fontFile)
 				file.ReadByte(&b4[1]);
 				file.ReadByte(&b4[2]);
 				file.ReadByte(&b4[3]);
-				uint32_t checksum = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
+			//	uint32_t checksum = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
 
 				file.ReadByte(&b4[0]);
 				file.ReadByte(&b4[1]);
 				file.ReadByte(&b4[2]);
 				file.ReadByte(&b4[3]);
-				uint32_t offset = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
+			//	uint32_t offset = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
 
 				file.ReadByte(&b4[0]);
 				file.ReadByte(&b4[1]);
 				file.ReadByte(&b4[2]);
 				file.ReadByte(&b4[3]);
-				uint32_t length = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
+			//	uint32_t length = BQ_MAKEFOURCC(b4[3], b4[2], b4[1], b4[0]);
 
 				switch (tableTag)
 				{

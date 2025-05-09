@@ -664,4 +664,13 @@ bool bqImage::SaveToFile(SaveFileFormat format, const char* path)
 	return false;
 }
 
+void bqImage::Duplicate(bqImage* img)
+{
+	BQ_ASSERT_ST(img);
+
+	*img = *this;
+	img->m_data = (uint8_t*)bqMemory::malloc(img->m_dataSize);
+	memcpy(img->m_data, m_data, m_dataSize);
+}
+
 #endif

@@ -33,6 +33,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \endcond
 #ifdef BQ_WITH_GUI
 
+#include <stack>
+#include <vector>
+
 class bqGUIPopup;
 
 struct bqGUIMenuItemInfo
@@ -54,13 +57,50 @@ struct bqGUIMenuItem
 
 class bqGUIMenu
 {
+	struct _menuPopupItemInfo
+	{
+		bqGUIMenuItem m_item;
+
+		bqString title;
+		bqString shortcut_text;
+		bqGUIIcons* icons = 0;
+		uint32_t icon_index = 0;
+
+	};
+	struct _menuTreeNode
+	{
+		_menuTreeNode* children = 0;
+		_menuTreeNode* siblings = 0;
+		_menuTreeNode* parent = 0;
+
+		_menuPopupItemInfo itemInfo;
+	};
+	struct _menuTree
+	{
+		_menuTreeNode* m_root = 0;
+	}m_menuTree;
+	std::vector<_menuTreeNode*> m_menuNodes; // for easy delete
+	_menuTreeNode* _menu_getLastSibling(_menuTreeNode*, int* num);
+	_menuTreeNode* m_menuNodeCurr = 0;
+	std::stack<_menuTreeNode*> m_menuNodeCurrPrev;
+
+	void _menu_addMenuItem(bool isSub, const char32_t* title, uint32_t id, const char32_t* shortcut_text, bool enabled);
+
 public:
-	bqGUIMenu() {}
-	~bqGUIMenu() {}
+	bqGUIMenu();
+	~bqGUIMenu();
+	void Clear();
+	void BeginMenu(const char32_t* title, uint32_t id = 0);
+	// for separator use 0 for title
+	// for Enabled/Disabled use OnIsMenuItemEnabled
+	void AddMenuItem(const char32_t* title, uint32_t id, const char32_t* shortcut_text = 0);
+	void BeginSubMenu(const char32_t* title, uint32_t id, bool enabled = true);
+	void EndSubMenu();
+	void EndMenu();
 
-
-	bqGUIMenuItem* items;
-	uint32_t itemsSize = 0;
+	// ниже код из старых наработок на СИ
+	//bqGUIMenuItem* items = 0;
+	//uint32_t itemsSize = 0;
 
 	bqGUIDrawTextCallback* textProcessor = 0;
 

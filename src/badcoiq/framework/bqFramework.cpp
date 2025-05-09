@@ -30,7 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_WINDOW
 #include "badcoiq/system/bqWindow.h"
+#ifdef BQ_PLATFORM_WINDOWS
 #include "badcoiq/system/bqWindowWin32.h"
+#endif
 #endif
 
 #ifdef BQ_WITH_POPUP
@@ -45,6 +47,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef BQ_WITH_GUI
 #include "badcoiq/GUI/bqGUI.h"
 #include "../GUI/bqGUIDefaultTextDrawCallbacks.h"
+
+#ifdef BQ_PLATFORM_WINDOWS
+#include "../GUI/bqGUIIconTexture_GDI.h"
+#endif
 #endif
 
 #ifdef BQ_WITH_IMAGE
@@ -1194,7 +1200,7 @@ void bqFrameworkImpl::_initGUIThemes()
 //	DestroyGUIElement_internal(e);
 //}
 
-void bqFramework::Destroy(bqGUIWindow* w)
+void bqFramework::Destroy(bqGUIWindow* )
 {
 	/*BQ_ASSERT_ST(w);
 	_DestroyGUIElement(w->m_rootElement);
@@ -1202,7 +1208,7 @@ void bqFramework::Destroy(bqGUIWindow* w)
 	delete w;*/
 }
 
-void bqFramework::Destroy(bqGUIElement* e)
+void bqFramework::Destroy(bqGUIElement* )
 {
 	/*BQ_ASSERT_ST(e);
 	if (e->GetWindow()->m_rootElement == e)
@@ -1379,14 +1385,18 @@ bqPopup* bqFramework::CreatePopup()
 	bqPopupWin32* p = new bqPopupWin32();
 	return p;
 }
-
 void bqFramework::ShowPopupAtCursor(bqPopup* p, bqWindow* w)
 {
+	BQ_ASSERT_ST(p);
+	BQ_ASSERT_ST(w);
+
 	p->Show(w, (uint32_t)g_framework->m_input.m_mousePosition.x, (uint32_t)g_framework->m_input.m_mousePosition.y);
 }
+#endif
 
 void bqFramework::ClipCursor(bqVec4f* r)
 {
+	BQ_ASSERT_ST(r);
 #ifdef BQ_PLATFORM_WINDOWS
 	if (r)
 	{
@@ -1404,4 +1414,19 @@ void bqFramework::ClipCursor(bqVec4f* r)
 #endif
 }
 
+#ifdef BQ_PLATFORM_WINDOWS
+bqGUIIconTexture_GDI* bqFramework::CreateGUIIconTexture_GDI(bqImage* img)
+{
+	BQ_ASSERT_ST(img);
+
+	if (img)
+	{
+		bqGUIIconTexture_GDI* t = new bqGUIIconTexture_GDI;
+		if(t->_create(img))
+			return t;
+	}
+
+	return 0;
+}
 #endif
+

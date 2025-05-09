@@ -212,11 +212,6 @@ public:
 	static bqGUIFont* CreateGUIFont();
 	static bqGUIFont* GetDefaultFont(bqGUIDefaultFont);
 	static bqGUIStyle* GetGUIStyle(bqGUIStyleTheme);
-	//static bqGUIWindow* CreateGUIWindow(bqWindow* window, const bqVec2f& position, const bqVec2f& size);
-	
-	//static void UpdateGUI();
-	//static void DrawGUI(bqGS* gs);
-	//static void RebuildGUI();
 	
 	// пока лишнее
 	static void Destroy(bqGUIWindow*);
@@ -224,6 +219,10 @@ public:
 
 	/// \brief Получить bqGUIState. Только для чтения.
 	static const bqGUIState& GetGUIState();
+
+#ifdef BQ_PLATFORM_WINDOWS
+	static bqGUIIconTexture_GDI* CreateGUIIconTexture_GDI(bqImage*);
+#endif
 #endif
 	static bqCursor* CreateCursor(const char* fn);
 	static bqCursor* GetDefaultCursor(bqCursorType);

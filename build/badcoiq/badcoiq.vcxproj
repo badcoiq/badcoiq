@@ -206,7 +206,10 @@
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUICommon.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIElement.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIFont.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIIcons.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIIconTexture_GDI.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIListBox.cpp" />
+    <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIMenu.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIPictureBox.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIRootElement.cpp" />
     <ClCompile Include="..\..\src\badcoiq\GUI\bqGUIScrollbar.cpp" />

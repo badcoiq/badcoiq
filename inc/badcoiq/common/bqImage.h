@@ -130,6 +130,8 @@ public:
 		null
 	};
 	bool SaveToFile(SaveFileFormat format, const char* path);
+
+	void Duplicate(bqImage*);
 };
 
 #endif

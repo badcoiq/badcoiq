@@ -1,7 +1,7 @@
 ﻿/*
 BSD 2-Clause License
 
-Copyright (c) 2024, badcoiq
+Copyright (c) 2023-2025, badcoiq
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_GUI
 
+#include "badcoiq/containers/bqArray.h"
 
+#include "badcoiq/GUI/bqGUIIcons.h"
 #include "badcoiq/GUI/bqGUIFont.h"
 #include "badcoiq/GUI/bqGUIText.h"
 #include "badcoiq/GUI/bqGUIStyle.h"

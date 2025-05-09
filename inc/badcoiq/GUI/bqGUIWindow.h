@@ -143,30 +143,7 @@ class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 	void _update_element(bqListNode<bqHierarchy*>*);
 	void _rebuild_element(bqListNode<bqHierarchy*>*);
 
-	struct _menuPopupItemInfo
-	{
-		bqString title;
-		uint32_t id = 0;
-		bqString shortcut_text;
-		bool enabled = true;
-		Icons* icon = 0;
-		uint32_t icon_index = 0;
-
-		bqGUIPopup* popup = 0;
-	};
-	struct _menuTreeNode
-	{
-		_menuTreeNode* children = 0;
-		_menuTreeNode* siblings = 0;
-		_menuTreeNode* parent = 0;
-
-		_menuPopupItemInfo itemInfo;
-	};
-	struct _menuTree
-	{
-		_menuTreeNode* m_root = 0;
-	}
-	std::vector<_menuTreeNode*> m_menuNodes; // for easy delete
+	
 	bqGUIMenu* m_menu = 0;
 public:
 	bqGUIWindow(/*bqWindow* systemWindow, */const bqVec2f& position, const bqVec2f& size);
@@ -206,13 +183,15 @@ public:
 	void UseMenu(bool useornot, bool useSystemWindowForPopup/*, Font**/);
 	void RebuildMenu();
 	void DeleteMenu();
-	void BeginMenu(const char32_t* title, uint32_t id = 0);
-	// for separator use 0 for title
-	// for Enabled/Disabled use OnIsMenuItemEnabled
-	void AddMenuItem(const char32_t* title, uint32_t id, const char32_t* shortcut_text = 0);
-	void BeginSubMenu(const char32_t* title, uint32_t id, bool enabled = true);
-	void EndSubMenu();
-	void EndMenu();
+	
+	//void BeginMenu(const char32_t* title, uint32_t id = 0);
+	//// for separator use 0 for title
+	//// for Enabled/Disabled use OnIsMenuItemEnabled
+	//void AddMenuItem(const char32_t* title, uint32_t id, const char32_t* shortcut_text = 0);
+	//void BeginSubMenu(const char32_t* title, uint32_t id, bool enabled = true);
+	//void EndSubMenu();
+	//void EndMenu();
+
 	virtual void OnMenuCommand(int id);
 	// return true for enable, false for disable
 	virtual bool OnIsMenuItemEnabled(int id, bool prev);  // like New Open Save

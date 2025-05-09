@@ -142,6 +142,16 @@ class bqGUICommon;
 class bqGUIButton;
 enum class bqGUIDefaultFont;
 class bqGUITextEditor;
+class bqGUIMenu;
+
+/// смотри bqGUIIcon.h
+/// Методы для создания реализованы в
+/// bqFramework
+/// bqFramework::CreateGUIIconTexture_...
+#ifdef BQ_PLATFORM_WINDOWS
+class bqGUIIconTexture_GDI;
+#endif
+
 #endif
 
 #ifdef BQ_WITH_PHYSICS

@@ -1296,25 +1296,25 @@ void bqGUIWindow::DeleteMenu()
 	}
 }
 
-void bqGUIWindow::BeginMenu(const char32_t* title, uint32_t id)
-{
-}
-
-void bqGUIWindow::AddMenuItem(const char32_t* title, uint32_t id, const char32_t* shortcut_text)
-{
-}
-
-void bqGUIWindow::BeginSubMenu(const char32_t* title, uint32_t id, bool enabled)
-{
-}
-
-void bqGUIWindow::EndSubMenu()
-{
-}
-
-void bqGUIWindow::EndMenu()
-{
-}
+//void bqGUIWindow::BeginMenu(const char32_t* title, uint32_t id)
+//{
+//}
+//
+//void bqGUIWindow::AddMenuItem(const char32_t* title, uint32_t id, const char32_t* shortcut_text)
+//{
+//}
+//
+//void bqGUIWindow::BeginSubMenu(const char32_t* title, uint32_t id, bool enabled)
+//{
+//}
+//
+//void bqGUIWindow::EndSubMenu()
+//{
+//}
+//
+//void bqGUIWindow::EndMenu()
+//{
+//}
 
 void bqGUIWindow::OnMenuCommand(int id)
 {
