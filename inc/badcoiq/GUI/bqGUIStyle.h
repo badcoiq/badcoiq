@@ -45,6 +45,12 @@ struct bqGUIStyle
 {
 	bqColor m_colorWhite = bq::ColorWhite;
 
+	bqColor m_windowActiveMenuBGColor1;
+	bqColor m_windowActiveMenuBGColor2;
+	bqColor m_windowNActiveMenuBGColor1;
+	bqColor m_windowNActiveMenuBGColor2;
+	bqColor m_windowActiveMenuTextColor;
+	bqColor m_windowNActiveMenuTextColor;
 	bqColor m_windowActiveBGColor1;
 	bqColor m_windowActiveBGColor2;
 	bqColor m_windowActiveBorderColor;
@@ -60,6 +66,8 @@ struct bqGUIStyle
 	bqVec2f m_windowTitleIndent = bqVec2f(20.f, 3.f);
 	bqGUIFont* m_windowActiveTitleTextFont = 0;
 	bqGUIFont* m_windowNActiveTitleTextFont = 0;
+	bqGUIFont* m_windowActiveMenuTextFont = 0;
+	bqGUIFont* m_windowNActiveMenuTextFont = 0;
 
 	bqColor m_buttonBGColor1;
 	bqColor m_buttonBGColor2;

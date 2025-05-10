@@ -131,6 +131,12 @@ enum
     CommandID_,*/
 };
 
+enum
+{
+    MainMenuItemID_0,
+    MainMenuItemID_Open,
+};
+
 class GUIButton;
 class bqME;
 class ModelEditor
@@ -153,6 +159,9 @@ class ModelEditor
 
     bqGUIStyle m_GUIStyle;
     bqTexture* m_GUITexture = 0;
+
+    bqGUIMenu* m_GUIMainMenu = 0;
+
     bqGUIWindow* m_GUIWindow_mainMenuBar = 0;
     bqGUIWindow* m_GUIWindow_editPanel = 0;
     bqGUIWindow* m_GUIWindow_addObject = 0;

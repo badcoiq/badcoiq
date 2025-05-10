@@ -143,7 +143,6 @@ class bqGUIWindow : public bqGUICommon, public bqGUIWindowBase
 	void _update_element(bqListNode<bqHierarchy*>*);
 	void _rebuild_element(bqListNode<bqHierarchy*>*);
 
-	
 	bqGUIMenu* m_menu = 0;
 public:
 	bqGUIWindow(/*bqWindow* systemWindow, */const bqVec2f& position, const bqVec2f& size);
@@ -180,9 +179,10 @@ public:
 	// Не надо. потому что наследуется bqHierarchy
 	// bqGUIElement* m_rootElement = 0;
 
-	void UseMenu(bool useornot, bool useSystemWindowForPopup/*, Font**/);
-	void RebuildMenu();
-	void DeleteMenu();
+	//void UseMenu(bool useornot, bool useSystemWindowForPopup/*, Font**/);
+	void SetMenu(bqGUIMenu*);
+	//void RebuildMenu();
+	//void DeleteMenu();
 	
 	//void BeginMenu(const char32_t* title, uint32_t id = 0);
 	//// for separator use 0 for title

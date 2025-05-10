@@ -335,7 +335,12 @@ void ViewportView::Rebuild()
 	}
 	BQ_SAFEDESTROY(m_rtt);
 	bqTextureInfo ti;
-	m_rtt = g_app->m_gs->CreateRTT(bqPoint(m_rectangle.z - m_rectangle.x, m_rectangle.w - m_rectangle.y), ti);
+	bqPoint rttSz = bqPoint(m_rectangle.z - m_rectangle.x, m_rectangle.w - m_rectangle.y);
+	if (rttSz.x < 2)
+		rttSz.x = 2;
+	if (rttSz.y < 2)
+		rttSz.y = 2;
+	m_rtt = g_app->m_gs->CreateRTT(rttSz, ti);
 
 	m_viewportTypeText = U"Perspective";
 	switch (m_type)

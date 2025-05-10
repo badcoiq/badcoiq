@@ -38,8 +38,35 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../framework/bqFrameworkImpl.h"
 extern bqFrameworkImpl* g_framework;
 
-bqGUIMenu::bqGUIMenu()
+#include "bqGUIDefaultTextDrawCallbacks.h"
+
+bqGUIMenuTextDrawCallback::bqGUIMenuTextDrawCallback()
 {
+}
+
+bqGUIMenuTextDrawCallback::~bqGUIMenuTextDrawCallback()
+{
+}
+
+bqGUIFont* bqGUIMenuTextDrawCallback::OnFont(char32_t)
+{
+	if (m_menu)
+		return m_menu->GetStyle()->m_windowActiveMenuTextFont;
+	return 0;
+}
+
+bqColor* bqGUIMenuTextDrawCallback::OnColor(char32_t)
+{
+	if (m_menu)
+		return &m_menu->GetStyle()->m_windowActiveMenuTextColor;
+	return 0;
+}
+
+bqGUIMenu::bqGUIMenu(bqGUIDrawTextCallback* tc)
+	:
+	m_textCallback(tc)
+{
+	m_style = bqFramework::GetGUIStyle(bqGUIStyleTheme::Light);
 }
 
 bqGUIMenu::~bqGUIMenu()
@@ -49,12 +76,14 @@ bqGUIMenu::~bqGUIMenu()
 
 void bqGUIMenu::Clear()
 {
-	for (size_t i = 0; i < m_menuNodes.size(); ++i)
+	for (size_t i = 0; i < m_menuNodesAll.size(); ++i)
 	{
-		delete m_menuNodes[i];
+		delete m_menuNodesAll[i];
 	}
-	m_menuNodes.clear();
+	m_menuNodesAll.clear();
 	m_menuTree.m_root = 0;
+
+	m_menuNodesMain.clear();
 }
 
 bqGUIMenu::_menuTreeNode* bqGUIMenu::_menu_getLastSibling(_menuTreeNode* node, int* num)
@@ -85,6 +114,10 @@ void bqGUIMenu::BeginMenu(const char32_t* title, uint32_t id)
 	if (title)
 	{
 		newNode->itemInfo.title = title;
+		newNode->itemInfo.m_item.textLen = newNode->itemInfo.title.size();
+		
+		((bqGUIMenuTextDrawCallback*)(m_textCallback))->m_menu = this;
+		newNode->itemInfo.m_item.width = m_textCallback->GetTextSize(title).x;
 	}
 
 	if (!m_menuTree.m_root)
@@ -98,7 +131,8 @@ void bqGUIMenu::BeginMenu(const char32_t* title, uint32_t id)
 		lastSib->siblings = newNode;
 	}
 	m_menuNodeCurr = newNode;
-	m_menuNodes.push_back(m_menuNodeCurr);
+	m_menuNodesAll.push_back(m_menuNodeCurr);
+	m_menuNodesMain.push_back(m_menuNodeCurr);
 }
 
 void bqGUIMenu::_menu_addMenuItem(bool isSub, 
@@ -137,7 +171,7 @@ void bqGUIMenu::_menu_addMenuItem(bool isSub,
 		m_menuNodeCurr = newNode;
 	}
 
-	m_menuNodes.push_back(newNode);
+	m_menuNodesAll.push_back(newNode);
 }
 
 void bqGUIMenu::AddMenuItem(const char32_t* title, uint32_t id, const char32_t* shortcut_text)
@@ -162,5 +196,69 @@ void bqGUIMenu::EndMenu()
 	// но тут делать нечего
 }
 
+void bqGUIMenu::Rebuild(bqGUIWindow* w)
+{
+	BQ_ASSERT_ST(w);
+	m_currentHeight = m_height;
+
+	auto windowRect = w->m_buildRect;
+
+	m_menuRect.x = windowRect.x;
+	m_menuRect.y = windowRect.y;
+
+	if(w->m_windowFlags & bqGUIWindow::windowFlag_withTitleBar)
+		m_menuRect.y += w->m_titlebarHeight;
+
+	m_menuRect.z = 0.f;
+
+	int X = m_menuRect.x + m_indent;
+	int Y = m_menuRect.y;
+	for (size_t i = 0, sz = m_menuNodesMain.size(); i < sz; ++i)
+	{
+		auto n = m_menuNodesMain[i];
+
+		bqRect itemRect;
+		itemRect.left = 0;
+		itemRect.top = 0;
+		itemRect.right = n->itemInfo.m_item.width;
+		itemRect.bottom = m_height;
+
+		itemRect.top += Y;
+		itemRect.bottom += Y;
+		itemRect.left += X;
+		itemRect.right += X;
+
+		X += n->itemInfo.m_item.width + m_textIndent;
+
+		//if (X > w->menuRect.right)
+		if (X > windowRect.z)
+		{
+			Y += m_height + 1;
+			X = m_menuRect.x;
+			m_currentHeight += m_height;
+
+			itemRect.left = 0;
+			itemRect.top = 0;
+			itemRect.right = n->itemInfo.m_item.width;
+			itemRect.bottom = m_height;
+
+			itemRect.top += Y;
+			itemRect.bottom += Y;
+			itemRect.left += X;
+			itemRect.right += X;
+			X += n->itemInfo.m_item.width + m_textIndent;
+		}
+
+		if (X > m_menuRect.z)
+			m_menuRect.z = X;
+
+		itemRect.right += m_textIndent + m_textIndent;
+		X += m_textIndent + 1;
+
+		n->itemInfo.m_item.rect = itemRect;
+	}
+
+	m_menuRect.w = m_menuRect.y + m_currentHeight;
+}
 
 #endif

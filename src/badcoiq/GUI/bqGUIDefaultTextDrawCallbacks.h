@@ -57,15 +57,10 @@ public:
 
 class bqGUIButtonTextDrawCallback : public bqGUIDrawTextCallback
 {
-	//bqGUIFont* m_font = 0;
-	//bqColor m_color;
-
 public:
 	bqGUIButtonTextDrawCallback();
 	virtual ~bqGUIButtonTextDrawCallback();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIButtonTextDrawCallback);
-
-	//void SetFont(bqGUIFont* f) { m_font = f; }
 
 	virtual bqGUIFont* OnFont(/*uint32_t r, */char32_t) override;
 	virtual bqColor* OnColor(/*uint32_t r,*/ char32_t) override;
@@ -121,15 +116,10 @@ public:
 
 class bqGUISliderTextDrawCallback : public bqGUIDrawTextCallback
 {
-	//bqGUIFont* m_font = 0;
-	//bqColor m_color;
 public:
 	bqGUISliderTextDrawCallback();
 	virtual ~bqGUISliderTextDrawCallback();
 	BQ_PLACEMENT_ALLOCATOR(bqGUISliderTextDrawCallback);
-
-	//void SetFont(bqGUIFont* f) { m_font = f; }
-
 	virtual bqGUIFont* OnFont(/*uint32_t r,*/ char32_t) override;
 	virtual bqColor* OnColor(/*uint32_t r, */char32_t) override;
 };
@@ -141,6 +131,18 @@ public:
 	virtual ~bqGUIStaticTextTextDrawCallback();
 	BQ_PLACEMENT_ALLOCATOR(bqGUIStaticTextTextDrawCallback);
 
+	virtual bqGUIFont* OnFont(/*uint32_t r, */char32_t) override;
+	virtual bqColor* OnColor(/*uint32_t r, */char32_t) override;
+};
+
+class bqGUIMenuTextDrawCallback : public bqGUIDrawTextCallback
+{
+	friend class bqGUIMenu;
+	bqGUIMenu* m_menu = 0;
+public:
+	bqGUIMenuTextDrawCallback();
+	virtual ~bqGUIMenuTextDrawCallback();
+	BQ_PLACEMENT_ALLOCATOR(bqGUIMenuTextDrawCallback);
 	virtual bqGUIFont* OnFont(/*uint32_t r, */char32_t) override;
 	virtual bqColor* OnColor(/*uint32_t r, */char32_t) override;
 };

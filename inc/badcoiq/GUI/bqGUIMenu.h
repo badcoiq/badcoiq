@@ -51,7 +51,7 @@ struct bqGUIMenuItem
 	size_t textLen = 0;
 	uint32_t width = 0;
 	bqRect rect;
-	uint32_t isEnabled = 0;
+	uint32_t isEnabled = 1;
 	void* userData = 0;
 };
 
@@ -79,15 +79,31 @@ class bqGUIMenu
 	{
 		_menuTreeNode* m_root = 0;
 	}m_menuTree;
-	std::vector<_menuTreeNode*> m_menuNodes; // for easy delete
 	_menuTreeNode* _menu_getLastSibling(_menuTreeNode*, int* num);
 	_menuTreeNode* m_menuNodeCurr = 0;
 	std::stack<_menuTreeNode*> m_menuNodeCurrPrev;
+	
+	// для быстрого удаления
+	std::vector<_menuTreeNode*> m_menuNodesAll;
+
+	// только те пункты что находятся на полоске
+	// (FILE EDIT VIEW и т.д.)
+	std::vector<_menuTreeNode*> m_menuNodesMain;
 
 	void _menu_addMenuItem(bool isSub, const char32_t* title, uint32_t id, const char32_t* shortcut_text, bool enabled);
 
+	float32_t m_height = 20.f;
+	float32_t m_currentHeight = 0.f;
+	/*indent from left side. for logo for expamle*/
+	uint32_t m_indent = 0;
+	uint32_t m_textIndent = 0;
+
+	bqGUIDrawTextCallback* m_textCallback = 0;
+
+	bqGUIStyle* m_style = 0;
+
 public:
-	bqGUIMenu();
+	bqGUIMenu(bqGUIDrawTextCallback*);
 	~bqGUIMenu();
 	void Clear();
 	void BeginMenu(const char32_t* title, uint32_t id = 0);
@@ -98,19 +114,14 @@ public:
 	void EndSubMenu();
 	void EndMenu();
 
+	void Rebuild(bqGUIWindow*);
+	bqVec4f m_menuRect;
+
+	bqGUIStyle* GetStyle() { return m_style; }
+
 	// ниже код из старых наработок на СИ
 	//bqGUIMenuItem* items = 0;
 	//uint32_t itemsSize = 0;
-
-	bqGUIDrawTextCallback* textProcessor = 0;
-
-	uint32_t height = 0;
-	uint32_t currentHeight = 0;
-
-	/*indent from left side. for logo for expamle*/
-	uint32_t indent = 0;
-
-	uint32_t textIndent = 0;
 
 	bqPoint textOffset;
 

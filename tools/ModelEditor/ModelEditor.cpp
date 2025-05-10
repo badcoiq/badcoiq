@@ -164,35 +164,64 @@ bool ModelEditor::Init()
 	m_GUIWindow_mainMenuBar->SetDrawBG(true);
 	m_GUIWindow_mainMenuBar->m_windowFlags |= bqGUIWindowBase::windowFlag_disableToTop;
 	m_GUIWindow_mainMenuBar->Activate();
-	m_GUIWindow_mainMenuBar->UseMenu(true, true/*, m_menuFont*/);
-	m_GUIWindow_mainMenuBar->BeginMenu(U"File");
+	
+	m_GUIMainMenu = bqFramework::CreateGUIMenu();
+	m_GUIMainMenu->BeginMenu(U"File");
 	{
-		m_mainMenuWindow->BeginSubMenu(U"New", 0);
+		m_GUIMainMenu->BeginSubMenu(U"New", 0);
 		{
-			m_mainMenuWindow->AddMenuItem(U"Project", 0, U"Ctrl+Shift+N");
-			m_mainMenuWindow->AddMenuItem(U"Repository", 0);
-			m_mainMenuWindow->AddMenuItem(U"File", 0, U"Ctrl+N");
-			m_mainMenuWindow->AddMenuItem(U"Project from", 0);
-			m_mainMenuWindow->EndSubMenu();
+			m_GUIMainMenu->AddMenuItem(U"Project", 0, U"Ctrl+Shift+N");
+			m_GUIMainMenu->AddMenuItem(U"Repository", 0);
+			m_GUIMainMenu->AddMenuItem(U"File", 0, U"Ctrl+N");
+			m_GUIMainMenu->AddMenuItem(U"Project from", 0);
+			m_GUIMainMenu->EndSubMenu();
 		}
 
-		m_mainMenuWindow->BeginSubMenu(U"Open", WindowMainMenu::MenuItemID_Open, false);
+		m_GUIMainMenu->BeginSubMenu(U"Open", MainMenuItemID_Open, false);
 		{
-			m_mainMenuWindow->AddMenuItem(U"Project/Solution", 0, U"Ctrl+Shift+O");
-			m_mainMenuWindow->AddMenuItem(U"Folder", 0, U"Ctrl+Shift+Alt+O");
-			m_mainMenuWindow->AddMenuItem(U"Web site", 0, U"Shift+Alt+O");
-			m_mainMenuWindow->AddMenuItem(0, 0);
-			m_mainMenuWindow->AddMenuItem(U"File", 0, U"Ctrl+O");
-			m_mainMenuWindow->EndSubMenu();
+			m_GUIMainMenu->AddMenuItem(U"Project/Solution", 0, U"Ctrl+Shift+O");
+			m_GUIMainMenu->AddMenuItem(U"Folder", 0, U"Ctrl+Shift+Alt+O");
+			m_GUIMainMenu->AddMenuItem(U"Web site", 0, U"Shift+Alt+O");
+			m_GUIMainMenu->AddMenuItem(0, 0);
+			m_GUIMainMenu->AddMenuItem(U"File", 0, U"Ctrl+O");
+			m_GUIMainMenu->EndSubMenu();
 		}
 	}
+	m_GUIMainMenu->BeginMenu(U"Edit");
+	{
+	}
+	m_GUIMainMenu->BeginMenu(U"View");
+	{
+	}
+	m_GUIMainMenu->BeginMenu(U"Git");
+	{
+	}
+	m_GUIMainMenu->BeginMenu(U"Project");
+	{
+	}
+	m_GUIMainMenu->BeginMenu(U"Build");
+	{
+	}
+	m_GUIMainMenu->BeginMenu(U"Debug");
+	{
+	}
+	m_GUIMainMenu->BeginMenu(U"Test");
+	{
+	}
+	m_GUIMainMenu->BeginMenu(U"Analyze");
+	{
+	}
+	m_GUIMainMenu->BeginMenu(U"Tools");
+	{
+	}
+	m_GUIWindow_mainMenuBar->SetMenu(m_GUIMainMenu);
 
 	auto pictureBox = GUI_createPictureBox(bqVec2f(), bqVec2f(800.f, 32.f), 0);
 	pictureBox->SetDrawBG(true);
 	pictureBox->SetTexture(m_GUITexture);
 	pictureBox->SetTCoords(32.f, 0.f, 36.f, 31.f);
 	pictureBox->SetName("menubar_bg");
-	m_GUIWindow_mainMenuBar->AddElement(pictureBox);
+//	m_GUIWindow_mainMenuBar->AddElement(pictureBox);
 
 	/*auto button = GUI_createButton(bqVec2f(), bqVec2f(32.f, 32.f), GUI_BUTTON_ID::ButtonID_MainMenu);
 	button->SetDrawBG(true);
@@ -348,6 +377,8 @@ void ModelEditor::Shutdown()
 	BQ_SAFEDESTROY(m_gridModel_top);
 	BQ_SAFEDESTROY(m_gridModel_front);
 	BQ_SAFEDESTROY(m_gridModel_left);
+	
+	BQ_SAFEDESTROY(m_GUIMainMenu);
 
 	for (size_t i = 0; i < m_GUIElements.m_size; ++i)
 	{
@@ -560,7 +591,7 @@ void ModelEditor::_initPlugins()
 {
 	std::filesystem::create_directory(bqFramework::GetPath("plugins/").c_str());
 
-	for (auto& entry : std::filesystem::directory_iterator(L"plugins/"))
+	for (auto& entry : std::filesystem::directory_iterator(bqFramework::GetPath("plugins/").c_str()))
 	{
 		auto path = entry.path();
 		if (!path.has_extension())

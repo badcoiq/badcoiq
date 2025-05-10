@@ -150,7 +150,7 @@ bqGUIWindow::bqGUIWindow(
 
 bqGUIWindow::~bqGUIWindow()
 {
-	DeleteMenu();
+	//DeleteMenu();
 }
 
 void bqGUIWindowBase::AddElement(bqGUIElement* el)
@@ -442,6 +442,9 @@ void bqGUIWindow::Rebuild()
 			curr = curr->m_right;
 		}
 	}
+
+	if (m_menu)
+		m_menu->Rebuild(this);
 }
 
 //// действия с вводом\реакция на мышь
@@ -1115,6 +1118,16 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 	//cl.w = (float)m_systemWindow->GetCurrentSize()->y;
 	//gs->SetScissorRect(cl);
 
+	if (m_menu)
+	{
+		bqVec4f menuRect = m_menu->m_menuRect;
+		gs->SetScissorRect(menuRect);
+		if (m_flagsInternal & flagInternal_activated)
+			gs->DrawGUIRectangle(menuRect, m_style->m_windowActiveMenuBGColor1, m_style->m_windowActiveMenuBGColor2, 0, 0);
+		else
+			gs->DrawGUIRectangle(menuRect, m_style->m_windowNActiveMenuBGColor1, m_style->m_windowNActiveMenuBGColor2, 0, 0);
+	}
+
 	if (m_children.m_head)
 	{
 		m_gs = gs;
@@ -1259,42 +1272,42 @@ bqGUIElement* bqGUIWindow::GetGUIElement(const char* n)
 	return 0;
 }
 
-void bqGUIWindow::UseMenu(bool useornot, bool useSystemWindowForPopup)
-{
-	if (useSystemWindowForPopup)
-		m_flagsInternal |= flagInternal_sysWndForPopup;
-	else 
-		m_flagsInternal &= ~flagInternal_sysWndForPopup;
-
-	/*if (m_menu)
-		m_menu->font = ((FontImpl*)f)->m_font;*/
-
-	if (useornot)
-	{
-		RebuildMenu();
-	}
-	else
-	{
-		DeleteMenu();
-	}
-}
-
-void bqGUIWindow::RebuildMenu()
-{
-	if (m_menu)
-		DeleteMenu();
-
-	m_menu = new bqGUIMenu;
-}
-
-void bqGUIWindow::DeleteMenu()
-{
-	if (m_menu)
-	{
-		delete m_menu;
-		m_menu = 0;
-	}
-}
+//void bqGUIWindow::UseMenu(bool useornot, bool useSystemWindowForPopup)
+//{
+//	if (useSystemWindowForPopup)
+//		m_flagsInternal |= flagInternal_sysWndForPopup;
+//	else 
+//		m_flagsInternal &= ~flagInternal_sysWndForPopup;
+//
+//	/*if (m_menu)
+//		m_menu->font = ((FontImpl*)f)->m_font;*/
+//
+//	if (useornot)
+//	{
+//		RebuildMenu();
+//	}
+//	else
+//	{
+//		DeleteMenu();
+//	}
+//}
+//
+//void bqGUIWindow::RebuildMenu()
+//{
+//	if (m_menu)
+//		DeleteMenu();
+//
+//	m_menu = new bqGUIMenu;
+//}
+//
+//void bqGUIWindow::DeleteMenu()
+//{
+//	if (m_menu)
+//	{
+//		delete m_menu;
+//		m_menu = 0;
+//	}
+//}
 
 //void bqGUIWindow::BeginMenu(const char32_t* title, uint32_t id)
 //{
@@ -1335,5 +1348,9 @@ bool bqGUIWindow::OnIsMenuChecked(int id, bool prev)
 	return false;
 }
 
+void bqGUIWindow::SetMenu(bqGUIMenu* m)
+{
+	m_menu = m;
+}
 
 #endif

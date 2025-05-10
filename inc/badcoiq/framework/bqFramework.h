@@ -223,6 +223,8 @@ public:
 #ifdef BQ_PLATFORM_WINDOWS
 	static bqGUIIconTexture_GDI* CreateGUIIconTexture_GDI(bqImage*);
 #endif
+	static bqGUIMenu* CreateGUIMenu();
+
 #endif
 	static bqCursor* CreateCursor(const char* fn);
 	static bqCursor* GetDefaultCursor(bqCursorType);
