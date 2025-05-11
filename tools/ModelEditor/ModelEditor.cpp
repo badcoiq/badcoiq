@@ -166,6 +166,9 @@ bool ModelEditor::Init()
 	m_GUIWindow_mainMenuBar->Activate();
 	
 	m_GUIMainMenu = bqFramework::CreateGUIMenu();
+	m_GUIMainMenu->m_textOffset.x = 3;
+	m_GUIMainMenu->m_textOffset.y = 3;
+	m_GUIMainMenu->m_textIndent = 2;
 	m_GUIMainMenu->BeginMenu(U"File");
 	{
 		m_GUIMainMenu->BeginSubMenu(U"New", 0);

@@ -50,13 +50,14 @@ struct bqGUIMenuItem
 	bqGUIMenuItemInfo info;
 	size_t textLen = 0;
 	uint32_t width = 0;
-	bqRect rect;
+	bqVec4f rect;
 	uint32_t isEnabled = 1;
 	void* userData = 0;
 };
 
 class bqGUIMenu
 {
+	friend class bqGUIWindow;
 	struct _menuPopupItemInfo
 	{
 		bqGUIMenuItem m_item;
@@ -96,7 +97,6 @@ class bqGUIMenu
 	float32_t m_currentHeight = 0.f;
 	/*indent from left side. for logo for expamle*/
 	uint32_t m_indent = 0;
-	uint32_t m_textIndent = 0;
 
 	bqGUIDrawTextCallback* m_textCallback = 0;
 
@@ -116,6 +116,8 @@ public:
 
 	void Rebuild(bqGUIWindow*);
 	bqVec4f m_menuRect;
+	bqPoint m_textOffset;
+	uint32_t m_textIndent = 2;
 
 	bqGUIStyle* GetStyle() { return m_style; }
 
@@ -123,7 +125,6 @@ public:
 	//bqGUIMenuItem* items = 0;
 	//uint32_t itemsSize = 0;
 
-	bqPoint textOffset;
 
 	bqGUIMenuItem* activeItem = 0;
 	bqGUIMenuItem* hoverItem = 0;

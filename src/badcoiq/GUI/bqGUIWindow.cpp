@@ -892,6 +892,50 @@ void bqGUIWindow::Update()
 	//	return;
 	//}
 
+	if (m_menu)
+	{
+		m_menu->hoverItem = 0;
+
+		// если меню активно
+		if (m_menu->activeItem)
+		{
+		}
+		else
+		{
+			if (bqMath::PointInRect(g_framework->m_GUIState.m_mousePosition, 
+				m_menu->m_menuRect))
+			{
+				for (size_t i = 0, sz = m_menu->m_menuNodesMain.size(); i < sz; ++i)
+				{
+					auto n = m_menu->m_menuNodesMain[i];
+					auto menuItem = &n->itemInfo.m_item;
+					if (bqMath::PointInRect(g_framework->m_GUIState.m_mousePosition,
+						menuItem->rect))
+					{
+						m_menu->hoverItem = menuItem;
+						if (!menuItem->isEnabled)
+							break;
+
+						/*if (w->context->input->mouseButtonFlags1 & MG_MBFL_LMBDOWN)
+						{
+							w->menu->activeItem = &w->menu->items[i];
+							w->context->activeMenu = w->menu;
+							if (w->menu->activeItem->info.popup)
+							{
+
+								mgPoint pt;
+								pt.x = w->menu->activeItem->rect.left - w->menu->textIndent;
+								pt.y = w->menu->activeItem->rect.bottom - 5;
+								w->menu->activeItem->info.popup->userStyle = w->userStyle;
+								mgShowPopup(w->context, w->menu->activeItem->info.popup, &pt);
+							}
+						}*/
+						break;
+					}
+				}
+			}
+		}
+	}
 
 
 	if (m_children.m_head)
@@ -1126,6 +1170,78 @@ void bqGUIWindow::Draw(bqGS* gs, float dt)
 			gs->DrawGUIRectangle(menuRect, m_style->m_windowActiveMenuBGColor1, m_style->m_windowActiveMenuBGColor2, 0, 0);
 		else
 			gs->DrawGUIRectangle(menuRect, m_style->m_windowNActiveMenuBGColor1, m_style->m_windowNActiveMenuBGColor2, 0, 0);
+
+		bqVec2f pt;
+		for (size_t i = 0, sz = m_menu->m_menuNodesMain.size(); i < sz; ++i)
+		{
+			auto n = m_menu->m_menuNodesMain[i];
+			auto menuItem = &n->itemInfo.m_item;
+
+			//if (w->menu->onIsItemEnabled)
+				//w->menu->items[i].isEnabled = w->menu->onIsItemEnabled(&w->menu->items[i]);
+			menuItem->isEnabled = OnIsMenuItemEnabled(
+				menuItem->info.id,
+				menuItem->isEnabled);
+
+			//if (w->menu->hoverItem == &w->menu->items[i])
+				//w->context->cursorInElement = 1;
+			if (m_menu->hoverItem == menuItem)
+			{
+				//g_framework->m_GUIState....
+			}
+
+			bqColor* color = &m_menu->GetStyle()->m_windowActiveMenuTextColor;
+			if (menuItem->isEnabled)
+			{
+				if (m_menu->activeItem == menuItem)
+				{
+					//w->context->cursorInElement = 1;
+					//w->context->gpu->drawRectangle(mgDrawRectangleReason_windowMenuActiveItemBG, w,
+					//	&w->menu->activeItem->rect,
+					//	&style->windowMenuActiveItemBG,
+					//	&style->windowMenuActiveItemBG,
+					//	0, 0);
+					gs->DrawGUIRectangle(menuItem->rect,
+						m_style->m_windowMenuActiveItemBG,
+						m_style->m_windowMenuActiveItemBG,
+						0, 0);
+
+				}
+				else if (m_menu->hoverItem == menuItem)
+				{
+					//w->context->gpu->drawRectangle(mgDrawRectangleReason_windowMenuHoverItemBG, w,
+					//	&w->menu->hoverItem->rect,
+					//	&style->windowMenuHoverItemBG,
+					//	&style->windowMenuHoverItemBG,
+					//	0, 0);
+					gs->DrawGUIRectangle(menuItem->rect,
+						m_style->m_windowMenuHoverItemBG,
+						m_style->m_windowMenuHoverItemBG,
+						0, 0);
+				}
+
+				if (!n->itemInfo.title.size())
+					continue;
+			}
+			else
+			{
+				color = &m_menu->GetStyle()->m_windowActiveMenuTextColorDisabled;
+			}
+
+			pt.x = menuItem->rect.x + m_menu->m_textIndent + m_menu->m_textOffset.x;
+			pt.y = menuItem->rect.y + m_menu->m_textOffset.y;
+
+			gs->DrawGUIText(n->itemInfo.title.c_str(), n->itemInfo.title.size(), 
+				pt, m_textDrawCallback);
+			/*w->textProcessor->onDrawText(
+				mgDrawTextReason_windowMenu,
+				0,
+				w->textProcessor,
+				&pt,
+				w->menu->items[i].info.text,
+				w->menu->items[i].textLen,
+				color);*/
+		}
 	}
 
 	if (m_children.m_head)
@@ -1335,12 +1451,12 @@ void bqGUIWindow::OnMenuCommand(int id)
 
 bool bqGUIWindow::OnIsMenuItemEnabled(int id, bool prev)
 {
-	return false;
+	return true;
 }
 
 bool bqGUIWindow::OnIsMenuEnabled(int id, bool prev)
 {
-	return false;
+	return true;
 }
 
 bool bqGUIWindow::OnIsMenuChecked(int id, bool prev)

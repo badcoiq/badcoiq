@@ -1051,10 +1051,13 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeLight.m_windowActiveTitleBGColor1 = 0x64A1E4;
 	g_framework->m_themeLight.m_windowActiveTitleBGColor2 = 0x64A1E4;
 	g_framework->m_themeLight.m_windowActiveTitleTextColor = 0xF8FAFC;
-	g_framework->m_themeLight.m_windowActiveMenuBGColor1 = bq::ColorRed;
-	g_framework->m_themeLight.m_windowActiveMenuBGColor2 = bq::ColorRed;
+	g_framework->m_themeLight.m_windowActiveMenuBGColor1 = 0xD6E1FF;
+	g_framework->m_themeLight.m_windowActiveMenuBGColor2 = 0xD6E1FF;
 	g_framework->m_themeLight.m_windowActiveMenuTextColor = 0xF8FAFC;
+	g_framework->m_themeLight.m_windowActiveMenuTextColorDisabled = bq::ColorLightGray;
 	g_framework->m_themeLight.m_windowNActiveMenuTextColor = 0xF8FAFC;
+	g_framework->m_themeLight.m_windowMenuActiveItemBG = 0x00E1FF;
+	g_framework->m_themeLight.m_windowMenuHoverItemBG = 0x9EC0FF;
 
 	g_framework->m_themeLight.m_windowNActiveBGColor1 = 0xE7E7E7;
 	g_framework->m_themeLight.m_windowNActiveBGColor2 = 0xE7E7E7;
@@ -1062,8 +1065,8 @@ void bqFrameworkImpl::_initGUIThemes()
 	g_framework->m_themeLight.m_windowNActiveTitleBGColor1 = 0xD0D0D0;
 	g_framework->m_themeLight.m_windowNActiveTitleBGColor2 = 0xD0D0D0;
 	g_framework->m_themeLight.m_windowNActiveTitleTextColor = 0x0;
-	g_framework->m_themeLight.m_windowNActiveMenuBGColor1 = bq::ColorRed;
-	g_framework->m_themeLight.m_windowNActiveMenuBGColor2 = bq::ColorRed;
+	g_framework->m_themeLight.m_windowNActiveMenuBGColor1 = 0xD6E1FF;
+	g_framework->m_themeLight.m_windowNActiveMenuBGColor2 = 0xD6E1FF;
 
 	g_framework->m_themeLight.m_buttonBGColor1 = 0x999999;
 	g_framework->m_themeLight.m_buttonBGColor2 = 0x666666;

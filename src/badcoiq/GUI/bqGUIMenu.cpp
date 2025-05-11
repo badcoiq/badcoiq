@@ -247,18 +247,24 @@ void bqGUIMenu::Rebuild(bqGUIWindow* w)
 			itemRect.left += X;
 			itemRect.right += X;
 			X += n->itemInfo.m_item.width + m_textIndent;
+			
 		}
 
 		if (X > m_menuRect.z)
 			m_menuRect.z = X;
 
 		itemRect.right += m_textIndent + m_textIndent;
-		X += m_textIndent + 1;
+		itemRect.right += m_textOffset.x;
+		X += m_textIndent + m_textOffset.x + 1;
 
-		n->itemInfo.m_item.rect = itemRect;
+		n->itemInfo.m_item.rect.x = itemRect.left;
+		n->itemInfo.m_item.rect.y = itemRect.top;
+		n->itemInfo.m_item.rect.z = itemRect.right;
+		n->itemInfo.m_item.rect.w = itemRect.bottom;
 	}
 
 	m_menuRect.w = m_menuRect.y + m_currentHeight;
+	m_menuRect.z += m_textOffset.x + m_textOffset.x;
 }
 
 #endif

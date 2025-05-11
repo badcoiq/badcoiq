@@ -50,7 +50,11 @@ struct bqGUIStyle
 	bqColor m_windowNActiveMenuBGColor1;
 	bqColor m_windowNActiveMenuBGColor2;
 	bqColor m_windowActiveMenuTextColor;
+	bqColor m_windowActiveMenuTextColorDisabled;
 	bqColor m_windowNActiveMenuTextColor;
+	bqColor m_windowMenuActiveItemBG;
+	bqColor m_windowMenuHoverItemBG;
+
 	bqColor m_windowActiveBGColor1;
 	bqColor m_windowActiveBGColor2;
 	bqColor m_windowActiveBorderColor;
