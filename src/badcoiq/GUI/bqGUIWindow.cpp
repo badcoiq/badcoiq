@@ -899,6 +899,27 @@ void bqGUIWindow::Update()
 		// если меню активно
 		if (m_menu->activeItem)
 		{
+			if (bqMath::PointInRect(g_framework->m_GUIState.m_mousePosition,
+				m_menu->m_menuRect))
+			{
+				for (size_t i = 0, sz = m_menu->m_menuNodesMain.size(); i < sz; ++i)
+				{
+					auto n = m_menu->m_menuNodesMain[i];
+					auto menuItem = &n->itemInfo.m_item;
+					if (bqMath::PointInRect(g_framework->m_GUIState.m_mousePosition,
+						menuItem->rect))
+					{
+						if (!menuItem->isEnabled)
+							continue;
+
+						if (bqMath::PointInRect(g_framework->m_GUIState.m_mousePosition,
+							menuItem->rect))
+						{
+							m_menu->activeItem = menuItem;
+						}
+					}
+				}
+			}
 		}
 		else
 		{
@@ -916,6 +937,11 @@ void bqGUIWindow::Update()
 						if (!menuItem->isEnabled)
 							break;
 
+						if (g_framework->m_input.m_mouseButtonFlags & bq::MouseFlag_LMBDOWN)
+						{
+							m_menu->activeItem = menuItem;
+							g_framework->m_GUIState.m_menu = m_menu;
+						}
 						/*if (w->context->input->mouseButtonFlags1 & MG_MBFL_LMBDOWN)
 						{
 							w->menu->activeItem = &w->menu->items[i];

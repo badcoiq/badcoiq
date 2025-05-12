@@ -32,19 +32,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_GUI
 
-// например для раскрывающегося списка
-//class bqGUIPopup// : public bqGUIElement
-//{
-//	
-//public:
-//	bqGUIPopup(bqGUIWindow*, const bqVec2f& position, const bqVec2f& size);
-//	virtual ~bqGUIPopup();
-//	BQ_PLACEMENT_ALLOCATOR(bqGUIPopup);
-//
-//	virtual void Rebuild() final;
-//	virtual void Update() final;
-//	virtual void Draw(bqGS* gs, float dt) final;
-//};
+
+/// Окно или прямоугольник, содержащий пункты меню
+/// как обычный popup при нажатии правой кнопкой мышки.
+/// По умолчанию должен работать как простой прямоугольник.
+/// 
+/// Но для менюшки нужно сделать реальные окна.
+/// И для рисования в такое окно нужно будет использовать отдельное API
+class bqGUIPopup
+{
+public:
+	bqGUIPopup() {}
+	~bqGUIPopup() {}
+
+};
 
 #endif
 #endif

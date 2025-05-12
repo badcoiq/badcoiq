@@ -57,6 +57,11 @@ struct bqGUIState
 	// чтобы всё работало как надо.
 	bqPointf m_mousePosition;
 
+	// Если нажимаем на меню (это которое FILE EDIT VIEW и т.д.)
+	// то, надо запомнить этот факт, чтобы потом блокировать
+	// реакцию GUI элементов (чтобы, выбирая пункт меню, тот GUI
+	// элемент который находится под меню под курсором не реагировал).
+	bqGUIMenu* m_menu = 0;
 
 	bqGUIWindow* m_activeWindow = 0;
 	bqGUITextEditor* m_activeTextEditor = 0;
