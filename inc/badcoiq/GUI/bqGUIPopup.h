@@ -32,19 +32,59 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef BQ_WITH_GUI
 
+class bqGUIPopup;
+struct bqGUIPopupItem;
+
+enum class bqGUIPopupItemType : uint32_t
+{
+	mgPopupItemType_default = 0,
+	mgPopupItemType_separator,
+
+	/*not implemented :( */
+	mgPopupItemType_check,
+	mgPopupItemType_radio, /*use separator for groups*/
+};
+
+struct bqGUIPopupItemInfo
+{
+	uint32_t id = 0;
+	const char32_t* text = 0;
+	bqGUIPopup* subMenu = 0; /*if subMenu then skip callback*/
+	void(*callback)(int id, bqGUIPopupItem*) = 0;
+	bqGUIPopupItemType type = bqGUIPopupItemType::mgPopupItemType_default;
+	uint32_t isChecked = 0;
+	const char32_t* shortcutText = 0;
+	uint32_t isEnabled = 1;
+	void* userData = 0;
+};
+
+struct bqGUIPopupItem
+{
+	bqGUIPopupItemInfo info;
+	uint32_t textLen = 0;
+	uint32_t shortcutTextLen = 0;
+	uint32_t indentForShortcutText = 0;
+	uint32_t shortcutTextWidth = 0;
+};
 
 /// Окно или прямоугольник, содержащий пункты меню
 /// как обычный popup при нажатии правой кнопкой мышки.
 /// По умолчанию должен работать как простой прямоугольник.
 /// 
-/// Но для менюшки нужно сделать реальные окна.
+/// Но для менюшки bqGUIMenu нужно сделать реальные окна.
 /// И для рисования в такое окно нужно будет использовать отдельное API
 class bqGUIPopup
 {
-public:
-	bqGUIPopup() {}
-	~bqGUIPopup() {}
+	std::vector<bqGUIPopupItem*> m_items;
+	void* m_systemWindowImplementation = 0;
 
+
+public:
+	bqGUIPopup();
+	~bqGUIPopup();
+
+
+	void Rebuild();
 };
 
 #endif
